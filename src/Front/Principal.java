@@ -3,6 +3,7 @@ package Front;
 import Base.Base;
 import Front.Ciudades_departamentos.Actualizar_ciudad;
 import Front.Ciudades_departamentos.Insertar_ciudad;
+import Front.Extractos.Extracto_mensual;
 import Front.Personas.Actualizar_conductor;
 import Front.Personas.Actualizar_peronas;
 import Front.Personas.Insertar_conductor;
@@ -633,7 +634,7 @@ public class Principal extends JFrame{
             panel_principal2.remove(panel_informacion);
             
             
-            panel_principal2 = ver_extractos_mensuales();
+            panel_informacion = ver_extractos_mensuales();
             
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
@@ -641,7 +642,7 @@ public class Principal extends JFrame{
             panel_principal2.revalidate();
 
         });
-        boton_extractos_mensuales.doClick();
+        // boton_extractos_mensuales.doClick();
 
         boton_extractos_ocasionales.setBounds(10,40,120,20);
         boton_extractos_ocasionales.addActionListener(accion ->{
@@ -1679,6 +1680,7 @@ public class Principal extends JFrame{
         return tab;
 
     }
+
     private JPanel ver_conductores(){
 
         configuracion_panel_busqueda();
@@ -1783,7 +1785,12 @@ public class Principal extends JFrame{
         return new JTable();
     }
     private JPanel ver_extractos_mensuales(){
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(new BorderLayout());
+        JButton boton = new JButton("Abrir");
+        boton.addActionListener(accion ->{
+            new Extracto_mensual(this, url).setVisible(true);
+        });
+        panel.add(boton, BorderLayout.CENTER);
         return panel;
     };
 
