@@ -278,6 +278,39 @@ create table licencia(
 );
 insert into licencia values ('1068972260',6,'2023-12-2');
 
+
+create table contratante(
+    con_contratante text primary key,
+    con_responsable text not null,
+
+    foreign key(con_contratante) references persona(per_id),
+    foreign key(con_responsable) references persona(per_id)
+);
+
+create table contrato_mensual(
+    con_id integer primary key not null,
+    con_contratante text not null,
+
+    foreign key(con_contratante) references contratante(con_contratante)
+);
+
+create table extracto_mensual(
+    veh_placa text not null,
+    ext_consecutivo integer not null,
+    con_id integer not null,
+    ext_fecha_inicial date not null,
+    ext_fecha_final date not null,
+    ext_origen integer not null,
+    ext_destino integer not null,
+
+    primary key(veh_placa, ext_consecutivo),
+    foreign key(con_id) references contrato_mensual(con_id),
+    foreign key(veh_placa) references vehiculo(veh_placa),
+    foreign key(ext_origen) references ciudad(ciu_id),
+    foreign key(ext_destino) references ciudad(ciu_id)
+
+);
+
 insert into vehiculo values ('SXT705',1,2013,'MERCEDES BENZ','OH1526',6374,'BLANCO VERDE',2,'DIESEL','CERRADA','906998U1033799','9BM368006DB886948',45,'20384716',1);
 insert into vehiculo values ('SXT696',1,2013,'MERCEDES BENZ','OH1526',6374,'BLANCO VERDE',2,'DIESEL','CERRADA','906998U1033556','9BM368006DB886593',45,'80391277',1);
 insert into vehiculo values ('SXC228',3,2013,'PALITO','PALITO',1200,'BLANCO',2,'DIESEL','PALITO','PALITO','PALITO',28,'1068972260',0);
@@ -316,3 +349,31 @@ create view vw_licencia as
     select per_id, per_nombre,cat_categoria, lic_fecha 
     from licencia natural join categoria natural join persona;
 
+create view vw_contratante as
+    select con_contratante,
+    tip_nombre as con_tipo_id,
+    per_nombre as con_nombre,
+    con_responsable,
+    res_nombre,
+    res_celular,
+    res_direccion
+    from (contratante 
+    join persona on (per_id = con_contratante))
+    natural join tipo_id natural join 
+    (select con_responsable, 
+    per_nombre as res_nombre, 
+    per_celular as res_celular, 
+    per_direccion as res_direccion
+    from contratante 
+    join persona on (per_id = con_responsable));
+
+create view vw_contrato_mensual as
+    select con_id,
+    con_contratante,
+    con_tipo_id,
+    con_nombre,
+    con_responsable,
+    res_nombre,
+    res_celular,
+    res_direccion
+    from contrato_mensual natural join vw_contratante;

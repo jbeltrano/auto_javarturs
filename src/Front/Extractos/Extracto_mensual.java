@@ -5,6 +5,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import java.awt.event.MouseEvent;
+import java.lang.management.LockInfo;
+
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -20,18 +22,28 @@ import com.toedter.calendar.JDateChooser;
 
 public class Extracto_mensual extends Modal_documento {
 
+    private static final int POSICION_X = 10;
+    private static final int LONGITUD_Y = 20;
     private JButton boton_exportar;
     private JButton boton_guardar;
-    private JLabel jLabel1;
-    private JLabel jLabel2;
-    private JLabel jLabel3;
-    private JLabel jLabel4;
+    private JLabel label_vehiculo;
+    private JLabel label_contratante;
+    private JLabel label_fecha_inicial;
+    private JLabel label_fecha_final;
+    private JLabel label_origen;
+    private JLabel label_destino;
     private JPanel jPanel1;
-    private JScrollPane jScrollPane1;
-    private JScrollPane jScrollPane2;
+    private JScrollPane scroll_vehiculo;
+    private JScrollPane scroll_contratante;
+    private JScrollPane scroll_origen;
+    private JScrollPane scroll_destino;
     private JTable tabla_vehiculo;
     private JTable tabla_contratante;
+    private JTable tabla_origen;
+    private JTable tabla_destino;
     private JTextField text_contratante;
+    private JTextField text_origen;
+    private JTextField text_destino;
     private JTextField text_placa;
     private JDialog ventana;
     private JDateChooser fecha_incial;
@@ -48,16 +60,24 @@ public class Extracto_mensual extends Modal_documento {
 
         jPanel1 = new JPanel();
         text_placa = new JTextField();
-        jLabel1 = new JLabel();
-        jScrollPane1 = new JScrollPane();
-        jLabel2 = new JLabel();
+        label_vehiculo = new JLabel();
+        scroll_vehiculo = new JScrollPane();
+        scroll_origen = new JScrollPane();
+        scroll_destino = new JScrollPane();
+        label_contratante = new JLabel();
         text_contratante = new JTextField();
-        jScrollPane2 = new JScrollPane();
-        jLabel3 = new JLabel();
-        jLabel4 = new JLabel();
+        text_origen = new JTextField();
+        text_destino = new JTextField();
+        scroll_contratante = new JScrollPane();
+        label_fecha_inicial = new JLabel();
+        label_fecha_final = new JLabel();
+        label_origen = new JLabel();
+        label_destino = new JLabel();
         boton_exportar = new JButton();
         boton_guardar = new JButton();
         tabla_vehiculo = new JTable();
+        tabla_origen = new JTable();
+        tabla_destino = new JTable();
         fecha_incial = new JDateChooser();
         fecha_final = new JDateChooser();
 
@@ -67,13 +87,9 @@ public class Extracto_mensual extends Modal_documento {
 
             tabla_vehiculo = Principal.set_tabla_vehiculo(base.consultar_vehiculo(true));
             tabla_contratante = Principal.set_tabla_personas(base.consultar_persona());
-            tabla_contratante.addMouseListener(new MouseAdapter() {
+            tabla_origen = Principal.set_tabla_ciudad(base.consultar_ciudades(""));
+            tabla_destino = Principal.set_tabla_ciudad(base.consultar_ciudades(""));
             
-                public void mouseClicked(MouseEvent evt){
-                    int valor_auxilia = tabla_contratante.getSelectedRow();
-                    text_contratante.setText("" + tabla_contratante.getValueAt(valor_auxilia, 0));
-                }
-            });
 
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -82,10 +98,14 @@ public class Extracto_mensual extends Modal_documento {
         }
         base.close();
         
+        label_vehiculo.setText("Vehiculo");
+        jPanel1.add(label_vehiculo
+);
+        label_vehiculo.setBounds(POSICION_X, POSICION_X, 64, LONGITUD_Y);
 
         jPanel1.setLayout(null);
         jPanel1.add(text_placa);
-        text_placa.setBounds(6, 36, 133, 22);
+        text_placa.setBounds(POSICION_X, label_vehiculo.getY()+ label_vehiculo.getHeight() + 10, 130, LONGITUD_Y);
         text_placa.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 String datos[][] = null;
@@ -100,7 +120,15 @@ public class Extracto_mensual extends Modal_documento {
                 try{
                     datos = base.consultar_vehiculo(variable_auxiliar);
                     tabla_vehiculo = Principal.set_tabla_vehiculo(datos);
-                    jScrollPane1.setViewportView(tabla_vehiculo);
+                    tabla_vehiculo.addMouseListener(new MouseAdapter() {
+            
+                        public void mouseClicked(MouseEvent evt){
+                            int valor_auxilia = tabla_vehiculo.getSelectedRow();
+                            text_placa.setText("" + tabla_vehiculo.getValueAt(valor_auxilia, 0));
+                        }
+            
+                    });
+                    scroll_vehiculo.setViewportView(tabla_vehiculo);
                     
         
                 }catch(SQLException ex){
@@ -112,9 +140,7 @@ public class Extracto_mensual extends Modal_documento {
             }
         });
 
-        jLabel1.setText("Vehiculo");
-        jPanel1.add(jLabel1);
-        jLabel1.setBounds(6, 8, 64, 16);
+        
         
         tabla_vehiculo.addMouseListener(new MouseAdapter() {
             
@@ -125,16 +151,17 @@ public class Extracto_mensual extends Modal_documento {
 
         });
 
-        jScrollPane1.setViewportView(tabla_vehiculo);
+        scroll_vehiculo.setViewportView(tabla_vehiculo);
 
-        jPanel1.add(jScrollPane1);
-        jScrollPane1.setBounds(10, 70, 210, 100);
+        jPanel1.add(scroll_vehiculo
+);
+        scroll_vehiculo.setBounds(10, 70, 210, 100);
 
-        jLabel2.setText("Contratante");
-        jPanel1.add(jLabel2);
-        jLabel2.setBounds(260, 10, 90, 16);
+        label_contratante.setText("Contratante");
+        jPanel1.add(label_contratante);
+        label_contratante.setBounds(260, POSICION_X, 90, LONGITUD_Y);
         jPanel1.add(text_contratante);
-        text_contratante.setBounds(260, 40, 150, 22);
+        text_contratante.setBounds(260, label_contratante.getY() + label_contratante.getHeight() +10 , 150, LONGITUD_Y);
         text_contratante.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 String datos[][] = null;
@@ -149,7 +176,14 @@ public class Extracto_mensual extends Modal_documento {
                 try{
                     datos = base.consultar_persona(variable_auxiliar);
                     tabla_contratante = Principal.set_tabla_personas(datos);
-                    jScrollPane2.setViewportView(tabla_contratante);
+                    tabla_contratante.addMouseListener(new MouseAdapter() {
+            
+                        public void mouseClicked(MouseEvent evt){
+                            int valor_auxilia = tabla_contratante.getSelectedRow();
+                            text_contratante.setText("" + tabla_contratante.getValueAt(valor_auxilia, 0));
+                        }
+                    });
+                    scroll_contratante.setViewportView(tabla_contratante);
                     
         
                 }catch(SQLException ex){
@@ -161,34 +195,144 @@ public class Extracto_mensual extends Modal_documento {
             }
         });
 
-        
-        jScrollPane2.setViewportView(tabla_contratante);
+        tabla_contratante.addMouseListener(new MouseAdapter() {
+            
+            public void mouseClicked(MouseEvent evt){
+                int valor_auxilia = tabla_contratante.getSelectedRow();
+                text_contratante.setText("" + tabla_contratante.getValueAt(valor_auxilia, 0));
+            }
+        });
 
-        jPanel1.add(jScrollPane2);
-        jScrollPane2.setBounds(260, 70, 240, 100);
+        scroll_contratante.setViewportView(tabla_contratante);
 
-        jLabel3.setText("Fecha inicial");
-        jPanel1.add(jLabel3);
-        jLabel3.setBounds(80, 200, 80, 16);
+        jPanel1.add(scroll_contratante);
+        scroll_contratante.setBounds(260, 70, 240, 100);
 
-        fecha_incial.setBounds(80, 230, 130, 20);
+        label_fecha_inicial.setText("Fecha inicial");
+        jPanel1.add(label_fecha_inicial);
+        label_fecha_inicial.setBounds(80, 200, 80, 16);
+
+        fecha_incial.setBounds(80, 230, 130, LONGITUD_Y);
         jPanel1.add(fecha_incial);
 
-        jLabel4.setText("Fecha final");
-        jPanel1.add(jLabel4);
-        jLabel4.setBounds(250, 200, 90, 16);
+        label_fecha_final.setText("Fecha final");
+        jPanel1.add(label_fecha_final);
+        label_fecha_final.setBounds(250, 200, 90, 16);
 
-        fecha_final.setBounds(250, 230, 130, 20);
+        fecha_final.setBounds(250, 230, 130, LONGITUD_Y);
         
         jPanel1.add(fecha_final);
 
-        boton_exportar.setText("Exportar");
+        label_origen.setText("Origen");
+        label_origen.setBounds(POSICION_X, fecha_incial.getY() + LONGITUD_Y + 20, 130, LONGITUD_Y);
+        jPanel1.add(label_origen);
+
+        text_origen.setBounds(POSICION_X, label_origen.getY() + LONGITUD_Y + 10, 130, LONGITUD_Y);
+        text_origen.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                String datos[][] = null;
+                String variable_auxiliar = text_origen.getText();
+                
+                if(evt.getExtendedKeyCode() != 8){
+                    variable_auxiliar = variable_auxiliar.concat(evt.getKeyChar()+"");
+                }else{
+                    variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
+                }
+                base = new Base(url);
+                try{
+                    datos = base.consultar_ciudades(variable_auxiliar);
+                    tabla_origen = Principal.set_tabla_ciudad(datos);
+                    tabla_origen.addMouseListener(new MouseAdapter() {
+            
+                        public void mouseClicked(MouseEvent evt){
+                            int valor_auxilia = tabla_origen.getSelectedRow();
+                            text_origen.setText("" + tabla_origen.getValueAt(valor_auxilia, 0));
+                        }
+                    });
+                    scroll_origen.setViewportView(tabla_origen);
+                    
+        
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    ventana.setVisible(false);
+                    base.close();
+                }
+                base.close();
+            }
+        });
+
+        jPanel1.add(text_origen);
+
+        scroll_origen.setViewportView(tabla_origen);
+        scroll_origen.setBounds(POSICION_X, text_origen.getY() + LONGITUD_Y + 10, 210, 100);
+        jPanel1.add(scroll_origen);
+
+        tabla_origen.addMouseListener(new MouseAdapter() {
+            
+            public void mouseClicked(MouseEvent evt){
+                int valor_auxilia = tabla_origen.getSelectedRow();
+                text_origen.setText("" + tabla_destino.getValueAt(valor_auxilia, 0));
+            }
+        });
+
+        label_destino.setText("Destino");
+        label_destino.setBounds(label_contratante.getX(), label_origen.getY(), 130, LONGITUD_Y);
+        jPanel1.add(label_destino);
+
+        text_destino.setBounds(label_destino.getX(), label_destino.getY() + LONGITUD_Y + 10, 130, LONGITUD_Y);
+        text_destino.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                String datos[][] = null;
+                String variable_auxiliar = text_destino.getText();
+                
+                if(evt.getExtendedKeyCode() != 8){
+                    variable_auxiliar = variable_auxiliar.concat(evt.getKeyChar()+"");
+                }else{
+                    variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
+                }
+                base = new Base(url);
+                try{
+                    datos = base.consultar_ciudades(variable_auxiliar);
+                    tabla_destino = Principal.set_tabla_ciudad(datos);
+                    tabla_destino.addMouseListener(new MouseAdapter() {
+            
+                        public void mouseClicked(MouseEvent evt){
+                            int valor_auxilia = tabla_destino.getSelectedRow();
+                            text_destino.setText("" + tabla_destino.getValueAt(valor_auxilia, 0));
+                        }
+                    });
+                    scroll_destino.setViewportView(tabla_destino);
+                    
+        
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    ventana.setVisible(false);
+                    base.close();
+                }
+                base.close();
+            }
+        });
+        jPanel1.add(text_destino);
+
+        tabla_destino.addMouseListener(new MouseAdapter() {
+            
+            public void mouseClicked(MouseEvent evt){
+                int valor_auxilia = tabla_destino.getSelectedRow();
+                text_destino.setText("" + tabla_destino.getValueAt(valor_auxilia, 0));
+            }
+        });        
+
+        scroll_destino.setViewportView(tabla_destino);
+        scroll_destino.setBounds(text_destino.getX(), text_destino.getY() + LONGITUD_Y + 10, 210, 100);
+        jPanel1.add(scroll_destino);
+
+        boton_exportar.setText("Guardar y Exportar");
         jPanel1.add(boton_exportar);
-        boton_exportar.setBounds(110, 430, 74, 23);
+        boton_exportar.setBounds(150, 450, 140, 23);
 
         boton_guardar.setText("Guardar");
         jPanel1.add(boton_guardar);
-        boton_guardar.setBounds(20, 430, 72, 23);
+        boton_guardar.setBounds(20, 450, 100, 23);
 
         
         GroupLayout layout = new GroupLayout(getContentPane());
@@ -208,6 +352,6 @@ public class Extracto_mensual extends Modal_documento {
     @Override
     protected Dimension set_dimension(){
         
-        return new Dimension(600,500);
+        return new Dimension(600,550);
     }             
 }
