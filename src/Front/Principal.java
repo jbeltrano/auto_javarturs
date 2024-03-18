@@ -3,7 +3,7 @@ package Front;
 import Base.Base;
 import Front.Ciudades_departamentos.Actualizar_ciudad;
 import Front.Ciudades_departamentos.Insertar_ciudad;
-import Front.Extractos.Extracto_mensual;
+import Front.Extractos.Insertar_extracto_mensual;
 import Front.Personas.Actualizar_conductor;
 import Front.Personas.Actualizar_peronas;
 import Front.Personas.Insertar_conductor;
@@ -86,6 +86,9 @@ public class Principal extends JFrame{
     private JButton boton_Departamento;
     private JButton boton_extractos_ocasionales; 
     private JButton boton_extractos_mensuales;
+    private JButton boton_contratos_mensuales;
+    private JButton boton_contratos_ocasionales;
+    private JButton boton_contratante;
 
     /** 
      * Este es el constructor general para la clase Principal
@@ -306,6 +309,7 @@ public class Principal extends JFrame{
 
         extractos.addActionListener(accion ->{
             configuracion_extractos();
+            boton_extractos_mensuales.doClick();
         });
 
 
@@ -626,6 +630,9 @@ public class Principal extends JFrame{
         JLabel label_principal = new JLabel("Configuración Extractos");
         boton_extractos_mensuales = new JButton("Mensuales");
         boton_extractos_ocasionales = new JButton("Ocasionales");
+        boton_contratos_mensuales = new JButton("C. Mensuales");
+        boton_contratos_ocasionales = new JButton("C. Ocasionales");
+        boton_contratante = new JButton("Contratante");
 
         // Configuracion componentes
         boton_extractos_mensuales.setBounds(10,10,120,20);
@@ -657,6 +664,41 @@ public class Principal extends JFrame{
             panel_principal2.revalidate();
         });
 
+        boton_contratos_mensuales.setBounds(10, boton_extractos_ocasionales.getY() + boton_extractos_ocasionales.getHeight() + 10, 120, 20);
+        boton_contratos_mensuales.addActionListener(accion ->{
+            panel_principal2.remove(panel_informacion);
+            
+            // cambiar para ver extractos mensuales
+            panel_informacion = ver_extractos_ocasionales();
+
+            panel_principal2.add(panel_informacion, BorderLayout.CENTER);
+            panel_principal2.repaint();
+            panel_principal2.revalidate(); 
+        });
+
+        boton_contratos_ocasionales.setBounds(10, boton_contratos_mensuales.getY() + boton_contratos_mensuales.getHeight() + 10 ,120, 20);
+        boton_contratos_ocasionales.addActionListener(accion ->{
+            panel_principal2.remove(panel_informacion);
+            
+            // cambiar para ver extractos ocasionales
+            panel_informacion = ver_extractos_ocasionales();
+
+            panel_principal2.add(panel_informacion, BorderLayout.CENTER);
+            panel_principal2.repaint();
+            panel_principal2.revalidate(); 
+        });
+
+        boton_contratante.setBounds(10, boton_contratos_ocasionales.getY() + boton_contratos_ocasionales.getHeight() + 10 ,120, 20);
+        boton_contratante.addActionListener(accion ->{
+            panel_principal2.remove(panel_informacion);
+            
+            // cambiar para ver ver contratatnes
+            panel_informacion = ver_extractos_ocasionales();
+
+            panel_principal2.add(panel_informacion, BorderLayout.CENTER);
+            panel_principal2.repaint();
+            panel_principal2.revalidate(); 
+        });
 
         label_principal.setFont(new Font("britannic bold", Font.BOLD, 20));
         label_principal.setHorizontalAlignment(JLabel.CENTER);
@@ -666,6 +708,9 @@ public class Principal extends JFrame{
         panel_izq.setBackground(new Color(52, 135, 25));
         panel_izq.add(boton_extractos_mensuales);
         panel_izq.add(boton_extractos_ocasionales);
+        panel_izq.add(boton_contratos_mensuales);
+        panel_izq.add(boton_contratos_ocasionales);
+        panel_izq.add(boton_contratante);
         
 
         // Agregacion a panel_principal2 y set panel_principal2
@@ -1781,18 +1826,212 @@ public class Principal extends JFrame{
     }
 
     // Metodos relacionados a extractos
-    public static JTable set_tabla_extractos_mensuales(){
-        return new JTable();
+    public static JTable set_tabla_extractos_mensuales(String[][] datos){
+        
+        JTable tab = new JTable();
+        DefaultTableModel modelo; 
+        TableColumnModel clum_model;
+        
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                // Virifica las columnas donde se encuentran las fechas                
+                if (column == 7) {
+                    //Incializa las variables necesarias para el calculo
+                    long cantidad_dias = 0;
+                    String valor = table.getValueAt(row, column).toString();
+                    LocalDate fecha_sistema = LocalDate.now();      // Obtiene la fecha actual del sistema para hacer la comparacion
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
+                    LocalDate fecha_tabla = LocalDate.parse(valor,formatter);       // Aplica el formato que se declaro anteriormente
+                    cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);        // Compara las dos fechas para obtener la cantidad de dias entre estas dos
+
+                    // Esto es para que los ToolTip funcionen correctamente
+                    ToolTipManager.sharedInstance().setInitialDelay(0);
+                    ToolTipManager.sharedInstance().setDismissDelay(60000);
+
+                    // Verifica cuntos dias quedan para dar un color a las celdas
+                    if(cantidad_dias < 0){
+
+                        component.setBackground(Color.red);
+                        component.setForeground(Color.white);
+                        setToolTipText("Extracto Vencido");
+
+                    }else{
+
+                        component.setBackground(Color.white);
+                        component.setForeground(Color.black);
+                        setToolTipText("Quedan " + cantidad_dias + " días para que el documento se venza");
+
+                    }
+
+                }else{      // Deja las demas Filas y/o celdas por defecto
+
+                    component.setBackground(Color.white);
+                    component.setForeground(Color.black);
+                    setToolTipText(null);
+
+                }
+                
+                return component;
+            }
+        };
+
+        modelo = set_modelo_tablas(datos);
+        tab = new JTable(modelo);
+        tab.setDefaultRenderer(Object.class, renderer);     //Agrega el renderer personalizado realizado anteriormente
+        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tab.getTableHeader().setReorderingAllowed(false);
+        tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        add_mouse_listener(tab);
+        tab.setCellSelectionEnabled(true);
+        
+        // Configuarcion del tamaño de las columnas
+        clum_model = tab.getColumnModel();
+        clum_model.getColumn(0).setPreferredWidth(70);
+        clum_model.getColumn(1).setPreferredWidth(40);
+        clum_model.getColumn(2).setPreferredWidth(40);
+        clum_model.getColumn(3).setPreferredWidth(100);
+        clum_model.getColumn(4).setPreferredWidth(40);
+        clum_model.getColumn(5).setPreferredWidth(180);
+        
+
+        return tab;
+
     }
     private JPanel ver_extractos_mensuales(){
+        
+        configuracion_panel_busqueda();
         JPanel panel = new JPanel(new BorderLayout());
-        JButton boton = new JButton("Abrir");
-        boton.addActionListener(accion ->{
-            new Extracto_mensual(this, url).setVisible(true);
+        JScrollPane scroll = new JScrollPane();
+        String[][] datos = null;
+        
+        // Inicializaicon pop_menu
+        config_pop_menu_extractos();
+
+        // Obteniendo datos de la base de datos
+        base = new Base(url);
+        try{
+            datos = base.consultar_vw_extracto_mensual("");
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }
+        
+        base.close();
+
+        // Configuracion de la visualizacion y opciones de la tabla
+
+        tabla = set_tabla_extractos_mensuales(datos);
+        tabla.setComponentPopupMenu(pop_menu);
+        scroll.setViewportView(tabla);
+
+        // Configuracion de los item 
+        item_actualizar.addActionListener(accion->{
+            int select_row = tabla.getSelectedRow();
+
+            // actualizar_extracto
+            new Insertar_extracto_mensual(this, url).setVisible(true);
+            base = new Base(url);
+                try{
+                    tabla = set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                base.close();
+            
+
         });
-        panel.add(boton, BorderLayout.CENTER);
+        item_adicionar.addActionListener(accion ->{
+
+            new Insertar_extracto_mensual(this, url).setVisible(true);
+            base = new Base(url);
+                try{
+                    tabla = set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+                    
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                base.close();
+        });
+
+        item_exportar.addActionListener(accion ->{
+            int select_row = tabla.getSelectedRow();
+
+            Insertar_extracto_mensual.generar_extracto_excel((String) tabla.getValueAt(select_row, 0),Integer.parseInt((String) tabla.getValueAt(select_row, 1)),this, url);
+            base = new Base(url);
+            try{
+                tabla = set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                tabla.setComponentPopupMenu(pop_menu);
+                scroll.setViewportView(tabla );
+                
+            }catch(SQLException ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            base.close();
+
+        });
+        // item_eliminar.addActionListener(accion ->{
+            
+        //     int number = tabla.getSelectedRow();
+        //     String id = "" + tabla.getValueAt(number, 0);
+        //     String cat = "" + tabla.getValueAt(number, 2);
+        //     number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar al conductor:\n"+ id, "eliminar", JOptionPane.OK_CANCEL_OPTION);
+        //     if(number == 0){
+        //         base = new Base(url);
+        //         try{
+        //             number = Integer.parseInt(base.consultar_uno_categoria(cat) [0]);
+        //             base.eliminar_licencia(id, number);
+        //         }catch(SQLException ex){
+        //             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        //         }
+                
+        //         base.close();
+        //         JOptionPane.showMessageDialog(this, "Conductor eliminada correctamente");
+        //         boton_conductores.doClick();
+        //     }
+                  
+        // });
+
+
+
+        JFrame padre = this;
+        
+        text_busqueda.addKeyListener(new KeyAdapter() {
+            
+            public void keyPressed(KeyEvent evt) {
+
+                String variable_auxiliar = text_busqueda.getText();
+                
+                if(evt.getExtendedKeyCode() != 8){
+                    variable_auxiliar = variable_auxiliar.concat(evt.getKeyChar()+"");
+                }else{
+                    variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
+                }
+
+                base = new Base(url);
+                try{
+                    tabla = set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(variable_auxiliar));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                base.close();
+
+            }
+        });
+
+        panel.add(panel_busqueda, BorderLayout.NORTH);
+        panel.add(scroll, BorderLayout.CENTER);
+
         return panel;
-    };
+
+    }
 
     public static JTable set_tabla_extractos_ocasionales(){
         return new JTable();
