@@ -2847,15 +2847,21 @@ public class Base extends Base_datos{
     public int insertar_extracto_mensual(String placa, int contrato, String fecha_inicial, String fecha_final, int origen, int destino)throws SQLException{
 
         int consecutivo = 0;
+        String accion_auxiliar;
         insertar = "insert into extracto_mensual values (?,?,?,?,?,?,?)";
+        try{
 
+        
         state = coneccion.createStatement();
-        resultado = state.executeQuery("select max(ext_consecutivo) from extracto_mensual where veh_placa like \'" + placa +"\' group by(veh_placa)");
+        resultado = state.executeQuery("select con_numero from consecutivo_extracto_mensual where con_placa = \'"+placa+"\'");
         if(resultado.next()){
             consecutivo = resultado.getInt(1);
         }
+
+        accion_auxiliar = (consecutivo == 0)? "insert into consecutivo_extracto_mensual (con_numero, con_placa) values (?,?)":"update consecutivo_extracto_mensual set con_numero = ? where con_placa = ?";
         consecutivo +=1;
 
+        coneccion.setAutoCommit(false);
         pstate = coneccion.prepareStatement(insertar);
 
         pstate.setString(1, placa);
@@ -2868,8 +2874,39 @@ public class Base extends Base_datos{
 
         pstate.executeUpdate();
 
+        pstate = coneccion.prepareStatement(accion_auxiliar);
+
+        pstate.setInt(1, consecutivo);
+        pstate.setString(2, placa);
+
+        pstate.executeUpdate();
+        
+        coneccion.commit();
+        }catch(SQLException e){
+            coneccion.rollback();
+            SQLException ex = new SQLException("No fue posible insertar el extracto");
+            throw ex;
+        }finally{
+            coneccion.setAutoCommit(true);
+        }
         return consecutivo;
     }
+
+    public void eliminar_extracto_mensual(String placa, int consecutivo)throws SQLException{
+
+        borrar = "delete from extracto_mensual where veh_placa = ? and ext_consecutivo = ?";
+
+        pstate = coneccion.prepareStatement(borrar);
+
+        pstate.setString(1, placa);
+        pstate.setInt(2, consecutivo);
+
+        pstate.executeUpdate();
+
+
+    }
+
+
     // metodos relacionados con contratos mensuales
 
     public String[] consultar_uno_contrato_mensual(int contrato)throws SQLException{
@@ -2953,6 +2990,7 @@ public class Base extends Base_datos{
 
     }
 
+    
     // Funcion para consultar los datos del vehiuclo para el extracto
 
     public String[] consultar_uno_vw_vehiculo_extracto(String placa)throws SQLException{

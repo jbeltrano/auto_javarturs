@@ -640,10 +640,22 @@ public class Principal extends JFrame{
 
             panel_principal2.remove(panel_informacion);
             
-            
             panel_informacion = ver_extractos_mensuales();
             
-
+            if(tabla.getRowCount() == 0 ){
+                JButton boton_auxiliar = new JButton("Agregar");
+                pan = new JPanel(null);
+                boton_auxiliar.setBounds(10,10,100,20);
+                boton_auxiliar.addActionListener(ac ->{
+                    
+                    new Insertar_extracto_mensual(this, url).setVisible(true);
+                    panel_principal2.remove(pan);
+                    boton_extractos_mensuales.doClick();
+                });
+                pan.add(boton_auxiliar);
+                pan.setPreferredSize(new Dimension(120,40));
+                panel_principal2.add(pan,BorderLayout.EAST);
+            }
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.repaint();
             panel_principal2.revalidate();
@@ -1975,27 +1987,33 @@ public class Principal extends JFrame{
             base.close();
 
         });
-        // item_eliminar.addActionListener(accion ->{
+        item_eliminar.addActionListener(accion ->{
             
-        //     int number = tabla.getSelectedRow();
-        //     String id = "" + tabla.getValueAt(number, 0);
-        //     String cat = "" + tabla.getValueAt(number, 2);
-        //     number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar al conductor:\n"+ id, "eliminar", JOptionPane.OK_CANCEL_OPTION);
-        //     if(number == 0){
-        //         base = new Base(url);
-        //         try{
-        //             number = Integer.parseInt(base.consultar_uno_categoria(cat) [0]);
-        //             base.eliminar_licencia(id, number);
-        //         }catch(SQLException ex){
-        //             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-        //         }
+            int number = tabla.getSelectedRow();
+            String placa = "" + tabla.getValueAt(number, 0);
+            String consecutivo = "" + tabla.getValueAt(number, 1);
+            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el extracto " + consecutivo + "\ndel vehiculo "+placa,  "eliminar", JOptionPane.OK_CANCEL_OPTION);
+            if(number == 0){
+                base = new Base(url);
+                try{
+                    // realizando la eliminacion del registro
+                    base.eliminar_extracto_mensual(placa, Integer.parseInt(consecutivo));
+
+                    // vuelve y carga los valores de la tabla
+                    tabla = set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }
                 
-        //         base.close();
-        //         JOptionPane.showMessageDialog(this, "Conductor eliminada correctamente");
-        //         boton_conductores.doClick();
-        //     }
+                base.close();
+                JOptionPane.showMessageDialog(this, "Extracto eliminado correctamente");
+
+            }
                   
-        // });
+        });
 
 
 

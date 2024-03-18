@@ -319,6 +319,13 @@ insert into vehiculo values ('SXC228',3,2013,'PALITO','PALITO',1200,'BLANCO',2,'
 INSERT INTO DOCUMENTO VALUES ('SXT705',1234,'2024-2-4','2024-1-30','2024-10-18','2024-10-18',308079,'2022-7-18');
 INSERT INTO DOCUMENTO VALUES ('SXT696',2345,'2024-2-8','2024-2-25','2024-10-18','2024-10-18',401199,'2025-11-27');
 
+-- Esta tabla es auxiliar para tener el ultimo numero interno
+-- un extracto mensual
+create table consecutivo_extracto_mensual(
+    con_placa text not null primary key,
+    con_numero integer not null
+);
+
 create view vw_vehiculo as 
     select veh_placa, cla_nombre, veh_modelo, veh_marca, veh_linea, veh_cilindrada, veh_color,ser_nombre, veh_combustible, veh_tipo_carroceria, veh_numero_motor, veh_numero_chasis,veh_cantidad,tip_nombre,per_id, per_nombre 
     from vehiculo join persona on per_id = veh_propietario natural join clase_vehiculo natural join tipo_id natural join servicio;
