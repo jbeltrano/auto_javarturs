@@ -15,6 +15,8 @@ import Front.Vehiculos.Insertar_documento_vehiculo;
 import Front.Vehiculos.Insertar_tipo_vehiculo;
 import Front.Vehiculos.Insertar_vehiculo_conductor;
 import Front.Vehiculos.Insertar_vehiculos;
+import Utilidades.Key_adapter;
+
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTable;
@@ -881,30 +883,22 @@ public class Principal extends JFrame{
         });
 
         Component padre = this;
-        text_busqueda.addKeyListener(new KeyAdapter() {
-            
-            public void keyPressed(KeyEvent evt) {
-
-                String variable_auxiliar = text_busqueda.getText();
-                
-                if(evt.getExtendedKeyCode() != 8){
-                    variable_auxiliar = variable_auxiliar.concat(evt.getKeyChar()+"");
-                }else{
-                    variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
-                }
-
+        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()) {
+           
+            @Override
+            public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_documentos_vehiculos(base.consultar_documentos(variable_auxiliar));
+                    tabla = set_tabla_documentos_vehiculos(base.consultar_documentos(get_text()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla);
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 base.close();
-
             }
         });
+        
 
         panel.add(panel_busqueda, BorderLayout.NORTH);
         panel.add(scroll,BorderLayout.CENTER);
@@ -1057,30 +1051,21 @@ public class Principal extends JFrame{
 
         JFrame padre = this;
         
-        text_busqueda.addKeyListener(new KeyAdapter() {
-            
-            public void keyPressed(KeyEvent evt) {
-
-                String variable_auxiliar = text_busqueda.getText();
-                
-                if(evt.getExtendedKeyCode() != 8){
-                    variable_auxiliar = variable_auxiliar.concat(evt.getKeyChar()+"");
-                }else{
-                    variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
-                }
-
+        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()) {
+            @Override
+            public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(variable_auxiliar));
+                    tabla = set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(get_text()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla);
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 base.close();
-
             }
         });
+        
 
         panel.add(panel_busqueda, BorderLayout.NORTH);
         panel.add(scroll,BorderLayout.CENTER);
@@ -1259,31 +1244,22 @@ public class Principal extends JFrame{
         });
 
         JFrame padre = this;
-        
-        text_busqueda.addKeyListener(new KeyAdapter() {
-            
-            public void keyPressed(KeyEvent evt) {
 
-                String variable_auxiliar = text_busqueda.getText();
-                
-                if(evt.getExtendedKeyCode() != 8){
-                    variable_auxiliar = variable_auxiliar.concat(evt.getKeyChar()+"");
-                }else{
-                    variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
-                }
-
+        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()) {
+            @Override
+            public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_vehiculo(base.consultar_vehiculo(variable_auxiliar));
+                    tabla = set_tabla_vehiculo(base.consultar_vehiculo(get_text()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 base.close();
-
             }
         });
+        
 
         panel.add(panel_busqueda, BorderLayout.NORTH);
         panel.add(scroll, BorderLayout.CENTER);
@@ -1419,30 +1395,22 @@ public class Principal extends JFrame{
 
         JFrame padre = this;
         
-        text_busqueda.addKeyListener(new KeyAdapter() {
-            
-            public void keyPressed(KeyEvent evt) {
-
-                String variable_auxiliar = text_busqueda.getText();
-                
-                if(evt.getExtendedKeyCode() != 8){
-                    variable_auxiliar = variable_auxiliar.concat(evt.getKeyChar()+"");
-                }else{
-                    variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
-                }
-
+        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()) {
+        
+            @Override
+            public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_ciudad(base.consultar_ciudades(variable_auxiliar));
+                    tabla = set_tabla_ciudad(base.consultar_ciudades(get_text()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 base.close();
-
             }
         });
+        
 
         panel.add(panel_busqueda, BorderLayout.NORTH);
         panel.add(scroll, BorderLayout.CENTER);
@@ -1497,30 +1465,22 @@ public class Principal extends JFrame{
 
         JFrame padre = this;
         
-        text_busqueda.addKeyListener(new KeyAdapter() {
+        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()) {
             
-            public void keyPressed(KeyEvent evt) {
-
-                String variable_auxiliar = text_busqueda.getText();
-                
-                if(evt.getExtendedKeyCode() != 8){
-                    variable_auxiliar = variable_auxiliar.concat(evt.getKeyChar()+"");
-                }else{
-                    variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
-                }
-
+            @Override
+            public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_departamento(base.consultar_departamentos(variable_auxiliar));
+                    tabla = set_tabla_departamento(base.consultar_departamentos(get_text()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 base.close();
-
             }
         });
+        
 
         panel.add(panel_busqueda, BorderLayout.NORTH);
         panel.add(scroll, BorderLayout.CENTER);
@@ -1626,31 +1586,21 @@ public class Principal extends JFrame{
         });
 
         JFrame padre = this;
-        
-        text_busqueda.addKeyListener(new KeyAdapter() {
-            
-            public void keyPressed(KeyEvent evt) {
-
-                String variable_auxiliar = text_busqueda.getText();
-                
-                if(evt.getExtendedKeyCode() != 8){
-                    variable_auxiliar = variable_auxiliar.concat(evt.getKeyChar()+"");
-                }else{
-                    variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
-                }
-
+        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()) {
+            @Override
+            public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_personas(base.consultar_persona(variable_auxiliar));
+                    tabla = set_tabla_personas(base.consultar_persona(get_text()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 base.close();
-
             }
         });
+        
 
         panel.add(panel_busqueda, BorderLayout.NORTH);
         panel.add(scroll, BorderLayout.CENTER);
@@ -1804,22 +1754,13 @@ public class Principal extends JFrame{
         });
 
         JFrame padre = this;
-        
-        text_busqueda.addKeyListener(new KeyAdapter() {
-            
-            public void keyPressed(KeyEvent evt) {
-
-                String variable_auxiliar = text_busqueda.getText();
-                
-                if(evt.getExtendedKeyCode() != 8){
-                    variable_auxiliar = variable_auxiliar.concat(evt.getKeyChar()+"");
-                }else{
-                    variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
-                }
+        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()){
+            @Override
+            public void accion(){
 
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_conductores(base.consultar_licencia(variable_auxiliar));
+                    tabla = set_tabla_conductores(base.consultar_licencia(get_text()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -1829,6 +1770,7 @@ public class Principal extends JFrame{
 
             }
         });
+       
 
         panel.add(panel_busqueda, BorderLayout.NORTH);
         panel.add(scroll, BorderLayout.CENTER);
@@ -2019,30 +1961,24 @@ public class Principal extends JFrame{
 
         JFrame padre = this;
         
-        text_busqueda.addKeyListener(new KeyAdapter() {
+        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()) {
             
-            public void keyPressed(KeyEvent evt) {
-
-                String variable_auxiliar = text_busqueda.getText();
-                
-                if(evt.getExtendedKeyCode() != 8){
-                    variable_auxiliar = variable_auxiliar.concat(evt.getKeyChar()+"");
-                }else{
-                    variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
-                }
+            @Override
+            public void accion(){
 
                 base = new Base(url);
-                try{
-                    tabla = set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(variable_auxiliar));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                base.close();
+                    try {
+                        tabla = set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(get_text()));
+                        tabla.setComponentPopupMenu(pop_menu);
+                        scroll.setViewportView(tabla);
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                    base.close();
 
             }
         });
+        
 
         panel.add(panel_busqueda, BorderLayout.NORTH);
         panel.add(scroll, BorderLayout.CENTER);

@@ -59,7 +59,7 @@ public abstract class Modal_documento extends JDialog{
             // Modificando como tal el documento
             extracto.set_numero_principal(año, datos_extracto[2], datos_extracto[1]);
             extracto.set_contrato(datos_extracto[2]);
-            extracto.set_contratante(datos_contratante[3], datos_contratante[2], datos_contratante[1]);
+            extracto.set_contratante(datos_contratante[3], datos_contratante[1], datos_contratante[2]);
             extracto.set_tipo_contrato(Extracto.TIPO_CONTRATO_EMPRESARIAL);
             extracto.set_origen_destino(datos_origen[1], datos_origen[2], datos_destino[1], datos_destino[2]);
             extracto.set_fecha_inicial(datos_extracto[3]);

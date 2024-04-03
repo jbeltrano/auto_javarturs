@@ -377,8 +377,8 @@ create view vw_contratante as
 
 create view vw_contrato_mensual as
     select con_id,
-    con_contratante,
     con_tipo_id,
+    con_contratante,
     con_nombre,
     con_responsable,
     res_nombre,
@@ -387,8 +387,8 @@ create view vw_contrato_mensual as
     from contrato_mensual natural join vw_contratante;
 
 create view vw_extracto_mensual as
-    select veh_placa, ext_consecutivo, con_id, con_contratante, 
-    con_tipo_id, con_nombre, 
+    select veh_placa, ext_consecutivo, con_id, con_tipo_id, 
+    con_contratante, con_nombre, 
     ext_fecha_inicial, ext_fecha_final, 
     ciu_nombre as ciudad_origen, 
     dep_nombre as departamento_origen, 
