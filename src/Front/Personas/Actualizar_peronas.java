@@ -47,13 +47,14 @@ public class Actualizar_peronas extends Insertar_persona{
         combo_departamento.setSelectedItem(dato[5]);
         combo_municipio.setSelectedItem(dato[4]);
         text_direccion.setText(dato[6]);
+        text_correo.setText(dato[7]);
 
         // reconfigurando el boton
         jPanel1.remove(boton_guardar);
         boton_guardar = new JButton();
         boton_guardar.setText("Guardar");
         jPanel1.add(boton_guardar);
-        boton_guardar.setBounds(17, 200, 100, 23);
+        boton_guardar.setBounds(17, 250, 100, 23);
         boton_guardar.addActionListener(accion ->{
             boolean band = true;
             String mostrar = "Los campos:\n";
@@ -89,7 +90,7 @@ public class Actualizar_peronas extends Insertar_persona{
                     base = new Base(url);
                     try {
                         ciudad = Integer.parseInt(base.consultar_uno_ciudad((String)combo_municipio.getSelectedItem())[0]);
-                        base.actualizar_persona(text_documento.getText(), tipo_documento, text_nombre.getText(), text_celular.getText(), ciudad, text_direccion.getText());
+                        base.actualizar_persona(text_documento.getText(), tipo_documento, text_nombre.getText(), text_celular.getText(), ciudad, text_direccion.getText(), text_correo.getText());
                         base.close();
                         JOptionPane.showMessageDialog(this, "Persona actualizada correctamente");
                         this.setVisible(false);

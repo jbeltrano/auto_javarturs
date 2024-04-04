@@ -26,19 +26,21 @@ public class Insertar_persona extends Modales_personas{
     private JLabel jLabel5;
     private JLabel jLabel6;
     private JLabel jLabel7;
+    private JLabel label_correo;
     protected JPanel jPanel1;
     protected JTextField text_celular;
     protected JTextField text_direccion;
     protected JTextField text_documento;
     protected JTextField text_nombre;
+    protected JTextField text_correo;
 
     public Insertar_persona(JDialog padre, String url){
-        super(padre,url,new Dimension(550,300));
+        super(padre,url,new Dimension(550,320));
         setVisible(true);
     }
 
     public Insertar_persona(JFrame padre, String url){
-        super(padre,url,new Dimension(550,300));
+        super(padre,url,new Dimension(550,320));
 
     }
     
@@ -61,6 +63,8 @@ public class Insertar_persona extends Modales_personas{
         jLabel7 = new JLabel();
         text_direccion = new JTextField();
         boton_guardar = new JButton();
+        label_correo = new JLabel();
+        text_correo = new JTextField();
 
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -145,9 +149,17 @@ public class Insertar_persona extends Modales_personas{
         jPanel1.add(text_direccion);
         text_direccion.setBounds(168, 146, 226, 22);
 
+        label_correo.setText("Correo Electronico");
+        label_correo.setBounds(17,186,120,20);
+        jPanel1.add(label_correo);
+
+        text_correo.setText("");
+        text_correo.setBounds(17,208,250,22);
+        jPanel1.add(text_correo);
+
         boton_guardar.setText("Guardar");
         jPanel1.add(boton_guardar);
-        boton_guardar.setBounds(17, 200, 100, 23);
+        boton_guardar.setBounds(17, 250, 100, 23);
         boton_guardar.addActionListener(accion ->{
             boolean band = true;
             String mostrar = "Los campos:\n";
@@ -170,6 +182,10 @@ public class Insertar_persona extends Modales_personas{
                 band = false;
                 mostrar.concat("Direccion\n");
             }
+            if(text_direccion.getText().equals("")){
+                band = false;
+                mostrar.concat("Correo\n");
+            }
             mostrar.concat("Son Obligatorios.");
 
             if(!band){
@@ -183,7 +199,7 @@ public class Insertar_persona extends Modales_personas{
                     base = new Base(url);
                     try {
                         ciudad = Integer.parseInt(base.consultar_uno_ciudad((String)combo_municipio.getSelectedItem())[0]);
-                        base.insertar_persona(text_documento.getText(),tipo_documento,text_nombre.getText(),text_celular.getText(),ciudad,text_direccion.getText());
+                        base.insertar_persona(text_documento.getText(),tipo_documento,text_nombre.getText(),text_celular.getText(),ciudad,text_direccion.getText(), text_correo.getText());
                         base.close();
                         JOptionPane.showMessageDialog(this, "Persona Insertada correctamente");
                         this.setVisible(false);

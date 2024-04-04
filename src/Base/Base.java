@@ -2,6 +2,8 @@ package Base;
 
 import java.util.Vector;
 
+import org.apache.poi.sl.draw.geom.SqrtExpression;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
@@ -809,10 +811,11 @@ public class Base extends Base_datos{
     }
 
     // Metodos para insertar, eliminar, actualizar y consultar PERSONA
-    public void insertar_persona(String per_id, int tip_id, String per_nombre, String per_celular, int ciu_id, String per_direccion)throws SQLException{
-        insertar = "insert into persona values (?,?,?,?,?,?)";
+    public void insertar_persona(String per_id, int tip_id, String per_nombre, String per_celular, int ciu_id, String per_direccion, String per_correo)throws SQLException{
+        insertar = "insert into persona values (?,?,?,?,?,?,?)";
         per_nombre = Capitalizar_Strings.capitalizarNombre(per_nombre);
         per_direccion = Capitalizar_Strings.capitalizar_primera(per_direccion);
+        per_correo = per_correo.toLowerCase();
         
         try{
             pstate = coneccion.prepareStatement(insertar);
@@ -823,6 +826,7 @@ public class Base extends Base_datos{
             pstate.setString(4, per_celular);
             pstate.setInt(5, ciu_id);
             pstate.setString(6, per_direccion);
+            pstate.setString(7, per_correo);
 
             pstate.executeUpdate();
         }catch(SQLException ex){
@@ -847,8 +851,8 @@ public class Base extends Base_datos{
         }
     }
 
-    public void actualizar_persona(String per_id, int tip_id, String per_nombre, String per_celular, int ciu_id, String per_direccion) throws SQLException{
-        actualizar = "update persona set  tip_id = ?, per_nombre = ?, per_celular = ?, ciu_id = ?, per_direccion = ? where per_id = ?";
+    public void actualizar_persona(String per_id, int tip_id, String per_nombre, String per_celular, int ciu_id, String per_direccion, String per_correo) throws SQLException{
+        actualizar = "update persona set  tip_id = ?, per_nombre = ?, per_celular = ?, ciu_id = ?, per_direccion = ?, per_correo = ? where per_id = ?";
 
         per_nombre = Capitalizar_Strings.capitalizarNombre(per_nombre);
         per_direccion = Capitalizar_Strings.capitalizar_primera(per_direccion);
@@ -862,7 +866,8 @@ public class Base extends Base_datos{
             pstate.setString(3, per_celular);
             pstate.setInt(4, ciu_id);
             pstate.setString(5, per_direccion);
-            pstate.setString(6, per_id);
+            pstate.setString(6, per_correo);
+            pstate.setString(7, per_id);
 
             pstate.executeUpdate();
         }catch(SQLException ex){
@@ -891,7 +896,7 @@ public class Base extends Base_datos{
                 return datos;
             }
 
-            datos = new String[cantidad+1][7];
+            datos = new String[cantidad+1][8];
 
             resultado = state.executeQuery(consultar);
             
@@ -902,6 +907,7 @@ public class Base extends Base_datos{
             datos[0][4] = "CIUDAD";
             datos[0][5] = "DEPARTAMENTO";
             datos[0][6] = "DIRECCION";
+            datos[0][7] = "CORREO ELECTRONICO";
 
             while(resultado.next()){
 
@@ -912,6 +918,7 @@ public class Base extends Base_datos{
                 datos[i][4] = resultado.getString("ciu_nombre");
                 datos[i][5] = resultado.getString("dep_nombre");
                 datos[i][6] = resultado.getString("per_direccion");
+                datos[i][7] = resultado.getString("per_correo");
                 
                 i++;
             }
@@ -947,7 +954,7 @@ public class Base extends Base_datos{
                 return datos;
             }
 
-            datos = new String[cantidad+1][7];
+            datos = new String[cantidad+1][8];
 
             resultado = state.executeQuery(consultar);
             
@@ -958,6 +965,7 @@ public class Base extends Base_datos{
             datos[0][4] = "CIUDAD";
             datos[0][5] = "DEPARTAMENTO";
             datos[0][6] = "DIRECCION";
+            datos[0][7] = "CORREO ELECTRONICO";
 
             while(resultado.next()){
 
@@ -968,6 +976,7 @@ public class Base extends Base_datos{
                 datos[i][4] = resultado.getString("ciu_nombre");
                 datos[i][5] = resultado.getString("dep_nombre");
                 datos[i][6] = resultado.getString("per_direccion");
+                datos[i][7] = resultado.getString("per_correo");
                 
                 i++;
             }
@@ -981,13 +990,14 @@ public class Base extends Base_datos{
 
     public String[] consultar_uno_persona(String buscar)throws SQLException{
 
-        dato = new String[7];
+        dato = new String[8];
         dato[0] = null;
         dato[1] = null;
         dato[3] = null;
         dato[4] = null;
         dato[5] = null;
         dato[6] = null;
+        dato[7] = null;
 
         consultar = "select * from vw_persona where per_id like \'" + buscar +"\'";
 
@@ -1005,6 +1015,7 @@ public class Base extends Base_datos{
                 dato[4] = resultado.getString("ciu_nombre");
                 dato[5] = resultado.getString("dep_nombre");
                 dato[6] = resultado.getString("per_direccion");
+                dato[7] = resultado.getString("per_correo");
                 
             }
             
@@ -3015,6 +3026,105 @@ public class Base extends Base_datos{
         return dato;
     }
 
+    // Funciones para conlutar actualizar y eliminar contratantes
+    
+    public void insertar_contratante(String contratante, String responsable)throws SQLException{
+
+        insertar = "insert into contratante values (?,?)";
+
+        pstate = coneccion.prepareStatement(insertar);
+
+        pstate.setString(1, contratante);
+        pstate.setString(2, responsable);
+
+        pstate.executeUpdate();
+    }
+
+    public String[][] consultar_contratante(String buscar) throws SQLException{
+
+        datos = new String[1][7];
+        int cantidad = 0;
+        int i = 1;
+
+        consultar = "select * from vw_contratante where con_contratante like \'" + buscar + "%\' or con_nombre like \'%" + buscar + "%\'";
+
+        try{
+            
+            state = coneccion.createStatement();
+            resultado = state.executeQuery("select count(*) as total from vw_contratante where con_contratante like \'" + buscar + "%\' or con_nombre like \'%" + buscar + "%\'");
+            
+
+            if(resultado.next()){
+                cantidad = resultado.getInt(1);
+            }
+
+            if(cantidad == 0){
+                return datos;
+            }
+
+            datos = new String[cantidad+1][7];
+
+            resultado = state.executeQuery(consultar);
+            
+            datos[0][0] = "ID CONTRATANTE";
+            datos[0][1] = "TIPO ID CONT";
+            datos[0][2] = "NOMBRE CONTRATANTE";
+            datos[0][3] = "ID RESPONSABLE";
+            datos[0][4] = "NOMBRE RESPONSABLE";
+            datos[0][5] = "CELULAR RESPONSABLE";
+            datos[0][6] = "DIRECCION RESPONSABLE";
+            
+
+            while(resultado.next()){
+
+                datos[i][0] = resultado.getString(1);
+                datos[i][1] = resultado.getString(2);
+                datos[i][2] = resultado.getString(3);
+                datos[i][3] = resultado.getString(4);
+                datos[i][4] = resultado.getString(5);
+                datos[i][5] = resultado.getString(6);
+                datos[i][6] = resultado.getString(7);
+                
+                i++;
+            }
+
+        }catch(SQLException ex){
+            throw ex;
+        }
+
+        return datos;
+
+    }
+
+    public void eliminar_contratante(String id)throws SQLException{
+
+        borrar = "delete from contratante where con_contratante = ?";
+
+        try{
+
+            pstate = coneccion.prepareStatement(borrar);
+
+            pstate.setString(1, id);
+
+            pstate.executeUpdate();
+
+        }catch(SQLException ex){
+            throw ex;
+        }
+        
+    }
+
+    public void actualizar_contratante(String id, String dato)throws SQLException{
+
+        actualizar = "update contratante set con_responsable = ? where con_contratante = ?";
+
+        pstate = coneccion.prepareStatement(actualizar);
+
+        pstate.setString(1, dato);
+        pstate.setString(2, id);
+
+        pstate.executeUpdate();
+    }
     //
     // Hacer un metodo para limpiar las tablas cuando las llenen con datos vacios
 }

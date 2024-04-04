@@ -3,6 +3,8 @@ package Front;
 import Base.Base;
 import Front.Ciudades_departamentos.Actualizar_ciudad;
 import Front.Ciudades_departamentos.Insertar_ciudad;
+import Front.Extractos.Actualizar_contratante;
+import Front.Extractos.Insertar_contratante;
 import Front.Extractos.Insertar_extracto_mensual;
 import Front.Personas.Actualizar_conductor;
 import Front.Personas.Actualizar_peronas;
@@ -16,7 +18,6 @@ import Front.Vehiculos.Insertar_tipo_vehiculo;
 import Front.Vehiculos.Insertar_vehiculo_conductor;
 import Front.Vehiculos.Insertar_vehiculos;
 import Utilidades.Key_adapter;
-
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTable;
@@ -42,8 +43,6 @@ import java.awt.Desktop;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
 import java.net.URI;
 import java.sql.SQLException;
@@ -641,6 +640,9 @@ public class Principal extends JFrame{
         boton_extractos_mensuales.addActionListener(accion ->{
 
             panel_principal2.remove(panel_informacion);
+            if(panel_principal2.getComponentCount() > 2){
+                panel_principal2.remove(pan);
+            }
             
             panel_informacion = ver_extractos_mensuales();
             
@@ -663,13 +665,15 @@ public class Principal extends JFrame{
             panel_principal2.revalidate();
 
         });
-        // boton_extractos_mensuales.doClick();
+        
 
         boton_extractos_ocasionales.setBounds(10,40,120,20);
         boton_extractos_ocasionales.addActionListener(accion ->{
 
             panel_principal2.remove(panel_informacion);
-            
+            if(panel_principal2.getComponentCount() > 2){
+                panel_principal2.remove(pan);
+            }
             
             panel_informacion = ver_extractos_ocasionales();
 
@@ -681,6 +685,9 @@ public class Principal extends JFrame{
         boton_contratos_mensuales.setBounds(10, boton_extractos_ocasionales.getY() + boton_extractos_ocasionales.getHeight() + 10, 120, 20);
         boton_contratos_mensuales.addActionListener(accion ->{
             panel_principal2.remove(panel_informacion);
+            if(panel_principal2.getComponentCount() > 2){
+                panel_principal2.remove(pan);
+            }
             
             // cambiar para ver extractos mensuales
             panel_informacion = ver_extractos_ocasionales();
@@ -693,7 +700,9 @@ public class Principal extends JFrame{
         boton_contratos_ocasionales.setBounds(10, boton_contratos_mensuales.getY() + boton_contratos_mensuales.getHeight() + 10 ,120, 20);
         boton_contratos_ocasionales.addActionListener(accion ->{
             panel_principal2.remove(panel_informacion);
-            
+            if(panel_principal2.getComponentCount() > 2){
+                panel_principal2.remove(pan);
+            }
             // cambiar para ver extractos ocasionales
             panel_informacion = ver_extractos_ocasionales();
 
@@ -705,9 +714,28 @@ public class Principal extends JFrame{
         boton_contratante.setBounds(10, boton_contratos_ocasionales.getY() + boton_contratos_ocasionales.getHeight() + 10 ,120, 20);
         boton_contratante.addActionListener(accion ->{
             panel_principal2.remove(panel_informacion);
+            if(panel_principal2.getComponentCount() > 2){
+                panel_principal2.remove(pan);
+            }
+            
             
             // cambiar para ver ver contratatnes
-            panel_informacion = ver_extractos_ocasionales();
+            panel_informacion = ver_contratante();
+
+            if(tabla.getRowCount() == 0 ){
+                JButton boton_auxiliar = new JButton("Agregar");
+                pan = new JPanel(null);
+                boton_auxiliar.setBounds(10,10,100,20);
+                boton_auxiliar.addActionListener(ac ->{
+                    
+                    new Insertar_contratante(this, url).setVisible(true);
+                    panel_principal2.remove(pan);
+                    boton_contratante.doClick();
+                });
+                pan.add(boton_auxiliar);
+                pan.setPreferredSize(new Dimension(120,40));
+                panel_principal2.add(pan,BorderLayout.EAST);
+            }
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.repaint();
@@ -1513,9 +1541,8 @@ public class Principal extends JFrame{
         clum_model.getColumn(4).setPreferredWidth(70);
         clum_model.getColumn(5).setPreferredWidth(60);
         clum_model.getColumn(6).setPreferredWidth(150);
+        clum_model.getColumn(7).setPreferredWidth(220);
 
-        
-        
 
         return tab;
 
@@ -1994,6 +2021,141 @@ public class Principal extends JFrame{
         return new JPanel();
     }
 
+    // Metodos relacionados con contratante
+    public static JTable set_tabla_contratante(String[][] datos){
+        
+        JTable tab = new JTable();
+        DefaultTableModel modelo; 
+        TableColumnModel clum_model;
+
+        modelo = set_modelo_tablas(datos);
+        tab = new JTable(modelo);
+        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tab.getTableHeader().setReorderingAllowed(false);
+        tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        add_mouse_listener(tab);
+        tab.setCellSelectionEnabled(true);
+        
+        // Configuarcion del tamaño de las columnas
+        clum_model = tab.getColumnModel();
+        clum_model.getColumn(0).setPreferredWidth(100);
+        clum_model.getColumn(1).setPreferredWidth(40);
+        clum_model.getColumn(2).setPreferredWidth(200);
+        clum_model.getColumn(3).setPreferredWidth(100);
+        clum_model.getColumn(4).setPreferredWidth(200);
+        clum_model.getColumn(5).setPreferredWidth(100);
+        clum_model.getColumn(6).setPreferredWidth(180);
+        
+
+        return tab;
+
+    }
+
+    private JPanel ver_contratante(){
+        
+        configuracion_panel_busqueda();
+        JPanel panel = new JPanel(new BorderLayout());
+        JScrollPane scroll = new JScrollPane();
+        String[][] datos = null;
+        
+        // Inicializaicon pop_menu
+        config_pop_menu();
+
+        // Obteniendo datos de la base de datos
+        base = new Base(url);
+        try{
+            datos = base.consultar_contratante("");
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }
+        
+        base.close();
+
+        // Configuracion de la visualizacion y opciones de la tabla
+
+        tabla = set_tabla_contratante(datos);
+        tabla.setComponentPopupMenu(pop_menu);
+        scroll.setViewportView(tabla);
+
+        // Configuracion de los item 
+        item_actualizar.addActionListener(accion->{
+            int select_row = tabla.getSelectedRow();
+
+            
+            new Actualizar_contratante(this, url,(String) tabla.getValueAt(select_row, 0)).setVisible(true);
+            base = new Base(url);
+                try{
+                    tabla = set_tabla_contratante(base.consultar_contratante(text_busqueda.getText()));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            base.close();
+
+        });
+        item_adicionar.addActionListener(accion ->{
+
+            new Insertar_contratante(this, url).setVisible(true);
+
+            base = new Base(url);
+                try{
+                    tabla = set_tabla_contratante(base.consultar_contratante(text_busqueda.getText()));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            base.close();
+
+        });
+
+        item_eliminar.addActionListener(accion ->{
+            
+            int number = tabla.getSelectedRow();
+            String id = "" + tabla.getValueAt(number, 0);
+            String nombre = "" + tabla.getValueAt(number, 2);
+            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar al contratante:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
+            if(number == 0){
+                base = new Base(url);
+                try{
+                    base.eliminar_contratante(id);
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }
+                
+                base.close();
+                JOptionPane.showMessageDialog(this, "Contratante eliminado correctamente");
+                boton_contratante.doClick();
+            }
+                  
+        });
+
+        JFrame padre = this;
+        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()){
+            @Override
+            public void accion(){
+
+                base = new Base(url);
+                try{
+                    tabla = set_tabla_contratante(base.consultar_contratante(get_text()));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                base.close();
+
+            }
+        });
+       
+
+        panel.add(panel_busqueda, BorderLayout.NORTH);
+        panel.add(scroll, BorderLayout.CENTER);
+
+        return panel;
+
+    }
 
     // Metodos Auxiliares
     private void config_pop_menu(){

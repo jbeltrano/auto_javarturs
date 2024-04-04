@@ -1,7 +1,6 @@
 package Front.Personas;
 
 import java.awt.Dimension;
-
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import Base.Base;

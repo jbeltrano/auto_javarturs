@@ -114,14 +114,15 @@ create table persona(
     per_celular text not null,
     ciu_id integer not null,
     per_direccion text not null,
+    per_correo text,
     foreign key (tip_id) references tipo_id(tip_id),
     foreign key (ciu_id) references ciudad(ciu_id)
 );
 
-insert into persona values  ('1068972260',1,'Juan David Beltran Orjuela','3112342881',21,'Carrera 29B # 17 - 21'),
-                            ('80391277',1,'Javier Orlando Beltran Rodriguez','3144341010',21,'Carrera 29B # 17 - 21'),
-                            ('20384716',1,'Claudia Irene Orjuela Rincon','3132850641',21,'Carrera 29B # 17 - 21'),
-                            ('830085825',2,'Lineas Javarturs del Llano S.A.S.','3132526264',21,'Carrera 34A # 10B - 6');
+insert into persona values  ('1068972260',1,'Juan David Beltran Orjuela','3112342881',21,'Carrera 29B # 17 - 21', 'indefinido'),
+                            ('80391277',1,'Javier Orlando Beltran Rodriguez','3144341010',21,'Carrera 29B # 17 - 21', 'indefinido'),
+                            ('20384716',1,'Claudia Irene Orjuela Rincon','3132850641',21,'Carrera 29B # 17 - 21', 'indefinido'),
+                            ('830085825',2,'Lineas Javarturs del Llano S.A.S.','3132526264',21,'Carrera 34A # 10B - 6', 'lineasjavarturssas@gmail.com');
 
 
 create table tipo_empleado(
@@ -336,7 +337,7 @@ create view vw_vehiculo_sin_documento as
     where veh_placa not in (select veh_placa from documento);
 
 create view vw_persona as 
-    select per_id, tip_nombre,per_nombre, per_celular,ciu_nombre,dep_nombre,per_direccion 
+    select per_id, tip_nombre,per_nombre, per_celular,ciu_nombre,dep_nombre,per_direccion, per_correo
     from persona natural join tipo_id natural join ciudad natural join departamento;
 
 create view vw_persona_natural as
@@ -358,22 +359,22 @@ create view vw_licencia as
     from licencia natural join categoria natural join persona;
 
 create view vw_contratante as
-    select con_contratante,
+select con_contratante,
     tip_nombre as con_tipo_id,
     per_nombre as con_nombre,
     con_responsable,
     res_nombre,
     res_celular,
     res_direccion
-    from (contratante 
-    join persona on (per_id = con_contratante))
-    natural join tipo_id natural join 
-    (select con_responsable, 
-    per_nombre as res_nombre, 
-    per_celular as res_celular, 
-    per_direccion as res_direccion
-    from contratante 
-    join persona on (per_id = con_responsable));
+        from (contratante 
+            join persona on (per_id = con_contratante))
+            natural join tipo_id natural join 
+                (select con_responsable, 
+                per_nombre as res_nombre, 
+                per_celular as res_celular, 
+                per_direccion as res_direccion
+                    from contratante 
+                        join persona on (per_id = con_responsable) group by con_responsable);
 
 create view vw_contrato_mensual as
     select con_id,
