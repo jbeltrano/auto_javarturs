@@ -23,6 +23,8 @@ public class Actualizar_peronas extends Insertar_persona{
     private void set_componentes(){
 
         text_documento.setEnabled(false);
+        radio_contratante.setVisible(false);
+        label_contratante.setVisible(false);
 
         base = new Base(url);
 

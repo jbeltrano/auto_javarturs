@@ -7,6 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.GroupLayout;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JOptionPane;
 import java.sql.SQLException;
@@ -27,12 +28,14 @@ public class Insertar_persona extends Modales_personas{
     private JLabel jLabel6;
     private JLabel jLabel7;
     private JLabel label_correo;
+    protected JLabel label_contratante;
     protected JPanel jPanel1;
     protected JTextField text_celular;
     protected JTextField text_direccion;
     protected JTextField text_documento;
     protected JTextField text_nombre;
     protected JTextField text_correo;
+    protected JRadioButton radio_contratante;
 
     public Insertar_persona(JDialog padre, String url){
         super(padre,url,new Dimension(550,320));
@@ -65,6 +68,8 @@ public class Insertar_persona extends Modales_personas{
         boton_guardar = new JButton();
         label_correo = new JLabel();
         text_correo = new JTextField();
+        label_contratante = new JLabel();
+        radio_contratante = new JRadioButton();
 
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -157,6 +162,15 @@ public class Insertar_persona extends Modales_personas{
         text_correo.setBounds(17,208,250,22);
         jPanel1.add(text_correo);
 
+        label_contratante.setText("Marcar si es contratante");
+        label_contratante.setBounds(300,186,150,22);
+        jPanel1.add(label_contratante);
+
+        radio_contratante.setSelected(false);
+        radio_contratante.setBounds(295, 208, 20,20);
+        jPanel1.add(radio_contratante);
+
+
         boton_guardar.setText("Guardar");
         jPanel1.add(boton_guardar);
         boton_guardar.setBounds(17, 250, 100, 23);
@@ -168,29 +182,28 @@ public class Insertar_persona extends Modales_personas{
 
             if(text_documento.getText().equals("")){
                 band = false;
-                mostrar.concat("Documento\n");
+                mostrar = mostrar.concat("Documento\n");
             }
             if(text_nombre.getText().equals("")){
                 band = false;
-                mostrar.concat("Nombre o Razon Social\n");
+                mostrar = mostrar.concat("Nombre o Razon Social\n");
             }
             if(text_celular.getText().equals("")){
                 band = false;
-                mostrar.concat("Celular\n");
+                mostrar = mostrar.concat("Celular\n");
             }
             if(text_direccion.getText().equals("")){
                 band = false;
-                mostrar.concat("Direccion\n");
+                mostrar = mostrar.concat("Direccion\n");
             }
-            if(text_direccion.getText().equals("")){
-                band = false;
-                mostrar.concat("Correo\n");
+            if(text_correo.getText().equals("")){
+                text_correo.setText("Indefinido");
             }
-            mostrar.concat("Son Obligatorios.");
+            mostrar = mostrar.concat("Son Obligatorios.");
 
             if(!band){
                 JOptionPane.showMessageDialog(this, mostrar, "Error",JOptionPane.ERROR_MESSAGE);
-                this.setVisible(false);
+                
             }else{
                 try{
                     celular = Long.parseLong(text_celular.getText());
@@ -200,6 +213,9 @@ public class Insertar_persona extends Modales_personas{
                     try {
                         ciudad = Integer.parseInt(base.consultar_uno_ciudad((String)combo_municipio.getSelectedItem())[0]);
                         base.insertar_persona(text_documento.getText(),tipo_documento,text_nombre.getText(),text_celular.getText(),ciudad,text_direccion.getText(), text_correo.getText());
+                        if(radio_contratante.isSelected()){
+                            base.insertar_contratante(text_documento.getText(), text_documento.getText());
+                        }
                         base.close();
                         JOptionPane.showMessageDialog(this, "Persona Insertada correctamente");
                         this.setVisible(false);

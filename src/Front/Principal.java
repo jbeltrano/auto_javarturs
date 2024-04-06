@@ -5,6 +5,7 @@ import Front.Ciudades_departamentos.Actualizar_ciudad;
 import Front.Ciudades_departamentos.Insertar_ciudad;
 import Front.Extractos.Actualizar_contratante;
 import Front.Extractos.Insertar_contratante;
+import Front.Extractos.Insertar_contrato_mensual;
 import Front.Extractos.Insertar_extracto_mensual;
 import Front.Personas.Actualizar_conductor;
 import Front.Personas.Actualizar_peronas;
@@ -18,6 +19,8 @@ import Front.Vehiculos.Insertar_tipo_vehiculo;
 import Front.Vehiculos.Insertar_vehiculo_conductor;
 import Front.Vehiculos.Insertar_vehiculos;
 import Utilidades.Key_adapter;
+import Utilidades.Leer_link;
+
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTable;
@@ -44,11 +47,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.LinkedList;
+import java.awt.event.MouseAdapter;
 
 public class Principal extends JFrame{
     
@@ -126,7 +132,15 @@ public class Principal extends JFrame{
         panel_principal2 = new JPanel();
 
         // Configuraicon de los diferentes componentes
-        configuracion_barra_menu();
+        try{
+
+            configuracion_barra_menu();
+
+        }catch(IOException ex){
+            JOptionPane.showMessageDialog(this, "Error al cargar archivos importantes\n Error 5", "Error", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
+        }
+        
         configuracion_panel_secundario();
         configuracion_panel_pricipal2();
 
@@ -149,13 +163,23 @@ public class Principal extends JFrame{
      * @see JMenu
      * @see JMenuItem
      */
-    private void configuracion_barra_menu(){
+    private void configuracion_barra_menu()throws IOException{
+        // varibalesd especiales
+        LinkedList<String> cola = Leer_link.get_runt();
+        String link_porta = Leer_link.get_portafoleo();
+        String link_runt_principal = cola.poll();
+        String link_runt_vehiculo = cola.poll();
+        String link_runt_persona = cola.poll();
+        String link_runt_liquidacion = cola.poll();
+        String link_runt_pagos = cola.poll();
+
         // Configuracion de los diferentes componentes
         menu_1 = new JMenu("Ayuda");
         menu_2 = new JMenu("Inicio");
         menu_3 = new JMenu("Runt");
         menu_4 = new JMenu("Portafoleo");
-
+        
+        
 
         // Creacion de variables necesarias para el menu
         // Para ayuda
@@ -176,7 +200,8 @@ public class Principal extends JFrame{
         JMenuItem pag_principal = new JMenuItem("Pagina principal");
         pag_principal.addActionListener(accion ->{
             try{
-                Desktop.getDesktop().browse(new URI("https://www.runt.gov.co/"));
+                
+                Desktop.getDesktop().browse(new URI(link_runt_principal));
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
             }
@@ -185,7 +210,7 @@ public class Principal extends JFrame{
         JMenuItem pag_vehiculos = new JMenuItem("Vehiculos");
         pag_vehiculos.addActionListener(accion ->{
             try{
-                Desktop.getDesktop().browse(new URI("https://www.runt.gov.co/consultaCiudadana/#/consultaVehiculo"));
+                Desktop.getDesktop().browse(new URI(link_runt_vehiculo));
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
             }
@@ -194,7 +219,7 @@ public class Principal extends JFrame{
         JMenuItem pag_personas = new JMenuItem("Personas");
         pag_personas.addActionListener(accon ->{
             try{
-                Desktop.getDesktop().browse(new URI("https://www.runt.gov.co/consultaCiudadana/#/consultaPersona"));
+                Desktop.getDesktop().browse(new URI(link_runt_persona));
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
             }
@@ -204,7 +229,7 @@ public class Principal extends JFrame{
         pag_pagos.addActionListener(accion ->{
             try{
 
-                Desktop.getDesktop().browse(new URI("https:www.runt.gov.co/runt/apprnlt/consulta/portalpagos/#/solicitud"));
+                Desktop.getDesktop().browse(new URI(link_runt_pagos));
 
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0", "Error",JOptionPane.ERROR_MESSAGE);
@@ -215,7 +240,7 @@ public class Principal extends JFrame{
         pag_liquidacion_web.addActionListener(accion ->{
             try{
 
-                Desktop.getDesktop().browse(new URI("https://www.runt.gov.co/runt/appback/LiquidacionWeb/#/"));
+                Desktop.getDesktop().browse(new URI(link_runt_liquidacion));
 
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
@@ -226,7 +251,7 @@ public class Principal extends JFrame{
         JMenuItem pag_portafoleo = new JMenuItem("Portafoleo");
         pag_portafoleo.addActionListener(accion ->{
             try{
-                Desktop.getDesktop().browse(new URI("https://sites.google.com/view/portafolio-javarturs"));
+                Desktop.getDesktop().browse(new URI(link_porta));
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
             }
@@ -690,7 +715,22 @@ public class Principal extends JFrame{
             }
             
             // cambiar para ver extractos mensuales
-            panel_informacion = ver_extractos_ocasionales();
+            panel_informacion = ver_contratos_mensuales();
+
+            if(tabla.getRowCount() == 0 ){
+                JButton boton_auxiliar = new JButton("Agregar");
+                pan = new JPanel(null);
+                boton_auxiliar.setBounds(10,10,100,20);
+                boton_auxiliar.addActionListener(ac ->{
+                    
+                    new Insertar_contrato_mensual(this, url).setVisible(true);
+                    panel_principal2.remove(pan);
+                    boton_contratos_mensuales.doClick();
+                });
+                pan.add(boton_auxiliar);
+                pan.setPreferredSize(new Dimension(120,40));
+                panel_principal2.add(pan,BorderLayout.EAST);
+            }
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.repaint();
@@ -925,6 +965,9 @@ public class Principal extends JFrame{
                 }
                 base.close();
             }
+
+            @Override
+            public void accion2(){}
         });
         
 
@@ -1092,6 +1135,9 @@ public class Principal extends JFrame{
                 }
                 base.close();
             }
+
+            @Override
+            public void accion2(){}
         });
         
 
@@ -1286,6 +1332,9 @@ public class Principal extends JFrame{
                 }
                 base.close();
             }
+
+            @Override
+            public void accion2(){}
         });
         
 
@@ -1437,6 +1486,10 @@ public class Principal extends JFrame{
                 }
                 base.close();
             }
+
+            @Override
+            public void accion2(){}
+
         });
         
 
@@ -1507,6 +1560,9 @@ public class Principal extends JFrame{
                 }
                 base.close();
             }
+
+            @Override
+            public void accion2(){}
         });
         
 
@@ -1626,6 +1682,9 @@ public class Principal extends JFrame{
                 }
                 base.close();
             }
+
+            @Override
+            public void accion2(){}
         });
         
 
@@ -1796,6 +1855,9 @@ public class Principal extends JFrame{
                 base.close();
 
             }
+
+            @Override
+            public void accion2(){}
         });
        
 
@@ -2004,6 +2066,9 @@ public class Principal extends JFrame{
                     base.close();
 
             }
+
+            @Override
+            public void accion2(){}
         });
         
 
@@ -2012,6 +2077,136 @@ public class Principal extends JFrame{
 
         return panel;
 
+    }
+
+    public static JTable set_tabla_contratos_mensuales(String[][] datos){
+        
+        JTable tab = new JTable();
+        DefaultTableModel modelo; 
+        TableColumnModel clum_model;
+
+        modelo = set_modelo_tablas(datos);
+        tab = new JTable(modelo);
+        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tab.getTableHeader().setReorderingAllowed(false);
+        tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        add_mouse_listener(tab);
+        tab.setCellSelectionEnabled(true);
+        
+        // Configuarcion del tamaño de las columnas
+        clum_model = tab.getColumnModel();
+        clum_model.getColumn(0).setPreferredWidth(60);
+        clum_model.getColumn(1).setPreferredWidth(60);
+        clum_model.getColumn(2).setPreferredWidth(100);
+        clum_model.getColumn(3).setPreferredWidth(200);
+        clum_model.getColumn(4).setPreferredWidth(100);
+        clum_model.getColumn(5).setPreferredWidth(200);
+        clum_model.getColumn(6).setPreferredWidth(100);
+        clum_model.getColumn(7).setPreferredWidth(200);
+        
+
+        return tab;
+
+    }
+    private JPanel ver_contratos_mensuales(){
+        
+        configuracion_panel_busqueda();
+        JPanel panel = new JPanel(new BorderLayout());
+        JScrollPane scroll = new JScrollPane();
+        String[][] datos = null;
+        
+        // Inicializaicon pop_menu
+        config_pop_menu();
+        pop_menu.remove(1);
+
+        // Obteniendo datos de la base de datos
+        base = new Base(url);
+        try{
+            datos = base.consultar_contratos_mensuales("");
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }
+        
+        base.close();
+
+        // Configuracion de la visualizacion y opciones de la tabla
+
+        tabla = set_tabla_contratos_mensuales(datos);
+        tabla.setComponentPopupMenu(pop_menu);
+        scroll.setViewportView(tabla);
+
+        
+        item_adicionar.addActionListener(accion ->{
+
+            new Insertar_contrato_mensual(this, url).setVisible(true);
+
+            base = new Base(url);
+                try{
+                    tabla = set_tabla_contratos_mensuales(base.consultar_contratos_mensuales(text_busqueda.getText()));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            base.close();
+
+        });
+
+        item_eliminar.addActionListener(accion ->{
+            
+            int number = tabla.getSelectedRow();
+            String id = "" + tabla.getValueAt(number, 0);
+            String nombre = "" + tabla.getValueAt(number, 2);
+            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el contrato:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
+            if(number == 0){
+                base = new Base(url);
+                try{
+                    base.eliminar_contrato_mensual(Integer.parseInt(id));
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }
+                
+                base.close();
+                JOptionPane.showMessageDialog(this, "Contrato eliminado correctamente");
+                boton_contratos_mensuales.doClick();
+            }
+                  
+        });
+
+        JFrame padre = this;
+        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()){
+            @Override
+            public void accion(){
+
+                base = new Base(url);
+                try{
+                    tabla = set_tabla_contratos_mensuales(base.consultar_contratos_mensuales(get_text()));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                base.close();
+
+            }
+
+            @Override
+            public void accion2(){}
+        });
+       
+
+        panel.add(panel_busqueda, BorderLayout.NORTH);
+        panel.add(scroll, BorderLayout.CENTER);
+
+        return panel;
+
+    }
+
+    public static JTable set_tabla_contratos_ocasionales(){
+        return new JTable();
+    }
+    private JPanel set_contratos_ocasionales(){
+        return new JPanel();
     }
 
     public static JTable set_tabla_extractos_ocasionales(){
@@ -2147,6 +2342,9 @@ public class Principal extends JFrame{
                 base.close();
 
             }
+
+            @Override
+            public void accion2(){}
         });
        
 
@@ -2209,15 +2407,8 @@ public class Principal extends JFrame{
     }
 
     public static void add_mouse_listener(JTable tabla){
-        MouseListener listener_tabla = new MouseListener() {
-            
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                
-                
 
-            }
-            
+        tabla.addMouseListener(new MouseAdapter(){
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
                 if (SwingUtilities.isRightMouseButton(e)) {
@@ -2234,29 +2425,6 @@ public class Principal extends JFrame{
                 }
                 
             }
-            
-            @Override
-            public void mouseReleased(java.awt.event.MouseEvent e) {
-                // TODO Auto-generated method stub
-                
-            }
-            
-            
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) {
-                // TODO Auto-generated method stub
-                
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent e) {
-                // TODO Auto-generated method stub
-                
-            }
-        
-
-        };
-
-        tabla.addMouseListener(listener_tabla);
+        });
     }
 }

@@ -3,6 +3,8 @@ package Utilidades;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JTable;
+
 public abstract class Key_adapter extends KeyAdapter{
     private String variable_auxiliar;
     private char key;
@@ -10,8 +12,9 @@ public abstract class Key_adapter extends KeyAdapter{
     public Key_adapter(String text){
         super();
         variable_auxiliar = text;
-    }
 
+    }
+    
     public void set_text(String text){
 
         variable_auxiliar = text;
@@ -44,10 +47,13 @@ public abstract class Key_adapter extends KeyAdapter{
             }
         
             
+        } else if(evt.getExtendedKeyCode() == KeyEvent.VK_ENTER){
+            accion2();
         }
         accion();
 
     }
 
     abstract public void accion();
+    abstract public void accion2();
 }

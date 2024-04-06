@@ -10,6 +10,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import Base.Base;
 import Front.Principal;
+import Utilidades.Key_adapter;
+
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import java.awt.Dimension;
@@ -33,6 +35,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
     private JLabel label_fecha_final;
     private JLabel label_origen;
     private JLabel label_destino;
+    private JLabel label_consecutivo;
     private JPanel jPanel1;
     private JScrollPane scroll_vehiculo;
     private JScrollPane scroll_contratante;
@@ -46,6 +49,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
     private JTextField text_origen;
     private JTextField text_destino;
     private JTextField text_placa;
+    private JTextField text_consecutivo;
     private JDialog ventana;
     private JDateChooser fecha_incial;
     private JDateChooser fecha_final;
@@ -68,9 +72,11 @@ public class Insertar_extracto_mensual extends Modal_documento {
         scroll_origen = new JScrollPane();
         scroll_destino = new JScrollPane();
         label_contratante = new JLabel();
+        label_consecutivo = new JLabel();
         text_contratante = new JTextField();
         text_origen = new JTextField();
         text_destino = new JTextField();
+        text_consecutivo = new JTextField();
         scroll_contratante = new JScrollPane();
         label_fecha_inicial = new JLabel();
         label_fecha_final = new JLabel();
@@ -84,12 +90,13 @@ public class Insertar_extracto_mensual extends Modal_documento {
         fecha_incial = new JDateChooser();
         fecha_final = new JDateChooser();
 
+        
         // incializando las tablas
         base = new Base(url);
         try{
 
             tabla_vehiculo = Principal.set_tabla_vehiculo(base.consultar_vehiculo(true));
-            tabla_contratante = Principal.set_tabla_personas(base.consultar_contratos_mensuales(""));
+            tabla_contratante = Principal.set_tabla_contratos_mensuales(base.consultar_contratos_mensuales(""));
             tabla_origen = Principal.set_tabla_ciudad(base.consultar_ciudades(""));
             tabla_destino = Principal.set_tabla_ciudad(base.consultar_ciudades(""));
             
@@ -109,28 +116,19 @@ public class Insertar_extracto_mensual extends Modal_documento {
         jPanel1.setLayout(null);
         jPanel1.add(text_placa);
         text_placa.setBounds(POSICION_X, label_vehiculo.getY()+ label_vehiculo.getHeight() + 10, 130, LONGITUD_Y);
-        text_placa.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
+        text_placa.addKeyListener(new Key_adapter(text_placa.getText()) {
+            
+            @Override
+            public void accion(){
                 String datos[][] = null;
-                String variable_auxiliar = text_placa.getText();
-                
-                if(evt.getExtendedKeyCode() != 8){
-                    variable_auxiliar = variable_auxiliar.concat(evt.getKeyChar()+"");
-                }else{
-                    variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
-                }
+
                 base = new Base(url);
                 try{
-                    datos = base.consultar_vehiculo(variable_auxiliar);
-                    tabla_vehiculo = Principal.set_tabla_vehiculo(datos);
-                    tabla_vehiculo.addMouseListener(new MouseAdapter() {
-            
-                        public void mouseClicked(MouseEvent evt){
-                            int valor_auxilia = tabla_vehiculo.getSelectedRow();
-                            text_placa.setText("" + tabla_vehiculo.getValueAt(valor_auxilia, 0));
-                        }
-            
-                    });
+                    
+                    datos = base.consultar_vehiculo(get_text());
+                    JTable tabla_auxiliar = Principal.set_tabla_vehiculo(datos);
+                    tabla_vehiculo.setModel(tabla_auxiliar.getModel());
+                    tabla_vehiculo.setColumnModel(tabla_auxiliar.getColumnModel());
                     scroll_vehiculo.setViewportView(tabla_vehiculo);
                     
         
@@ -140,16 +138,31 @@ public class Insertar_extracto_mensual extends Modal_documento {
                     base.close();
                 }
                 base.close();
+
+                tabla_vehiculo.changeSelection(0, 0, false, false);
+                
             }
+
+            @Override
+            public void accion2(){
+
+                accion_tabla_vehiculo();
+
+            }
+            
+            
+
         });
+        
 
         
         
         tabla_vehiculo.addMouseListener(new MouseAdapter() {
             
-            public void mouseClicked(MouseEvent evt){
-                int valor_auxilia = tabla_vehiculo.getSelectedRow();
-                text_placa.setText("" + tabla_vehiculo.getValueAt(valor_auxilia, 0));
+            public void mousePressed(MouseEvent evt){
+                
+                accion_tabla_vehiculo();
+                
             }
 
         });
@@ -178,10 +191,10 @@ public class Insertar_extracto_mensual extends Modal_documento {
                 base = new Base(url);
                 try{
                     datos = base.consultar_contratos_mensuales(variable_auxiliar);
-                    tabla_contratante = Principal.set_tabla_personas(datos);
+                    tabla_contratante = Principal.set_tabla_contratos_mensuales(datos);
                     tabla_contratante.addMouseListener(new MouseAdapter() {
             
-                        public void mouseClicked(MouseEvent evt){
+                        public void mousePressed(MouseEvent evt){
                             int valor_auxilia = tabla_contratante.getSelectedRow();
                             text_contratante.setText("" + tabla_contratante.getValueAt(valor_auxilia, 0));
                         }
@@ -200,7 +213,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
 
         tabla_contratante.addMouseListener(new MouseAdapter() {
             
-            public void mouseClicked(MouseEvent evt){
+            public void mousePressed(MouseEvent evt){
                 int valor_auxilia = tabla_contratante.getSelectedRow();
                 text_contratante.setText("" + tabla_contratante.getValueAt(valor_auxilia, 0));
             }
@@ -210,6 +223,15 @@ public class Insertar_extracto_mensual extends Modal_documento {
 
         jPanel1.add(scroll_contratante);
         scroll_contratante.setBounds(260, 70, 240, 100);
+
+        label_consecutivo.setText("Consecutivo");
+        label_consecutivo.setBounds(text_contratante.getX() + text_contratante.getWidth() + 20, POSICION_X, 90, LONGITUD_Y);
+        jPanel1.add(label_consecutivo);
+
+        text_consecutivo.setEnabled(false);
+        text_consecutivo.setText("");
+        text_consecutivo.setBounds(label_consecutivo.getX(), label_consecutivo.getY() + label_consecutivo.getHeight() + 10, 100, LONGITUD_Y);
+        jPanel1.add(text_consecutivo);
 
         label_fecha_inicial.setText("Fecha inicial");
         jPanel1.add(label_fecha_inicial);
@@ -249,7 +271,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
                     tabla_origen = Principal.set_tabla_ciudad(datos);
                     tabla_origen.addMouseListener(new MouseAdapter() {
             
-                        public void mouseClicked(MouseEvent evt){
+                        public void mousePressed(MouseEvent evt){
                             int valor_auxilia = tabla_origen.getSelectedRow();
                             text_origen.setText("" + tabla_origen.getValueAt(valor_auxilia, 0));
                         }
@@ -274,7 +296,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
 
         tabla_origen.addMouseListener(new MouseAdapter() {
             
-            public void mouseClicked(MouseEvent evt){
+            public void mousePressed(MouseEvent evt){
                 int valor_auxilia = tabla_origen.getSelectedRow();
                 text_origen.setText("" + tabla_destino.getValueAt(valor_auxilia, 0));
             }
@@ -301,7 +323,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
                     tabla_destino = Principal.set_tabla_ciudad(datos);
                     tabla_destino.addMouseListener(new MouseAdapter() {
             
-                        public void mouseClicked(MouseEvent evt){
+                        public void mousePressed(MouseEvent evt){
                             int valor_auxilia = tabla_destino.getSelectedRow();
                             text_destino.setText("" + tabla_destino.getValueAt(valor_auxilia, 0));
                         }
@@ -321,7 +343,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
 
         tabla_destino.addMouseListener(new MouseAdapter() {
             
-            public void mouseClicked(MouseEvent evt){
+            public void mousePressed(MouseEvent evt){
                 int valor_auxilia = tabla_destino.getSelectedRow();
                 text_destino.setText("" + tabla_destino.getValueAt(valor_auxilia, 0));
             }
@@ -335,21 +357,23 @@ public class Insertar_extracto_mensual extends Modal_documento {
         jPanel1.add(boton_exportar);
         boton_exportar.setBounds(150, 450, 140, 23);
         boton_exportar.addActionListener(accion ->{
-            int con = g_insertar_extracto_mensual();
-            if(con != 0){
-                generar_extracto_excel(text_placa.getText(), con, this, url);
+            boolean band = g_insertar_extracto_mensual();
+            if(band){
+                generar_extracto_excel(text_placa.getText(), Integer.parseInt(text_consecutivo.getText()), this, url);
+                    JOptionPane.showMessageDialog(this, "Extracto generado correctamente","Exito", JOptionPane.INFORMATION_MESSAGE);
                 setVisible(false);
-            }else{
-                JOptionPane.showMessageDialog(this, "No se pudo guardar el consecutivo", "Error", JOptionPane.ERROR_MESSAGE);
             }
+            
+            
         });
 
         boton_guardar.setText("Guardar");
         jPanel1.add(boton_guardar);
         boton_guardar.setBounds(20, 450, 100, 23);
         boton_guardar.addActionListener(accion ->{
-            g_insertar_extracto_mensual();
-            setVisible(false);
+            boolean band = g_insertar_extracto_mensual();
+            if(band) 
+                setVisible(false);
         });
         
         GroupLayout layout = new GroupLayout(getContentPane());
@@ -372,9 +396,9 @@ public class Insertar_extracto_mensual extends Modal_documento {
         return new Dimension(600,550);
     }
 
-    private int g_insertar_extracto_mensual(){
+    private boolean g_insertar_extracto_mensual(){
         
-        int consecutivo;
+        int consecutivo = 0;
         String vehiculo;
         int contratante;
         String ffecha_inicial;
@@ -392,26 +416,52 @@ public class Insertar_extracto_mensual extends Modal_documento {
             ffecha_final = formato.format(fecha_final.getDate());
             origen = (text_origen.getText().compareTo("") == 0)?0: Integer.parseInt(text_origen.getText());
             destino = (text_destino.getText().compareTo("") == 0)?0: Integer.parseInt(text_destino.getText());
+            consecutivo = (text_consecutivo.getText().compareTo("") == 0?0:Integer.parseInt(text_consecutivo.getText()));
             
-            if(vehiculo != null && contratante != 0 && origen != 0 && destino != 0){
+            if(vehiculo != null && contratante != 0 && origen != 0 && destino != 0 && consecutivo != 0){
 
-                consecutivo = base.insertar_extracto_mensual(vehiculo, contratante, ffecha_inicial, ffecha_final, origen, destino);
+                base.insertar_extracto_mensual(vehiculo, contratante, ffecha_inicial, ffecha_final, origen, destino, consecutivo);
                 JOptionPane.showMessageDialog(this, "Extracto mensual guardado correctamente", "Transaccion exitosa", JOptionPane.INFORMATION_MESSAGE);
                 base.close();
-                return consecutivo;
+                return true;
 
             }else{
-                JOptionPane.showMessageDialog(this, "Por favor, rellene todos los campos para continuar", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Por favor, rellene todos los campos para continuar\nRecuerde que si es el primer extracto del vehiculo\nDebe establecer el consecutivo", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
             }
 
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
         }catch(NumberFormatException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
         }
+        
+    }
 
-        base.close();
-        return 0;
+    private void accion_tabla_vehiculo(){
+
+        int valor_auxilia = tabla_vehiculo.getSelectedRow();
+                int consecutivo = 0;
+                text_placa.setText("" + tabla_vehiculo.getValueAt(valor_auxilia, 0));
+                base = new Base(url);
+                try{
+
+                    consecutivo = base.consultar_consecutivo_mensual(text_placa.getText());
+                    if(consecutivo == 0){
+                        text_consecutivo.setEnabled(true);
+                        text_consecutivo.setText("");
+                    }else{
+                        text_consecutivo.setEnabled(false);
+                        text_consecutivo.setText("" + (consecutivo + 1));
+                    }
+
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(ventana, ex.getMessage());
+                }finally{
+                    base.close();
+                }
     }
     
 }

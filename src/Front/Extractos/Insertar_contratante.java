@@ -4,8 +4,8 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
-
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -13,12 +13,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-
 import Base.Base;
 import Front.Principal;
 import Utilidades.Key_adapter;
 
-public class Insertar_contratante extends Modal_contratante{
+public class Insertar_contratante extends Modal_extracto{
     
     private JButton boton_guardar;
     private JLabel jLabel1;
@@ -34,6 +33,11 @@ public class Insertar_contratante extends Modal_contratante{
     private String[][] datos;
 
     public Insertar_contratante(JFrame padre, String url){
+        super(padre, url);
+
+    }
+
+    public Insertar_contratante(JDialog padre, String url){
         super(padre, url);
 
     }

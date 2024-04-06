@@ -2764,6 +2764,26 @@ public class Base extends Base_datos{
 
     // Metodos para relacionados con extractos mensuales
 
+    public int consultar_consecutivo_mensual(String buscar)throws SQLException{
+
+        int consecutivo = 0;
+
+        consultar = "select * from consecutivo_extracto_mensual where con_placa = ?";
+
+        pstate = coneccion.prepareStatement(consultar);
+
+        pstate.setString(1, buscar);
+
+        resultado = pstate.executeQuery();
+        if(resultado.next()){
+            consecutivo = resultado.getInt(2); 
+            return consecutivo;
+        }else{
+            return 0;
+        }
+
+    }
+
     public String[][] consultar_vw_extracto_mensual(String buscar) throws SQLException{
         datos = new String[1][12];
         int cantidad = 0;
@@ -2772,56 +2792,52 @@ public class Base extends Base_datos{
         
         consultar = "select * from vw_extracto_mensual where veh_placa like \'%" + buscar + "%\'";
 
-        try{
+        
             
-            state = coneccion.createStatement();
-            resultado = state.executeQuery("select count(*) as total from vw_extracto_mensual where veh_placa like \'%" + buscar + "%\'");
+        state = coneccion.createStatement();
+        resultado = state.executeQuery("select count(*) as total from vw_extracto_mensual where veh_placa like \'%" + buscar + "%\'");
             
 
-            if(resultado.next()){
-                cantidad = resultado.getInt(1);
-            }
+        if(resultado.next()){
+            cantidad = resultado.getInt(1);
+        }
 
-            if(cantidad == 0){
-                return datos;
-            }
+        if(cantidad == 0){
+            return datos;
+        }
 
-            datos = new String[cantidad+1][12];
+        datos = new String[cantidad+1][12];
 
-            resultado = state.executeQuery(consultar);
+        resultado = state.executeQuery(consultar);
             
-            datos[0][0] = "PLACA";
-            datos[0][1] = "CONSECUTIVO";
-            datos[0][2] = "N. CONTRATO";
-            datos[0][3] = "CONTRATANTE";
-            datos[0][4] = "TIPO ID CONT";
-            datos[0][5] = "NOMBRE CONTRATANTE";
-            datos[0][6] = "FECHA INICIAL";
-            datos[0][7] = "FECHA FINAL";
-            datos[0][8] = "C. ORIGEN";
-            datos[0][9] = "D. ORIGEN";
-            datos[0][10] = "C. DESTINO";
-            datos[0][11] = "D. DESTINO";
+        datos[0][0] = "PLACA";
+        datos[0][1] = "CONSECUTIVO";
+        datos[0][2] = "N. CONTRATO";
+        datos[0][3] = "CONTRATANTE";
+        datos[0][4] = "TIPO ID CONT";
+        datos[0][5] = "NOMBRE CONTRATANTE";
+        datos[0][6] = "FECHA INICIAL";
+        datos[0][7] = "FECHA FINAL";
+        datos[0][8] = "C. ORIGEN";
+        datos[0][9] = "D. ORIGEN";
+        datos[0][10] = "C. DESTINO";
+        datos[0][11] = "D. DESTINO";
 
-            while(resultado.next()){
+        while(resultado.next()){
 
-                datos[i][0] = resultado.getString(1);
-                datos[i][1] = resultado.getString(2);
-                datos[i][2] = resultado.getString(3);
-                datos[i][3] = resultado.getString(4);
-                datos[i][4] = resultado.getString(5);
-                datos[i][5] = resultado.getString(6);
-                datos[i][6] = resultado.getString(7);
-                datos[i][7] = resultado.getString(8);
-                datos[i][8] = resultado.getString(9);
-                datos[i][9] = resultado.getString(10);
-                datos[i][10] = resultado.getString(11);
-                datos[i][11] = resultado.getString(12);
-                i++;
-            }
-
-        }catch(SQLException ex){
-            throw ex;
+            datos[i][0] = resultado.getString(1);
+            datos[i][1] = resultado.getString(2);
+            datos[i][2] = resultado.getString(3);
+            datos[i][3] = resultado.getString(4);
+            datos[i][4] = resultado.getString(5);
+            datos[i][5] = resultado.getString(6);
+            datos[i][6] = resultado.getString(7);
+            datos[i][7] = resultado.getString(8);
+            datos[i][8] = resultado.getString(9);
+            datos[i][9] = resultado.getString(10);
+            datos[i][10] = resultado.getString(11);
+            datos[i][11] = resultado.getString(12);
+            i++;
         }
 
         return datos;
@@ -2853,10 +2869,15 @@ public class Base extends Base_datos{
         return dato;
     }
 
-    public int insertar_extracto_mensual(String placa, int contrato, String fecha_inicial, String fecha_final, int origen, int destino)throws SQLException{
+    public void actualizar_extracto_mensual(String placa, int consecutivo, int contrato, String fecha_inicial, String fecha_final, int origen, int destino)throws SQLException{
 
-        int consecutivo = 0;
-        String accion_auxiliar;
+        consultar = "";
+
+    }
+
+    public void insertar_extracto_mensual(String placa, int contrato, String fecha_inicial, String fecha_final, int origen, int destino, int consecutivo)throws SQLException{
+
+        String accion_auxiliar = "";
         insertar = "insert into extracto_mensual values (?,?,?,?,?,?,?)";
         try{
 
@@ -2864,11 +2885,21 @@ public class Base extends Base_datos{
         state = coneccion.createStatement();
         resultado = state.executeQuery("select con_numero from consecutivo_extracto_mensual where con_placa = \'"+placa+"\'");
         if(resultado.next()){
-            consecutivo = resultado.getInt(1);
+            if(consecutivo < resultado.getInt(1)){
+                consecutivo = resultado.getInt(1);
+                
+            }
+
+            accion_auxiliar = "update consecutivo_extracto_mensual set con_numero = ? where con_placa = ?"; 
+
+        }else{
+            accion_auxiliar = "insert into consecutivo_extracto_mensual (con_numero, con_placa) values (?,?)";
+            if(consecutivo <= 0){
+                consecutivo = 1;
+            }
         }
 
-        accion_auxiliar = (consecutivo == 0)? "insert into consecutivo_extracto_mensual (con_numero, con_placa) values (?,?)":"update consecutivo_extracto_mensual set con_numero = ? where con_placa = ?";
-        consecutivo +=1;
+        
 
         coneccion.setAutoCommit(false);
         pstate = coneccion.prepareStatement(insertar);
@@ -2898,7 +2929,7 @@ public class Base extends Base_datos{
         }finally{
             coneccion.setAutoCommit(true);
         }
-        return consecutivo;
+        
     }
 
     public void eliminar_extracto_mensual(String placa, int consecutivo)throws SQLException{
@@ -2961,9 +2992,6 @@ public class Base extends Base_datos{
                 cantidad = resultado.getInt(1);
             }
 
-            if(cantidad == 0){
-                return datos;
-            }
 
             datos = new String[cantidad+1][8];
 
@@ -2977,6 +3005,10 @@ public class Base extends Base_datos{
             datos[0][5] = "NOMBRE RESPONSABLE";
             datos[0][6] = "CELULAR RESPONSABLE";
             datos[0][7] = "DIRECCION RESPONSABLE";
+
+            if(cantidad == 0){
+                return datos;
+            }
 
             while(resultado.next()){
 
@@ -2999,6 +3031,40 @@ public class Base extends Base_datos{
 
     }
 
+    public void eliminar_contrato_mensual(int id)throws SQLException{
+
+        borrar = "delete from contrato_mensual where con_id = ?";
+
+        pstate = coneccion.prepareStatement(borrar);
+
+        pstate.setInt(1, id);
+
+        pstate.executeUpdate();
+
+    }
+
+    public String consultar_ultimo_contrato_mensual()throws SQLException{
+        consultar = "select max(con_id) from contrato_mensual";
+
+        state = coneccion.createStatement();
+
+        resultado = state.executeQuery(consultar);
+        resultado.next();
+        
+        return "" + resultado.getInt(1);
+    }
+
+    public void insertar_contrato_mensual(int id, String contratante)throws SQLException{
+
+        insertar = "insert into contrato_mensual values (?,?)";
+
+        pstate = coneccion.prepareStatement(insertar);
+
+        pstate.setInt(1, id);
+        pstate.setString(2, contratante);
+
+        pstate.executeUpdate();
+    }
     
     // Funcion para consultar los datos del vehiuclo para el extracto
 

@@ -14,3 +14,6 @@ Error 3:
 Error 4:
     Este erro sucede cuando se intenta realizar una insercion o inclusion y puede darse por varias rasones,
     en los parametros no sepaso lo que se solicita o simplemente puede ser un error porque ya existe un elemento
+
+Error 5:
+    Este error se debe a que no fue posible abrir los archivos que cargan los links para el funcionamiento de la aplicacion
