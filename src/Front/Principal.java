@@ -20,7 +20,7 @@ import Front.Vehiculos.Insertar_vehiculo_conductor;
 import Front.Vehiculos.Insertar_vehiculos;
 import Utilidades.Key_adapter;
 import Utilidades.Leer_link;
-
+import Utilidades.Modelo_tabla;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTable;
@@ -36,23 +36,16 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JMenu;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.ToolTipManager;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.Desktop;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.awt.event.MouseAdapter;
 
@@ -805,89 +798,7 @@ public class Principal extends JFrame{
     }
 
     // Metodos relacionados con los vehiculos
-    public static JTable set_tabla_documentos_vehiculos(String [][] datos){
-
-        JTable tab;
-        DefaultTableModel modelo;
-        TableColumnModel cl_model;
-
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-                // Virifica las columnas donde se encuentran las fechas                
-                if (column == 2 || column == 3 || column == 4 || column == 5 || column == 7) {
-                    //Incializa las variables necesarias para el calculo
-                    long cantidad_dias = 0;
-                    String valor = table.getValueAt(row, column).toString();
-                    LocalDate fecha_sistema = LocalDate.now();      // Obtiene la fecha actual del sistema para hacer la comparacion
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
-                    LocalDate fecha_tabla = LocalDate.parse(valor,formatter);       // Aplica el formato que se declaro anteriormente
-                    cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);        // Compara las dos fechas para obtener la cantidad de dias entre estas dos
-
-                    // Esto es para que los ToolTip funcionen correctamente
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    ToolTipManager.sharedInstance().setDismissDelay(60000);
-
-                    // Verifica cuntos dias quedan para dar un color a las celdas
-                    if(cantidad_dias < 0){
-
-                        component.setBackground(Color.red);
-                        component.setForeground(Color.white);
-                        setToolTipText("Documento Vencido");
-
-                    }else if(cantidad_dias <= 60 && cantidad_dias >= 25 && column == 7){   
-
-                        component.setBackground(Color.MAGENTA);
-                        component.setForeground(Color.white);
-                        setToolTipText("Iniciar Tramite Renovacion Tarjeta de Operación");
-
-                    }else if(cantidad_dias <= 25){
-
-                        component.setBackground(Color.yellow);
-                        component.setForeground(Color.black);
-                        setToolTipText("Quedan " + cantidad_dias + " días para que el documento se venza");
-
-                    }else{      // Deja las demas celdas por defecto
-
-                        component.setBackground(Color.white);
-                        component.setForeground(Color.black);
-                        setToolTipText(null);
-
-                    }
-
-                }else{      // Deja las demas Filas y/o celdas por defecto
-
-                    component.setBackground(Color.white);
-                    component.setForeground(Color.black);
-                    setToolTipText(null);
-
-                }
-                
-                return component;
-            }
-        };
-
-
-        modelo = set_modelo_tablas(datos);
-        tab = new JTable(modelo);
-        tab.setDefaultRenderer(Object.class, renderer);     //Agrega el renderer personalizado realizado anteriormente
-        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tab.getTableHeader().setReorderingAllowed(false);
-        tab.setCellSelectionEnabled(true);
-        add_mouse_listener(tab);
-        
-        
-        cl_model = tab.getColumnModel();
-        cl_model.getColumn(0).setPreferredWidth(50);
-        cl_model.getColumn(1).setPreferredWidth(35);
-        cl_model.getColumn(2).setPreferredWidth(100);
-        cl_model.getColumn(3).setPreferredWidth(180);
-        cl_model.getColumn(5).setPreferredWidth(100);
-
-        return tab;
-    }
+    
     private JPanel ver_documentos_vehiculos(){
 
         JPanel panel = new JPanel(new BorderLayout());
@@ -908,7 +819,7 @@ public class Principal extends JFrame{
         base.close();
 
         // Implementacion para que la tabla cambie de colores dependiendo el valor que tiene la celda
-        tabla = set_tabla_documentos_vehiculos(datos);
+        tabla = Modelo_tabla.set_tabla_documentos_vehiculos(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
         
@@ -957,7 +868,7 @@ public class Principal extends JFrame{
             public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_documentos_vehiculos(base.consultar_documentos(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_documentos_vehiculos(base.consultar_documentos(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla);
                 }catch(SQLException ex){
@@ -976,82 +887,7 @@ public class Principal extends JFrame{
         return panel;
     }
     
-    public static JTable set_tabla_vehiculo_has_conductor(String[][] datos){
-
-        JTable tab;
-        DefaultTableModel modelo;
-        TableColumnModel cl_model;
-
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-                // Virifica las columnas donde se encuentran las fechas                
-                if (column == 5) {
-                    //Incializa las variables necesarias para el calculo
-                    long cantidad_dias = 0;
-                    String valor = table.getValueAt(row, column).toString();
-                    LocalDate fecha_sistema = LocalDate.now();      // Obtiene la fecha actual del sistema para hacer la comparacion
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
-                    LocalDate fecha_tabla = LocalDate.parse(valor,formatter);       // Aplica el formato que se declaro anteriormente
-                    cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);        // Compara las dos fechas para obtener la cantidad de dias entre estas dos
-
-                    // Esto es para que los ToolTip funcionen correctamente
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    ToolTipManager.sharedInstance().setDismissDelay(60000);
-
-                    // Verifica cuntos dias quedan para dar un color a las celdas
-                    if(cantidad_dias < 0){
-
-                        component.setBackground(Color.red);
-                        component.setForeground(Color.white);
-                        setToolTipText("Documento Vencido");
-
-                    }else if(cantidad_dias <= 25){
-
-                        component.setBackground(Color.yellow);
-                        component.setForeground(Color.black);
-                        setToolTipText("Quedan " + cantidad_dias + " días para que el documento se venza");
-
-                    }else{      // Deja las demas celdas por defecto
-
-                        component.setBackground(Color.white);
-                        component.setForeground(Color.black);
-                        setToolTipText(null);
-
-                    }
-
-                }else{      // Deja las demas Filas y/o celdas por defecto
-
-                    component.setBackground(Color.white);
-                    component.setForeground(Color.black);
-                    setToolTipText(null);
-
-                }
-                
-                return component;
-            }
-        };
-
-        modelo = set_modelo_tablas(datos);
-        tab = new JTable(modelo);
-        tab.setDefaultRenderer(Object.class, renderer);     //Agrega el renderer personalizado realizado anteriormente
-        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tab.getTableHeader().setReorderingAllowed(false);
-        tab.setCellSelectionEnabled(true);
-        add_mouse_listener(tab);
-        
-        
-        cl_model = tab.getColumnModel();
-        cl_model.getColumn(0).setPreferredWidth(50);
-        cl_model.getColumn(1).setPreferredWidth(35);
-        cl_model.getColumn(2).setPreferredWidth(100);
-        cl_model.getColumn(3).setPreferredWidth(180);
-        cl_model.getColumn(5).setPreferredWidth(100);
-
-        return tab;
-    }
+    
     private JPanel ver_vehiculo_has_conductor(){
 
         configuracion_panel_busqueda();
@@ -1070,7 +906,7 @@ public class Principal extends JFrame{
         
         base.close();
         
-        tabla = set_tabla_vehiculo_has_conductor(datos);
+        tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
 
@@ -1080,7 +916,7 @@ public class Principal extends JFrame{
             base = new Base(url);
             try{
 
-                tabla = set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(text_busqueda.getText()));
+                tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(text_busqueda.getText()));
                 tabla.setComponentPopupMenu(pop_menu);
                 scroll.setViewportView(tabla);
 
@@ -1105,7 +941,7 @@ public class Principal extends JFrame{
                     base.eliminar_vehiculo_has_conductor(conductor_id,placa_vehiculo);
                     JOptionPane.showMessageDialog(this, "Registro eliminado correctamente");
 
-                    tabla = set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla);
 
@@ -1127,7 +963,7 @@ public class Principal extends JFrame{
             public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla);
                 }catch(SQLException ex){
@@ -1165,7 +1001,7 @@ public class Principal extends JFrame{
 
         base.close();
 
-        modelo = set_modelo_tablas(datos);
+        modelo = Modelo_tabla.set_modelo_tablas(datos);
         tabla = new JTable(modelo);
         tabla.setComponentPopupMenu(pop_menu);
         tabla.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -1222,40 +1058,7 @@ public class Principal extends JFrame{
         return panel;
     }
     
-    public static JTable set_tabla_vehiculo(String [][] datos){
-        JTable tab = new JTable();
-        DefaultTableModel modelo; 
-        TableColumnModel clum_model;
-        
-        modelo = set_modelo_tablas(datos);
-        tab = new JTable(modelo);
-        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tab.getTableHeader().setReorderingAllowed(false);
-        tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
-        tab.setCellSelectionEnabled(true);
-        
-        // Configuarcion del tamaño de las columnas
-        clum_model = tab.getColumnModel();
-        clum_model.getColumn(0).setPreferredWidth(50);
-        clum_model.getColumn(1).setPreferredWidth(70);
-        clum_model.getColumn(2).setPreferredWidth(70);
-        clum_model.getColumn(3).setPreferredWidth(110);
-        clum_model.getColumn(4).setPreferredWidth(70);
-        clum_model.getColumn(5).setPreferredWidth(60);
-        clum_model.getColumn(6).setPreferredWidth(100);
-        clum_model.getColumn(7).setPreferredWidth(80);
-        clum_model.getColumn(8).setPreferredWidth(60);
-        clum_model.getColumn(9).setPreferredWidth(70);
-        clum_model.getColumn(10).setPreferredWidth(110);
-        clum_model.getColumn(11).setPreferredWidth(140);
-        clum_model.getColumn(12).setPreferredWidth(35);
-        clum_model.getColumn(13).setPreferredWidth(40);
-        clum_model.getColumn(14).setPreferredWidth(80);
-        clum_model.getColumn(15).setPreferredWidth(200);
-
-        return tab;
-    }
+    
     private JPanel ver_vehiculo(){
         // inicializacion de componentes
         configuracion_panel_busqueda();
@@ -1278,7 +1081,7 @@ public class Principal extends JFrame{
 
         // Configuracion de la visualizacion y opciones de la tabla
 
-        tabla = set_tabla_vehiculo(datos);
+        tabla = Modelo_tabla.set_tabla_vehiculo(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
         // Configuracion de los item 
@@ -1324,7 +1127,7 @@ public class Principal extends JFrame{
             public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_vehiculo(base.consultar_vehiculo(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_vehiculo(base.consultar_vehiculo(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -1345,31 +1148,6 @@ public class Principal extends JFrame{
         return panel;
     }
     
-    // Metodos relacionados a Ciudad y departamento
-    public static JTable set_tabla_ciudad(String [][] datos){
-        
-        JTable tab = new JTable();
-        DefaultTableModel modelo; 
-        TableColumnModel clum_model;
-        
-        modelo = set_modelo_tablas(datos);
-        tab = new JTable(modelo);
-        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tab.getTableHeader().setReorderingAllowed(false);
-        tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
-        tab.setCellSelectionEnabled(true);
-        
-        // Configuarcion del tamaño de las columnas
-        clum_model = tab.getColumnModel();
-        clum_model.getColumn(0).setPreferredWidth(50);
-        clum_model.getColumn(1).setPreferredWidth(160);
-        clum_model.getColumn(2).setPreferredWidth(160);
-        
-        
-        return tab;
-
-    }
 
     /**
      * Esta funcion se encarga de retornar un JPanel
@@ -1405,7 +1183,7 @@ public class Principal extends JFrame{
 
         // Configuracion de la visualizacion y opciones de la tabla
 
-        tabla = set_tabla_ciudad(datos);
+        tabla = Modelo_tabla.set_tabla_ciudad(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
 
@@ -1418,7 +1196,7 @@ public class Principal extends JFrame{
             base = new Base(url);
             try{
                 
-                tabla = set_tabla_ciudad(base.consultar_ciudades(text_busqueda.getText()));
+                tabla = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(text_busqueda.getText()));
                 tabla.setComponentPopupMenu(pop_menu);
                 scroll.setViewportView(tabla);
                 base.close();
@@ -1437,7 +1215,7 @@ public class Principal extends JFrame{
             base = new Base(url);
             try{
 
-                tabla = set_tabla_ciudad(base.consultar_ciudades(text_busqueda.getText()));
+                tabla = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(text_busqueda.getText()));
                 tabla.setComponentPopupMenu(pop_menu);
                 scroll.setViewportView(tabla);
                 base.close();
@@ -1478,7 +1256,7 @@ public class Principal extends JFrame{
             public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_ciudad(base.consultar_ciudades(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -1500,28 +1278,7 @@ public class Principal extends JFrame{
 
     }
 
-    public static JTable set_tabla_departamento(String [][] datos){
-
-        JTable tab = new JTable();
-        DefaultTableModel modelo; 
-        TableColumnModel clum_model;
-        
-        modelo = set_modelo_tablas(datos);
-        tab = new JTable(modelo);
-        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tab.getTableHeader().setReorderingAllowed(false);
-        tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
-        tab.setCellSelectionEnabled(true);
-        
-        // Configuarcion del tamaño de las columnas
-        clum_model = tab.getColumnModel();
-        clum_model.getColumn(0).setPreferredWidth(50);
-        clum_model.getColumn(1).setPreferredWidth(160);
-        
-
-        return tab;
-    }
+    
     private JPanel ver_departamento(){
 
         configuracion_panel_busqueda();
@@ -1541,7 +1298,7 @@ public class Principal extends JFrame{
 
         // Configuracion de la visualizacion y opciones de la tabla
 
-        tabla = set_tabla_departamento(datos);
+        tabla = Modelo_tabla.set_tabla_departamento(datos);
         scroll.setViewportView(tabla);
 
         JFrame padre = this;
@@ -1552,7 +1309,7 @@ public class Principal extends JFrame{
             public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_departamento(base.consultar_departamentos(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_departamento(base.consultar_departamentos(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -1574,35 +1331,7 @@ public class Principal extends JFrame{
     }
 
     // Metodos relacionados con Personas y conductores
-    public static JTable set_tabla_personas(String[][] datos){
-
-        JTable tab = new JTable();
-        DefaultTableModel modelo; 
-        TableColumnModel clum_model;
-        
-        modelo = set_modelo_tablas(datos);
-        tab = new JTable(modelo);
-        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tab.getTableHeader().setReorderingAllowed(false);
-        tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
-        tab.setCellSelectionEnabled(true);
-        
-        // Configuarcion del tamaño de las columnas
-        clum_model = tab.getColumnModel();
-        clum_model.getColumn(0).setPreferredWidth(80);
-        clum_model.getColumn(1).setPreferredWidth(50);
-        clum_model.getColumn(2).setPreferredWidth(200);
-        clum_model.getColumn(3).setPreferredWidth(90);
-        clum_model.getColumn(4).setPreferredWidth(70);
-        clum_model.getColumn(5).setPreferredWidth(60);
-        clum_model.getColumn(6).setPreferredWidth(150);
-        clum_model.getColumn(7).setPreferredWidth(220);
-
-
-        return tab;
-
-    }
+    
     private JPanel ver_personas(){
 
         configuracion_panel_busqueda();
@@ -1626,7 +1355,7 @@ public class Principal extends JFrame{
 
         // Configuracion de la visualizacion y opciones de la tabla
 
-        tabla = set_tabla_personas(datos);
+        tabla = Modelo_tabla.set_tabla_personas(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
 
@@ -1674,7 +1403,7 @@ public class Principal extends JFrame{
             public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_personas(base.consultar_persona(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_personas(base.consultar_persona(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -1695,85 +1424,8 @@ public class Principal extends JFrame{
 
     }
 
-    public static JTable set_tabla_conductores(String[][] datos){
-
-        JTable tab = new JTable();
-        DefaultTableModel modelo; 
-        TableColumnModel clum_model;
-        
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-                // Virifica las columnas donde se encuentran las fechas                
-                if (column == 3) {
-                    //Incializa las variables necesarias para el calculo
-                    long cantidad_dias = 0;
-                    String valor = table.getValueAt(row, column).toString();
-                    LocalDate fecha_sistema = LocalDate.now();      // Obtiene la fecha actual del sistema para hacer la comparacion
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
-                    LocalDate fecha_tabla = LocalDate.parse(valor,formatter);       // Aplica el formato que se declaro anteriormente
-                    cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);        // Compara las dos fechas para obtener la cantidad de dias entre estas dos
-
-                    // Esto es para que los ToolTip funcionen correctamente
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    ToolTipManager.sharedInstance().setDismissDelay(60000);
-
-                    // Verifica cuntos dias quedan para dar un color a las celdas
-                    if(cantidad_dias < 0){
-
-                        component.setBackground(Color.red);
-                        component.setForeground(Color.white);
-                        setToolTipText("Documento Vencido");
-
-                    }else if(cantidad_dias <= 25){
-
-                        component.setBackground(Color.yellow);
-                        component.setForeground(Color.black);
-                        setToolTipText("Quedan " + cantidad_dias + " días para que el documento se venza");
-
-                    }else{      // Deja las demas celdas por defecto
-
-                        component.setBackground(Color.white);
-                        component.setForeground(Color.black);
-                        setToolTipText(null);
-
-                    }
-
-                }else{      // Deja las demas Filas y/o celdas por defecto
-
-                    component.setBackground(Color.white);
-                    component.setForeground(Color.black);
-                    setToolTipText(null);
-
-                }
-                
-                return component;
-            }
-        };
-
-        modelo = set_modelo_tablas(datos);
-        tab = new JTable(modelo);
-        tab.setDefaultRenderer(Object.class, renderer);     //Agrega el renderer personalizado realizado anteriormente
-        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tab.getTableHeader().setReorderingAllowed(false);
-        tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
-        tab.setCellSelectionEnabled(true);
-        
-        // Configuarcion del tamaño de las columnas
-        clum_model = tab.getColumnModel();
-        clum_model.getColumn(0).setPreferredWidth(100);
-        clum_model.getColumn(1).setPreferredWidth(200);
-        clum_model.getColumn(2).setPreferredWidth(80);
-        clum_model.getColumn(3).setPreferredWidth(120);
-        
-
-        return tab;
-
-    }
-
+    
+    // metodos para conductores
     private JPanel ver_conductores(){
 
         configuracion_panel_busqueda();
@@ -1796,7 +1448,7 @@ public class Principal extends JFrame{
 
         // Configuracion de la visualizacion y opciones de la tabla
 
-        tabla = set_tabla_conductores(datos);
+        tabla = Modelo_tabla.set_tabla_conductores(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
 
@@ -1846,7 +1498,7 @@ public class Principal extends JFrame{
 
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_conductores(base.consultar_licencia(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_conductores(base.consultar_licencia(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -1869,80 +1521,7 @@ public class Principal extends JFrame{
     }
 
     // Metodos relacionados a extractos
-    public static JTable set_tabla_extractos_mensuales(String[][] datos){
-        
-        JTable tab = new JTable();
-        DefaultTableModel modelo; 
-        TableColumnModel clum_model;
-        
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-                // Virifica las columnas donde se encuentran las fechas                
-                if (column == 7) {
-                    //Incializa las variables necesarias para el calculo
-                    long cantidad_dias = 0;
-                    String valor = table.getValueAt(row, column).toString();
-                    LocalDate fecha_sistema = LocalDate.now();      // Obtiene la fecha actual del sistema para hacer la comparacion
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
-                    LocalDate fecha_tabla = LocalDate.parse(valor,formatter);       // Aplica el formato que se declaro anteriormente
-                    cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);        // Compara las dos fechas para obtener la cantidad de dias entre estas dos
-
-                    // Esto es para que los ToolTip funcionen correctamente
-                    ToolTipManager.sharedInstance().setInitialDelay(0);
-                    ToolTipManager.sharedInstance().setDismissDelay(60000);
-
-                    // Verifica cuntos dias quedan para dar un color a las celdas
-                    if(cantidad_dias < 0){
-
-                        component.setBackground(Color.red);
-                        component.setForeground(Color.white);
-                        setToolTipText("Extracto Vencido");
-
-                    }else{
-
-                        component.setBackground(Color.white);
-                        component.setForeground(Color.black);
-                        setToolTipText("Quedan " + cantidad_dias + " días para que el documento se venza");
-
-                    }
-
-                }else{      // Deja las demas Filas y/o celdas por defecto
-
-                    component.setBackground(Color.white);
-                    component.setForeground(Color.black);
-                    setToolTipText(null);
-
-                }
-                
-                return component;
-            }
-        };
-
-        modelo = set_modelo_tablas(datos);
-        tab = new JTable(modelo);
-        tab.setDefaultRenderer(Object.class, renderer);     //Agrega el renderer personalizado realizado anteriormente
-        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tab.getTableHeader().setReorderingAllowed(false);
-        tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
-        tab.setCellSelectionEnabled(true);
-        
-        // Configuarcion del tamaño de las columnas
-        clum_model = tab.getColumnModel();
-        clum_model.getColumn(0).setPreferredWidth(70);
-        clum_model.getColumn(1).setPreferredWidth(40);
-        clum_model.getColumn(2).setPreferredWidth(40);
-        clum_model.getColumn(3).setPreferredWidth(100);
-        clum_model.getColumn(4).setPreferredWidth(40);
-        clum_model.getColumn(5).setPreferredWidth(180);
-        
-
-        return tab;
-
-    }
+    
     private JPanel ver_extractos_mensuales(){
         
         configuracion_panel_busqueda();
@@ -1965,19 +1544,18 @@ public class Principal extends JFrame{
 
         // Configuracion de la visualizacion y opciones de la tabla
 
-        tabla = set_tabla_extractos_mensuales(datos);
+        tabla = Modelo_tabla.set_tabla_extractos_mensuales(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
 
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
-            int select_row = tabla.getSelectedRow();
 
             // actualizar_extracto
             new Insertar_extracto_mensual(this, url).setVisible(true);
             base = new Base(url);
                 try{
-                    tabla = set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -1992,7 +1570,7 @@ public class Principal extends JFrame{
             new Insertar_extracto_mensual(this, url).setVisible(true);
             base = new Base(url);
                 try{
-                    tabla = set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                     
@@ -2008,7 +1586,7 @@ public class Principal extends JFrame{
             Insertar_extracto_mensual.generar_extracto_excel((String) tabla.getValueAt(select_row, 0),Integer.parseInt((String) tabla.getValueAt(select_row, 1)),this, url);
             base = new Base(url);
             try{
-                tabla = set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
                 tabla.setComponentPopupMenu(pop_menu);
                 scroll.setViewportView(tabla );
                 
@@ -2031,7 +1609,7 @@ public class Principal extends JFrame{
                     base.eliminar_extracto_mensual(placa, Integer.parseInt(consecutivo));
 
                     // vuelve y carga los valores de la tabla
-                    tabla = set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
 
@@ -2057,7 +1635,7 @@ public class Principal extends JFrame{
 
                 base = new Base(url);
                     try {
-                        tabla = set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                        tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
                         tabla.setComponentPopupMenu(pop_menu);
                         scroll.setViewportView(tabla);
                     } catch (SQLException ex) {
@@ -2079,35 +1657,7 @@ public class Principal extends JFrame{
 
     }
 
-    public static JTable set_tabla_contratos_mensuales(String[][] datos){
-        
-        JTable tab = new JTable();
-        DefaultTableModel modelo; 
-        TableColumnModel clum_model;
-
-        modelo = set_modelo_tablas(datos);
-        tab = new JTable(modelo);
-        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tab.getTableHeader().setReorderingAllowed(false);
-        tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
-        tab.setCellSelectionEnabled(true);
-        
-        // Configuarcion del tamaño de las columnas
-        clum_model = tab.getColumnModel();
-        clum_model.getColumn(0).setPreferredWidth(60);
-        clum_model.getColumn(1).setPreferredWidth(60);
-        clum_model.getColumn(2).setPreferredWidth(100);
-        clum_model.getColumn(3).setPreferredWidth(200);
-        clum_model.getColumn(4).setPreferredWidth(100);
-        clum_model.getColumn(5).setPreferredWidth(200);
-        clum_model.getColumn(6).setPreferredWidth(100);
-        clum_model.getColumn(7).setPreferredWidth(200);
-        
-
-        return tab;
-
-    }
+    
     private JPanel ver_contratos_mensuales(){
         
         configuracion_panel_busqueda();
@@ -2131,7 +1681,7 @@ public class Principal extends JFrame{
 
         // Configuracion de la visualizacion y opciones de la tabla
 
-        tabla = set_tabla_contratos_mensuales(datos);
+        tabla = Modelo_tabla.set_tabla_contratos_mensuales(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
 
@@ -2142,7 +1692,7 @@ public class Principal extends JFrame{
 
             base = new Base(url);
                 try{
-                    tabla = set_tabla_contratos_mensuales(base.consultar_contratos_mensuales(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_contratos_mensuales(base.consultar_contratos_mensuales(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -2180,7 +1730,7 @@ public class Principal extends JFrame{
 
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_contratos_mensuales(base.consultar_contratos_mensuales(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_contratos_mensuales(base.consultar_contratos_mensuales(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -2217,34 +1767,7 @@ public class Principal extends JFrame{
     }
 
     // Metodos relacionados con contratante
-    public static JTable set_tabla_contratante(String[][] datos){
-        
-        JTable tab = new JTable();
-        DefaultTableModel modelo; 
-        TableColumnModel clum_model;
-
-        modelo = set_modelo_tablas(datos);
-        tab = new JTable(modelo);
-        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tab.getTableHeader().setReorderingAllowed(false);
-        tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
-        tab.setCellSelectionEnabled(true);
-        
-        // Configuarcion del tamaño de las columnas
-        clum_model = tab.getColumnModel();
-        clum_model.getColumn(0).setPreferredWidth(100);
-        clum_model.getColumn(1).setPreferredWidth(40);
-        clum_model.getColumn(2).setPreferredWidth(200);
-        clum_model.getColumn(3).setPreferredWidth(100);
-        clum_model.getColumn(4).setPreferredWidth(200);
-        clum_model.getColumn(5).setPreferredWidth(100);
-        clum_model.getColumn(6).setPreferredWidth(180);
-        
-
-        return tab;
-
-    }
+    
 
     private JPanel ver_contratante(){
         
@@ -2268,7 +1791,7 @@ public class Principal extends JFrame{
 
         // Configuracion de la visualizacion y opciones de la tabla
 
-        tabla = set_tabla_contratante(datos);
+        tabla = Modelo_tabla.set_tabla_contratante(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
 
@@ -2280,7 +1803,7 @@ public class Principal extends JFrame{
             new Actualizar_contratante(this, url,(String) tabla.getValueAt(select_row, 0)).setVisible(true);
             base = new Base(url);
                 try{
-                    tabla = set_tabla_contratante(base.consultar_contratante(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_contratante(base.consultar_contratante(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -2295,7 +1818,7 @@ public class Principal extends JFrame{
 
             base = new Base(url);
                 try{
-                    tabla = set_tabla_contratante(base.consultar_contratante(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_contratante(base.consultar_contratante(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -2333,7 +1856,7 @@ public class Principal extends JFrame{
 
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_contratante(base.consultar_contratante(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_contratante(base.consultar_contratante(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -2382,29 +1905,7 @@ public class Principal extends JFrame{
         pop_menu.add(item_eliminar);
     }
     
-    public static DefaultTableModel set_modelo_tablas(String [][] datos){
-        DefaultTableModel modelo;
-
-        
-        modelo = new DefaultTableModel(){
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                // Hacer que todas las celdas no sean editables
-                return false;
-            }
-        };
-
-        for(int i = 0; i < datos[0].length; i++){
-            modelo.addColumn(datos[0][i]);
-        }
     
-        for(int i = 1; i < datos.length; i++){
-                
-            modelo.addRow(datos[i]);
-    
-        }
-        return modelo;
-    }
 
     public static void add_mouse_listener(JTable tabla){
 

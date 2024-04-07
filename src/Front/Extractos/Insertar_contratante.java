@@ -1,7 +1,6 @@
 package Front.Extractos;
 
 import java.awt.Dimension;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
@@ -15,8 +14,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import Base.Base;
-import Front.Principal;
 import Utilidades.Key_adapter;
+import Utilidades.Modelo_tabla;
 
 public class Insertar_contratante extends Modal_extracto{
     
@@ -79,8 +78,6 @@ public class Insertar_contratante extends Modal_extracto{
         jLabel2.setBounds(315, POS_X, 98, 16);
 
         text_contratante.addKeyListener(new Key_adapter() {
-            
-
 
             @Override
             public void accion(){
@@ -89,7 +86,7 @@ public class Insertar_contratante extends Modal_extracto{
                 try{
                             
                     datos_tabla_contratante = base.consultar_no_contratante(text_contratante.getText());
-                    JTable aux = Principal.set_tabla_personas(datos_tabla_contratante);
+                    JTable aux = Modelo_tabla.set_tabla_personas(datos_tabla_contratante);
                     tabla_contratante.setModel(aux.getModel());
                     tabla_contratante.setColumnModel(aux.getColumnModel());
                             
@@ -106,8 +103,7 @@ public class Insertar_contratante extends Modal_extracto{
             public void accion2(){
 
                 accion_tabla_contratante();
-                
-
+            
             }
         });
 
@@ -133,7 +129,7 @@ public class Insertar_contratante extends Modal_extracto{
         jPanel1.add(text_responsable);
         text_responsable.setBounds(315, 28, 200, 22);
 
-        tabla_contratante = Principal.set_tabla_personas(datos_tabla_contratante);
+        tabla_contratante = Modelo_tabla.set_tabla_personas(datos_tabla_contratante);
         tabla_contratante.addMouseListener(new MouseAdapter() {
             
             @Override
@@ -148,7 +144,7 @@ public class Insertar_contratante extends Modal_extracto{
         jPanel1.add(jScrollPane1);
         jScrollPane1.setBounds(POS_X, 77, 277, 140);
 
-        tabla_responsable = Principal.set_tabla_personas(datos_tabla_responsable);
+        tabla_responsable = Modelo_tabla.set_tabla_personas(datos_tabla_responsable);
         tabla_responsable.addMouseListener(new MouseAdapter() {
             
             @Override
@@ -241,7 +237,7 @@ public class Insertar_contratante extends Modal_extracto{
                 try{
 
                     datos_tabla_responsable = base.consultar_persona(text);
-                    JTable aux = Principal.set_tabla_personas(datos_tabla_responsable);
+                    JTable aux = Modelo_tabla.set_tabla_personas(datos_tabla_responsable);
                     tabla_responsable.setModel(aux.getModel());
                     tabla_responsable.setColumnModel(aux.getColumnModel());
                     

@@ -20,9 +20,8 @@ import java.awt.event.MouseEvent;
 import com.toedter.calendar.JDateChooser;
 import java.util.Calendar;
 import java.util.Date;
-
 import Base.Base;
-import Front.Principal;
+import Utilidades.Modelo_tabla;
 
 public class Insertar_conductor extends Modales_personas{
     
@@ -86,7 +85,7 @@ public class Insertar_conductor extends Modales_personas{
         try{
             datos = base.consultar_persona_natural();
             combo_conductor.setModel(new DefaultComboBoxModel<>(base.get_datos_tabla(base.consultar_categoria(), 1)));
-            tabla_persona.setModel(Principal.set_modelo_tablas(datos));
+            tabla_persona.setModel(Modelo_tabla.set_modelo_tablas(datos));
 
         }catch(SQLException e){
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -110,7 +109,7 @@ public class Insertar_conductor extends Modales_personas{
                     base = new Base(url);
                 try{
                     datos = base.consultar_persona_natural();
-                    tabla_persona.setModel(Principal.set_modelo_tablas(datos));
+                    tabla_persona.setModel(Modelo_tabla.set_modelo_tablas(datos));
                     tabla_persona.getTableHeader().setReorderingAllowed(false);
                     tabla_persona.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
                     tabla_persona.setRowSelectionAllowed(true);
@@ -147,7 +146,7 @@ public class Insertar_conductor extends Modales_personas{
                 base = new Base(url);
                 try{
                     datos = base.consultar_persona_natural(variable_auxiliar);
-                    tabla_persona.setModel(Principal.set_modelo_tablas(datos));
+                    tabla_persona.setModel(Modelo_tabla.set_modelo_tablas(datos));
                     tabla_persona.getTableHeader().setReorderingAllowed(false);
                     tabla_persona.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
                     tabla_persona.setRowSelectionAllowed(true);

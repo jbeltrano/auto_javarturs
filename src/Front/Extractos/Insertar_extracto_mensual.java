@@ -9,14 +9,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import Base.Base;
-import Front.Principal;
 import Utilidades.Key_adapter;
-
+import Utilidades.Modelo_tabla;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import java.awt.Dimension;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.util.Calendar;
 import java.util.Date;
@@ -97,10 +94,10 @@ public class Insertar_extracto_mensual extends Modal_documento {
         base = new Base(url);
         try{
 
-            tabla_vehiculo = Principal.set_tabla_vehiculo(base.consultar_vehiculo(true));
-            tabla_contratante = Principal.set_tabla_contratos_mensuales(base.consultar_contratos_mensuales(""));
-            tabla_origen = Principal.set_tabla_ciudad(base.consultar_ciudades(""));
-            tabla_destino = Principal.set_tabla_ciudad(base.consultar_ciudades(""));
+            tabla_vehiculo = Modelo_tabla.set_tabla_vehiculo(base.consultar_vehiculo(true));
+            tabla_contratante = Modelo_tabla.set_tabla_contratos_mensuales(base.consultar_contratos_mensuales(""));
+            tabla_origen = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(""));
+            tabla_destino = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(""));
             
 
         }catch(SQLException ex){
@@ -127,7 +124,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
                 try{
                     
                     datos = base.consultar_vehiculo(text_placa.getText());
-                    JTable tabla_auxiliar = Principal.set_tabla_vehiculo(datos);
+                    JTable tabla_auxiliar = Modelo_tabla.set_tabla_vehiculo(datos);
                     tabla_vehiculo.setModel(tabla_auxiliar.getModel());
                     tabla_vehiculo.setColumnModel(tabla_auxiliar.getColumnModel());
                     scroll_vehiculo.setViewportView(tabla_vehiculo);
@@ -183,7 +180,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
                 base = new Base(url);
                 try{
                     datos = base.consultar_contratos_mensuales(text_contratante.getText());
-                    JTable tabla_auxiliar = Principal.set_tabla_contratos_mensuales(datos);
+                    JTable tabla_auxiliar = Modelo_tabla.set_tabla_contratos_mensuales(datos);
                     tabla_contratante.setModel(tabla_auxiliar.getModel());
                     tabla_contratante.setColumnModel(tabla_auxiliar.getColumnModel());
                     scroll_contratante.setViewportView(tabla_contratante);
@@ -257,7 +254,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
                 base = new Base(url);
                 try{
                     datos = base.consultar_ciudades(text_origen.getText());
-                    tabla_origen = Principal.set_tabla_ciudad(datos);
+                    tabla_origen = Modelo_tabla.set_tabla_ciudad(datos);
                     tabla_origen.addMouseListener(new MouseAdapter() {
             
                         public void mousePressed(MouseEvent evt){
@@ -311,7 +308,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
                 base = new Base(url);
                 try{
                     datos = base.consultar_ciudades(text_destino.getText());
-                    JTable tabla_aux = Principal.set_tabla_ciudad(datos);
+                    JTable tabla_aux = Modelo_tabla.set_tabla_ciudad(datos);
                     tabla_destino.setModel(tabla_aux.getModel());
                     tabla_destino.setColumnModel(tabla_aux.getColumnModel());
                     

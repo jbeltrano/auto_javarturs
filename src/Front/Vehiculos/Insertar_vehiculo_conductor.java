@@ -14,11 +14,11 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import Front.Personas.Insertar_conductor;
+import Utilidades.Modelo_tabla;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import Base.Base;
-import Front.Principal;
 
 public class Insertar_vehiculo_conductor extends Modales_vehiculos{
     
@@ -77,7 +77,7 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
                 base = new Base(url);
                 try{
                     datos = base.consultar_vehiculo(variable_auxiliar);
-                    tabla_vehiculo.setModel(Principal.set_modelo_tablas(datos));
+                    tabla_vehiculo.setModel(Modelo_tabla.set_modelo_tablas(datos));
                     
         
                 }catch(SQLException ex){
@@ -110,7 +110,7 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
                 base = new Base(url);
                 try{
                     datos = base.consultar_licencia(variable_auxiliar);
-                    tabla_conductor.setModel(Principal.set_modelo_tablas(datos));
+                    tabla_conductor.setModel(Modelo_tabla.set_modelo_tablas(datos));
                     
         
                 }catch(SQLException ex){
@@ -125,8 +125,8 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
         // Configuracion de tablas modelo
         base = new Base(url);
         try{
-            tabla_vehiculo.setModel(Principal.set_modelo_tablas(base.consultar_vehiculo(true)));
-            tabla_conductor.setModel(Principal.set_modelo_tablas(base.consultar_licencia()));
+            tabla_vehiculo.setModel(Modelo_tabla.set_modelo_tablas(base.consultar_vehiculo(true)));
+            tabla_conductor.setModel(Modelo_tabla.set_modelo_tablas(base.consultar_licencia()));
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
         }
@@ -160,7 +160,7 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
 
                     base = new Base(url);
                     try{
-                        tabla_conductor.setModel(Principal.set_modelo_tablas(base.consultar_licencia()));
+                        tabla_conductor.setModel(Modelo_tabla.set_modelo_tablas(base.consultar_licencia()));
                     }catch(SQLException ex){
                         JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                         base.close();

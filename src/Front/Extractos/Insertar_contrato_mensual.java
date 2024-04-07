@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -15,10 +14,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-
 import Base.Base;
-import Front.Principal;
 import Utilidades.Key_adapter;
+import Utilidades.Modelo_tabla;
 
 public class Insertar_contrato_mensual extends Modal_extracto{
 
@@ -89,7 +87,7 @@ public class Insertar_contrato_mensual extends Modal_extracto{
                 try{
 
                     datos = base.consultar_contratante(text_contratante.getText());
-                    JTable aux = Principal.set_tabla_contratante(datos);
+                    JTable aux = Modelo_tabla.set_tabla_contratante(datos);
                     tabla_contratante.setModel(aux.getModel());
                     tabla_contratante.setColumnModel(aux.getColumnModel());
                     
@@ -109,7 +107,7 @@ public class Insertar_contrato_mensual extends Modal_extracto{
         text_contratante.setBounds(315, 28, 200, 22);
 
         JDialog padre = this;
-        tabla_contratante = Principal.set_tabla_contratante(datos);
+        tabla_contratante = Modelo_tabla.set_tabla_contratante(datos);
         tabla_contratante.addMouseListener(new MouseAdapter() {
             
             @Override

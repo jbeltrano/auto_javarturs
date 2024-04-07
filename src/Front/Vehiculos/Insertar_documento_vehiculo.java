@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 import java.awt.event.MouseEvent;
 import com.toedter.calendar.JDateChooser;
 import Base.Base;
-import Front.Principal;
+import Utilidades.Modelo_tabla;
 
 public class Insertar_documento_vehiculo extends Modales_vehiculos{
 
@@ -246,7 +246,7 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
         base = new Base(url);
         try{
             datos = base.consultar_vehiculo_sin_documento(true);
-            tabla_vehiculo.setModel(Principal.set_modelo_tablas(datos));
+            tabla_vehiculo.setModel(Modelo_tabla.set_modelo_tablas(datos));
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -258,7 +258,7 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
         base = new Base(url);
         try{
             datos = base.consultar_vehiculo_sin_documento(varible_busqueda);
-            tabla_vehiculo.setModel(Principal.set_modelo_tablas(datos));
+            tabla_vehiculo.setModel(Modelo_tabla.set_modelo_tablas(datos));
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

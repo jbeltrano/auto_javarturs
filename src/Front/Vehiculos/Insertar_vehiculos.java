@@ -18,8 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.GroupLayout;
 import Base.Base;
-import Front.Principal;
 import Front.Personas.Insertar_persona;
+import Utilidades.Modelo_tabla;
 
 public class Insertar_vehiculos extends Modales_vehiculos{
     
@@ -241,7 +241,7 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         }
         base.close();
 
-        tab.setModel(Principal.set_modelo_tablas(datos));            
+        tab.setModel(Modelo_tabla.set_modelo_tablas(datos));            
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getColumnModel().getColumn(0).setPreferredWidth(100);
@@ -261,7 +261,7 @@ public class Insertar_vehiculos extends Modales_vehiculos{
                     base = new Base(url);
                     try {
                         datos = base.consultar_persona();
-                        tab.setModel(Principal.set_modelo_tablas(datos));
+                        tab.setModel(Modelo_tabla.set_modelo_tablas(datos));
                         tab.getTableHeader().setReorderingAllowed(false);
                         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
                         tab.getColumnModel().getColumn(0).setPreferredWidth(100);
@@ -383,7 +383,7 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         base = new Base(url);
         try{
             datos = base.consultar_persona(variable_auxiliar);
-            tab.setModel(Principal.set_modelo_tablas(datos));
+            tab.setModel(Modelo_tabla.set_modelo_tablas(datos));
             
 
 

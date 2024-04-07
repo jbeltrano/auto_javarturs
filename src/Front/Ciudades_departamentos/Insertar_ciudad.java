@@ -28,7 +28,6 @@ public class Insertar_ciudad extends Modal_ciudades_departamentos{
 
     public Insertar_ciudad(JFrame padre, String url){
         super(padre ,url);
-
     }
     
     @Override               
@@ -58,6 +57,7 @@ public class Insertar_ciudad extends Modal_ciudades_departamentos{
             setVisible(false);
         }
         base.close();
+        combo_departamento.setSelectedItem("Meta");
         combo_departamento.setMaximumRowCount(7);
         panel.add(combo_departamento);
         combo_departamento.setBounds(POSICION_X, jLabel1.getY() + ALTURA_Y + SEPARACION_Y, 100, ALTURA_Y);
