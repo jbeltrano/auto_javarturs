@@ -951,13 +951,13 @@ public class Principal extends JFrame{
         });
 
         Component padre = this;
-        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()) {
+        text_busqueda.addKeyListener(new Key_adapter() {
            
             @Override
             public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_documentos_vehiculos(base.consultar_documentos(get_text()));
+                    tabla = set_tabla_documentos_vehiculos(base.consultar_documentos(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla);
                 }catch(SQLException ex){
@@ -1122,12 +1122,12 @@ public class Principal extends JFrame{
 
         JFrame padre = this;
         
-        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()) {
+        text_busqueda.addKeyListener(new Key_adapter() {
             @Override
             public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(get_text()));
+                    tabla = set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla);
                 }catch(SQLException ex){
@@ -1319,12 +1319,12 @@ public class Principal extends JFrame{
 
         JFrame padre = this;
 
-        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()) {
+        text_busqueda.addKeyListener(new Key_adapter() {
             @Override
             public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_vehiculo(base.consultar_vehiculo(get_text()));
+                    tabla = set_tabla_vehiculo(base.consultar_vehiculo(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -1472,13 +1472,13 @@ public class Principal extends JFrame{
 
         JFrame padre = this;
         
-        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()) {
+        text_busqueda.addKeyListener(new Key_adapter() {
         
             @Override
             public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_ciudad(base.consultar_ciudades(get_text()));
+                    tabla = set_tabla_ciudad(base.consultar_ciudades(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -1546,13 +1546,13 @@ public class Principal extends JFrame{
 
         JFrame padre = this;
         
-        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()) {
+        text_busqueda.addKeyListener(new Key_adapter() {
             
             @Override
             public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_departamento(base.consultar_departamentos(get_text()));
+                    tabla = set_tabla_departamento(base.consultar_departamentos(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -1669,12 +1669,12 @@ public class Principal extends JFrame{
         });
 
         JFrame padre = this;
-        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()) {
+        text_busqueda.addKeyListener(new Key_adapter() {
             @Override
             public void accion(){
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_personas(base.consultar_persona(get_text()));
+                    tabla = set_tabla_personas(base.consultar_persona(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -1840,13 +1840,13 @@ public class Principal extends JFrame{
         });
 
         JFrame padre = this;
-        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()){
+        text_busqueda.addKeyListener(new Key_adapter(){
             @Override
             public void accion(){
 
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_conductores(base.consultar_licencia(get_text()));
+                    tabla = set_tabla_conductores(base.consultar_licencia(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -2050,14 +2050,14 @@ public class Principal extends JFrame{
 
         JFrame padre = this;
         
-        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()) {
+        text_busqueda.addKeyListener(new Key_adapter() {
             
             @Override
             public void accion(){
 
                 base = new Base(url);
                     try {
-                        tabla = set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(get_text()));
+                        tabla = set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
                         tabla.setComponentPopupMenu(pop_menu);
                         scroll.setViewportView(tabla);
                     } catch (SQLException ex) {
@@ -2174,13 +2174,13 @@ public class Principal extends JFrame{
         });
 
         JFrame padre = this;
-        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()){
+        text_busqueda.addKeyListener(new Key_adapter(){
             @Override
             public void accion(){
 
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_contratos_mensuales(base.consultar_contratos_mensuales(get_text()));
+                    tabla = set_tabla_contratos_mensuales(base.consultar_contratos_mensuales(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -2327,13 +2327,13 @@ public class Principal extends JFrame{
         });
 
         JFrame padre = this;
-        text_busqueda.addKeyListener(new Key_adapter(text_busqueda.getText()){
+        text_busqueda.addKeyListener(new Key_adapter(){
             @Override
             public void accion(){
 
                 base = new Base(url);
                 try{
-                    tabla = set_tabla_contratante(base.consultar_contratante(get_text()));
+                    tabla = set_tabla_contratante(base.consultar_contratante(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){

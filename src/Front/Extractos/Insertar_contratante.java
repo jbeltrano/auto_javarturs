@@ -1,6 +1,7 @@
 package Front.Extractos;
 
 import java.awt.Dimension;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
@@ -30,7 +31,8 @@ public class Insertar_contratante extends Modal_extracto{
     protected JTextField text_contratante;
     protected JTextField text_responsable;
     private final int POS_X = 10;
-    private String[][] datos;
+    private String[][] datos_tabla_responsable;
+    private String[][] datos_tabla_contratante;
 
     public Insertar_contratante(JFrame padre, String url){
         super(padre, url);
@@ -59,7 +61,8 @@ public class Insertar_contratante extends Modal_extracto{
         // Consultando los datos de los contratantes
         base = new Base(url);
         try{
-            datos = base.consultar_persona();
+            datos_tabla_contratante = base.consultar_no_contratante("");
+            datos_tabla_responsable = base.consultar_persona();
 
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -75,65 +78,69 @@ public class Insertar_contratante extends Modal_extracto{
         jPanel1.add(jLabel2);
         jLabel2.setBounds(315, POS_X, 98, 16);
 
-        text_contratante.addKeyListener(new Key_adapter(text_contratante.getText()) {
+        text_contratante.addKeyListener(new Key_adapter() {
             
+
+
             @Override
             public void accion(){
 
                 base = new Base(url);
                 try{
-                    
-                    datos = base.consultar_persona(get_text());
-                    JTable aux = Principal.set_tabla_personas(datos);
+                            
+                    datos_tabla_contratante = base.consultar_no_contratante(text_contratante.getText());
+                    JTable aux = Principal.set_tabla_personas(datos_tabla_contratante);
                     tabla_contratante.setModel(aux.getModel());
                     tabla_contratante.setColumnModel(aux.getColumnModel());
-                    
-        
+                            
+                
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 base.close();
+
+                tabla_contratante.changeSelection(0, 0, false, false);
+            }
+
+            @Override
+            public void accion2(){
+
+                accion_tabla_contratante();
+                
 
             }
         });
 
         jPanel1.add(text_contratante);
         text_contratante.setBounds(POS_X, 28, 200, 22);
-        
-        text_responsable.addKeyListener(new Key_adapter(text_responsable.getText()) {
+        text_responsable.addKeyListener(new Key_adapter() {
             
+
             @Override
             public void accion(){
+                
+                accion_text_responsable(text_responsable.getText());
 
-                base = new Base(url);
-                try{
+            }
 
-                    datos = base.consultar_persona(get_text());
-                    JTable aux = Principal.set_tabla_personas(datos);
-                    tabla_responsable.setModel(aux.getModel());
-                    tabla_responsable.setColumnModel(aux.getColumnModel());
-                    
-        
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                base.close();
-
+            @Override
+            public void accion2(){
+                accion_tabla_responsable();
+                boton_guardar.doClick();
             }
         });
 
         jPanel1.add(text_responsable);
         text_responsable.setBounds(315, 28, 200, 22);
 
-        tabla_contratante = Principal.set_tabla_personas(datos);
+        tabla_contratante = Principal.set_tabla_personas(datos_tabla_contratante);
         tabla_contratante.addMouseListener(new MouseAdapter() {
             
             @Override
             public void mouseClicked(MouseEvent e){
 
-                int row = tabla_contratante.getSelectedRow();
-                text_contratante.setText("" + tabla_contratante.getValueAt(row, 0));
-                text_responsable.setText("" + tabla_contratante.getValueAt(row, 0));
+                accion_tabla_contratante();
+                
             }
         });
 
@@ -141,13 +148,13 @@ public class Insertar_contratante extends Modal_extracto{
         jPanel1.add(jScrollPane1);
         jScrollPane1.setBounds(POS_X, 77, 277, 140);
 
-        tabla_responsable = Principal.set_tabla_personas(datos);
+        tabla_responsable = Principal.set_tabla_personas(datos_tabla_responsable);
         tabla_responsable.addMouseListener(new MouseAdapter() {
             
             @Override
             public void mouseClicked(MouseEvent e){
-                int row = tabla_responsable.getSelectedRow();
-                text_responsable.setText("" + tabla_responsable.getValueAt(row, 0));
+                
+                accion_tabla_responsable();
             }
         });
         jScrollPane2.setViewportView(tabla_responsable);
@@ -211,5 +218,38 @@ public class Insertar_contratante extends Modal_extracto{
 
         base.close();
 
+    }
+
+    private void accion_tabla_contratante(){
+
+        int row = tabla_contratante.getSelectedRow();
+        text_contratante.setText("" + tabla_contratante.getValueAt(row, 0));
+        text_responsable.setText("" + tabla_contratante.getValueAt(row, 0)); 
+        accion_text_responsable(text_responsable.getText());
+
+    }
+
+    private void accion_tabla_responsable(){
+
+        int row = tabla_responsable.getSelectedRow();
+        text_responsable.setText("" + tabla_responsable.getValueAt(row, 0));
+
+    }
+
+    private void accion_text_responsable(String text){
+        base = new Base(url);
+                try{
+
+                    datos_tabla_responsable = base.consultar_persona(text);
+                    JTable aux = Principal.set_tabla_personas(datos_tabla_responsable);
+                    tabla_responsable.setModel(aux.getModel());
+                    tabla_responsable.setColumnModel(aux.getColumnModel());
+                    
+        
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                base.close();
+                tabla_responsable.changeSelection(0, 0, false, false);
     }
 }

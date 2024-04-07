@@ -3,57 +3,45 @@ package Utilidades;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import javax.swing.JTable;
-
 public abstract class Key_adapter extends KeyAdapter{
-    private String variable_auxiliar;
     private char key;
     
-    public Key_adapter(String text){
+    /**
+     * Constructor por defecto para
+     * esta clase
+     */
+    public Key_adapter(){
         super();
-        variable_auxiliar = text;
-
     }
     
-    public void set_text(String text){
-
-        variable_auxiliar = text;
-    }
-    public String get_text(){
-        return variable_auxiliar;
-    }
-    
-    public void keyPressed(KeyEvent evt) {
-
-        key = evt.getKeyChar();        
-        if (evt.getExtendedKeyCode() == KeyEvent.VK_BACK_SPACE && evt.isControlDown()) {
+    /**
+     * Este metodo es el que se encarga
+     * de realizar los diferentes eventos
+     * de teclado cuando sucedan
+     */
+    @Override
+    public void keyReleased(KeyEvent evt){
+        key = evt.getKeyChar();
+        if (Character.isLetterOrDigit(key) || key == KeyEvent.VK_BACK_SPACE || key == KeyEvent.VK_SPACE) {
             
-            int lastIndex = variable_auxiliar.lastIndexOf(' ');
-
-            if (lastIndex != -1) {
-                variable_auxiliar = variable_auxiliar.substring(0, lastIndex);
-            } else {
-
-                variable_auxiliar = "";
-            }
-        
-        } else if (Character.isLetterOrDigit(key) || key == KeyEvent.VK_BACK_SPACE || key == KeyEvent.VK_SPACE) {
-            if (evt.getExtendedKeyCode() != KeyEvent.VK_BACK_SPACE) {
-                variable_auxiliar = variable_auxiliar.concat(Character.toString(key));
-            } else {
-                if (!variable_auxiliar.isEmpty()) {
-                    variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length() - 1);
-                }
-            }
-        
+            accion();
             
-        } else if(evt.getExtendedKeyCode() == KeyEvent.VK_ENTER){
+        }else if(evt.getExtendedKeyCode() == KeyEvent.VK_ENTER){
+            
             accion2();
         }
-        accion();
 
     }
-
+    
+    /**
+     * Metodo utilizado por el usuario cuando
+     * necesite realizar alguna accion especifca
+     * cuando se digiten letras, numeros, etc.
+     */
     abstract public void accion();
+    /**
+     * En este caso son las acciones que se van
+     * a realizar cuando se digite la tecla espacio
+     */
     abstract public void accion2();
 }

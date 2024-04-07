@@ -408,3 +408,8 @@ create view vw_vehiculo_extracto as
         from vehiculo 
         natural join documento 
         natural join clase_vehiculo;
+
+create view vw_no_contratante as
+    select * from vw_persona 
+        where per_id 
+            not in(select con_contratante from contratante);

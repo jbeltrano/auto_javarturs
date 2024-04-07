@@ -58,7 +58,7 @@ public class Insertar_contrato_mensual extends Modal_extracto{
         
         try{
             datos = base.consultar_contratante("");
-            ultimo_contrato = base.consultar_ultimo_contrato_mensual();
+            ultimo_contrato = "" + (Integer.parseInt(base.consultar_ultimo_contrato_mensual()) +1);
 
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -80,7 +80,7 @@ public class Insertar_contrato_mensual extends Modal_extracto{
         text_contrato.setText(ultimo_contrato);
         text_contrato.setBounds(POS_X, 28, 100, 22);
         
-        text_contratante.addKeyListener(new Key_adapter(text_contratante.getText()) {
+        text_contratante.addKeyListener(new Key_adapter() {
             
             @Override
             public void accion(){
@@ -88,7 +88,7 @@ public class Insertar_contrato_mensual extends Modal_extracto{
                 base = new Base(url);
                 try{
 
-                    datos = base.consultar_contratante(get_text());
+                    datos = base.consultar_contratante(text_contratante.getText());
                     JTable aux = Principal.set_tabla_contratante(datos);
                     tabla_contratante.setModel(aux.getModel());
                     tabla_contratante.setColumnModel(aux.getColumnModel());
@@ -100,6 +100,9 @@ public class Insertar_contrato_mensual extends Modal_extracto{
                 base.close();
 
             }
+
+            @Override
+            public void accion2(){}
         });
 
         panel.add(text_contratante);

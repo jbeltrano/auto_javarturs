@@ -1,9 +1,6 @@
 package Base;
 
 import java.util.Vector;
-
-import org.apache.poi.sl.draw.geom.SqrtExpression;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
@@ -370,6 +367,7 @@ public class Base extends Base_datos{
     public void insertar_ciudad(int dep_id, String ciu_nombre)throws SQLException{
         
         insertar = "insert into ciudad (ciu_nombre, dep_id) values (?,?)";
+        ciu_nombre = Capitalizar_Strings.capitalizarNombre(ciu_nombre);
 
         try{
             pstate = coneccion.prepareStatement(insertar);
@@ -401,6 +399,7 @@ public class Base extends Base_datos{
     public void actualizar_ciudad(int ciu_id, String ciu_nombre)throws SQLException{
 
         actualizar = "update ciudad set ciu_nombre = ? where ciu_id = ?";
+        ciu_nombre = Capitalizar_Strings.capitalizarNombre(ciu_nombre);
 
         try{
             pstate = coneccion.prepareStatement(actualizar);
@@ -932,6 +931,63 @@ public class Base extends Base_datos{
     
     }
     
+    public String[][] consultar_no_contratante(String buscar)throws SQLException{
+        datos = new String[1][20];
+        int cantidad = 0;
+        int i = 1;
+
+        consultar = "select * from vw_no_contratante where per_nombre like \'%" + buscar + "%\' or per_id like \'" + buscar + "%\'";
+
+        try{
+            state = coneccion.createStatement();
+ 
+            // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
+            resultado = state.executeQuery("select count() as total from vw_no_contratante where per_nombre like \'%" + buscar + "%\' or per_id like \'" + buscar + "%\'");
+            
+            if(resultado.next()){
+                cantidad = resultado.getInt("total");
+            }
+
+            if(cantidad == 0){
+                return datos;
+            }
+
+            datos = new String[cantidad+1][8];
+
+            resultado = state.executeQuery(consultar);
+            
+            datos[0][0] = "ID";
+            datos[0][1] = "TIPO";
+            datos[0][2] = "NOMBRE";
+            datos[0][3] = "CELULAR";
+            datos[0][4] = "CIUDAD";
+            datos[0][5] = "DEPARTAMENTO";
+            datos[0][6] = "DIRECCION";
+            datos[0][7] = "CORREO ELECTRONICO";
+
+            while(resultado.next()){
+
+                datos[i][0] = resultado.getString("per_id");
+                datos[i][1] = resultado.getString("tip_nombre");
+                datos[i][2] = resultado.getString("per_nombre");
+                datos[i][3] = resultado.getString("per_celular");
+                datos[i][4] = resultado.getString("ciu_nombre");
+                datos[i][5] = resultado.getString("dep_nombre");
+                datos[i][6] = resultado.getString("per_direccion");
+                datos[i][7] = resultado.getString("per_correo");
+                
+                i++;
+            }
+
+        }catch(SQLException ex){
+            throw ex;
+        }
+
+        return datos;
+
+    
+    }
+
     public String[][] consultar_persona()throws SQLException{
 
         datos = new String[1][20];
@@ -2802,14 +2858,8 @@ public class Base extends Base_datos{
             cantidad = resultado.getInt(1);
         }
 
-        if(cantidad == 0){
-            return datos;
-        }
-
         datos = new String[cantidad+1][12];
-
-        resultado = state.executeQuery(consultar);
-            
+        
         datos[0][0] = "PLACA";
         datos[0][1] = "CONSECUTIVO";
         datos[0][2] = "N. CONTRATO";
@@ -2822,6 +2872,12 @@ public class Base extends Base_datos{
         datos[0][9] = "D. ORIGEN";
         datos[0][10] = "C. DESTINO";
         datos[0][11] = "D. DESTINO";
+
+        if(cantidad == 0){
+            return datos;
+        }
+
+        resultado = state.executeQuery(consultar);        
 
         while(resultado.next()){
 
@@ -3105,7 +3161,7 @@ public class Base extends Base_datos{
 
         pstate.executeUpdate();
     }
-
+    
     public String[][] consultar_contratante(String buscar) throws SQLException{
 
         datos = new String[1][7];
