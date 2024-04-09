@@ -135,6 +135,7 @@ public class Insertar_persona extends Modales_personas{
             }
             base.close();
         });
+        combo_departamento.setSelectedItem("Meta");
         jPanel1.add(combo_departamento);
         combo_departamento.setBounds(292, 90, 120, 22);
 
@@ -143,6 +144,7 @@ public class Insertar_persona extends Modales_personas{
         jLabel6.setBounds(17, 124, 54, 16);
 
         combo_municipio.setMaximumRowCount(5);
+        combo_municipio.setSelectedItem("Acacias");
         jPanel1.add(combo_municipio);
         combo_municipio.setBounds(17, 146, 124, 22);
 

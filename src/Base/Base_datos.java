@@ -40,6 +40,9 @@ public class Base_datos{
         
         try{
             coneccion = DriverManager.getConnection(url);
+            state = coneccion.createStatement();
+            state.execute("PRAGMA foreign_keys = ON");
+            state.close();
         }catch(SQLException ex){
             System.out.println("Error en la coneccion con la base de datos");
         }

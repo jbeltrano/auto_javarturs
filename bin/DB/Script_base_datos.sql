@@ -295,6 +295,21 @@ create table contrato_mensual(
     foreign key(con_contratante) references contratante(con_contratante)
 );
 
+
+create table contrato_ocasional(
+    con_id integer primary key,
+    con_contratante text not null,
+    con_fecha_inicial date not null,
+    con_fecha_final date not null,
+    con_origen integer not null,
+    con_destino integer not null,
+    
+    foreign key(con_contratante) references contratante(con_contratante)
+    foreign key(con_origen) references ciudad(ciu_id),
+    foreign key(con_destino) references ciudad(ciu_id)    
+
+);
+    
 create table extracto_mensual(
     veh_placa text not null,
     ext_consecutivo integer not null,
@@ -328,7 +343,10 @@ create table consecutivo_extracto_mensual(
 );
 
 create view vw_vehiculo as 
-    select veh_placa, cla_nombre, veh_modelo, veh_marca, veh_linea, veh_cilindrada, veh_color,ser_nombre, veh_combustible, veh_tipo_carroceria, veh_numero_motor, veh_numero_chasis,veh_cantidad,tip_nombre,per_id, per_nombre 
+    select veh_placa, cla_nombre, veh_modelo, 
+    veh_marca, veh_linea, veh_cilindrada, veh_color,ser_nombre, 
+    veh_combustible, veh_tipo_carroceria, veh_numero_motor, 
+    veh_numero_chasis,veh_cantidad,tip_nombre,per_id, per_nombre 
     from vehiculo join persona on per_id = veh_propietario natural join clase_vehiculo natural join tipo_id natural join servicio;
 
 create view vw_vehiculo_sin_documento as
@@ -413,3 +431,21 @@ create view vw_no_contratante as
     select * from vw_persona 
         where per_id 
             not in(select con_contratante from contratante);
+
+create view vw_contrato_ocasional as
+select con_id,
+    con_contratante,
+    con_tipo_id,
+    con_nombre,
+    con_fecha_inicial,
+    con_fecha_final,
+    con_ciu_origen,
+    con_dep_origen,
+    con_cui_destino,
+    con_dep_destino
+    from contrato_ocasional 
+        natural join vw_contratante
+        join (select ciu_id, ciu_nombre as con_ciu_origen, dep_nombre as con_dep_origen from ciudad natural join departamento) 
+            on (ciu_id = con_origen)
+        join (select ciu_id as ciudad_id, ciu_nombre as con_cui_destino, dep_nombre as con_dep_destino from ciudad natural join departamento) 
+            on (ciudad_id = con_destino);

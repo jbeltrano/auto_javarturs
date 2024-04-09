@@ -6,6 +6,7 @@ import Front.Ciudades_departamentos.Insertar_ciudad;
 import Front.Extractos.Actualizar_contratante;
 import Front.Extractos.Insertar_contratante;
 import Front.Extractos.Insertar_contrato_mensual;
+import Front.Extractos.Insertar_contrato_ocasional;
 import Front.Extractos.Insertar_extracto_mensual;
 import Front.Personas.Actualizar_conductor;
 import Front.Personas.Actualizar_peronas;
@@ -737,7 +738,22 @@ public class Principal extends JFrame{
                 panel_principal2.remove(pan);
             }
             // cambiar para ver extractos ocasionales
-            panel_informacion = ver_extractos_ocasionales();
+            panel_informacion = ver_contratos_ocasionales();
+
+            if(tabla.getRowCount() == 0 ){
+                JButton boton_auxiliar = new JButton("Agregar");
+                pan = new JPanel(null);
+                boton_auxiliar.setBounds(10,10,100,20);
+                boton_auxiliar.addActionListener(ac ->{
+                    
+                    new Insertar_contrato_ocasional(this, url).setVisible(true);
+                    panel_principal2.remove(pan);
+                    boton_contratos_ocasionales.doClick();
+                });
+                pan.add(boton_auxiliar);
+                pan.setPreferredSize(new Dimension(120,40));
+                panel_principal2.add(pan,BorderLayout.EAST);
+            }
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.repaint();
@@ -1109,12 +1125,12 @@ public class Principal extends JFrame{
                 base = new Base(url);
                 try{
                     base.eliminar_vehiculo(valor);
+                    JOptionPane.showMessageDialog(this, "Vehiculo eliminado correctamente");
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
                 }
                 
                 base.close();
-                JOptionPane.showMessageDialog(this, "Vehiculo eliminado correctamente");
                 vehiculos.doClick();
             }
                   
@@ -1752,11 +1768,97 @@ public class Principal extends JFrame{
 
     }
 
-    public static JTable set_tabla_contratos_ocasionales(){
-        return new JTable();
-    }
-    private JPanel set_contratos_ocasionales(){
-        return new JPanel();
+    private JPanel ver_contratos_ocasionales(){
+        
+        configuracion_panel_busqueda();
+        JPanel panel = new JPanel(new BorderLayout());
+        JScrollPane scroll = new JScrollPane();
+        String[][] datos = null;
+        
+        // Inicializaicon pop_menu
+        config_pop_menu();
+
+        // Obteniendo datos de la base de datos
+        base = new Base(url);
+        try{
+            datos = base.consultar_contrato_ocasional("");
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }
+        
+        base.close();
+
+        // Configuracion de la visualizacion y opciones de la tabla
+
+        tabla = Modelo_tabla.set_tabla_contratos_ocasionales(datos);
+        tabla.setComponentPopupMenu(pop_menu);
+        scroll.setViewportView(tabla);
+
+        
+        item_adicionar.addActionListener(accion ->{
+
+            new Insertar_contrato_ocasional(this, url).setVisible(true);
+
+            base = new Base(url);
+                try{
+                    tabla = Modelo_tabla.set_tabla_contratos_ocasionales(base.consultar_contrato_ocasional(text_busqueda.getText()));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            base.close();
+
+        });
+
+        item_eliminar.addActionListener(accion ->{
+            
+            // int number = tabla.getSelectedRow();
+            // String id = "" + tabla.getValueAt(number, 0);
+            // String nombre = "" + tabla.getValueAt(number, 2);
+            // number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el contrato:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
+            // if(number == 0){
+            //     base = new Base(url);
+            //     try{
+            //         base.eliminar_contrato_mensual(Integer.parseInt(id));
+            //     }catch(SQLException ex){
+            //         JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+            //     }
+                
+            //     base.close();
+            //     JOptionPane.showMessageDialog(this, "Contrato eliminado correctamente");
+            //     boton_contratos_mensuales.doClick();
+            // }
+                  
+        });
+
+        JFrame padre = this;
+        text_busqueda.addKeyListener(new Key_adapter(){
+            @Override
+            public void accion(){
+
+                base = new Base(url);
+                try{
+                    tabla = Modelo_tabla.set_tabla_contratos_ocasionales(base.consultar_contrato_ocasional(text_busqueda.getText()));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                base.close();
+
+            }
+
+            @Override
+            public void accion2(){}
+        });
+       
+
+        panel.add(panel_busqueda, BorderLayout.NORTH);
+        panel.add(scroll, BorderLayout.CENTER);
+
+        return panel;
+
     }
 
     public static JTable set_tabla_extractos_ocasionales(){

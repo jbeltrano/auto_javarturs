@@ -3002,7 +3002,111 @@ public class Base extends Base_datos{
 
     }
 
+    // Metodos relacionados con contratos ocasionales
+    public int consultar_maximo_contrato_ocasional()throws SQLException{
 
+        int max = 0;
+
+        consultar = "select max(con_id) from contrato_ocasional";
+
+        state = coneccion.createStatement();
+
+        resultado = state.executeQuery(consultar);
+
+        if(resultado.next()){
+            max = resultado.getInt(1);
+            return max;
+        }
+        return max;
+
+    }
+
+    public String[][] consultar_contrato_ocasional(String buscar)throws SQLException{
+        datos = new String[1][10];
+        String con_id = buscar + "%";
+        String con_contratante = buscar + "%";
+        String con_nombre = "%" + buscar + "%";
+        String consultar_cantidad;
+        int cantidad = 0;
+        int i = 1;
+
+        consultar = "select * from vw_contrato_ocasional where con_id like ? or con_contratante like ? or con_nombre like ?";
+        consultar_cantidad = "select count(*) from vw_contrato_ocasional where con_id like ? or con_contratante like ? or con_nombre like ?";
+
+        pstate = coneccion.prepareStatement(consultar_cantidad);
+
+        pstate.setString(1, con_id);
+        pstate.setString(2, con_contratante);
+        pstate.setString(3, con_nombre);
+
+        resultado = pstate.executeQuery();
+
+
+        if(resultado.next()){
+            cantidad = resultado.getInt(1);
+        }
+
+
+        datos = new String[cantidad+1][10];
+            
+        datos[0][0] = "N. CONTRATO";
+        datos[0][1] = "ID CONTRATANTE";
+        datos[0][2] = "TIPO ID CONT";
+        datos[0][3] = "NOMBRE CONTRATANTE";
+        datos[0][4] = "FECHA INICIAL";
+        datos[0][5] = "FECHA FINAL";
+        datos[0][6] = "CIU ORIGEN";
+        datos[0][7] = "DEP ORIGEN";
+        datos[0][8] = "CIU DESTINO";
+        datos[0][9] = "DEP DESTINO";
+
+        if(cantidad == 0){
+            return datos;
+        }
+
+        pstate = coneccion.prepareStatement(consultar);
+
+        pstate.setString(1, con_id);
+        pstate.setString(2, con_contratante);
+        pstate.setString(3, con_nombre);
+
+        resultado = pstate.executeQuery();
+
+        while(resultado.next()){
+
+            datos[i][0] = resultado.getString(1);
+            datos[i][1] = resultado.getString(2);
+            datos[i][2] = resultado.getString(3);
+            datos[i][3] = resultado.getString(4);
+            datos[i][4] = resultado.getString(5);
+            datos[i][5] = resultado.getString(6);
+            datos[i][6] = resultado.getString(7);
+            datos[i][7] = resultado.getString(8);
+            datos[i][8] = resultado.getString(9);
+            datos[i][9] = resultado.getString(10);
+            i++;
+        }
+
+        return datos;
+    }
+
+    public void insertar_contrato_ocasional(int numero_contrato, String contratante, String fecha_inical, String fecha_final, int origen, int destino )throws SQLException{
+
+        insertar = "insert into contrato_ocasional values (?,?,?,?,?,?);";
+
+        pstate = coneccion.prepareStatement(insertar);
+
+        pstate.setInt(1, numero_contrato);
+        pstate.setString(2, contratante);
+        pstate.setString(3, fecha_inical);
+        pstate.setString(4, fecha_final);
+        pstate.setInt(5, origen);
+        pstate.setInt(6, destino);
+
+        pstate.executeUpdate(); 
+
+
+    }
     // metodos relacionados con contratos mensuales
 
     public String[] consultar_uno_contrato_mensual(int contrato)throws SQLException{
@@ -3051,7 +3155,7 @@ public class Base extends Base_datos{
 
             datos = new String[cantidad+1][8];
 
-            resultado = state.executeQuery(consultar);
+            
             
             datos[0][0] = "N. CONTRATO";
             datos[0][1] = "ID CONTRATANTE";
@@ -3065,6 +3169,8 @@ public class Base extends Base_datos{
             if(cantidad == 0){
                 return datos;
             }
+
+            resultado = state.executeQuery(consultar);
 
             while(resultado.next()){
 
