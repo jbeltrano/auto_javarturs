@@ -303,6 +303,7 @@ create table contrato_ocasional(
     con_fecha_final date not null,
     con_origen integer not null,
     con_destino integer not null,
+    con_valor decimal not null,
     
     foreign key(con_contratante) references contratante(con_contratante)
     foreign key(con_origen) references ciudad(ciu_id),
@@ -328,20 +329,34 @@ create table extracto_mensual(
 
 );
 
-insert into vehiculo values ('SXT705',1,2013,'MERCEDES BENZ','OH1526',6374,'BLANCO VERDE',2,'DIESEL','CERRADA','906998U1033799','9BM368006DB886948',45,'20384716',1);
-insert into vehiculo values ('SXT696',1,2013,'MERCEDES BENZ','OH1526',6374,'BLANCO VERDE',2,'DIESEL','CERRADA','906998U1033556','9BM368006DB886593',45,'80391277',1);
-insert into vehiculo values ('SXC228',3,2013,'PALITO','PALITO',1200,'BLANCO',2,'DIESEL','PALITO','PALITO','PALITO',28,'1068972260',0);
+create table extracto_ocasional(
+    veh_placa text not null,
+    ext_consecutivo integer not null,
+    con_id integer not null,
+    
+    primary key(veh_placa, ext_consecutivo),
+    foreign key(veh_placa) references vehiculo(veh_placa),
+    foreign key(con_id) references contrato_ocasional(con_id)
+    
+);
 
-INSERT INTO DOCUMENTO VALUES ('SXT705',1234,'2024-2-4','2024-1-30','2024-10-18','2024-10-18',308079,'2022-7-18');
-INSERT INTO DOCUMENTO VALUES ('SXT696',2345,'2024-2-8','2024-2-25','2024-10-18','2024-10-18',401199,'2025-11-27');
 
--- Esta tabla es auxiliar para tener el ultimo numero interno
+-- Esta tabla es auxiliar para tener el ultimo numero consecutivo
 -- un extracto mensual
 create table consecutivo_extracto_mensual(
     con_placa text not null primary key,
     con_numero integer not null
 );
 
+-- Esta tabla es auxiliar, y sirve para registrar el numero consecutivo
+-- de un vehiculo
+create table consecutivo_extracto_ocasional(
+    con_placa text primary key,
+    con_numero integer not null);
+
+
+
+-- Seccion de las vistas de las diferentes tablas
 create view vw_vehiculo as 
     select veh_placa, cla_nombre, veh_modelo, 
     veh_marca, veh_linea, veh_cilindrada, veh_color,ser_nombre, 
@@ -442,7 +457,8 @@ select con_id,
     con_ciu_origen,
     con_dep_origen,
     con_cui_destino,
-    con_dep_destino
+    con_dep_destino,
+    con_valor
     from contrato_ocasional 
         natural join vw_contratante
         join (select ciu_id, ciu_nombre as con_ciu_origen, dep_nombre as con_dep_origen from ciudad natural join departamento) 

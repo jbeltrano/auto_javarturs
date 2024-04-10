@@ -35,6 +35,7 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
     private JLabel label_fecha_final;
     private JLabel label_origen;
     private JLabel label_destino;
+    private JLabel label_valor_contrato;
     private JPanel jPanel1;
     private JScrollPane scroll_contratante;
     private JScrollPane scroll_origen;
@@ -42,14 +43,15 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
     private JTable tabla_contratante;
     private JTable tabla_origen;
     private JTable tabla_destino;
-    private JTextField text_contratante;
-    private JTextField text_origen;
-    private JTextField text_destino;
-    private JTextField text_numero_contrato;
+    protected JTextField text_contratante;
+    protected JTextField text_origen;
+    protected JTextField text_destino;
+    protected JTextField text_numero_contrato;
+    protected JTextField text_valor_contrato;
     private JDialog ventana;
-    private JDateChooser fecha_incial;
-    private JDateChooser fecha_final;
-    private Date fecha_sistema;
+    protected JDateChooser fecha_incial;
+    protected JDateChooser fecha_final;
+    protected Date fecha_sistema;
 
 
     public Insertar_contrato_ocasional(JFrame padre, String url){
@@ -67,6 +69,8 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         scroll_destino = new JScrollPane();
         label_contratante = new JLabel();
         text_contratante = new JTextField();
+        label_valor_contrato = new JLabel();
+        text_valor_contrato = new JTextField();
         text_origen = new JTextField();
         text_destino = new JTextField();
         scroll_contratante = new JScrollPane();
@@ -127,6 +131,17 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
                 accion_tabla_contratante();
             }
         });
+
+
+
+        label_valor_contrato.setText("Valor del contrato");
+        label_valor_contrato.setBounds(label_contratante.getX()+ label_contratante.getWidth() + 80, POSICION_X, 150, LONGITUD_Y);
+        jPanel1.add(label_valor_contrato);
+
+        text_valor_contrato.setText("");
+        text_valor_contrato.setBounds(label_valor_contrato.getX(), label_contratante.getY() + LONGITUD_Y + 10, 100, LONGITUD_Y);
+        jPanel1.add(text_valor_contrato);
+
         JDialog padre = this;
         tabla_contratante.addMouseListener(new MouseAdapter() {
             
@@ -344,20 +359,23 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         int origen;
         int destino;
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
-
+        double valor_contrato;
+        text_valor_contrato.setText(text_valor_contrato.getText().replaceAll(",", "."));
+        
         base = new Base(url);
         try{
             Integer.parseInt(text_contratante.getText());
             numero_contrato = (text_numero_contrato.getText().compareTo("") == 0)?null: Integer.parseInt(text_numero_contrato.getText());
+            valor_contrato = (text_valor_contrato.getText().compareTo("") == 0)?0:Double.parseDouble(text_valor_contrato.getText());
             contratante = (text_contratante.getText().compareTo("") == 0)?null: text_contratante.getText();
             ffecha_inicial = formato.format(fecha_incial.getDate());
             ffecha_final = formato.format(fecha_final.getDate());
             origen = (text_origen.getText().compareTo("") == 0)?0: Integer.parseInt(text_origen.getText());
             destino = (text_destino.getText().compareTo("") == 0)?0: Integer.parseInt(text_destino.getText());
             
-            if(contratante != null && origen != 0 && destino != 0 && numero_contrato != 0){
+            if(contratante != null && origen != 0 && destino != 0 && numero_contrato != 0 && valor_contrato != 0){
 
-                base.insertar_contrato_ocasional(numero_contrato, contratante, ffecha_inicial, ffecha_final, origen, destino);
+                base.insertar_contrato_ocasional(numero_contrato, contratante, ffecha_inicial, ffecha_final, origen, destino, valor_contrato);
                 JOptionPane.showMessageDialog(this, "Contrato Ocasional guardado correctamente", "Transaccion exitosa", JOptionPane.INFORMATION_MESSAGE);
                 base.close();
                 setVisible(false);

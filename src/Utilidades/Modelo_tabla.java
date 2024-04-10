@@ -10,6 +10,7 @@ import javax.swing.table.TableColumnModel;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -28,7 +29,7 @@ public class Modelo_tabla {
                 return false;
             }
         };
-
+        
         for(int i = 0; i < datos[0].length; i++){
             modelo.addColumn(datos[0][i]);
         }
@@ -69,7 +70,7 @@ public class Modelo_tabla {
         JTable tab = new JTable();
         DefaultTableModel modelo; 
         TableColumnModel clum_model;
-
+        
         modelo = set_modelo_tablas(datos);
         tab = new JTable(modelo);
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -290,7 +291,6 @@ public class Modelo_tabla {
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         add_mouse_listener(tab);
         tab.setCellSelectionEnabled(true);
-        
         // Configuarcion del tamaño de las columnas
         clum_model = tab.getColumnModel();
         clum_model.getColumn(0).setPreferredWidth(80);

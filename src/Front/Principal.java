@@ -4,6 +4,7 @@ import Base.Base;
 import Front.Ciudades_departamentos.Actualizar_ciudad;
 import Front.Ciudades_departamentos.Insertar_ciudad;
 import Front.Extractos.Actualizar_contratante;
+import Front.Extractos.Actualizar_contrato_ocasional;
 import Front.Extractos.Insertar_contratante;
 import Front.Extractos.Insertar_contrato_mensual;
 import Front.Extractos.Insertar_contrato_ocasional;
@@ -1624,18 +1625,13 @@ public class Principal extends JFrame{
                     // realizando la eliminacion del registro
                     base.eliminar_extracto_mensual(placa, Integer.parseInt(consecutivo));
 
-                    // vuelve y carga los valores de la tabla
-                    tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
                 }
                 
                 base.close();
                 JOptionPane.showMessageDialog(this, "Extracto eliminado correctamente");
-
+                boton_extractos_mensuales.doClick();
             }
                   
         });
@@ -1811,24 +1807,42 @@ public class Principal extends JFrame{
 
         });
 
+        item_actualizar.addActionListener(accion ->{
+            int number = tabla.getSelectedRow();
+            int id = Integer.parseInt((String)tabla.getValueAt(number, 0));
+
+            new Actualizar_contrato_ocasional(this, url, id).setVisible(true);
+
+            base = new Base(url);
+                try{
+                    tabla = Modelo_tabla.set_tabla_contratos_ocasionales(base.consultar_contrato_ocasional(text_busqueda.getText()));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            base.close();
+
+        });
+
         item_eliminar.addActionListener(accion ->{
             
-            // int number = tabla.getSelectedRow();
-            // String id = "" + tabla.getValueAt(number, 0);
-            // String nombre = "" + tabla.getValueAt(number, 2);
-            // number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el contrato:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
-            // if(number == 0){
-            //     base = new Base(url);
-            //     try{
-            //         base.eliminar_contrato_mensual(Integer.parseInt(id));
-            //     }catch(SQLException ex){
-            //         JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-            //     }
+                int number = tabla.getSelectedRow();
+                String id = "" + tabla.getValueAt(number, 0);
+            String nombre = "" + tabla.getValueAt(number, 2);
+            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el contrato:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
+            if(number == 0){
+                base = new Base(url);
+                try{
+                    base.eliminar_contrato_ocasional(Integer.parseInt(id));
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }
                 
-            //     base.close();
-            //     JOptionPane.showMessageDialog(this, "Contrato eliminado correctamente");
-            //     boton_contratos_mensuales.doClick();
-            // }
+                base.close();
+                JOptionPane.showMessageDialog(this, "Contrato eliminado correctamente");
+                boton_contratos_ocasionales.doClick();
+            }
                   
         });
 
