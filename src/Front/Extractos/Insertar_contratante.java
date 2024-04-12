@@ -176,8 +176,8 @@ public class Insertar_contratante extends Modal_extracto{
 
             if(band){
                 try{
-                    Integer.parseInt(text_contratante.getText());
-                    Integer.parseInt(text_responsable.getText());
+                    Double.parseDouble(text_contratante.getText());
+                    Double.parseDouble(text_responsable.getText());
 
                     guardar();
 

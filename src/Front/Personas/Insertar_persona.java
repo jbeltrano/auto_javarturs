@@ -93,9 +93,9 @@ public class Insertar_persona extends Modales_personas{
         jPanel1.add(combo_tipo_documento);
         combo_tipo_documento.setBounds(17, 28, 103, 22);
 
-        jLabel2.setText("Numero");
+        jLabel2.setText("Numero de Identidad");
         jPanel1.add(jLabel2);
-        jLabel2.setBounds(166, 6, 69, 16);
+        jLabel2.setBounds(166, 6, 120, 16);
 
         text_documento.setText("");
         jPanel1.add(text_documento);

@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import Base.Base;
+import Utilidades.Generar_extractos;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
 import javax.swing.GroupLayout;
@@ -350,8 +351,15 @@ public class Insertar_extracto_mensual extends Modal_documento {
         boton_exportar.addActionListener(accion ->{
             boolean band = g_insertar_extracto_mensual();
             if(band){
-                generar_extracto_excel(text_placa.getText(), Integer.parseInt(text_consecutivo.getText()), this, url);
-                    JOptionPane.showMessageDialog(this, "Extracto generado correctamente","Exito", JOptionPane.INFORMATION_MESSAGE);
+                try{
+                    String ruta;
+                    ruta = Generar_extractos.generar_extracto_mensual_excel(text_placa.getText(), Integer.parseInt(text_consecutivo.getText()), url);
+                    JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
+                }catch(Exception e){
+                    JOptionPane.showMessageDialog(this, e.getMessage(),"Error",  JOptionPane.ERROR_MESSAGE);
+                }
+                
+                JOptionPane.showMessageDialog(this, "Extracto generado correctamente","Exito", JOptionPane.INFORMATION_MESSAGE);
                 setVisible(false);
             }
             

@@ -7,10 +7,8 @@ import javax.swing.ToolTipManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -190,8 +188,8 @@ public class Modelo_tabla {
         clum_model.getColumn(0).setPreferredWidth(70);
         clum_model.getColumn(1).setPreferredWidth(40);
         clum_model.getColumn(2).setPreferredWidth(40);
-        clum_model.getColumn(3).setPreferredWidth(100);
-        clum_model.getColumn(4).setPreferredWidth(40);
+        clum_model.getColumn(3).setPreferredWidth(40);
+        clum_model.getColumn(4).setPreferredWidth(100);
         clum_model.getColumn(5).setPreferredWidth(180);
         
 

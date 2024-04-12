@@ -5,6 +5,7 @@ import Front.Ciudades_departamentos.Actualizar_ciudad;
 import Front.Ciudades_departamentos.Insertar_ciudad;
 import Front.Extractos.Actualizar_contratante;
 import Front.Extractos.Actualizar_contrato_ocasional;
+import Front.Extractos.Actualizar_todo_ext_mensual;
 import Front.Extractos.Insertar_contratante;
 import Front.Extractos.Insertar_contrato_mensual;
 import Front.Extractos.Insertar_contrato_ocasional;
@@ -20,6 +21,7 @@ import Front.Vehiculos.Insertar_documento_vehiculo;
 import Front.Vehiculos.Insertar_tipo_vehiculo;
 import Front.Vehiculos.Insertar_vehiculo_conductor;
 import Front.Vehiculos.Insertar_vehiculos;
+import Utilidades.Generar_extractos;
 import Utilidades.Key_adapter;
 import Utilidades.Leer_link;
 import Utilidades.Modelo_tabla;
@@ -45,6 +47,7 @@ import java.awt.Desktop;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.JobAttributes;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
@@ -75,6 +78,8 @@ public class Principal extends JFrame{
     private JMenuItem item_actualizar;
     private JMenuItem item_exportar;
     private JMenuItem item_eliminar;
+    private JMenuItem item_actualizar_todos;
+    private JMenuItem item_exportar_todos;
     private JButton base_vehiculos;
     private JButton base_empleados;
     private JButton tipo_vehiculo;
@@ -1023,9 +1028,9 @@ public class Principal extends JFrame{
         tabla.setComponentPopupMenu(pop_menu);
         tabla.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tabla.setComponentPopupMenu(pop_menu);
-        tabla.getTableHeader().setReorderingAllowed(false);
+        tabla.getTableHeader().setReorderingAllowed(false); 
         tabla.setCellSelectionEnabled(true);
-        add_mouse_listener(tabla);
+        Modelo_tabla.add_mouse_listener(tabla);
         
         
         cl_model = tabla.getColumnModel();
@@ -1599,8 +1604,14 @@ public class Principal extends JFrame{
 
         item_exportar.addActionListener(accion ->{
             int select_row = tabla.getSelectedRow();
-
-            Insertar_extracto_mensual.generar_extracto_excel((String) tabla.getValueAt(select_row, 0),Integer.parseInt((String) tabla.getValueAt(select_row, 1)),this, url);
+            try{
+                String ruta;
+                ruta = Generar_extractos.generar_extracto_mensual_excel((String) tabla.getValueAt(select_row, 0),Integer.parseInt((String) tabla.getValueAt(select_row, 1)), url);
+                JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            
             base = new Base(url);
             try{
                 tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
@@ -1636,8 +1647,41 @@ public class Principal extends JFrame{
                   
         });
 
+        item_exportar_todos.addActionListener(accion ->{
+            String placa;
+            String consecutivo;
+            try{
 
+                for(int i = 0; i < tabla.getRowCount(); i++){
+                    placa = (String) tabla.getValueAt(i, 0);
+                    consecutivo = (String) tabla.getValueAt(i, 1);
+    
+                    Generar_extractos.generar_extracto_mensual_excel(placa, Integer.parseInt(consecutivo), url);
+                }
 
+                JOptionPane.showMessageDialog(this, "Extractos guardado con exito.", "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        });
+
+        item_actualizar_todos.addActionListener(accion -> {
+
+            new Actualizar_todo_ext_mensual(this, url).setVisible(true);
+
+            base = new Base(url);
+            try{
+                tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                tabla.setComponentPopupMenu(pop_menu);
+                scroll.setViewportView(tabla );
+                
+            }catch(SQLException ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            base.close();
+
+        });
         JFrame padre = this;
         
         text_busqueda.addKeyListener(new Key_adapter() {
@@ -2010,8 +2054,10 @@ public class Principal extends JFrame{
     private void config_pop_menu_extractos(){
         item_actualizar = new JMenuItem("Modificar");
         item_adicionar = new JMenuItem("Adicionar");
-        item_exportar = new JMenuItem("Exportar");
+        item_exportar = new JMenuItem("Exportar uno");
         item_eliminar = new JMenuItem("Eliminar");
+        item_exportar_todos = new JMenuItem("Exportar todos");
+        item_actualizar_todos = new JMenuItem("Actualizar todos");
 
         pop_menu = new JPopupMenu();
         
@@ -2019,29 +2065,8 @@ public class Principal extends JFrame{
         pop_menu.add(item_actualizar);
         pop_menu.add(item_exportar);
         pop_menu.add(item_eliminar);
+        pop_menu.add(item_exportar_todos);
+        pop_menu.add(item_actualizar_todos);
     }
     
-    
-
-    public static void add_mouse_listener(JTable tabla){
-
-        tabla.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mousePressed(java.awt.event.MouseEvent e) {
-                if (SwingUtilities.isRightMouseButton(e)) {
-                    // Obtener la fila seleccionada
-                    int filaSeleccionada = tabla.rowAtPoint(e.getPoint());
-                    int columna = tabla.columnAtPoint(e.getPoint());
-
-                    // Seleccionar la fila
-                    tabla.setRowSelectionInterval(filaSeleccionada, filaSeleccionada);
-                    tabla.setColumnSelectionInterval(columna,columna);
-
-                    // Mostrar el menú contextual
-                    
-                }
-                
-            }
-        });
-    }
 }

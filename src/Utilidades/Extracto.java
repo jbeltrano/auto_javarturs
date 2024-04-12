@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -86,9 +85,13 @@ public class Extracto {
     }
 
     public void set_contratante(String nombre, String tipo, String documento){
+        String documento_completo;
+        if(tipo.equals("NIT")){
+            documento_completo = tipo + ": " + convertir_formato(documento.substring(0, documento.length()-1)) + "-" + documento.charAt(documento.length()-1);
+        }else{
+            documento_completo = tipo + ": " + convertir_formato(documento);
+        }
         
-
-        String documento_completo = tipo + ": " + convertir_formato(documento);
         set_cell(ROW_CONTRATANTE, COLUMN_NOMBRE_CONTRATANTE, nombre);
         set_cell(ROW_CONTRATANTE, COLUMN_NUM_ID_CONTRATANTE, documento_completo);
 
@@ -258,28 +261,27 @@ public class Extracto {
      */
     public void guardar(String dir_salida) throws IOException{
 
-        try{
-            OutputStream out = new FileOutputStream(dir_salida +"\\"+ get_cell(ROW_DATOS_VEHICULO1, COLUMN_PLACA) +".xlsx");
-
-            libro.write(out);
-            libro.close();
-            out.close();
-        }catch(IOException ex){
-            throw ex;
-        }
+        guardar(dir_salida, "");
         
     }
 
     public void guardar(String dir_salida, String complemento) throws IOException{
-
+        String nombre_archivo = get_cell(ROW_DATOS_VEHICULO1, COLUMN_PLACA) + " " + complemento + ".xlsx";
         try{
-            OutputStream out = new FileOutputStream(dir_salida +"\\"+ get_cell(ROW_DATOS_VEHICULO1, COLUMN_PLACA) + " " + complemento + ".xlsx");
-            
+            File file = new File(dir_salida,nombre_archivo);
+            OutputStream out;
 
+            if (!file.getParentFile().exists()) {
+                // Si no existe, intenta crearla
+                file.getParentFile().mkdirs();
+            }
+
+            out = new FileOutputStream(dir_salida +"\\"+ nombre_archivo);
             libro.write(out);
+            out.close();
             libro.close();
             plantilla.close();
-            out.close();
+            
         }catch(IOException ex){
             throw ex;
         }

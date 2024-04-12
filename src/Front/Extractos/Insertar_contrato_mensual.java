@@ -148,7 +148,7 @@ public class Insertar_contrato_mensual extends Modal_extracto{
             if(band){
                 try{
     
-                    Integer.parseInt(text_contratante.getText());
+                    Double.parseDouble(text_contratante.getText());
 
                     guardar();
 

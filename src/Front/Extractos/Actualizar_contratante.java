@@ -20,6 +20,7 @@ public class Actualizar_contratante extends Insertar_contratante{
 
         text_contratante.setEnabled(false);
         tabla_contratante.setEnabled(false);
+        
     }
 
     @Override

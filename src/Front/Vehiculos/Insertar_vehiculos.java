@@ -19,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.GroupLayout;
 import Base.Base;
 import Front.Personas.Insertar_persona;
+import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
 
 public class Insertar_vehiculos extends Modales_vehiculos{
@@ -69,7 +70,7 @@ public class Insertar_vehiculos extends Modales_vehiculos{
     
     @Override
     protected void iniciar_componentes(){
-
+        JDialog padre = this;
         jPanel1 = new JPanel();
         label_placa = new JLabel();
         text_placa = new JTextField("");
@@ -217,16 +218,42 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         text_pasajeros.setBounds(20, 280, 64, 22);
 
         boton_parque.setText("Parque Automotor Javarturs");
+        boton_parque.setSelected(true);
         jPanel1.add(boton_parque);
         boton_parque.setBounds(260, 280, 200, 21);
 
         jLabel11.setText("Propietario");
         jPanel1.add(jLabel11);
         jLabel11.setBounds(130, 250, 90, 16);
+        
+        text_propietario.addKeyListener(new Key_adapter() {
+            
 
-        text_propietario.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                text_propietarioKeyTyped(evt);
+            @Override
+            public void accion() {
+                String datos[][] = null;
+                
+                
+                base = new Base(url);
+                try{
+                    datos = base.consultar_persona(text_propietario.getText());
+                    JTable tabla_aux = Modelo_tabla.set_tabla_personas(datos); 
+                    tab.setModel(tabla_aux.getModel());
+                    tab.setColumnModel(tabla_aux.getColumnModel());
+        
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    padre.setVisible(false);
+                    base.close();
+                }finally{
+                    base.close();
+                }
+                
+            }
+            @Override
+            public void accion2() {
+                // TODO Auto-generated method stub
+                
             }
         });
         
@@ -241,15 +268,9 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         }
         base.close();
 
-        tab.setModel(Modelo_tabla.set_modelo_tablas(datos));            
-        tab.getTableHeader().setReorderingAllowed(false);
-        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tab.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tab.getColumnModel().getColumn(1).setPreferredWidth(35);
-        tab.getColumnModel().getColumn(2).setPreferredWidth(200);
-        tab.getColumnModel().getColumn(6).setPreferredWidth(150);
+        tab = Modelo_tabla.set_tabla_personas(datos);
         
-        JDialog padre = this;
+        
 
         tab.addMouseListener(new MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent e){
@@ -261,13 +282,10 @@ public class Insertar_vehiculos extends Modales_vehiculos{
                     base = new Base(url);
                     try {
                         datos = base.consultar_persona();
-                        tab.setModel(Modelo_tabla.set_modelo_tablas(datos));
-                        tab.getTableHeader().setReorderingAllowed(false);
-                        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-                        tab.getColumnModel().getColumn(0).setPreferredWidth(100);
-                        tab.getColumnModel().getColumn(1).setPreferredWidth(35);
-                        tab.getColumnModel().getColumn(2).setPreferredWidth(200);
-                        tab.getColumnModel().getColumn(6).setPreferredWidth(150);
+                        JTable tabla_aux = Modelo_tabla.set_tabla_personas(datos);
+                        tab.setModel(tabla_aux.getModel());
+                        tab.setColumnModel(tabla_aux.getColumnModel());
+                        
                     } catch (SQLException ec) {
                         JOptionPane.showMessageDialog(null, ec.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                         base.close();
@@ -371,28 +389,6 @@ public class Insertar_vehiculos extends Modales_vehiculos{
 
         pack();
     }
-
-    protected void text_propietarioKeyTyped(java.awt.event.KeyEvent evt) {                                          
-        
-        String datos[][] = null;
-        String variable_auxiliar = text_propietario.getText();
-        
-        if(evt.getExtendedKeyCode() != 8){
-            variable_auxiliar = variable_auxiliar.concat(evt.getKeyChar()+"");
-        }
-        base = new Base(url);
-        try{
-            datos = base.consultar_persona(variable_auxiliar);
-            tab.setModel(Modelo_tabla.set_modelo_tablas(datos));
-            
-
-
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            this.setVisible(false);
-            base.close();
-        }
-        base.close();
-    }           
+   
 
 }
