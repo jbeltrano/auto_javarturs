@@ -1919,11 +1919,173 @@ public class Principal extends JFrame{
 
     }
 
-    public static JTable set_tabla_extractos_ocasionales(){
-        return new JTable();
-    }
+    // Metodo para ver los extractos ocasionales
     private JPanel ver_extractos_ocasionales(){
-        return new JPanel();
+        
+        configuracion_panel_busqueda();
+        JPanel panel = new JPanel(new BorderLayout());
+        JScrollPane scroll = new JScrollPane();
+        String[][] datos = null;
+        
+        // Inicializaicon pop_menu
+        config_pop_menu_extractos();
+
+        // Obteniendo datos de la base de datos
+        base = new Base(url);
+        try{
+            datos = base.consultar_vw_extracto_ocasional("");
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }
+        
+        base.close();
+
+        // Configuracion de la visualizacion y opciones de la tabla
+
+        tabla = Modelo_tabla.set_tabla_extractos_ocasionales(datos);
+        tabla.setComponentPopupMenu(pop_menu);
+        scroll.setViewportView(tabla);
+
+        // Configuracion de los item 
+        item_actualizar.addActionListener(accion->{
+
+            // actualizar_extracto
+            new Insertar_extracto_mensual(this, url).setVisible(true);
+            base = new Base(url);
+                try{
+                    tabla = Modelo_tabla.set_tabla_extractos_ocasionales(base.consultar_vw_extracto_ocasional(text_busqueda.getText()));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                base.close();
+            
+
+        });
+        item_adicionar.addActionListener(accion ->{
+
+            new Insertar_extracto_mensual(this, url).setVisible(true);
+            base = new Base(url);
+                try{
+                    tabla = Modelo_tabla.set_tabla_extractos_ocasionales(base.consultar_vw_extracto_ocasional(text_busqueda.getText()));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                base.close();
+        });
+
+        item_exportar.addActionListener(accion ->{
+            int select_row = tabla.getSelectedRow();
+            try{
+                String ruta;
+                ruta = Generar_extractos.generar_extracto_mensual_excel((String) tabla.getValueAt(select_row, 0),Integer.parseInt((String) tabla.getValueAt(select_row, 1)), url);
+                JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            
+            base = new Base(url);
+            try{
+                tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                tabla.setComponentPopupMenu(pop_menu);
+                scroll.setViewportView(tabla );
+                
+            }catch(SQLException ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            base.close();
+
+        });
+        item_eliminar.addActionListener(accion ->{
+            
+            int number = tabla.getSelectedRow();
+            String placa = "" + tabla.getValueAt(number, 0);
+            String consecutivo = "" + tabla.getValueAt(number, 1);
+            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el extracto " + consecutivo + "\ndel vehiculo "+placa,  "eliminar", JOptionPane.OK_CANCEL_OPTION);
+            if(number == 0){
+                base = new Base(url);
+                try{
+                    // realizando la eliminacion del registro
+                    base.eliminar_extracto_mensual(placa, Integer.parseInt(consecutivo));
+
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }
+                
+                base.close();
+                JOptionPane.showMessageDialog(this, "Extracto eliminado correctamente");
+                boton_extractos_mensuales.doClick();
+            }
+                  
+        });
+
+        item_exportar_todos.addActionListener(accion ->{
+            String placa;
+            String consecutivo;
+            try{
+
+                for(int i = 0; i < tabla.getRowCount(); i++){
+                    placa = (String) tabla.getValueAt(i, 0);
+                    consecutivo = (String) tabla.getValueAt(i, 1);
+    
+                    Generar_extractos.generar_extracto_mensual_excel(placa, Integer.parseInt(consecutivo), url);
+                }
+
+                JOptionPane.showMessageDialog(this, "Extractos guardado con exito.", "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        });
+
+        item_actualizar_todos.addActionListener(accion -> {
+
+            new Actualizar_todo_ext_mensual(this, url).setVisible(true);
+
+            base = new Base(url);
+            try{
+                tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                tabla.setComponentPopupMenu(pop_menu);
+                scroll.setViewportView(tabla );
+                
+            }catch(SQLException ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            base.close();
+
+        });
+        JFrame padre = this;
+        
+        text_busqueda.addKeyListener(new Key_adapter() {
+            
+            @Override
+            public void accion(){
+
+                base = new Base(url);
+                    try {
+                        tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                        tabla.setComponentPopupMenu(pop_menu);
+                        scroll.setViewportView(tabla);
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                    base.close();
+
+            }
+
+            @Override
+            public void accion2(){}
+        });
+        
+
+        panel.add(panel_busqueda, BorderLayout.NORTH);
+        panel.add(scroll, BorderLayout.CENTER);
+
+        return panel;
+
     }
 
     // Metodos relacionados con contratante

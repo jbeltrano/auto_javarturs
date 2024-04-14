@@ -310,7 +310,19 @@ create table contrato_ocasional(
     foreign key(con_destino) references ciudad(ciu_id)    
 
 );
+-- tabla para los vehiculos externos
+-- o que nohacen parte del parque automotor de
+-- la empresa
+
+drop table vehiculos_externos;
+create table vehiculo_externo(
+    veh_placa text primary key,
+    per_id text not null,
     
+    foreign key(per_id) references persona(per_id)
+);
+
+
 create table extracto_mensual(
     veh_placa text not null,
     ext_consecutivo integer not null,
@@ -319,15 +331,16 @@ create table extracto_mensual(
     ext_fecha_final date not null,
     ext_origen integer not null,
     ext_destino integer not null,
+    tc_id integer not null,
 
     unique(veh_placa, ext_consecutivo),
     primary key(veh_placa, ext_consecutivo),
     foreign key(con_id) references contrato_mensual(con_id),
     foreign key(veh_placa) references vehiculo(veh_placa),
     foreign key(ext_origen) references ciudad(ciu_id),
-    foreign key(ext_destino) references ciudad(ciu_id)
-
-);
+    foreign key(ext_destino) references ciudad(ciu_id),
+    foreign key(tc_id) references tipo_contrato(tc_id)
+    );
 
 create table extracto_ocasional(
     veh_placa text not null,
@@ -340,6 +353,18 @@ create table extracto_ocasional(
     
 );
 
+-- Esta tabla es para definir el tipo
+-- de contrato del personal que se va a cargar
+create table tipo_contrato(
+
+    tc_id integer primary key,
+    tc_nombre text not null
+);
+
+insert into tipo_contrato values (1, 'ESTUDIANTIL');
+insert into tipo_contrato values (2, 'PARTICULAR');
+insert into tipo_contrato values (3, 'EMPRESARIAL');
+insert into tipo_contrato values (4, 'PERSONALIZADO');
 
 -- Esta tabla es auxiliar para tener el ultimo numero consecutivo
 -- un extracto mensual
@@ -362,7 +387,8 @@ create view vw_vehiculo as
     veh_marca, veh_linea, veh_cilindrada, veh_color,ser_nombre, 
     veh_combustible, veh_tipo_carroceria, veh_numero_motor, 
     veh_numero_chasis,veh_cantidad,tip_nombre,per_id, per_nombre 
-    from vehiculo join persona on per_id = veh_propietario natural join clase_vehiculo natural join tipo_id natural join servicio;
+    from vehiculo join persona on per_id = veh_propietario natural join clase_vehiculo natural join tipo_id natural join servicio
+        order by veh_placa asc;
 
 create view vw_vehiculo_sin_documento as
     select * 
@@ -371,7 +397,7 @@ create view vw_vehiculo_sin_documento as
 
 create view vw_persona as 
     select per_id, tip_nombre,per_nombre, per_celular,ciu_nombre,dep_nombre,per_direccion, per_correo
-    from persona natural join tipo_id natural join ciudad natural join departamento;
+    from persona natural join tipo_id natural join ciudad natural join departamento order by per_nombre asc;
 
 create view vw_persona_natural as
     select per_id, tip_nombre,per_nombre, per_celular,ciu_nombre,dep_nombre,per_direccion 
@@ -456,12 +482,23 @@ select con_id,
     con_fecha_final,
     con_ciu_origen,
     con_dep_origen,
-    con_cui_destino,
+    con_ciu_destino,
     con_dep_destino,
     con_valor
     from contrato_ocasional 
         natural join vw_contratante
         join (select ciu_id, ciu_nombre as con_ciu_origen, dep_nombre as con_dep_origen from ciudad natural join departamento) 
             on (ciu_id = con_origen)
-        join (select ciu_id as ciudad_id, ciu_nombre as con_cui_destino, dep_nombre as con_dep_destino from ciudad natural join departamento) 
+        join (select ciu_id as ciudad_id, ciu_nombre as con_ciu_destino, dep_nombre as con_dep_destino from ciudad natural join departamento) 
             on (ciudad_id = con_destino);
+
+create view vw_extracto_ocasional as
+    select veh_placa, ext_consecutivo, con_id, 
+    con_tipo_id, con_contratante, con_nombre, 
+    con_fecha_inicial, con_fecha_final, con_ciu_origen, 
+    con_dep_origen, con_ciu_destino, con_dep_destino 
+        from extracto_ocasional natural join vw_contrato_ocasional;
+
+CREATE VIEW VW_VEHICULO_EXTERNO AS
+SELECT VEH_PLACA, PER_ID, PER_NOMBRE 
+    FROM VEHICULO_EXTERNO NATURAL JOIN PERSONA;

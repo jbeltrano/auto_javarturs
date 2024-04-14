@@ -15,10 +15,16 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Extracto {
     
+    public static final int ESTUDIANTIL = 1;
+    public static final int EMPRESARIAL = 3;
+    public static final int PARTICULAR = 2;
+    public static final int PERSONALIZADO = 4;
     public static final String COMPLEMENTO_NOMRAL = "OCASIONAL NORMAL";
     public static final String COMPLEMENTO_EXTEMPORANEO = "OCASIONAL EXTEMPORANEO";
     public static final String TIPO_CONTRATO_PARTICULAR = "SERVICIO DE TRANSPORTE DE PERSONAL PARTICULAR";
     public static final String TIPO_CONTRATO_EMPRESARIAL = "SERVICIO DE TRANSPORTE DE PERSONAL EMPRESARIAL";
+    public static final String TIPO_CONTRATO_ESTUDIANTIL = "SERVICIO DE TRANSPORTE DE PERSONAL ESTUDIANTIL";
+    public static final String TIPO_CONTRATO_PERSONALIZADO = "SERVICIO DE TRANSPORTE DE PERSONAL PRESENTADO POR ";
     public static final String [] MES = {"","ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO","AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"};
     private static final int ROW_NUMERO_PRINCIPAL = 8;
     private static final int COLUMN_NUMERO_PRINCIPAL = 0;
@@ -31,6 +37,9 @@ public class Extracto {
     private static final int COLUMN_BOJETO_CONTRATO = 2;
     private static final int ROW_ORIGEN_DESTINO = 14;
     private static final int COLUMN_ORIGEN_DESTINO = 2;
+    private static final int ROW_CONVENIO = 15;
+    private static final int COLUMN_CONVENIO_NOMBRE = 0;
+    private static final int COLUMN_CONVENIO_DOCUMENTO = 4;
     private static final int ROW_FECHA_INICIAL = 18;
     private static final int ROW_FECHA_FINAL = 20;
     private static final int COLUMN_DIA = 3;
@@ -84,12 +93,24 @@ public class Extracto {
         set_cell(ROW_CONTRATO, COLUMN_CONTRARO, contrato);
     }
 
+    /**
+     * Este metodo se encarga de modificar los valores
+     * de las celdas donde esta ubicado el contratante
+     * adicionalmente dependiendo del tipo de documento
+     * hace un set en en tipo de contrato, si es nit
+     * es empresarial y si no es particular
+     * @param nombre
+     * @param tipo
+     * @param documento
+     */
     public void set_contratante(String nombre, String tipo, String documento){
         String documento_completo;
         if(tipo.equals("NIT")){
-            documento_completo = tipo + ": " + convertir_formato(documento.substring(0, documento.length()-1)) + "-" + documento.charAt(documento.length()-1);
+            documento_completo = tipo + ": " + convertir_formato(documento) + "-" + Digito.get_digito_nit(documento);
+            set_tipo_contrato(TIPO_CONTRATO_EMPRESARIAL);
         }else{
             documento_completo = tipo + ": " + convertir_formato(documento);
+            set_tipo_contrato(TIPO_CONTRATO_PARTICULAR);
         }
         
         set_cell(ROW_CONTRATANTE, COLUMN_NOMBRE_CONTRATANTE, nombre);
@@ -98,8 +119,22 @@ public class Extracto {
     }
 
     public void set_tipo_contrato(String valor){
-
+        
         set_cell(ROW_OBJETO_CONTRATO, COLUMN_BOJETO_CONTRATO, valor);
+    }
+
+    public void set_tipo_contrato(int valor){
+
+        if(valor == ESTUDIANTIL){
+            set_cell(ROW_OBJETO_CONTRATO, COLUMN_BOJETO_CONTRATO, TIPO_CONTRATO_ESTUDIANTIL);
+        }else if(valor == EMPRESARIAL){
+            set_cell(ROW_OBJETO_CONTRATO, COLUMN_BOJETO_CONTRATO, TIPO_CONTRATO_EMPRESARIAL);
+        }else if(valor == PERSONALIZADO){
+            
+            set_cell(ROW_OBJETO_CONTRATO, COLUMN_BOJETO_CONTRATO, TIPO_CONTRATO_PERSONALIZADO + get_cell(ROW_CONTRATANTE, COLUMN_NOMBRE_CONTRATANTE));
+        }else{
+            set_cell(ROW_OBJETO_CONTRATO, COLUMN_BOJETO_CONTRATO, TIPO_CONTRATO_PARTICULAR);
+        }
     }
 
     public void set_origen_destino(String municipio_origen, String departamento_origen, String municipio_destino, String departamento_destino){
@@ -119,6 +154,13 @@ public class Extracto {
 
     }
 
+    public void set_convenio(String id, String nombre){
+        String documento = "NIT: " + convertir_formato(id) + "-" + Digito.get_digito_nit(id);
+        String nombre_empresa = "CONVENIO CONSORCIO UNION TEMPORAL CON: \n"+nombre;
+
+        set_cell(ROW_CONVENIO, COLUMN_CONVENIO_NOMBRE,nombre_empresa);
+        set_cell(ROW_CONVENIO, COLUMN_CONVENIO_DOCUMENTO,documento);
+    }
     public void set_fecha_incial(int dia, String mes, int año){
         mes = mes.toUpperCase();
 
