@@ -55,8 +55,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
     private JDateChooser fecha_incial;
     private JDateChooser fecha_final;
     private Date fecha_sistema;
-    private JLabel label_tipo_contrato;
-    protected JComboBox<String> combo_tipo_contrato;
+    
 
     public Insertar_extracto_mensual(JFrame padre, String url){
         super(padre, url);
@@ -92,8 +91,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
         tabla_destino = new JTable();
         fecha_incial = new JDateChooser();
         fecha_final = new JDateChooser();
-        combo_tipo_contrato = new JComboBox<>();
-        label_tipo_contrato = new JLabel();
+        
         
         // incializando las tablas
         base = new Base(url);
@@ -103,7 +101,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
             tabla_contratante = Modelo_tabla.set_tabla_contratos_mensuales(base.consultar_contratos_mensuales(""));
             tabla_origen = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(""));
             tabla_destino = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(""));
-            combo_tipo_contrato = new JComboBox<>(base.consultar_tipo_contrato());
+            
             
 
         }catch(SQLException ex){
@@ -244,14 +242,6 @@ public class Insertar_extracto_mensual extends Modal_documento {
         fecha_final.setBounds(320, 230, 130, LONGITUD_Y);
         
         jPanel1.add(fecha_final);
-
-        label_tipo_contrato.setText("Objeto del Contrato");
-        label_tipo_contrato.setBounds(label_fecha_final.getX()+ label_fecha_final.getWidth() + 60, label_fecha_final.getY(), 120, 20);
-        jPanel1.add(label_tipo_contrato);
-
-        combo_tipo_contrato.setBounds(label_tipo_contrato.getX(),label_tipo_contrato.getY() + 20 + 10,120,20);
-        combo_tipo_contrato.setSelectedItem("EMPRESARIAL");
-        jPanel1.add(combo_tipo_contrato);
 
         tabla_destino.addMouseListener(new MouseAdapter() {
             
@@ -428,12 +418,12 @@ public class Insertar_extracto_mensual extends Modal_documento {
             ffecha_inicial = formato.format(fecha_incial.getDate());
             ffecha_final = formato.format(fecha_final.getDate());
             origen = (text_origen.getText().compareTo("") == 0)?0: Integer.parseInt(text_origen.getText());
-            destino = (text_destino.getText().compareTo("") == 0)?0: Integer.parseInt(text_destino.getText());
+            destino = (text_destino.getText().compareTo("") == -1)?0: Integer.parseInt(text_destino.getText());
             consecutivo = (text_consecutivo.getText().compareTo("") == 0?0:Integer.parseInt(text_consecutivo.getText()));
             
-            if(vehiculo != null && contratante != 0 && origen != 0 && destino != 0 && consecutivo != 0){
+            if(vehiculo != null && contratante != 0 && origen != 0 && destino != -1 && consecutivo != 0){
 
-                base.insertar_extracto_mensual(vehiculo, contratante, ffecha_inicial, ffecha_final, origen, destino, consecutivo, combo_tipo_contrato.getSelectedIndex()+1);
+                base.insertar_extracto_mensual(vehiculo, contratante, ffecha_inicial, ffecha_final, origen, destino, consecutivo);
                 JOptionPane.showMessageDialog(this, "Extracto mensual guardado correctamente", "Transaccion exitosa", JOptionPane.INFORMATION_MESSAGE);
                 base.close();
                 return true;

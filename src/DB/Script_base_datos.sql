@@ -331,15 +331,13 @@ create table extracto_mensual(
     ext_fecha_final date not null,
     ext_origen integer not null,
     ext_destino integer not null,
-    tc_id integer not null,
 
     unique(veh_placa, ext_consecutivo),
     primary key(veh_placa, ext_consecutivo),
     foreign key(con_id) references contrato_mensual(con_id),
     foreign key(veh_placa) references vehiculo(veh_placa),
     foreign key(ext_origen) references ciudad(ciu_id),
-    foreign key(ext_destino) references ciudad(ciu_id),
-    foreign key(tc_id) references tipo_contrato(tc_id)
+    foreign key(ext_destino) references ciudad(ciu_id)
     );
 
 create table extracto_ocasional(
@@ -443,8 +441,11 @@ create view vw_contrato_mensual as
     con_responsable,
     res_nombre,
     res_celular,
-    res_direccion
-    from contrato_mensual natural join vw_contratante;
+    res_direccion,
+    tc_nombre
+    from contrato_mensual 
+        natural join vw_contratante 
+        natural join tipo_contrato;
 
 create view vw_extracto_mensual as
     select veh_placa, ext_consecutivo, con_id, con_tipo_id, 

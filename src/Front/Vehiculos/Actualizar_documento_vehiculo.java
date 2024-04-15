@@ -95,8 +95,10 @@ public class Actualizar_documento_vehiculo extends Insertar_documento_vehiculo{
                     
                         JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     
+                    }finally{
+                        base.close();
                     }
-                    base.close(); 
+                    
                 }
 
             }catch(NumberFormatException ex){

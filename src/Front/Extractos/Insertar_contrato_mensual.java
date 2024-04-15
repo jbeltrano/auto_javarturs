@@ -5,6 +5,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -30,7 +31,9 @@ public class Insertar_contrato_mensual extends Modal_extracto{
     private JTable tabla_contratante;
     protected JButton boton_guardar;
     private String[][] datos;
-    private String ultimo_contrato; 
+    private String ultimo_contrato;
+    private JLabel label_tipo_contrato;
+    protected JComboBox<String> combo_tipo_contrato;
 
     public Insertar_contrato_mensual(JFrame padre, String url){
 
@@ -50,6 +53,9 @@ public class Insertar_contrato_mensual extends Modal_extracto{
         jScrollPane2 = new javax.swing.JScrollPane();
         tabla_contratante = new javax.swing.JTable();
         boton_guardar = new javax.swing.JButton();
+        combo_tipo_contrato = new JComboBox<>();
+        label_tipo_contrato = new JLabel();
+
 
         // Consultando los datos de los contratantes
         base = new Base(url);
@@ -57,6 +63,7 @@ public class Insertar_contrato_mensual extends Modal_extracto{
         try{
             datos = base.consultar_contratante("");
             ultimo_contrato = "" + (Integer.parseInt(base.consultar_ultimo_contrato_mensual()) +1);
+            combo_tipo_contrato = new JComboBox<>(base.consultar_tipo_contrato());
 
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -66,17 +73,17 @@ public class Insertar_contrato_mensual extends Modal_extracto{
 
         label1.setText("Numero de contrato");
         panel.add(label1);
-        label1.setBounds(POS_X, POS_X, 150, 16);
+        label1.setBounds(POS_X, POS_X, 150, 20);
 
         label2.setText("Contratante");
         panel.add(label2);
-        label2.setBounds(315, POS_X, 98, 16);
+        label2.setBounds(250, POS_X, 98, 20);
 
         
 
         panel.add(text_contrato);
         text_contrato.setText(ultimo_contrato);
-        text_contrato.setBounds(POS_X, 28, 100, 22);
+        text_contrato.setBounds(POS_X, label1.getY() + label1.getHeight() + 10, 100, 20);
         
         text_contratante.addKeyListener(new Key_adapter() {
             
@@ -104,7 +111,17 @@ public class Insertar_contrato_mensual extends Modal_extracto{
         });
 
         panel.add(text_contratante);
-        text_contratante.setBounds(315, 28, 200, 22);
+        text_contratante.setBounds(label2.getX(), text_contrato.getY(), 200, 22);
+
+
+        label_tipo_contrato.setText("Objeto del Contrato");
+        label_tipo_contrato.setBounds(text_contratante.getX() + text_contratante.getWidth() + 20, label2.getY(), 120, 20);
+        panel.add(label_tipo_contrato);
+
+        combo_tipo_contrato.setBounds(label_tipo_contrato.getX(),text_contratante.getY(),120,20);
+        combo_tipo_contrato.setSelectedItem("EMPRESARIAL");
+        panel.add(combo_tipo_contrato);
+
 
         JDialog padre = this;
         tabla_contratante = Modelo_tabla.set_tabla_contratante(datos);
@@ -182,7 +199,7 @@ public class Insertar_contrato_mensual extends Modal_extracto{
         int numero_contrato = Integer.parseInt(text_contrato.getText());
         base = new Base(url);
 
-        base.insertar_contrato_mensual((numero_contrato == 0)?1:numero_contrato, text_contratante.getText());
+        base.insertar_contrato_mensual((numero_contrato == 0)?1:numero_contrato, text_contratante.getText(), combo_tipo_contrato.getSelectedIndex()+1);
 
         base.close();
 

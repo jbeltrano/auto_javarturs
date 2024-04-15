@@ -372,12 +372,12 @@ public class Base extends Base_datos{
     public void insertar_ciudad(int dep_id, String ciu_nombre)throws SQLException{
         
         insertar = "insert into ciudad (ciu_nombre, dep_id) values (?,?)";
-        ciu_nombre = Capitalizar_Strings.capitalizarNombre(ciu_nombre);
+        String nombre = Capitalizar_Strings.capitalizarNombre(ciu_nombre);
 
         try{
             pstate = coneccion.prepareStatement(insertar);
             
-            pstate.setString(1, ciu_nombre);
+            pstate.setString(1, nombre);
             pstate.setInt(2, dep_id);
 
             pstate.executeUpdate();
@@ -404,12 +404,13 @@ public class Base extends Base_datos{
     public void actualizar_ciudad(int ciu_id, String ciu_nombre)throws SQLException{
 
         actualizar = "update ciudad set ciu_nombre = ? where ciu_id = ?";
-        ciu_nombre = Capitalizar_Strings.capitalizarNombre(ciu_nombre);
+        String nombre = Capitalizar_Strings.capitalizarNombre(ciu_nombre);
+        
 
         try{
             pstate = coneccion.prepareStatement(actualizar);
 
-            pstate.setString(1, ciu_nombre);
+            pstate.setString(1, nombre);
             pstate.setInt(2, ciu_id);
 
             pstate.executeUpdate();
@@ -647,7 +648,7 @@ public class Base extends Base_datos{
     public void insertar_ciudad(String ciudad, String departamento) throws SQLException{
 
         insertar = "insert into ciudad (ciu_nombre, dep_id) values (?, (select dep_id from departamento where dep_nombre = ?))";
-
+        ciudad = Capitalizar_Strings.capitalizarNombre(ciudad);
         try{
 
             pstate = coneccion.prepareStatement(insertar);
@@ -2846,7 +2847,7 @@ public class Base extends Base_datos{
     }
 
     public String[][] consultar_vw_extracto_mensual(String buscar) throws SQLException{
-        datos = new String[1][13];
+        datos = new String[1][12];
         int cantidad = 0;
         int i = 1;
 
@@ -2863,7 +2864,7 @@ public class Base extends Base_datos{
             cantidad = resultado.getInt(1);
         }
 
-        datos = new String[cantidad+1][13];
+        datos = new String[cantidad+1][12];
         
         datos[0][0] = "PLACA";
         datos[0][1] = "CONSECUTIVO";
@@ -2877,7 +2878,6 @@ public class Base extends Base_datos{
         datos[0][9] = "D. ORIGEN";
         datos[0][10] = "C. DESTINO";
         datos[0][11] = "D. DESTINO";
-        datos[0][12] = "TP CONTRATO";
 
         if(cantidad == 0){
             return datos;
@@ -2899,7 +2899,6 @@ public class Base extends Base_datos{
             datos[i][9] = resultado.getString(10);
             datos[i][10] = resultado.getString(11);
             datos[i][11] = resultado.getString(12);
-            datos[i][12] = resultado.getString(13);
             i++;
         }
 
@@ -2908,7 +2907,7 @@ public class Base extends Base_datos{
     }
 
     public String[] consultar_uno_extracto_mensual(String placa, int consecutivo)throws SQLException{
-        dato = new String[8];
+        dato = new String[7];
 
         consultar = "select * from extracto_mensual where veh_placa = ? and ext_consecutivo = ?";
 
@@ -2928,14 +2927,13 @@ public class Base extends Base_datos{
             dato[4] = resultado.getString(5);
             dato[5] = resultado.getString(6);
             dato[6] = resultado.getString(7);
-            dato[7] = resultado.getString(8);   
         }
         return dato;
     }
 
-    public void actualizar_extracto_mensual(String placa, int consecutivo, int contrato, String fecha_inicial, String fecha_final, int origen, int destino, int tipo_contrato)throws SQLException{
+    public void actualizar_extracto_mensual(String placa, int consecutivo, int contrato, String fecha_inicial, String fecha_final, int origen, int destino)throws SQLException{
 
-        actualizar = "update extracto_mensual set con_id = ?, ext_fecha_incial = ?, est_fecha_final = ?, ext_origen = ?, ext_destino = ?, tc_id = ? where veh_placa = ? and ext_consecutivo = ?";
+        actualizar = "update extracto_mensual set con_id = ?, ext_fecha_incial = ?, est_fecha_final = ?, ext_origen = ?, ext_destino = ? where veh_placa = ? and ext_consecutivo = ?";
 
         pstate = coneccion.prepareStatement(actualizar);
 
@@ -2944,9 +2942,8 @@ public class Base extends Base_datos{
         pstate.setString(3, fecha_final);
         pstate.setInt(4,origen);
         pstate.setInt(5, destino);
-        pstate.setInt(6, tipo_contrato);
-        pstate.setString(7, placa);
-        pstate.setInt(8, destino);
+        pstate.setString(6, placa);
+        pstate.setInt(7, destino);
         
 
         pstate.executeUpdate();
@@ -3040,10 +3037,10 @@ public class Base extends Base_datos{
 
     }
 
-    public void insertar_extracto_mensual(String placa, int contrato, String fecha_inicial, String fecha_final, int origen, int destino, int consecutivo, int tipo_contrato)throws SQLException{
+    public void insertar_extracto_mensual(String placa, int contrato, String fecha_inicial, String fecha_final, int origen, int destino, int consecutivo)throws SQLException{
 
         String accion_auxiliar = "";
-        insertar = "insert into extracto_mensual values (?,?,?,?,?,?,?,?)";
+        insertar = "insert into extracto_mensual values (?,?,?,?,?,?,?)";
         try{
 
         
@@ -3076,7 +3073,6 @@ public class Base extends Base_datos{
         pstate.setString(5, fecha_final);
         pstate.setInt(6, origen);
         pstate.setInt(7, destino);
-        pstate.setInt(8, tipo_contrato);
 
         pstate.executeUpdate();
 
@@ -3377,9 +3373,23 @@ public class Base extends Base_datos{
 
 
     // metodos relacionados con contratos mensuales
+    public int consultar_tipo_contrato_mensual(int contrato)throws SQLException{
 
+        consultar = "select * from contrato_mensual where con_id = ?";
+
+        pstate = coneccion.prepareStatement(consultar);
+
+        pstate.setInt(1, contrato);
+
+        resultado = pstate.executeQuery();
+
+        if(resultado.next()){
+            return resultado.getInt(3);
+        }
+        return 0;
+    }
     public String[] consultar_uno_contrato_mensual(int contrato)throws SQLException{
-        dato = new String[8];
+        dato = new String[9];
 
         consultar = "select * from vw_contrato_mensual where con_id = ?";
 
@@ -3398,13 +3408,14 @@ public class Base extends Base_datos{
             dato[4] = resultado.getString(5);
             dato[5] = resultado.getString(6);
             dato[6] = resultado.getString(7);   
-            dato[7] = resultado.getString(8);   
+            dato[7] = resultado.getString(8);
+            dato[8] = resultado.getString(9);
         }
         return dato;
     }
 
     public String[][] consultar_contratos_mensuales(String buscar) throws SQLException{
-        datos = new String[1][8];
+        datos = new String[1][9];
         int cantidad = 0;
         int i = 1;
 
@@ -3422,7 +3433,7 @@ public class Base extends Base_datos{
             }
 
 
-            datos = new String[cantidad+1][8];
+            datos = new String[cantidad+1][9];
 
             
             
@@ -3434,6 +3445,7 @@ public class Base extends Base_datos{
             datos[0][5] = "NOMBRE RESPONSABLE";
             datos[0][6] = "CELULAR RESPONSABLE";
             datos[0][7] = "DIRECCION RESPONSABLE";
+            datos[0][8] = "OBJETO CONTRATO";
 
             if(cantidad == 0){
                 return datos;
@@ -3451,6 +3463,7 @@ public class Base extends Base_datos{
                 datos[i][5] = resultado.getString(6);
                 datos[i][6] = resultado.getString(7);
                 datos[i][7] = resultado.getString(8);
+                datos[i][8] = resultado.getString(9);
                 i++;
             }
 
@@ -3485,14 +3498,15 @@ public class Base extends Base_datos{
         return "" + resultado.getInt(1);
     }
 
-    public void insertar_contrato_mensual(int id, String contratante)throws SQLException{
+    public void insertar_contrato_mensual(int id, String contratante, int tipo_contrato)throws SQLException{
 
-        insertar = "insert into contrato_mensual values (?,?)";
+        insertar = "insert into contrato_mensual values (?,?,?)";
 
         pstate = coneccion.prepareStatement(insertar);
 
         pstate.setInt(1, id);
         pstate.setString(2, contratante);
+        pstate.setInt(3, tipo_contrato);
 
         pstate.executeUpdate();
     }

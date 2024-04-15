@@ -217,8 +217,10 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
                     
                         JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     
+                    }finally{
+                        base.close();
                     }
-                    base.close(); 
+                    
                 }
 
             }catch(NumberFormatException ex){

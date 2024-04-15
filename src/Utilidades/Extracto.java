@@ -148,6 +148,14 @@ public class Extracto {
         set_cell(ROW_ORIGEN_DESTINO, COLUMN_ORIGEN_DESTINO, ruta);
     }
 
+    public void set_ruta(String municipio, String departamento){
+        municipio = municipio.toUpperCase();
+        departamento = departamento.toUpperCase();
+
+        String ruta = municipio + " (" + departamento + ") IDA Y REGRESO";
+        set_cell(ROW_ORIGEN_DESTINO, COLUMN_ORIGEN_DESTINO, ruta);
+    }
+
     public void set_origen_destino(String ruta){
 
         set_cell(ROW_ORIGEN_DESTINO, COLUMN_ORIGEN_DESTINO, ruta);

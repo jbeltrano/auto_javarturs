@@ -21,6 +21,7 @@ public class Generar_extractos {
         int datos_tipo_contrato;
         String localizacion_fichero = System.getProperty("user.home") + "\\Desktop\\Extractos_mensuales";
 
+        try{
         // inicializacion del objeto para modificar la plantilla de extractos
         extracto = new Extracto("src\\Formatos\\Extracto.xlsx");
         datos_extracto = base.consultar_uno_extracto_mensual(placa, consecutivo);
@@ -29,7 +30,7 @@ public class Generar_extractos {
         datos_origen = base.consultar_uno_ciudades(datos_extracto[5]);
         datos_destino = base.consultar_uno_ciudades(datos_extracto[6]);
         datos_vehiculo = base.consultar_uno_vw_vehiculo_extracto(placa);
-        datos_tipo_contrato = Integer.parseInt(datos_extracto[7]);
+        datos_tipo_contrato = base.consultar_tipo_contrato_mensual(Integer.parseInt(datos_contratante[0]));
         parque_automotor = Boolean.parseBoolean(base.consultar_uno_vehiculo(placa)[16]);
         vehiculo_empresa_externa = base.consultar_uno_vehiculo_externo(placa);
 
@@ -44,7 +45,16 @@ public class Generar_extractos {
         extracto.set_contrato(datos_extracto[2]);
         extracto.set_contratante(datos_contratante[3], datos_contratante[1], datos_contratante[2]);
         extracto.set_tipo_contrato(Extracto.TIPO_CONTRATO_EMPRESARIAL);
-        extracto.set_origen_destino(datos_origen[1], datos_origen[2], datos_destino[1], datos_destino[2]);
+
+        if(Integer.parseInt(datos_origen[0]) != 0 && Integer.parseInt(datos_destino[0]) != 0){
+            extracto.set_origen_destino(datos_origen[1], datos_origen[2], datos_destino[1], datos_destino[2]);
+        }else{
+            if(Integer.parseInt(datos_origen[0]) != 0){
+                extracto.set_ruta(datos_origen[1], datos_origen[2]);
+            }else if(Integer.parseInt(datos_destino[0]) != 0){
+                extracto.set_ruta(datos_destino[1], datos_destino[2]);
+            }
+        }
         extracto.set_fecha_inicial(datos_extracto[3]);
         extracto.set_fecha_final(datos_extracto[4]);
         extracto.set_datos_vehiculo(placa, Integer.parseInt(datos_vehiculo[1]), datos_vehiculo[2], datos_vehiculo[3], Integer.parseInt(datos_vehiculo[4]), Integer.parseInt(datos_vehiculo[5]));
@@ -82,7 +92,6 @@ public class Generar_extractos {
         }
         if(datos_conductores.length < 2){
             
-            base.close();
             NullPointerException ex = new NullPointerException("El vehiculo " + placa + ".\nNo tiene conductores registrados");
             throw ex;
             
@@ -90,10 +99,13 @@ public class Generar_extractos {
 
         //extracto.set_responsable(nombre, document0, celular, direccion);
         extracto.set_responsable(datos_contratante[5], datos_contratante[4], datos_contratante[6], datos_contratante[7]);
-        base.close();
+        
         extracto.guardar(localizacion_fichero, "MENSUAL (" + consecutivo + ")");
 
         return localizacion_fichero + placa +" MENSUAL (" + consecutivo + ")";
+        }finally{
+            base.close();
+        }
         
     }
 }
