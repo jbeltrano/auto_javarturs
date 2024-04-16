@@ -538,14 +538,14 @@ public class Base extends Base_datos{
         int cantidad = 0;
         int i = 1;
 
-        consultar = "select ciu_id, ciu_nombre, dep_nombre from ciudad natural join departamento where ciu_nombre like \'"+buscar+"%\' or dep_nombre like \'"+buscar+"%\'";
+        consultar = "select ciu_id, ciu_nombre, dep_nombre from ciudad natural join departamento where ciu_id like \'" + buscar + "\' or ciu_nombre like \'"+buscar+"%\' or dep_nombre like \'"+buscar+"%\'";
 
         try{
             
             state = coneccion.createStatement();
             
             // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
-            resultado = state.executeQuery("select count() as total from ciudad natural join departamento where ciu_nombre like \'"+buscar+"%\' or dep_nombre like \'"+buscar+"%\'");
+            resultado = state.executeQuery("select count() as total from ciudad natural join departamento where ciu_id like \'" + buscar + "\' or ciu_nombre like \'"+buscar+"%\' or dep_nombre like \'"+buscar+"%\'");
             
             
             if(resultado.next()){
@@ -2933,17 +2933,17 @@ public class Base extends Base_datos{
 
     public void actualizar_extracto_mensual(String placa, int consecutivo, int contrato, String fecha_inicial, String fecha_final, int origen, int destino)throws SQLException{
 
-        actualizar = "update extracto_mensual set con_id = ?, ext_fecha_incial = ?, est_fecha_final = ?, ext_origen = ?, ext_destino = ? where veh_placa = ? and ext_consecutivo = ?";
+        actualizar = "update extracto_mensual set con_id = ?, ext_fecha_inicial = ?, ext_fecha_final = ?, ext_origen = ?, ext_destino = ? where veh_placa = ? and ext_consecutivo = ?";
 
         pstate = coneccion.prepareStatement(actualizar);
 
-            pstate.setInt(1, contrato);
+        pstate.setInt(1, contrato);
         pstate.setString(2, fecha_inicial);
         pstate.setString(3, fecha_final);
         pstate.setInt(4,origen);
         pstate.setInt(5, destino);
         pstate.setString(6, placa);
-        pstate.setInt(7, destino);
+        pstate.setInt(7, consecutivo);
         
 
         pstate.executeUpdate();

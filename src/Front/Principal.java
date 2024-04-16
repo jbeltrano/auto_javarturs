@@ -5,6 +5,7 @@ import Front.Ciudades_departamentos.Actualizar_ciudad;
 import Front.Ciudades_departamentos.Insertar_ciudad;
 import Front.Extractos.Actualizar_contratante;
 import Front.Extractos.Actualizar_contrato_ocasional;
+import Front.Extractos.Actualizar_extracto_mensual;
 import Front.Extractos.Actualizar_todo_ext_mensual;
 import Front.Extractos.Insertar_contratante;
 import Front.Extractos.Insertar_contrato_mensual;
@@ -1572,9 +1573,9 @@ public class Principal extends JFrame{
 
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
-
+            int row = tabla.getSelectedRow();
             // actualizar_extracto
-            new Insertar_extracto_mensual(this, url).setVisible(true);
+            new Actualizar_extracto_mensual(this, url,(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1))).setVisible(true);
             base = new Base(url);
                 try{
                     tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
@@ -2216,7 +2217,7 @@ public class Principal extends JFrame{
     private void config_pop_menu_extractos(){
         item_actualizar = new JMenuItem("Modificar");
         item_adicionar = new JMenuItem("Adicionar");
-        item_exportar = new JMenuItem("Exportar uno");
+        item_exportar = new JMenuItem("Exportar");
         item_eliminar = new JMenuItem("Eliminar");
         item_exportar_todos = new JMenuItem("Exportar todos");
         item_actualizar_todos = new JMenuItem("Actualizar todos");
