@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import Base.Base;
@@ -33,6 +32,7 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
             text_origen.setText(datos[4]);
             text_destino.setText(datos[5]);
             text_valor_contrato.setText(datos[6]);
+            combo_tipo_contrato.setSelectedIndex(Integer.parseInt(datos[datos.length -1]) -1);
 
             fInicial = LocalDate.parse(datos[2],formatter);
             fFinal = LocalDate.parse(datos[3],formatter); 
@@ -49,6 +49,7 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
     @Override
     public void guardar(){
         int numero_contrato = 0;
+        int tipo_contrato = 0;
         String contratante;
         String ffecha_inicial;
         String ffecha_final;
@@ -66,12 +67,21 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
             contratante = (text_contratante.getText().compareTo("") == 0)?null: text_contratante.getText();
             ffecha_inicial = formato.format(fecha_incial.getDate());
             ffecha_final = formato.format(fecha_final.getDate());
+            tipo_contrato = combo_tipo_contrato.getSelectedIndex() + 1;
             origen = (text_origen.getText().compareTo("") == 0)?0: Integer.parseInt(text_origen.getText());
             destino = (text_destino.getText().compareTo("") == 0)?0: Integer.parseInt(text_destino.getText());
             
             if(contratante != null && origen != 0 && destino != 0 && numero_contrato != 0 && valor_contrato != 0){
 
-                base.actualizar_contrato_ocasional(numero_contrato, contratante, ffecha_inicial, ffecha_final, origen, destino, valor_contrato);
+                base.actualizar_contrato_ocasional(numero_contrato, 
+                                                   contratante,
+                                                   ffecha_inicial, 
+                                                   ffecha_final, 
+                                                   origen, 
+                                                   destino, 
+                                                   valor_contrato,
+                                                   tipo_contrato);
+
                 JOptionPane.showMessageDialog(this, "Contrato Ocasional guardado correctamente", "Transaccion exitosa", JOptionPane.INFORMATION_MESSAGE);
                 base.close();
                 setVisible(false);

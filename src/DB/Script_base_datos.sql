@@ -304,12 +304,15 @@ create table contrato_ocasional(
     con_origen integer not null,
     con_destino integer not null,
     con_valor decimal not null,
+    tc_id integer not null,
     
     foreign key(con_contratante) references contratante(con_contratante)
     foreign key(con_origen) references ciudad(ciu_id),
-    foreign key(con_destino) references ciudad(ciu_id)    
+    foreign key(con_destino) references ciudad(ciu_id),
+    foreign key(tc_id) references tipo_contrato(tc_id)
 
 );
+
 -- tabla para los vehiculos externos
 -- o que nohacen parte del parque automotor de
 -- la empresa
@@ -485,20 +488,25 @@ select con_id,
     con_dep_origen,
     con_ciu_destino,
     con_dep_destino,
-    con_valor
+    con_valor,
+    tc_nombre
     from contrato_ocasional 
         natural join vw_contratante
         join (select ciu_id, ciu_nombre as con_ciu_origen, dep_nombre as con_dep_origen from ciudad natural join departamento) 
             on (ciu_id = con_origen)
         join (select ciu_id as ciudad_id, ciu_nombre as con_ciu_destino, dep_nombre as con_dep_destino from ciudad natural join departamento) 
-            on (ciudad_id = con_destino);
+            on (ciudad_id = con_destino)
+        natural join tipo_contrato
+        order by con_id desc;
+
 
 create view vw_extracto_ocasional as
     select veh_placa, ext_consecutivo, con_id, 
     con_tipo_id, con_contratante, con_nombre, 
     con_fecha_inicial, con_fecha_final, con_ciu_origen, 
-    con_dep_origen, con_ciu_destino, con_dep_destino 
-        from extracto_ocasional natural join vw_contrato_ocasional;
+    con_dep_origen, con_ciu_destino, con_dep_destino, tc_nombre
+        from extracto_ocasional natural join vw_contrato_ocasional
+        order by con_id desc;
 
 CREATE VIEW VW_VEHICULO_EXTERNO AS
 SELECT VEH_PLACA, PER_ID, PER_NOMBRE 

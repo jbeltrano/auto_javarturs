@@ -1,6 +1,7 @@
 package Ejecucion;
 
 import Front.Principal;
+import Utilidades.Modelo_tabla;
 
 public class Main {
     
@@ -8,7 +9,7 @@ public class Main {
 
 
         new Principal("src\\DB\\base.db");
-        
+
         
     }
 

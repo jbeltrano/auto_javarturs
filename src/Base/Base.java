@@ -1,9 +1,6 @@
 package Base;
 
 import java.util.Vector;
-
-import org.apache.poi.sl.draw.geom.SqrtExpression;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
@@ -24,6 +21,14 @@ public class Base extends Base_datos{
     }
 
     // Metodos para insertar, borrar, actualizar y eliminar CLASE VEHICULO
+
+    /**
+     * Este metodo se utiliza para insertar
+     * las diferentes clases de vehiculos
+     * que se requieran en la base de datos
+     * @param cla_nombre
+     * @throws SQLException
+     */
     public void insertar_clase_vehiculo(String cla_nombre)throws SQLException{
         insertar = "insert into clase_vehiculo (cla_nombre) values (?)";
         try{
@@ -2850,14 +2855,11 @@ public class Base extends Base_datos{
         datos = new String[1][12];
         int cantidad = 0;
         int i = 1;
-
         
-        consultar = "select * from vw_extracto_mensual where veh_placa like \'%" + buscar + "%\'";
-
-        
+        consultar = "select * from vw_extracto_mensual where veh_placa like \'%" + buscar + "%\' or con_nombre like \'%" + buscar + "%\'";
             
         state = coneccion.createStatement();
-        resultado = state.executeQuery("select count(*) as total from vw_extracto_mensual where veh_placa like \'%" + buscar + "%\'");
+        resultado = state.executeQuery("select count(*) as total from vw_extracto_mensual where veh_placa like \'%" + buscar + "%\' or con_nombre like \'%" + buscar + "%\'");
             
 
         if(resultado.next()){
@@ -3131,33 +3133,106 @@ public class Base extends Base_datos{
 
     // Metodos relacionados con extractos ocasionales
 
+    public int consultar_consecutivo_ocasional(String buscar)throws SQLException{
+
+        int consecutivo = 0;
+
+        consultar = "select * from consecutivo_extracto_ocasional where con_placa = ?";
+
+        pstate = coneccion.prepareStatement(consultar);
+
+        pstate.setString(1, buscar);
+
+        resultado = pstate.executeQuery();
+        if(resultado.next()){
+            consecutivo = resultado.getInt(2); 
+            return consecutivo;
+        }else{
+            return 0;
+        }
+
+    }
+
+    public void insertar_extracto_ocasional(String placa, int consecutivo, int contrato)throws SQLException{
+
+        String accion_auxiliar = "";
+        insertar = "insert into extracto_ocasional values (?,?,?)";
+        try{
+
+
+            state = coneccion.createStatement();
+            resultado = state.executeQuery("select con_numero from consecutivo_extracto_ocasional where con_placa = \'"+placa+"\'");
+            if(resultado.next()){
+                if(consecutivo < resultado.getInt(1)){
+                    consecutivo = resultado.getInt(1);
+
+                }
+
+                accion_auxiliar = "update consecutivo_extracto_ocasional set con_numero = ? where con_placa = ?";
+
+            }else{
+                accion_auxiliar = "insert into consecutivo_extracto_ocasional (con_numero, con_placa) values (?,?)";
+                if(consecutivo <= 0){
+                    consecutivo = 1;
+                }
+            }
+
+            resultado.close();
+
+            coneccion.setAutoCommit(false);
+            pstate = coneccion.prepareStatement(insertar);
+
+            pstate.setString(1, placa);
+            pstate.setInt(2, consecutivo);
+            pstate.setInt(3, contrato);
+
+
+            pstate.executeUpdate();
+            pstate.close();
+
+            pstate = coneccion.prepareStatement(accion_auxiliar);
+
+            pstate.setInt(1, consecutivo);
+            pstate.setString(2, placa);
+
+            pstate.executeUpdate();
+
+            coneccion.commit();
+        }catch(SQLException e){
+            coneccion.rollback();
+            SQLException ex = new SQLException("No fue posible insertar el extracto");
+            throw ex;
+        }finally{
+            coneccion.setAutoCommit(true);
+            pstate.close();
+        }
+
+    }
+
     public String[][] consultar_vw_extracto_ocasional(String buscar) throws SQLException{
-        datos = new String[1][12];
+        datos = new String[1][13];
         int cantidad = 0;
         int i = 1;
 
-        String placa = buscar+"%";
-        String contrato = buscar + "%";
-        String persona = "%" + buscar + "%";
+        String placa = "\'" +buscar+"%\'";
+        String contrato = "\'" +buscar + "%\'";
+        String persona = "\'%" + buscar + "%\'";
 
-        consultar = "select * from vw_extracto_ocasional where veh_placa like ? or con_id like ? or con_contratante like ?";
+        consultar = "select * from vw_extracto_ocasional where veh_placa like " + placa +" or con_id like "+ contrato +" or con_contratante like " + persona;
         
         // consultando la cantidad de registros para reservar en memoria
-        pstate = coneccion.prepareStatement("select count(*) as total from vw_extracto_ocasional where veh_placa like ? or con_id like ? or con_contratante like ?");
+        state = coneccion.createStatement();
 
-        pstate.setString(1, placa);
-        pstate.setString(2, contrato);
-        pstate.setString(3, persona);
+        resultado = state.executeQuery("select count(*) as total from vw_extracto_ocasional where veh_placa like " + placa +" or con_id like "+ contrato +" or con_contratante like " + persona);
 
-        resultado = pstate.executeQuery();
-        pstate.close();
 
         if(resultado.next()){
             cantidad = resultado.getInt(1);
         }
+        
         resultado.close();
 
-        datos = new String[cantidad+1][12];
+        datos = new String[cantidad+1][13];
         
         datos[0][0] = "PLACA";
         datos[0][1] = "CONSECUTIVO";
@@ -3171,18 +3246,13 @@ public class Base extends Base_datos{
         datos[0][9] = "D. ORIGEN";
         datos[0][10] = "C. DESTINO";
         datos[0][11] = "D. DESTINO";
+        datos[0][12] = "TIPO CONTRATO";
 
         if(cantidad == 0){
             return datos;
         }
 
-        pstate = coneccion.prepareStatement(consultar);
-        
-        pstate.setString(1, placa);
-        pstate.setString(2, contrato);
-        pstate.setString(3, persona);
-
-        resultado = pstate.executeQuery();     
+        resultado = state.executeQuery(consultar);
 
         while(resultado.next()){
 
@@ -3198,18 +3268,38 @@ public class Base extends Base_datos{
             datos[i][9] = resultado.getString(10);
             datos[i][10] = resultado.getString(11);
             datos[i][11] = resultado.getString(12);
+            datos[i][12] = resultado.getString(13);
             i++;
         }
 
-        pstate.close();
+        state.close();
         resultado.close();
         return datos;
 
     }
 
     // Metodos relacionados con contratos ocasionales
+
+    public int consultar_tipo_contrato_ocasional(int id) throws SQLException{
+
+        consultar = "select tc_id from contrato_ocasional where con_id = ?";
+
+        pstate = coneccion.prepareStatement(consultar);
+
+        pstate.setInt(1, id);
+
+        resultado = pstate.executeQuery();
+        pstate.close();
+
+        if(resultado.next()){
+            return resultado.getInt(1);
+        }else{
+            SQLException ex = new SQLException("No hay resultados para tu consulta");
+            throw ex;
+        }
+    }
     public String[] consultar_uno_contrato_ocasional(int id)throws SQLException{
-        dato = new String[7];
+        dato = new String[8];
         consultar = "select * from contrato_ocasional where con_id = ?";
 
         pstate = coneccion.prepareStatement(consultar);
@@ -3250,7 +3340,7 @@ public class Base extends Base_datos{
     }
 
     public String[][] consultar_contrato_ocasional(String buscar)throws SQLException{
-        datos = new String[1][11];
+        datos = new String[1][12];
         String con_id = buscar + "%";
         String con_contratante = buscar + "%";
         String con_nombre = "%" + buscar + "%";
@@ -3275,7 +3365,7 @@ public class Base extends Base_datos{
         }
 
 
-        datos = new String[cantidad+1][11];
+        datos = new String[cantidad+1][12];
             
         datos[0][0] = "N. CONTRATO";
         datos[0][1] = "ID CONTRATANTE";
@@ -3288,6 +3378,7 @@ public class Base extends Base_datos{
         datos[0][8] = "CIU DESTINO";
         datos[0][9] = "DEP DESTINO";
         datos[0][10] = "VALOR CONTRATO";
+        datos[0][11] = "TIPO CONTRATO";
 
         if(cantidad == 0){
             return datos;
@@ -3314,15 +3405,16 @@ public class Base extends Base_datos{
             datos[i][8] = resultado.getString(9);
             datos[i][9] = resultado.getString(10);
             datos[i][10] = resultado.getString(11);
+            datos[i][10] = resultado.getString(12);
             i++;
         }
 
         return datos;
     }
 
-    public void insertar_contrato_ocasional(int numero_contrato, String contratante, String fecha_inical, String fecha_final, int origen, int destino, double valor)throws SQLException{
+    public void insertar_contrato_ocasional(int numero_contrato, String contratante, String fecha_inical, String fecha_final, int origen, int destino, double valor, int tipo_contrato)throws SQLException{
 
-        insertar = "insert into contrato_ocasional values (?,?,?,?,?,?,?);";
+        insertar = "insert into contrato_ocasional values (?,?,?,?,?,?,?,?);";
 
         pstate = coneccion.prepareStatement(insertar);
 
@@ -3333,6 +3425,7 @@ public class Base extends Base_datos{
         pstate.setInt(5, origen);
         pstate.setInt(6, destino);
         pstate.setDouble(7, valor);
+        pstate.setInt(8, tipo_contrato);
 
         pstate.executeUpdate();
         pstate.close();
@@ -3340,9 +3433,9 @@ public class Base extends Base_datos{
 
     }
 
-    public void actualizar_contrato_ocasional(int numero_contrato, String contratante, String fecha_inical, String fecha_final, int origen, int destino, double valor)throws SQLException{
+    public void actualizar_contrato_ocasional(int numero_contrato, String contratante, String fecha_inical, String fecha_final, int origen, int destino, double valor, int tipo_contrato)throws SQLException{
 
-        actualizar = "update contrato_ocasional set con_contratante = ?, con_fecha_inicial = ?, con_fecha_final = ?, con_origen = ?, con_destino = ?, con_valor = ? where con_id = ?";
+        actualizar = "update contrato_ocasional set con_contratante = ?, con_fecha_inicial = ?, con_fecha_final = ?, con_origen = ?, con_destino = ?, con_valor = ?, tc_id = ? where con_id = ?";
 
         pstate = coneccion.prepareStatement(actualizar);
 
@@ -3352,7 +3445,9 @@ public class Base extends Base_datos{
         pstate.setInt(4, origen);
         pstate.setInt(5, destino);
         pstate.setDouble(6, valor);
-        pstate.setInt(7, numero_contrato);
+        pstate.setInt(7, tipo_contrato);
+        pstate.setInt(8, numero_contrato);
+        
 
         pstate.executeUpdate();
         pstate.close();
@@ -3551,6 +3646,31 @@ public class Base extends Base_datos{
         pstate.executeUpdate();
     }
     
+    public String[] consultar_uno_contratante(String contratante_id) throws SQLException{
+        dato = new String[7];
+
+        consultar = "select * from vw_contratante where con_contratante = ?";
+
+        pstate = coneccion.prepareStatement(consultar);
+
+        pstate.setString(1, contratante_id);
+
+        resultado = pstate.executeQuery();
+        pstate.close();
+
+        if(resultado.next()){
+            for(int i = 0; i < dato.length; i++){
+                dato[i] = resultado.getString(i+1);
+            }
+            resultado.close();
+        }else{
+            resultado.close();
+            SQLException ex = new SQLException("No hay resultados para tu consulta");
+            throw ex;
+        }
+
+        return dato;
+    }
     public String[][] consultar_contratante(String buscar) throws SQLException{
 
         datos = new String[1][7];

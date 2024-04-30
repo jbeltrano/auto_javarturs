@@ -11,6 +11,7 @@ import Front.Extractos.Insertar_contratante;
 import Front.Extractos.Insertar_contrato_mensual;
 import Front.Extractos.Insertar_contrato_ocasional;
 import Front.Extractos.Insertar_extracto_mensual;
+import Front.Extractos.Insertar_extracto_ocasional;
 import Front.Personas.Actualizar_conductor;
 import Front.Personas.Actualizar_peronas;
 import Front.Personas.Insertar_conductor;
@@ -677,7 +678,7 @@ public class Principal extends JFrame{
                 pan = new JPanel(null);
                 boton_auxiliar.setBounds(10,10,100,20);
                 boton_auxiliar.addActionListener(ac ->{
-                    
+
                     new Insertar_extracto_mensual(this, url).setVisible(true);
                     panel_principal2.remove(pan);
                     boton_extractos_mensuales.doClick();
@@ -702,6 +703,21 @@ public class Principal extends JFrame{
             }
             
             panel_informacion = ver_extractos_ocasionales();
+
+            if(tabla.getRowCount() == 0 ){
+                JButton boton_auxiliar = new JButton("Agregar");
+                pan = new JPanel(null);
+                boton_auxiliar.setBounds(10,10,100,20);
+                boton_auxiliar.addActionListener(ac ->{
+
+                    new Insertar_extracto_ocasional(this, url).setVisible(true);
+                    panel_principal2.remove(pan);
+                    boton_extractos_ocasionales.doClick();
+                });
+                pan.add(boton_auxiliar);
+                pan.setPreferredSize(new Dimension(120,40));
+                panel_principal2.add(pan,BorderLayout.EAST);
+            }
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.repaint();
@@ -1930,6 +1946,8 @@ public class Principal extends JFrame{
         
         // Inicializaicon pop_menu
         config_pop_menu_extractos();
+        pop_menu.remove(item_actualizar_todos);
+        pop_menu.remove(item_exportar_todos);
 
         // Obteniendo datos de la base de datos
         base = new Base(url);
@@ -1949,9 +1967,11 @@ public class Principal extends JFrame{
 
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
-
+            int row = tabla.getSelectedRow();
+            String placa = (String) tabla.getValueAt(row, 0);
+            int consecutivo = Integer.parseInt((String) tabla.getValueAt(row, 1));
             // actualizar_extracto
-            new Insertar_extracto_mensual(this, url).setVisible(true);
+            //new Actualizar_extracto_ocasional(this, url, placa, consecutivo).setVisible(true);
             base = new Base(url);
                 try{
                     tabla = Modelo_tabla.set_tabla_extractos_ocasionales(base.consultar_vw_extracto_ocasional(text_busqueda.getText()));
@@ -1966,7 +1986,7 @@ public class Principal extends JFrame{
         });
         item_adicionar.addActionListener(accion ->{
 
-            new Insertar_extracto_mensual(this, url).setVisible(true);
+            new Insertar_extracto_ocasional(this, url).setVisible(true);
             base = new Base(url);
                 try{
                     tabla = Modelo_tabla.set_tabla_extractos_ocasionales(base.consultar_vw_extracto_ocasional(text_busqueda.getText()));

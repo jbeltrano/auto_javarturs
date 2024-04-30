@@ -1,6 +1,7 @@
 package Front.Extractos;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -29,10 +30,12 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
     private static final int POSICION_X = 10;
     private static final int LONGITUD_Y = 20;
     private JButton boton_guardar;
+    protected JComboBox<String> combo_tipo_contrato;
     private JLabel label_numero_contrato;
     private JLabel label_contratante;
     private JLabel label_fecha_inicial;
     private JLabel label_fecha_final;
+    private JLabel label_tipo_contrato;
     private JLabel label_origen;
     private JLabel label_destino;
     private JLabel label_valor_contrato;
@@ -75,6 +78,7 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         text_destino = new JTextField();
         scroll_contratante = new JScrollPane();
         label_fecha_inicial = new JLabel();
+        label_tipo_contrato = new JLabel();
         label_fecha_final = new JLabel();
         label_origen = new JLabel();
         label_destino = new JLabel();
@@ -83,6 +87,7 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         tabla_destino = new JTable();
         fecha_incial = new JDateChooser();
         fecha_final = new JDateChooser();
+        combo_tipo_contrato = new JComboBox<>();
 
         
         // incializando las tablas
@@ -93,6 +98,7 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
             tabla_contratante = Modelo_tabla.set_tabla_contratante(base.consultar_contratante(""));
             tabla_origen = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(""));
             tabla_destino = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(""));
+            combo_tipo_contrato = new JComboBox<>(base.consultar_tipo_contrato());
             
 
         }catch(SQLException ex){
@@ -178,6 +184,14 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         fecha_final.setBounds(320, 230, 130, LONGITUD_Y);
         
         jPanel1.add(fecha_final);
+
+        label_tipo_contrato.setText("Objeto del Contrato");
+        label_tipo_contrato.setBounds(text_contratante.getX() + text_contratante.getWidth() + 60, label_fecha_final.getY(), 120, 20);
+        jPanel1.add(label_tipo_contrato);
+
+        combo_tipo_contrato.setBounds(label_tipo_contrato.getX(),fecha_final.getY(),120,20);
+        combo_tipo_contrato.setSelectedItem("EMPRESARIAL");
+        jPanel1.add(combo_tipo_contrato);
 
         label_origen.setText("Origen");
         label_origen.setBounds(POSICION_X, fecha_incial.getY() + LONGITUD_Y + 20, 130, LONGITUD_Y);
@@ -353,6 +367,7 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
 
     protected void guardar(){
         int numero_contrato = 0;
+        int tipo_contrato = 0;
         String contratante;
         String ffecha_inicial;
         String ffecha_final;
@@ -370,12 +385,20 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
             contratante = (text_contratante.getText().compareTo("") == 0)?null: text_contratante.getText();
             ffecha_inicial = formato.format(fecha_incial.getDate());
             ffecha_final = formato.format(fecha_final.getDate());
+            tipo_contrato = combo_tipo_contrato.getSelectedIndex() +1;
             origen = (text_origen.getText().compareTo("") == 0)?0: Integer.parseInt(text_origen.getText());
             destino = (text_destino.getText().compareTo("") == 0)?0: Integer.parseInt(text_destino.getText());
             
             if(contratante != null && origen != 0 && destino != 0 && numero_contrato != 0 && valor_contrato != 0){
 
-                base.insertar_contrato_ocasional(numero_contrato, contratante, ffecha_inicial, ffecha_final, origen, destino, valor_contrato);
+                base.insertar_contrato_ocasional(numero_contrato, 
+                                                 contratante, 
+                                                 ffecha_inicial, 
+                                                 ffecha_final, 
+                                                 origen, 
+                                                 destino, 
+                                                 valor_contrato,
+                                                 tipo_contrato);
                 JOptionPane.showMessageDialog(this, "Contrato Ocasional guardado correctamente", "Transaccion exitosa", JOptionPane.INFORMATION_MESSAGE);
                 base.close();
                 setVisible(false);

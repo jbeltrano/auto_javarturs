@@ -27,7 +27,7 @@ public class Modelo_tabla {
                 return false;
             }
         };
-        
+
         for(int i = 0; i < datos[0].length; i++){
             modelo.addColumn(datos[0][i]);
         }
@@ -65,7 +65,7 @@ public class Modelo_tabla {
 
     public static JTable set_tabla_contratante(String[][] datos){
         
-        JTable tab = new JTable();
+        JTable tab;
         DefaultTableModel modelo; 
         TableColumnModel clum_model;
         
@@ -170,6 +170,10 @@ public class Modelo_tabla {
 
                 }
                 
+                if (isSelected) {
+                    component.setBackground(table.getSelectionBackground());
+                    component.setForeground(table.getSelectionForeground());
+                }
                 return component;
             }
         };
@@ -467,14 +471,17 @@ public class Modelo_tabla {
         JTable tab;
         DefaultTableModel modelo;
         TableColumnModel cl_model;
+        modelo = set_modelo_tablas(datos);
 
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if(column == 10){
+                    setValue(Digito.convertir_formato((String) value));
 
-                // Virifica las columnas donde se encuentran las fechas                
-                if ( column == 5) {
+                }
+                if ( column == 5) { // Virifica las columnas donde se encuentran las fechas
                     //Incializa las variables necesarias para el calculo
                     long cantidad_dias = 0;
                     String valor = table.getValueAt(row, column).toString();
@@ -516,11 +523,16 @@ public class Modelo_tabla {
 
                 }
                 
+                if (isSelected) {
+                    component.setBackground(table.getSelectionBackground());
+                    component.setForeground(table.getSelectionForeground());
+                }
+                
                 return component;
             }
         };
 
-        modelo = set_modelo_tablas(datos);
+
         tab = new JTable(modelo);
         tab.setDefaultRenderer(Object.class, renderer);     //Agrega el renderer personalizado realizado anteriormente
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

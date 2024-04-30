@@ -90,6 +90,9 @@ public class Base_datos{
             
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            state.close();
+            resultado.close();
         }
 
         return vector;

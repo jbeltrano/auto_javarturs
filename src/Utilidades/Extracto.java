@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import static Utilidades.Digito.convertir_formato;
 
 public class Extracto {
     
@@ -337,13 +338,5 @@ public class Extracto {
         }
         
     }
-
-
-    // Metodos estaticos
-    public static String convertir_formato(String numero){
-        numero = String.format("%,d", Long.parseLong(numero));
-        return numero;
-    }
-
     
 }

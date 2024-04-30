@@ -2,6 +2,13 @@ package Utilidades;
 
 public class Capitalizar_Strings {
 
+    /**
+     * El metodo se encarga de capitalizar
+     * el total del string siempre y cuando
+     * este esté separado por espacios
+     * @param nombre
+     * @return
+     */
     public static String capitalizarNombre(String nombre) {
         String[] palabras = nombre.toLowerCase().split(" ");
         StringBuilder resultado = new StringBuilder();
@@ -17,6 +24,13 @@ public class Capitalizar_Strings {
         return resultado.toString().trim();
     }
 
+    /**
+     * El metodo se encarga de capilatizar unicamente
+     * la primera palabra del string, el resto de palabras
+     * las deja comun y corriente
+     * @param str
+     * @return
+     */
     public static String capitalizar_primera(String str){
         String[] palabras = str.toLowerCase().split(" ");
         StringBuilder resultado = new StringBuilder();
