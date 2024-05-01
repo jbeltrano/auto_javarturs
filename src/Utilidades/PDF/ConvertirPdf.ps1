@@ -1,5 +1,5 @@
 # Obtener la lista de archivos Excel en la carpeta
-$excelFiles = Get-ChildItem -Path "C:\Users\Juan Beltran\Desktop\Documento" -Filter *.xlsx
+$excelFiles = Get-ChildItem -Path "C:\Users\Juan Beltran\Desktop\Extractos_mensuales" -Filter *.xlsx
 
 # Crear un objeto de aplicación Excel
 $excel = New-Object -ComObject Excel.Application

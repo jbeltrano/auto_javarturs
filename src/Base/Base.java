@@ -2246,62 +2246,6 @@ public class Base extends Base_datos{
             throw ex;
         }
     }
-
-    public String[][] consultar_documentos()throws SQLException{
-
-        datos = new String[1][8];
-        int cantidad = 0;
-        int i = 1;
-
-        consultar = "select * from documento";
-
-        try{
-            state = coneccion.createStatement();
-
-            // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
-            resultado = state.executeQuery("select count() as total from documento");
-            
-            if(resultado.next()){
-                cantidad = resultado.getInt("total");
-            }
-
-            datos = new String[cantidad+1][8];
-
-            resultado = state.executeQuery(consultar);
-            
-            datos[0][0] = "PLACA";
-            datos[0][1] = "NUMERO INTERNO";
-            datos[0][2] = "FECHA SOAT";
-            datos[0][3] = "FECHA RTM";
-            datos[0][4] = "FECHA RCC";
-            datos[0][5] = "FECHA RCE";
-            datos[0][6] = "TOP";
-            datos[0][7] = "FECHA TOP";
-
-
-
-            while(resultado.next()){
-
-                datos[i][0] = resultado.getString(1);
-                datos[i][1] = resultado.getString(2);
-                datos[i][2] = resultado.getString(3);
-                datos[i][3] = resultado.getString(4);
-                datos[i][4] = resultado.getString(5);
-                datos[i][5] = resultado.getString(6);
-                datos[i][6] = resultado.getString(7);
-                datos[i][7] = resultado.getString(8);
-                
-
-                i++;
-            }
-
-        }catch(SQLException ex){
-            throw ex;
-        }
-
-        return datos;
-
-    }
     
     public String[][] consultar_documentos(String buscar)throws SQLException{
 

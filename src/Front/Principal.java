@@ -849,7 +849,7 @@ public class Principal extends JFrame{
 
         base = new Base(url);
         try{
-            datos = base.consultar_documentos();
+            datos = base.consultar_documentos("");
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             base.close();
