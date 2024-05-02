@@ -1,0 +1,2 @@
+C:\Users\Juan Beltran\Desktop\auto_javarturs\src\Utilidades\PDF\ConvertirPdf.ps1 C:\Users\Juan Beltran\Desktop\Extractos_mensuales
+"C:\Users\Juan Beltran\Desktop\auto_javarturs\src\Utilidades\PDF\ConvertirPdf.ps1" "C:\Users\Juan Beltran\Desktop\Extractos_mensuales"
