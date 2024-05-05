@@ -12,19 +12,23 @@ public class Actualizar_extracto_mensual extends Insertar_extracto_mensual{
     private String placa;
     private int consecutivo;
     private String datos[];
+    private boolean is_plantilla;
 
-    public Actualizar_extracto_mensual(JFrame padre, String url, String placa, int consecutivo){
+    public Actualizar_extracto_mensual(JFrame padre, String url, String placa, int consecutivo, boolean is_plantilla){
         super(padre, url);
         this.placa = placa;
         this.consecutivo = consecutivo;
+        this.is_plantilla = is_plantilla;
 
         modificar();
     }
 
     private void modificar(){
         // Modificando los campos que no se pueden editar
-        text_placa.setEnabled(false);
-        tabla_vehiculo.setEnabled(false);
+        if(!is_plantilla){
+            text_placa.setEnabled(false);
+            tabla_vehiculo.setEnabled(false);
+        }
         text_consecutivo.setEnabled(false);
 
 
@@ -58,45 +62,51 @@ public class Actualizar_extracto_mensual extends Insertar_extracto_mensual{
     @Override
     protected boolean guardar_extracto_mensual(){
         
-        int consecutivo = 0;
-        String vehiculo;
-        int contratante;
-        String ffecha_inicial;
-        String ffecha_final;
-        int origen;
-        int destino;
-        SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
-
-        base = new Base(url);
-        try{
-
-            vehiculo = (text_placa.getText().compareTo("") == 0)?null: text_placa.getText();
-            contratante = (text_contratante.getText().compareTo("") == 0)?0: Integer.parseInt(text_contratante.getText());
-            ffecha_inicial = formato.format(fecha_incial.getDate());
-            ffecha_final = formato.format(fecha_final.getDate());
-            origen = (text_origen.getText().compareTo("") == 0)?0: Integer.parseInt(text_origen.getText());
-            destino = (text_destino.getText().compareTo("") == -1)?0: Integer.parseInt(text_destino.getText());
-            consecutivo = (text_consecutivo.getText().compareTo("") == 0?0:Integer.parseInt(text_consecutivo.getText()));
-            
-            if(vehiculo != null && contratante != 0 && origen != 0 && destino != -1 && consecutivo != 0){
-
-                base.actualizar_extracto_mensual(vehiculo, consecutivo, contratante, ffecha_inicial, ffecha_final, origen, destino);
-                JOptionPane.showMessageDialog(this, "Extracto mensual guardado correctamente", "Transaccion exitosa", JOptionPane.INFORMATION_MESSAGE);
-                base.close();
-                return true;
-
-            }else{
-                JOptionPane.showMessageDialog(this, "Por favor, rellene todos los campos para continuar\nRecuerde que si es el primer extracto del vehiculo\nDebe establecer el consecutivo", "Error", JOptionPane.ERROR_MESSAGE);
+        if(!is_plantilla){
+            int consecutivo = 0;
+            String vehiculo;
+            int contratante;
+            String ffecha_inicial;
+            String ffecha_final;
+            int origen;
+            int destino;
+            SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
+    
+            base = new Base(url);
+            try{
+    
+                vehiculo = (text_placa.getText().compareTo("") == 0)?null: text_placa.getText();
+                contratante = (text_contratante.getText().compareTo("") == 0)?0: Integer.parseInt(text_contratante.getText());
+                ffecha_inicial = formato.format(fecha_incial.getDate());
+                ffecha_final = formato.format(fecha_final.getDate());
+                origen = (text_origen.getText().compareTo("") == 0)?0: Integer.parseInt(text_origen.getText());
+                destino = (text_destino.getText().compareTo("") == -1)?0: Integer.parseInt(text_destino.getText());
+                consecutivo = (text_consecutivo.getText().compareTo("") == 0?0:Integer.parseInt(text_consecutivo.getText()));
+                
+                if(vehiculo != null && contratante != 0 && origen != 0 && destino != -1 && consecutivo != 0){
+    
+                    base.actualizar_extracto_mensual(vehiculo, consecutivo, contratante, ffecha_inicial, ffecha_final, origen, destino);
+                    JOptionPane.showMessageDialog(this, "Extracto mensual guardado correctamente", "Transaccion exitosa", JOptionPane.INFORMATION_MESSAGE);
+                    base.close();
+                    return true;
+    
+                }else{
+                    JOptionPane.showMessageDialog(this, "Por favor, rellene todos los campos para continuar\nRecuerde que si es el primer extracto del vehiculo\nDebe establecer el consecutivo", "Error", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+    
+            }catch(SQLException ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }catch(NumberFormatException ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
-
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }catch(NumberFormatException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
+        
+        }else{
+            return super.guardar_extracto_mensual();
         }
+        
         
     }
 

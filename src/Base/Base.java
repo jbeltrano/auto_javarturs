@@ -3222,6 +3222,32 @@ public class Base extends Base_datos{
 
     }
 
+    public void eliminar_extracto_ocasional(String placa, int consecutivo)throws SQLException{
+
+        borrar = "delete from extracto_ocasional where veh_placa like ? and ext_consecutivo = ?";
+
+        pstate = coneccion.prepareStatement(borrar);
+
+        pstate.setString(1, placa);
+        pstate.setInt(2, consecutivo);
+
+        pstate.executeUpdate();
+        pstate.close();
+    }
+    
+    public void actualizar_extracto_ocasional(String placa, int consecutivo, int contrato)throws SQLException{
+
+        actualizar = "update extracto_ocasional set con_id = ? where veh_placa = ? and ext_consecutivo = ?";
+
+        pstate = coneccion.prepareStatement(actualizar);
+
+        pstate.setInt(1, contrato);
+        pstate.setString(2, placa);
+        pstate.setInt(3, consecutivo);
+
+        pstate.executeUpdate();
+        pstate.close();
+    }
     // Metodos relacionados con contratos ocasionales
 
     public int consultar_tipo_contrato_ocasional(int id) throws SQLException{
@@ -3252,7 +3278,7 @@ public class Base extends Base_datos{
 
         resultado = pstate.executeQuery();
         if(resultado.next()){
-            for(int i = 0; i < 7; i++){
+            for(int i = 0; i < dato.length; i++){
 
                 dato[i] = resultado.getString(i+1);
             }
@@ -3349,7 +3375,7 @@ public class Base extends Base_datos{
             datos[i][8] = resultado.getString(9);
             datos[i][9] = resultado.getString(10);
             datos[i][10] = resultado.getString(11);
-            datos[i][10] = resultado.getString(12);
+            datos[i][11] = resultado.getString(12);
             i++;
         }
 

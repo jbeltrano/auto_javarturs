@@ -14,6 +14,7 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
     
     private String[] datos;
     private int id;
+
     public Actualizar_contrato_ocasional(JFrame padre, String url, int id){
         super(padre, url);
         this.id = id;

@@ -552,6 +552,8 @@ public class Modelo_tabla {
         cl_model.getColumn(7).setPreferredWidth(100);
         cl_model.getColumn(8).setPreferredWidth(100);
         cl_model.getColumn(9).setPreferredWidth(100);
+        cl_model.getColumn(10).setPreferredWidth(100);
+        cl_model.getColumn(11).setPreferredWidth(100);
 
         return tab;
     }

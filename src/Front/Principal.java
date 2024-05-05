@@ -78,6 +78,7 @@ public class Principal extends JFrame{
     private JPopupMenu pop_menu;
     private JMenuItem item_adicionar;
     private JMenuItem item_actualizar;
+    private JMenuItem item_plantilla;
     private JMenuItem item_exportar;
     private JMenuItem item_eliminar;
     private JMenuItem item_actualizar_todos;
@@ -1591,7 +1592,7 @@ public class Principal extends JFrame{
         item_actualizar.addActionListener(accion->{
             int row = tabla.getSelectedRow();
             // actualizar_extracto
-            new Actualizar_extracto_mensual(this, url,(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1))).setVisible(true);
+            new Actualizar_extracto_mensual(this, url,(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1)),false).setVisible(true);
             base = new Base(url);
                 try{
                     tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
@@ -1602,6 +1603,22 @@ public class Principal extends JFrame{
                 }
                 base.close();
             
+
+        });
+        item_plantilla.addActionListener(accion ->{
+
+            int row = tabla.getSelectedRow();
+            // actualizar_extracto
+            new Actualizar_extracto_mensual(this, url,(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1)),true).setVisible(true);
+            base = new Base(url);
+                try{
+                    tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                base.close();
 
         });
         item_adicionar.addActionListener(accion ->{
@@ -1621,9 +1638,20 @@ public class Principal extends JFrame{
 
         item_exportar.addActionListener(accion ->{
             int select_row = tabla.getSelectedRow();
+            Runtime runtime = Runtime.getRuntime();
+            String comando[] = new String[3];
+            comando[0] = System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe";
+            comando[1] = System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf.ps1";
+            comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos_mensuales";
+
             try{
                 String ruta;
                 ruta = Generar_extractos.generar_extracto_mensual_excel((String) tabla.getValueAt(select_row, 0),Integer.parseInt((String) tabla.getValueAt(select_row, 1)), url);
+                
+                Process proceso = runtime.exec(comando);
+                // implementar funcion que muestre que esperar por favor mientras carga la barra de proceso<
+                JOptionPane.showMessageDialog(null, "Iniciando la exportacion\nPor favor espere...");
+                proceso.waitFor();
                 JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
             }catch(Exception ex){
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1639,6 +1667,7 @@ public class Principal extends JFrame{
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
             base.close();
+
 
         });
         item_eliminar.addActionListener(accion ->{
@@ -1667,16 +1696,22 @@ public class Principal extends JFrame{
         item_exportar_todos.addActionListener(accion ->{
             String placa;
             String consecutivo;
+            Runtime runtime = Runtime.getRuntime();
+            String comando[] = new String[3];
+            comando[0] = System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe";
+            comando[1] = System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf.ps1";
+            comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos_mensuales";
             try{
 
                 for(int i = 0; i < tabla.getRowCount(); i++){
                     placa = (String) tabla.getValueAt(i, 0);
                     consecutivo = (String) tabla.getValueAt(i, 1);
-    
                     Generar_extractos.generar_extracto_mensual_excel(placa, Integer.parseInt(consecutivo), url);
                 }
 
-                JOptionPane.showMessageDialog(this, "Extractos guardado con exito.", "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
+                runtime.exec(comando);
+                
+                JOptionPane.showMessageDialog(this, "Extractos guardados con exito.", "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
             }catch(Exception ex){
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -2030,7 +2065,7 @@ public class Principal extends JFrame{
                 base = new Base(url);
                 try{
                     // realizando la eliminacion del registro
-                    base.eliminar_extracto_mensual(placa, Integer.parseInt(consecutivo));
+                    base.eliminar_extracto_ocasional(placa, Integer.parseInt(consecutivo));
 
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
@@ -2038,7 +2073,7 @@ public class Principal extends JFrame{
                 
                 base.close();
                 JOptionPane.showMessageDialog(this, "Extracto eliminado correctamente");
-                boton_extractos_mensuales.doClick();
+                boton_extractos_ocasionales.doClick();
             }
                   
         });
@@ -2237,6 +2272,7 @@ public class Principal extends JFrame{
     private void config_pop_menu_extractos(){
         item_actualizar = new JMenuItem("Modificar");
         item_adicionar = new JMenuItem("Adicionar");
+        item_plantilla = new JMenuItem("Plantilla");
         item_exportar = new JMenuItem("Exportar");
         item_eliminar = new JMenuItem("Eliminar");
         item_exportar_todos = new JMenuItem("Exportar todos");
@@ -2246,6 +2282,7 @@ public class Principal extends JFrame{
         
         pop_menu.add(item_adicionar);
         pop_menu.add(item_actualizar);
+        pop_menu.add(item_plantilla);
         pop_menu.add(item_exportar);
         pop_menu.add(item_eliminar);
         pop_menu.add(item_exportar_todos);

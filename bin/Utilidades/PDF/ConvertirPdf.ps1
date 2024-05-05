@@ -15,6 +15,8 @@ $excel = New-Object -ComObject Excel.Application
 # Ocultar la aplicación Excel
 $excel.Visible = $false
 
+$excel.DisplayAlerts = $false # Desactivar los mensajes de advertencia
+$excel.ScreenUpdating = $false # Desactivar la actualización de pantalla
 # Recorrer cada archivo Excel y convertirlo a PDF
 foreach ($file in $excelFiles) {
     $workbook = $excel.Workbooks.Open($file.FullName)
