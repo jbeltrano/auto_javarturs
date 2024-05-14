@@ -42,19 +42,16 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JMenu;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.Desktop;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.JobAttributes;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.LinkedList;
-import java.awt.event.MouseAdapter;
 
 public class Principal extends JFrame{
     
@@ -99,7 +96,11 @@ public class Principal extends JFrame{
     private JButton boton_contratos_mensuales;
     private JButton boton_contratos_ocasionales;
     private JButton boton_contratante;
-
+    private static final Runtime runtime = Runtime.getRuntime();
+    private static final String comando[] = {System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe",
+                                            System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf.ps1",
+                                            System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales"};
+    
     /** 
      * Este es el constructor general para la clase Principal
      * se encarga de iniciar la gran mayoria de componentes y el JFrame como tal
@@ -122,6 +123,8 @@ public class Principal extends JFrame{
      * el correcto funcionamiento del Programa
      */
     private void iniciar_componentes(){
+        // Carga los comandos necesarios
+
         // Carga de icono
 
         // Carga de imagen principal
@@ -1638,11 +1641,6 @@ public class Principal extends JFrame{
 
         item_exportar.addActionListener(accion ->{
             int select_row = tabla.getSelectedRow();
-            Runtime runtime = Runtime.getRuntime();
-            String comando[] = new String[3];
-            comando[0] = System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe";
-            comando[1] = System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf.ps1";
-            comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos_mensuales";
 
             try{
                 String ruta;
@@ -1696,11 +1694,6 @@ public class Principal extends JFrame{
         item_exportar_todos.addActionListener(accion ->{
             String placa;
             String consecutivo;
-            Runtime runtime = Runtime.getRuntime();
-            String comando[] = new String[3];
-            comando[0] = System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe";
-            comando[1] = System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf.ps1";
-            comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos_mensuales";
             try{
 
                 for(int i = 0; i < tabla.getRowCount(); i++){
@@ -1868,7 +1861,12 @@ public class Principal extends JFrame{
         String[][] datos = null;
         
         // Inicializaicon pop_menu
-        config_pop_menu();
+        config_pop_menu_extractos();
+
+        
+        pop_menu.remove(item_exportar_todos);
+        pop_menu.remove(item_actualizar_todos);
+
 
         // Obteniendo datos de la base de datos
         base = new Base(url);
@@ -1907,7 +1905,7 @@ public class Principal extends JFrame{
             int number = tabla.getSelectedRow();
             int id = Integer.parseInt((String)tabla.getValueAt(number, 0));
 
-            new Actualizar_contrato_ocasional(this, url, id).setVisible(true);
+            new Actualizar_contrato_ocasional(this, url, id, false).setVisible(true);
 
             base = new Base(url);
                 try{
@@ -1921,23 +1919,42 @@ public class Principal extends JFrame{
 
         });
 
+        item_plantilla.addActionListener(accion ->{
+
+            int number = tabla.getSelectedRow();
+            int id = Integer.parseInt((String)tabla.getValueAt(number, 0));
+
+            new Actualizar_contrato_ocasional(this, url, id, true).setVisible(true);
+
+            base = new Base(url);
+                try{
+                    tabla = Modelo_tabla.set_tabla_contratos_ocasionales(base.consultar_contrato_ocasional(text_busqueda.getText()));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            base.close();
+        });
+
         item_eliminar.addActionListener(accion ->{
             
-                int number = tabla.getSelectedRow();
-                String id = "" + tabla.getValueAt(number, 0);
+            int number = tabla.getSelectedRow();
+            String id = "" + tabla.getValueAt(number, 0);
             String nombre = "" + tabla.getValueAt(number, 2);
             number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el contrato:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
                 base = new Base(url);
                 try{
                     base.eliminar_contrato_ocasional(Integer.parseInt(id));
+                    JOptionPane.showMessageDialog(this, "Contrato eliminado correctamente");
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
+                    boton_contratos_ocasionales.doClick();
                 }
                 
-                base.close();
-                JOptionPane.showMessageDialog(this, "Contrato eliminado correctamente");
-                boton_contratos_ocasionales.doClick();
             }
                   
         });
@@ -2037,22 +2054,18 @@ public class Principal extends JFrame{
             int select_row = tabla.getSelectedRow();
             try{
                 String ruta;
-                ruta = Generar_extractos.generar_extracto_mensual_excel((String) tabla.getValueAt(select_row, 0),Integer.parseInt((String) tabla.getValueAt(select_row, 1)), url);
+                comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
+                ruta = Generar_extractos.generar_extracto_ocasional((String)tabla.getValueAt(select_row, 0),Integer.parseInt((String) tabla.getValueAt(select_row, 1)),Integer.parseInt((String) tabla.getValueAt(select_row, 2)), url);
+                runtime.exec(comando);
+                
                 JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
             }catch(Exception ex){
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            
-            base = new Base(url);
-            try{
-                tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
-                tabla.setComponentPopupMenu(pop_menu);
-                scroll.setViewportView(tabla );
+            }finally{
+
+                comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
                 
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-            base.close();
 
         });
         item_eliminar.addActionListener(accion ->{
@@ -2077,42 +2090,7 @@ public class Principal extends JFrame{
             }
                   
         });
-
-        item_exportar_todos.addActionListener(accion ->{
-            String placa;
-            String consecutivo;
-            try{
-
-                for(int i = 0; i < tabla.getRowCount(); i++){
-                    placa = (String) tabla.getValueAt(i, 0);
-                    consecutivo = (String) tabla.getValueAt(i, 1);
-    
-                    Generar_extractos.generar_extracto_mensual_excel(placa, Integer.parseInt(consecutivo), url);
-                }
-
-                JOptionPane.showMessageDialog(this, "Extractos guardado con exito.", "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
-            }catch(Exception ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            
-        });
-
-        item_actualizar_todos.addActionListener(accion -> {
-
-            new Actualizar_todo_ext_mensual(this, url).setVisible(true);
-
-            base = new Base(url);
-            try{
-                tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
-                tabla.setComponentPopupMenu(pop_menu);
-                scroll.setViewportView(tabla );
-                
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            base.close();
-
-        });
+        
         JFrame padre = this;
         
         text_busqueda.addKeyListener(new Key_adapter() {

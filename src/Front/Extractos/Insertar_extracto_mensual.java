@@ -351,10 +351,17 @@ public class Insertar_extracto_mensual extends Modal_documento {
         boton_exportar.setBounds(150, 450, 140, 23);
         boton_exportar.addActionListener(accion ->{
             boolean band = guardar_extracto_mensual();
+            Runtime runtime = Runtime.getRuntime();
+            String comando[] = new String[3];
+            comando[0] = System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe";
+            comando[1] = System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf.ps1";
+            comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
+
             if(band){
                 try{
                     String ruta;
                     ruta = Generar_extractos.generar_extracto_mensual_excel(text_placa.getText(), Integer.parseInt(text_consecutivo.getText()), url);
+                    runtime.exec(comando);
                     JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
                 }catch(Exception e){
                     JOptionPane.showMessageDialog(this, e.getMessage(),"Error",  JOptionPane.ERROR_MESSAGE);

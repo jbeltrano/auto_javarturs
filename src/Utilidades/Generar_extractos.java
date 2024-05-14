@@ -9,6 +9,18 @@ import Base.Base;
 
 public class Generar_extractos {
 
+    /**
+     * Este metodo se encarga de exportar los extractos
+     * en formato pdf carecterizando el archivo como extracto
+     * mensual con placa y id del vehiculo
+     * @param placa
+     * @param consecutivo
+     * @param url
+     * @return
+     * @throws SQLException
+     * @throws IOException
+     * @throws NullPointerException
+     */
     public static String generar_extracto_mensual_excel(String placa, int consecutivo, String url)throws SQLException, IOException, NullPointerException{
         Extracto extracto;
         Base base = new Base(url);
@@ -22,7 +34,7 @@ public class Generar_extractos {
         String[] vehiculo_empresa_externa;
         String año;
         int datos_tipo_contrato;
-        String localizacion_fichero = System.getProperty("user.home") + "\\Desktop\\Extractos_mensuales";
+        String localizacion_fichero = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
 
         try{
         // inicializacion del objeto para modificar la plantilla de extractos
@@ -112,7 +124,20 @@ public class Generar_extractos {
         
     }
 
-    public static String generar_extracto_mensual_ocasional(String placa, int consecutivo,int contrato, String url)throws SQLException, IOException, NullPointerException{
+    /**
+     * Este metodo se encarga de generar un extracto ocasional
+     * para exportarlo en pdf con su respectivo contrato que
+     * tambien sera exportado en formato pdf
+     * @param placa
+     * @param consecutivo
+     * @param contrato
+     * @param url
+     * @return
+     * @throws SQLException
+     * @throws IOException
+     * @throws NullPointerException
+     */
+    public static String generar_extracto_ocasional(String placa, int consecutivo,int contrato, String url)throws SQLException, IOException, NullPointerException{
         Extracto extracto;
         Base base = new Base(url);
         boolean parque_automotor = true;
@@ -126,7 +151,7 @@ public class Generar_extractos {
         String[] vehiculo_empresa_externa;
         String año;
         int datos_tipo_contrato;
-        String localizacion_fichero = System.getProperty("user.home") + "\\Desktop\\Extractos_mensuales";
+        String localizacion_fichero = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
 
         try{
         // inicializacion del objeto para modificar la plantilla de extractos
@@ -245,6 +270,25 @@ public class Generar_extractos {
             base.close();
         }
         
+    }
+
+    // La idea es que este se encarga de exportar los extractos por el contrato
+    // de tal forma que exporta los extractos a los vehiculos que tienen este contrato
+    // Y posteriormente genera el extracto mensual
+    public static String generar_extracto_ocasionale(int contrato, String url){
+        
+        return "";
+    }
+
+    public static String generar_contrato_ocasional(String placa, int contrato, String url){
+
+        return "";
+    }
+
+    public static String generar_contrato_ocasional(int contrato, String url){
+
+        return "";
+
     }
 
     private static boolean is_extemporaneo() {

@@ -812,7 +812,7 @@ public class Base extends Base_datos{
             if(resultado.next()){
                 return resultado.getInt(1);
             }else{
-                SQLException ex = new SQLException("No hay resultados para tu consulta");
+                SQLException ex = new SQLException("No hay resultados para tu consulta sobre departamento");
                 throw ex;
             }
         }catch(SQLException ex){
@@ -3251,7 +3251,7 @@ public class Base extends Base_datos{
     // Metodos relacionados con contratos ocasionales
 
     public int consultar_tipo_contrato_ocasional(int id) throws SQLException{
-
+        int tipo_contrato = 0;
         consultar = "select tc_id from contrato_ocasional where con_id = ?";
 
         pstate = coneccion.prepareStatement(consultar);
@@ -3259,12 +3259,16 @@ public class Base extends Base_datos{
         pstate.setInt(1, id);
 
         resultado = pstate.executeQuery();
-        pstate.close();
+        
 
         if(resultado.next()){
-            return resultado.getInt(1);
+            tipo_contrato = resultado.getInt(1);
+            resultado.close();
+            pstate.close();
+            return tipo_contrato;
         }else{
-            SQLException ex = new SQLException("No hay resultados para tu consulta");
+            pstate.close();
+            SQLException ex = new SQLException("No hay resultados para tu consulta sobre tipo contrato ocasional");
             throw ex;
         }
     }
@@ -3618,24 +3622,26 @@ public class Base extends Base_datos{
     
     public String[] consultar_uno_contratante(String contratante_id) throws SQLException{
         dato = new String[7];
-
-        consultar = "select * from vw_contratante where con_contratante = ?";
+        
+        consultar = "select * from vw_contratante where con_contratante like ?";
 
         pstate = coneccion.prepareStatement(consultar);
 
         pstate.setString(1, contratante_id);
 
         resultado = pstate.executeQuery();
-        pstate.close();
+        
 
         if(resultado.next()){
             for(int i = 0; i < dato.length; i++){
                 dato[i] = resultado.getString(i+1);
             }
             resultado.close();
+            pstate.close();
         }else{
             resultado.close();
-            SQLException ex = new SQLException("No hay resultados para tu consulta");
+            pstate.close();
+            SQLException ex = new SQLException("No hay resultados para tu consulta sobre contratante");
             throw ex;
         }
 

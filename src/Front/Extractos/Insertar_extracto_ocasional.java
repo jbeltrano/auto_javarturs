@@ -199,8 +199,14 @@ public class Insertar_extracto_ocasional extends Modal_documento{
             if(flag){
                 try{
                     String ruta;
-                    ruta = Generar_extractos.generar_extracto_mensual_excel(text_placa.getText(), Integer.parseInt(text_consecutivo.getText()), url);
-                    JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
+                    String comando[] = {System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe",
+                                        System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf.ps1",
+                                        System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales"};
+                    Runtime runtieme = Runtime.getRuntime();
+
+                    ruta = Generar_extractos.generar_extracto_ocasional(text_placa.getText(), Integer.parseInt(text_consecutivo.getText()),Integer.parseInt(text_contrato.getText()), url);
+                    runtieme.exec(comando);
+                    JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta + "\nEl contrato lo encontraras en la carpeta de contratos ocasionales", "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
                     setVisible(false);
                 }catch(Exception e){
                     JOptionPane.showMessageDialog(this, e.getMessage(),"Error",  JOptionPane.ERROR_MESSAGE);
@@ -218,7 +224,7 @@ public class Insertar_extracto_ocasional extends Modal_documento{
 
     @Override
     protected Dimension set_dimension() {
-        return new Dimension(800,500);
+        return new Dimension(800,400);
     }
 
     protected boolean guardar_extracto_ocasional(){
