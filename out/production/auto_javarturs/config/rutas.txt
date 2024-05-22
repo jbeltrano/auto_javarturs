@@ -1,9 +1,0 @@
-guardar_extractos_mensuales = Desktop\Extractos\Extractos mensuales
-guardar_extractos_ocasionales = Desktop\Extractos\Extractos ocasionales
-guardar_contratos_ocasionales = Desktop\Extractos\Contratos ocasionales
-plantilla_extractos = src\plantillas\Extracto.xlsx
-pantilla_contratos_ocasionales = src\plantillas\Documento.docx
-guardar_pdf_exe = src\Utilidades\PDF\a.exe
-guardar_pdf_ps1 = src\Utilidades\PDF\ConvertirPdf.ps1
-icono = src\Front\Recursos\Logo javarturs.jpg
-logo_principal = src\Front\Recursos\imagen_principal.png
