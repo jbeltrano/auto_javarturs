@@ -5,3 +5,5 @@ plantilla_extractos = src\plantillas\Extracto.xlsx
 pantilla_contratos_ocasionales = src\plantillas\Documento.docx
 guardar_pdf_exe = src\Utilidades\PDF\a.exe
 guardar_pdf_ps1 = src\Utilidades\PDF\ConvertirPdf.ps1
+icono = src\Front\Recursos\Logo javarturs.jpg
+logo_principal = src\Front\Recursos\imagen_principal.png

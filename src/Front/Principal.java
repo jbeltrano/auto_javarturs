@@ -6,6 +6,7 @@ import Front.Ciudades_departamentos.Insertar_ciudad;
 import Front.Extractos.Actualizar_contratante;
 import Front.Extractos.Actualizar_contrato_ocasional;
 import Front.Extractos.Actualizar_extracto_mensual;
+import Front.Extractos.Actualizar_extracto_ocasional;
 import Front.Extractos.Actualizar_todo_ext_mensual;
 import Front.Extractos.Insertar_contratante;
 import Front.Extractos.Insertar_contrato_mensual;
@@ -27,10 +28,13 @@ import Utilidades.Generar_extractos;
 import Utilidades.Key_adapter;
 import Utilidades.Leer_link;
 import Utilidades.Modelo_tabla;
+import Utilidades.Windows_bar;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -44,6 +48,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JMenu;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+
+import com.formdev.flatlaf.FlatLightLaf;
+
 import java.awt.Desktop;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -70,6 +77,7 @@ public class Principal extends JFrame{
     private JMenu menu_4;
     private JMenuBar barra_menu;
     private ImageIcon imagen1;
+    private ImageIcon icono;
     private JLabel limagen1;
     private JTable tabla;
     private JPopupMenu pop_menu;
@@ -100,6 +108,9 @@ public class Principal extends JFrame{
     private static final String comando[] = {System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe",
                                             System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf.ps1",
                                             System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales"};
+    private static final String comando2[] = {System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe",
+                                            System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf2.ps1",
+                                            System.getProperty("user.home") + "\\Desktop\\Extractos\\Contratos Ocasionales"};
     
     /** 
      * Este es el constructor general para la clase Principal
@@ -109,6 +120,13 @@ public class Principal extends JFrame{
     public Principal(String url){
         super("Javarturs");
         this.url = url;
+
+        try{
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        }catch(Exception e){
+            System.out.println(e);
+        }
+
         setPreferredSize(new Dimension(1200,700));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         iniciar_componentes();
@@ -126,7 +144,8 @@ public class Principal extends JFrame{
         // Carga los comandos necesarios
 
         // Carga de icono
-
+        icono = new ImageIcon("src\\Front\\Recursos\\Logo javarturs.jpg");
+        this.setIconImage(icono.getImage());
         // Carga de imagen principal
         imagen1 = new ImageIcon("src\\Front\\Recursos\\imagen_principal.png");
         limagen1 = new JLabel(imagen1);
@@ -865,6 +884,8 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_documentos_vehiculos(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
         
 
         item_adicionar.addActionListener(accion ->{
@@ -914,6 +935,8 @@ public class Principal extends JFrame{
                     tabla = Modelo_tabla.set_tabla_documentos_vehiculos(base.consultar_documentos(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -952,6 +975,8 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
 
         item_adicionar.addActionListener(accion ->{
             new Insertar_vehiculo_conductor(this, url, "");
@@ -962,6 +987,8 @@ public class Principal extends JFrame{
                 tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(text_busqueda.getText()));
                 tabla.setComponentPopupMenu(pop_menu);
                 scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
 
             }catch(SQLException ex){
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -987,6 +1014,8 @@ public class Principal extends JFrame{
                     tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
 
 
                 }catch(SQLException ex){
@@ -1009,6 +1038,8 @@ public class Principal extends JFrame{
                     tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -1096,6 +1127,8 @@ public class Principal extends JFrame{
         });
 
         scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
         panel.add(scroll,BorderLayout.CENTER);
         
         return panel;
@@ -1127,6 +1160,8 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_vehiculo(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
             int select_row = tabla.getSelectedRow();
@@ -1229,6 +1264,8 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_ciudad(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
 
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
@@ -1242,6 +1279,8 @@ public class Principal extends JFrame{
                 tabla = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(text_busqueda.getText()));
                 tabla.setComponentPopupMenu(pop_menu);
                 scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
                 base.close();
 
             }catch(SQLException ex){
@@ -1261,6 +1300,8 @@ public class Principal extends JFrame{
                 tabla = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(text_busqueda.getText()));
                 tabla.setComponentPopupMenu(pop_menu);
                 scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
                 base.close();
 
             }catch(SQLException ex){
@@ -1343,6 +1384,8 @@ public class Principal extends JFrame{
 
         tabla = Modelo_tabla.set_tabla_departamento(datos);
         scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
 
         JFrame padre = this;
         
@@ -1401,6 +1444,8 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_personas(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
 
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
@@ -1494,6 +1539,8 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_conductores(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
 
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
@@ -1590,6 +1637,8 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_extractos_mensuales(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
 
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
@@ -1739,6 +1788,8 @@ public class Principal extends JFrame{
                         tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
                         tabla.setComponentPopupMenu(pop_menu);
                         scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
                     } catch (SQLException ex) {
                         JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -1785,6 +1836,8 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_contratos_mensuales(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
 
         
         item_adicionar.addActionListener(accion ->{
@@ -1883,6 +1936,8 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_contratos_ocasionales(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
 
         
         item_adicionar.addActionListener(accion ->{
@@ -2016,19 +2071,24 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_extractos_ocasionales(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
 
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
             int row = tabla.getSelectedRow();
             String placa = (String) tabla.getValueAt(row, 0);
-            int consecutivo = Integer.parseInt((String) tabla.getValueAt(row, 1));
+            String consecutivo = (String) tabla.getValueAt(row, 1);
+            String contrato = (String) tabla.getValueAt(row, 2);
             // actualizar_extracto
-            //new Actualizar_extracto_ocasional(this, url, placa, consecutivo).setVisible(true);
+            new Actualizar_extracto_ocasional(this, url, placa, consecutivo, contrato, false).setVisible(true);
             base = new Base(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_extractos_ocasionales(base.consultar_vw_extracto_ocasional(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
+                    JTable aux_tabla = Modelo_tabla.set_tabla_extractos_ocasionales(base.consultar_vw_extracto_ocasional(text_busqueda.getText()));
+                    
+                    tabla.setModel(aux_tabla.getModel());
+                    tabla.setColumnModel(aux_tabla.getColumnModel());
+
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -2049,7 +2109,25 @@ public class Principal extends JFrame{
                 }
                 base.close();
         });
+        item_plantilla.addActionListener(accion ->{
+            int row = tabla.getSelectedRow();
+            String placa = (String) tabla.getValueAt(row, 0);
+            String consecutivo = (String) tabla.getValueAt(row, 1);
+            String contrato = (String) tabla.getValueAt(row, 2);
 
+            new Actualizar_extracto_ocasional(this, url, placa, consecutivo, contrato, true).setVisible(true);
+
+            base = new Base(url);
+            try{
+                JTable tab_aux = Modelo_tabla.set_tabla_extractos_ocasionales(base.consultar_vw_extracto_ocasional(text_busqueda.getText()));
+                tabla.setModel(tab_aux.getModel());
+                tabla.setColumnModel(tab_aux.getColumnModel());
+            }catch(SQLException ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+            }finally{
+                base.close();
+            }
+        });
         item_exportar.addActionListener(accion ->{
             int select_row = tabla.getSelectedRow();
             try{
@@ -2057,6 +2135,10 @@ public class Principal extends JFrame{
                 comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
                 ruta = Generar_extractos.generar_extracto_ocasional((String)tabla.getValueAt(select_row, 0),Integer.parseInt((String) tabla.getValueAt(select_row, 1)),Integer.parseInt((String) tabla.getValueAt(select_row, 2)), url);
                 runtime.exec(comando);
+                //runtime.exec(comando2);
+                for(int i = 0; i < comando2.length; i++){
+                    System.out.println(comando2[i]);
+                }
                 
                 JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
             }catch(Exception ex){
@@ -2100,13 +2182,14 @@ public class Principal extends JFrame{
 
                 base = new Base(url);
                     try {
-                        tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
-                        tabla.setComponentPopupMenu(pop_menu);
-                        scroll.setViewportView(tabla);
+                        JTable tab_aux = Modelo_tabla.set_tabla_extractos_ocasionales(base.consultar_vw_extracto_ocasional(text_busqueda.getText()));
+                        tabla.setModel(tab_aux.getModel());
+                        tabla.setColumnModel(tab_aux.getColumnModel());
                     } catch (SQLException ex) {
                         JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }finally{
+                        base.close();
                     }
-                    base.close();
 
             }
 
@@ -2150,6 +2233,8 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_contratante(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
+        scroll.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
 
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{

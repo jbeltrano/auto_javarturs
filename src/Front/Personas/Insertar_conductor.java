@@ -21,7 +21,9 @@ import com.toedter.calendar.JDateChooser;
 import java.util.Calendar;
 import java.util.Date;
 import Base.Base;
+import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
+import Utilidades.Windows_bar;
 
 public class Insertar_conductor extends Modales_personas{
     
@@ -83,23 +85,16 @@ public class Insertar_conductor extends Modales_personas{
 
         base = new Base(url);
         try{
-            datos = base.consultar_persona_natural();
+            datos = base.consultar_persona_natural("");
             combo_conductor.setModel(new DefaultComboBoxModel<>(base.get_datos_tabla(base.consultar_categoria(), 1)));
-            tabla_persona.setModel(Modelo_tabla.set_modelo_tablas(datos));
+            tabla_persona = Modelo_tabla.set_tabla_personas(datos);
 
         }catch(SQLException e){
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
-        base.close();
 
-
-        tabla_persona.getTableHeader().setReorderingAllowed(false);
-        tabla_persona.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tabla_persona.setRowSelectionAllowed(true);
-        tabla_persona.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tabla_persona.getColumnModel().getColumn(1).setPreferredWidth(35);
-        tabla_persona.getColumnModel().getColumn(2).setPreferredWidth(200);
-        tabla_persona.getColumnModel().getColumn(6).setPreferredWidth(150);
         tabla_persona.addMouseListener(new MouseAdapter() {
             
             @Override
@@ -108,22 +103,18 @@ public class Insertar_conductor extends Modales_personas{
                     new Insertar_persona(padre, url);
                     base = new Base(url);
                 try{
-                    datos = base.consultar_persona_natural();
-                    tabla_persona.setModel(Modelo_tabla.set_modelo_tablas(datos));
-                    tabla_persona.getTableHeader().setReorderingAllowed(false);
-                    tabla_persona.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-                    tabla_persona.setRowSelectionAllowed(true);
-                    tabla_persona.getColumnModel().getColumn(0).setPreferredWidth(100);
-                    tabla_persona.getColumnModel().getColumn(1).setPreferredWidth(35);
-                    tabla_persona.getColumnModel().getColumn(2).setPreferredWidth(200);
-                    tabla_persona.getColumnModel().getColumn(6).setPreferredWidth(150);
-                    
+                    datos = base.consultar_persona_natural("");
+                    JTable tab = Modelo_tabla.set_tabla_personas(datos);
+                    tabla_persona.setModel(tab.getModel());
+                    tabla_persona.setColumnModel(tab.getColumnModel());
+
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     padre.setVisible(false);
+                    
+                }finally{
                     base.close();
                 }
-                base.close();
                     
                 }else{
                     int row = tabla_persona.getSelectedRow();
@@ -133,27 +124,20 @@ public class Insertar_conductor extends Modales_personas{
 
         });
 
-        text_documento.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                String datos[][] = null;
+        text_documento.addKeyListener(new Key_adapter() {
+
+            @Override
+            public void accion() {
+                // TODO Auto-generated method stub
                 String variable_auxiliar = text_documento.getText();
                 
-                if(evt.getExtendedKeyCode() != 8){
-                    variable_auxiliar = variable_auxiliar.concat(evt.getKeyChar()+"");
-                }else{
-                    variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
-                }
+                
                 base = new Base(url);
                 try{
                     datos = base.consultar_persona_natural(variable_auxiliar);
-                    tabla_persona.setModel(Modelo_tabla.set_modelo_tablas(datos));
-                    tabla_persona.getTableHeader().setReorderingAllowed(false);
-                    tabla_persona.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-                    tabla_persona.setRowSelectionAllowed(true);
-                    tabla_persona.getColumnModel().getColumn(0).setPreferredWidth(100);
-                    tabla_persona.getColumnModel().getColumn(1).setPreferredWidth(35);
-                    tabla_persona.getColumnModel().getColumn(2).setPreferredWidth(200);
-                    tabla_persona.getColumnModel().getColumn(6).setPreferredWidth(150);
+                    JTable tab = Modelo_tabla.set_tabla_personas(datos);
+                    tabla_persona.setModel(tab.getModel());
+                    tabla_persona.setColumnModel(tab.getColumnModel());
                     
         
                 }catch(SQLException ex){
@@ -162,10 +146,28 @@ public class Insertar_conductor extends Modales_personas{
                     base.close();
                 }
                 base.close();
+                tabla_persona.changeSelection(0, 0, false, false);
             }
+
+            @Override
+            public void accion2() {
+                try{
+                    int row = tabla_persona.getSelectedRow();
+                    text_documento.setText("" + tabla_persona.getValueAt(row, 0));
+                }catch(Exception ex){
+                    
+                }
+                
+                
+            }
+            
+
         });
 
         jScrollPane1.setViewportView(tabla_persona);
+        jScrollPane1.getVerticalScrollBar().setUI(new Windows_bar());
+        jScrollPane1.getHorizontalScrollBar().setUI(new Windows_bar());
+        
 
         jPanel1.add(jScrollPane1);
         jScrollPane1.setBounds(6, 62, 388, 100);

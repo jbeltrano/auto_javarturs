@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 import Base.Base;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
+import Utilidades.Windows_bar;
 
 public class Insertar_contratante extends Modal_extracto{
     
@@ -57,6 +58,13 @@ public class Insertar_contratante extends Modal_extracto{
         tabla_responsable = new javax.swing.JTable();
         boton_guardar = new javax.swing.JButton();
 
+        // Cambio de las barras de scroll
+
+        jScrollPane1.getVerticalScrollBar().setUI(new Windows_bar());
+        jScrollPane1.getHorizontalScrollBar().setUI(new Windows_bar());
+
+        jScrollPane2.getVerticalScrollBar().setUI(new Windows_bar());
+        jScrollPane2.getHorizontalScrollBar().setUI(new Windows_bar());
         // Consultando los datos de los contratantes
         base = new Base(url);
         try{

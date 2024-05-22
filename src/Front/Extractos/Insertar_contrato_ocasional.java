@@ -13,6 +13,8 @@ import javax.swing.JTable;
 import Base.Base;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
+import Utilidades.Windows_bar;
+
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import java.awt.Dimension;
@@ -89,7 +91,15 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         fecha_final = new JDateChooser();
         combo_tipo_contrato = new JComboBox<>();
 
-        
+        // Configuracion de las barras de scroll
+        scroll_contratante.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll_contratante.getHorizontalScrollBar().setUI(new Windows_bar());
+
+        scroll_origen.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll_origen.getHorizontalScrollBar().setUI(new Windows_bar());
+
+        scroll_destino.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll_destino.getHorizontalScrollBar().setUI(new Windows_bar());
         // incializando las tablas
         base = new Base(url);
         try{

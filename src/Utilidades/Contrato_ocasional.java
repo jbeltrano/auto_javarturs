@@ -1,5 +1,6 @@
 package Utilidades;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,6 +37,10 @@ public class Contrato_ocasional{
         fis.close();  
     }
 
+    public void close() throws IOException{
+        documento.close();
+    }
+
     /**
      * Este metodo se encarga de modificar el archivo .docx
      * y el nombre del archivo con el numero del contrato
@@ -63,6 +68,22 @@ public class Contrato_ocasional{
 
     }
 
+    /**
+     * Cambia los valores del contratante, pero cuando
+     * el contratante es una empresa osea con nit
+     * @param nombre_empresa
+     * @param tipo_documento_empresa
+     * @param numero_documento_empresa
+     * @param nombre
+     * @param tipo_documento
+     * @param numero_documento
+     * @param telefono
+     * @param direccion
+     * @param ciudad
+     */
+    public void set_contratante(String nombre_empresa, String tipo_documento_empresa, String numero_documento_empresa,String nombre, String tipo_documento, String numero_documento, String telefono, String direccion, String ciudad){
+
+    }
     /**
      * Este metodo se encargar de modificar el parrafo
      * del archivo donde se consentra la infromacion del
@@ -317,7 +338,7 @@ public class Contrato_ocasional{
         parrafo = documento.getParagraphs().get(7);
 
         // modificacion de duracion
-        run = parrafo.getRuns().get(33);
+        run = parrafo.getRuns().get(37);
         if(duracion == 1){
             run.setText(NUMERO_TEXTO_60[1] + " día (1) contado",0);
         }else{
@@ -325,11 +346,11 @@ public class Contrato_ocasional{
         }
 
         // modifciacion de fecha inical
-        run = parrafo.getRuns().get(36);
+        run = parrafo.getRuns().get(40);
         run.setText(texto_incial,0);
 
         // modificacion de fecha final
-        run = parrafo.getRuns().get(39);
+        run = parrafo.getRuns().get(43);
         run.setText(texto_final,0);
         
 
@@ -351,8 +372,15 @@ public class Contrato_ocasional{
      */
     public void guardar(String url, String placas) throws IOException{
 
-        url = url + numero_contrato + "(" + placas + ").docx";
-        FileOutputStream fos = new FileOutputStream(url);
+        url = url + numero_contrato + " (" + placas + ").docx";
+        File file = new File(url);
+
+        if (!file.getParentFile().exists()) {
+            // Si no existe, intenta crearla
+            file.getParentFile().mkdirs();
+        }
+
+        FileOutputStream fos = new FileOutputStream(file);
         documento.write(fos);
 
         fos.close();
@@ -368,7 +396,14 @@ public class Contrato_ocasional{
     public void guardar(String url) throws IOException{
 
         url = url + numero_contrato + ".docx";
-        FileOutputStream fos = new FileOutputStream(url);
+        File file = new File(url);
+
+        if (!file.getParentFile().exists()) {
+            // Si no existe, intenta crearla
+            file.getParentFile().mkdirs();
+        }
+
+        FileOutputStream fos = new FileOutputStream(file);
         documento.write(fos);
 
         fos.close();
@@ -383,13 +418,22 @@ public class Contrato_ocasional{
      * @throws IOException
      */
     public void guardar(String url, String[] placas) throws IOException{
+        String placa = "";
+        for(int i = 0; i < placas.length; i++){
+            placa = (i == placas.length -1)?placa + placas[i]:placa + placas[i] + ", ";
+        }
+        url = url + numero_contrato + " (" + placa + ").docx";
+        File file = new File(url);
 
-        url = url + numero_contrato + "(" + placas + ").docx";
-        FileOutputStream fos = new FileOutputStream(url);
+        if (!file.getParentFile().exists()) {
+            // Si no existe, intenta crearla
+            file.getParentFile().mkdirs();
+        }
+
+        FileOutputStream fos = new FileOutputStream(file);
         documento.write(fos);
 
         fos.close();
-
     }
 }
 

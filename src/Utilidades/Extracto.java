@@ -79,7 +79,9 @@ public class Extracto {
 
     }
 
-
+    public void close() throws IOException{
+        libro.close();
+    }
     // Metodos especificos
     public void set_numero_principal(String año, String contrato, String consecutivo){
 
@@ -330,8 +332,7 @@ public class Extracto {
             out = new FileOutputStream(dir_salida +"\\"+ nombre_archivo);
             libro.write(out);
             out.close();
-            libro.close();
-            plantilla.close();
+            
             
         }catch(IOException ex){
             throw ex;

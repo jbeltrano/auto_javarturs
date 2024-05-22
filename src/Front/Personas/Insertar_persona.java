@@ -138,13 +138,16 @@ public class Insertar_persona extends Modales_personas{
         combo_departamento.setSelectedItem("Meta");
         jPanel1.add(combo_departamento);
         combo_departamento.setBounds(292, 90, 120, 22);
-
+        combo_departamento.setMaximumSize(new Dimension(200,100));
+        combo_departamento.setMaximumRowCount(8);
         jLabel6.setText("Municipio");
         jPanel1.add(jLabel6);
         jLabel6.setBounds(17, 124, 54, 16);
 
         combo_municipio.setMaximumRowCount(5);
         combo_municipio.setSelectedItem("Acacias");
+        combo_municipio.setPrototypeDisplayValue("Placeholder");    // Se utiliza para que el tamaño no cambie
+
         jPanel1.add(combo_municipio);
         combo_municipio.setBounds(17, 146, 124, 22);
 

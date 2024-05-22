@@ -1117,7 +1117,7 @@ public class Base extends Base_datos{
                 return datos;
             }
 
-            datos = new String[cantidad+1][7];
+            datos = new String[cantidad+1][8];
 
             resultado = state.executeQuery(consultar);
             
@@ -1128,6 +1128,7 @@ public class Base extends Base_datos{
             datos[0][4] = "CIUDAD";
             datos[0][5] = "DEPARTAMENTO";
             datos[0][6] = "DIRECCION";
+            datos[0][7] = "CORREO";
 
             while(resultado.next()){
 
@@ -1138,7 +1139,7 @@ public class Base extends Base_datos{
                 datos[i][4] = resultado.getString("ciu_nombre");
                 datos[i][5] = resultado.getString("dep_nombre");
                 datos[i][6] = resultado.getString("per_direccion");
-                
+                datos[i][7] = resultado.getString("per_correo");
                 i++;
             }
 
@@ -1151,59 +1152,7 @@ public class Base extends Base_datos{
     
     }
     
-    public String[][] consultar_persona_natural()throws SQLException{
-
-        datos = new String[1][20];
-        int cantidad = 0;
-        int i = 1;
-
-        consultar = "select * from vw_persona_natural";
-
-        try{
-            state = coneccion.createStatement();
- 
-            // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
-            resultado = state.executeQuery("select count() as total from vw_persona_natural");
-            
-            if(resultado.next()){
-                cantidad = resultado.getInt("total");
-            }
-
-            if(cantidad == 0){
-                return datos;
-            }
-
-            datos = new String[cantidad+1][7];
-
-            resultado = state.executeQuery(consultar);
-            
-            datos[0][0] = "ID";
-            datos[0][1] = "TIPO";
-            datos[0][2] = "NOMBRE";
-            datos[0][3] = "CELULAR";
-            datos[0][4] = "CIUDAD";
-            datos[0][5] = "DEPARTAMENTO";
-            datos[0][6] = "DIRECCION";
-
-            while(resultado.next()){
-
-                datos[i][0] = resultado.getString("per_id");
-                datos[i][1] = resultado.getString("tip_nombre");
-                datos[i][2] = resultado.getString("per_nombre");
-                datos[i][3] = resultado.getString("per_celular");
-                datos[i][4] = resultado.getString("ciu_nombre");
-                datos[i][5] = resultado.getString("dep_nombre");
-                datos[i][6] = resultado.getString("per_direccion");
-                
-                i++;
-            }
-
-        }catch(SQLException ex){
-            throw ex;
-        }
-
-        return datos;
-    }
+    
 
     // Metodo para insertar, eliminar, actualizar y consultar TIPO EMPLEADO
     public void insertar_tipo_empleado(String nombre)throws SQLException{

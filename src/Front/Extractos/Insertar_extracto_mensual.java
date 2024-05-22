@@ -12,6 +12,8 @@ import Base.Base;
 import Utilidades.Generar_extractos;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
+import Utilidades.Windows_bar;
+
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import java.awt.Dimension;
@@ -91,6 +93,21 @@ public class Insertar_extracto_mensual extends Modal_documento {
         fecha_final = new JDateChooser();
         
         
+        // Configuracion de barras de scroll
+
+        scroll_contratante.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll_contratante.getHorizontalScrollBar().setUI(new Windows_bar());
+
+        scroll_destino.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll_destino.getHorizontalScrollBar().setUI(new Windows_bar());
+
+        scroll_origen.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll_origen.getHorizontalScrollBar().setUI(new Windows_bar());
+
+        scroll_vehiculo.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll_vehiculo.getHorizontalScrollBar().setUI(new Windows_bar());
+
+
         // incializando las tablas
         base = new Base(url);
         try{
@@ -103,10 +120,10 @@ public class Insertar_extracto_mensual extends Modal_documento {
 
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            base.close();
             setVisible(false);
+        }finally{
+            base.close();
         }
-        base.close();
         
         label_vehiculo.setText("Vehiculo");
         jPanel1.add(label_vehiculo);

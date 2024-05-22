@@ -18,6 +18,7 @@ import java.awt.event.MouseEvent;
 import com.toedter.calendar.JDateChooser;
 import Base.Base;
 import Utilidades.Modelo_tabla;
+import Utilidades.Windows_bar;
 
 public class Insertar_documento_vehiculo extends Modales_vehiculos{
 
@@ -74,6 +75,10 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
         fecha_top = new JDateChooser(fecha_actual);
 
 
+        // Configuracion de las barras de scroll
+
+        jScrollPane1.getVerticalScrollBar().setUI(new Windows_bar());
+        jScrollPane1.getHorizontalScrollBar().setUI(new Windows_bar());
         jPanel1.setLayout(null);
 
         jLabel1.setText("Placa");

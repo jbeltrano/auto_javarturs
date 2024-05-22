@@ -401,9 +401,9 @@ create view vw_persona as
     from persona natural join tipo_id natural join ciudad natural join departamento order by per_nombre asc;
 
 create view vw_persona_natural as
-    select per_id, tip_nombre,per_nombre, per_celular,ciu_nombre,dep_nombre,per_direccion 
+    select per_id, tip_nombre,per_nombre, per_celular,ciu_nombre,dep_nombre,per_direccion,per_correo
     from persona natural join tipo_id natural join ciudad natural join departamento
-    where tip_id = 1;
+    where tip_id = 1 or tip_id = 3;
 
 create view vw_novedad as 
     select per_id, per_nombre,tin_nombre, tin_nombre2, nov_dias, nov_estado, nov_fecha_inicial, nov_fecha_final 

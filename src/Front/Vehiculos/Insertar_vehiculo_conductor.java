@@ -15,6 +15,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import Front.Personas.Insertar_conductor;
 import Utilidades.Modelo_tabla;
+import Utilidades.Windows_bar;
+
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
@@ -58,6 +60,13 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
         
         setPreferredSize(new Dimension(500,300));
 
+        // Modificando las barras del scroll
+        jScrollPane1.getVerticalScrollBar().setUI(new Windows_bar());
+        jScrollPane1.getHorizontalScrollBar().setUI(new Windows_bar());
+
+        jScrollPane2.getVerticalScrollBar().setUI(new Windows_bar());
+        jScrollPane2.getHorizontalScrollBar().setUI(new Windows_bar());
+        
         jPanel1.setLayout(null);
 
         label_placa.setText("Placa");

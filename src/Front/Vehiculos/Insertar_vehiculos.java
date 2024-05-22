@@ -21,6 +21,7 @@ import Base.Base;
 import Front.Personas.Insertar_persona;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
+import Utilidades.Windows_bar;
 
 public class Insertar_vehiculos extends Modales_vehiculos{
     
@@ -105,6 +106,9 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         combo_servicio = new JComboBox<>();
         text_modelo = new JTextField();
 
+        // modificando las barras dle escroll
+        scroll_tabla.getVerticalScrollBar().setUI(new Windows_bar());
+        scroll_tabla.getHorizontalScrollBar().setUI(new Windows_bar());
         jPanel1.setLayout(null);
 
         label_placa.setText("Placa");

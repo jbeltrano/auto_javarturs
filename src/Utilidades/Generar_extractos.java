@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-
 import Base.Base;
 
 public class Generar_extractos {
@@ -37,87 +36,88 @@ public class Generar_extractos {
         String localizacion_fichero = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
 
         try{
-        // inicializacion del objeto para modificar la plantilla de extractos
-        extracto = new Extracto("src\\Formatos\\Extracto.xlsx");
-        datos_extracto = base.consultar_uno_extracto_mensual(placa, consecutivo);
-        datos_contratante = base.consultar_uno_contrato_mensual(Integer.parseInt(datos_extracto[2]));
-        datos_conductores = base.consultar_conductor_has_vehiculo(placa);
-        datos_origen = base.consultar_uno_ciudades(datos_extracto[5]);
-        datos_destino = base.consultar_uno_ciudades(datos_extracto[6]);
-        datos_vehiculo = base.consultar_uno_vw_vehiculo_extracto(placa);
-        datos_tipo_contrato = base.consultar_tipo_contrato_mensual(Integer.parseInt(datos_contratante[0]));
-        parque_automotor = Boolean.parseBoolean(base.consultar_uno_vehiculo(placa)[16]);
-        vehiculo_empresa_externa = base.consultar_uno_vehiculo_externo(placa);
+            // inicializacion del objeto para modificar la plantilla de extractos
+            extracto = new Extracto("src\\Formatos\\Extracto.xlsx");
+            datos_extracto = base.consultar_uno_extracto_mensual(placa, consecutivo);
+            datos_contratante = base.consultar_uno_contrato_mensual(Integer.parseInt(datos_extracto[2]));
+            datos_conductores = base.consultar_conductor_has_vehiculo(placa);
+            datos_origen = base.consultar_uno_ciudades(datos_extracto[5]);
+            datos_destino = base.consultar_uno_ciudades(datos_extracto[6]);
+            datos_vehiculo = base.consultar_uno_vw_vehiculo_extracto(placa);
+            datos_tipo_contrato = base.consultar_tipo_contrato_mensual(Integer.parseInt(datos_contratante[0]));
+            parque_automotor = Boolean.parseBoolean(base.consultar_uno_vehiculo(placa)[16]);
+            vehiculo_empresa_externa = base.consultar_uno_vehiculo_externo(placa);
 
-        if(datos_vehiculo[0] == null){
-            NullPointerException ex = new NullPointerException("El vehiculo " + placa + ".\nNo posee documentos");
-            throw ex;
-        }
-        año = datos_extracto[4].split("-")[0];
-
-        // Modificando como tal el documento
-        extracto.set_numero_principal(año, datos_extracto[2], datos_extracto[1]);
-        extracto.set_contrato(datos_extracto[2]);
-        extracto.set_contratante(datos_contratante[3], datos_contratante[1], datos_contratante[2]);
-        extracto.set_tipo_contrato(Extracto.TIPO_CONTRATO_EMPRESARIAL);
-
-        if(Integer.parseInt(datos_origen[0]) != 0 && Integer.parseInt(datos_destino[0]) != 0){
-            extracto.set_origen_destino(datos_origen[1], datos_origen[2], datos_destino[1], datos_destino[2]);
-        }else{
-            if(Integer.parseInt(datos_origen[0]) != 0){
-                extracto.set_ruta(datos_origen[1], datos_origen[2]);
-            }else if(Integer.parseInt(datos_destino[0]) != 0){
-                extracto.set_ruta(datos_destino[1], datos_destino[2]);
+            if(datos_vehiculo[0] == null){
+                NullPointerException ex = new NullPointerException("El vehiculo " + placa + ".\nNo posee documentos");
+                throw ex;
             }
-        }
-        extracto.set_fecha_inicial(datos_extracto[3]);
-        extracto.set_fecha_final(datos_extracto[4]);
-        extracto.set_datos_vehiculo(placa, Integer.parseInt(datos_vehiculo[1]), datos_vehiculo[2], datos_vehiculo[3], Integer.parseInt(datos_vehiculo[4]), Integer.parseInt(datos_vehiculo[5]));
+            año = datos_extracto[4].split("-")[0];
 
-        if(datos_tipo_contrato == Extracto.ESTUDIANTIL){
+            // Modificando como tal el documento
+            extracto.set_numero_principal(año, datos_extracto[2], datos_extracto[1]);
+            extracto.set_contrato(datos_extracto[2]);
+            extracto.set_contratante(datos_contratante[3], datos_contratante[1], datos_contratante[2]);
+            extracto.set_tipo_contrato(Extracto.TIPO_CONTRATO_EMPRESARIAL);
 
-            extracto.set_tipo_contrato(Extracto.ESTUDIANTIL);
+            if(Integer.parseInt(datos_origen[0]) != 0 && Integer.parseInt(datos_destino[0]) != 0){
+                extracto.set_origen_destino(datos_origen[1], datos_origen[2], datos_destino[1], datos_destino[2]);
+            }else{
+                if(Integer.parseInt(datos_origen[0]) != 0){
+                    extracto.set_ruta(datos_origen[1], datos_origen[2]);
+                }else if(Integer.parseInt(datos_destino[0]) != 0){
+                    extracto.set_ruta(datos_destino[1], datos_destino[2]);
+                }
+            }
+            extracto.set_fecha_inicial(datos_extracto[3]);
+            extracto.set_fecha_final(datos_extracto[4]);
+            extracto.set_datos_vehiculo(placa, Integer.parseInt(datos_vehiculo[1]), datos_vehiculo[2], datos_vehiculo[3], Integer.parseInt(datos_vehiculo[4]), Integer.parseInt(datos_vehiculo[5]));
 
-        }else if(datos_tipo_contrato == Extracto.EMPRESARIAL){
+            if(datos_tipo_contrato == Extracto.ESTUDIANTIL){
 
-            extracto.set_tipo_contrato(Extracto.EMPRESARIAL);
+                extracto.set_tipo_contrato(Extracto.ESTUDIANTIL);
 
-        }else if(datos_tipo_contrato == Extracto.PERSONALIZADO){
+            }else if(datos_tipo_contrato == Extracto.EMPRESARIAL){
 
-            extracto.set_tipo_contrato(Extracto.PERSONALIZADO);
+                extracto.set_tipo_contrato(Extracto.EMPRESARIAL);
 
-        }else{
+            }else if(datos_tipo_contrato == Extracto.PERSONALIZADO){
 
-            extracto.set_tipo_contrato(Extracto.PARTICULAR);
+                extracto.set_tipo_contrato(Extracto.PERSONALIZADO);
 
-        }
+            }else{
 
-        if(!parque_automotor){
-            extracto.set_convenio(vehiculo_empresa_externa[1], vehiculo_empresa_externa[2]);
-        }
+                extracto.set_tipo_contrato(Extracto.PARTICULAR);
 
-        if(datos_conductores.length > 1){
-            extracto.set_conductor1(datos_conductores[1][3], datos_conductores[1][2], datos_conductores[1][5]);
-        } 
-        if(datos_conductores.length > 2){
-            extracto.set_conductor2(datos_conductores[2][3], datos_conductores[2][2], datos_conductores[2][5]);
-        } 
-        if(datos_conductores.length > 3){
-            extracto.set_conductor3(datos_conductores[3][3], datos_conductores[3][2], datos_conductores[3][5]);
-        }
-        if(datos_conductores.length < 2){
+            }
+
+            if(!parque_automotor){
+                extracto.set_convenio(vehiculo_empresa_externa[1], vehiculo_empresa_externa[2]);
+            }
+
+            if(datos_conductores.length > 1){
+                extracto.set_conductor1(datos_conductores[1][3], datos_conductores[1][2], datos_conductores[1][5]);
+            } 
+            if(datos_conductores.length > 2){
+                extracto.set_conductor2(datos_conductores[2][3], datos_conductores[2][2], datos_conductores[2][5]);
+            } 
+            if(datos_conductores.length > 3){
+                extracto.set_conductor3(datos_conductores[3][3], datos_conductores[3][2], datos_conductores[3][5]);
+            }
+            if(datos_conductores.length < 2){
+                
+                NullPointerException ex = new NullPointerException("El vehiculo " + placa + ".\nNo tiene conductores registrados");
+                throw ex;
+                
+            }
+
+            //extracto.set_responsable(nombre, document0, celular, direccion);
+            extracto.set_responsable(datos_contratante[5], datos_contratante[4], datos_contratante[6], datos_contratante[7]);
             
-            NullPointerException ex = new NullPointerException("El vehiculo " + placa + ".\nNo tiene conductores registrados");
-            throw ex;
+            extracto.guardar(localizacion_fichero, "MENSUAL (" + consecutivo + ")");
+
+            return localizacion_fichero + placa +" MENSUAL (" + consecutivo + ")";
             
-        }
-
-        //extracto.set_responsable(nombre, document0, celular, direccion);
-        extracto.set_responsable(datos_contratante[5], datos_contratante[4], datos_contratante[6], datos_contratante[7]);
-        
-        extracto.guardar(localizacion_fichero, "MENSUAL (" + consecutivo + ")");
-
-        return localizacion_fichero + placa +" MENSUAL (" + consecutivo + ")";
         }finally{
             base.close();
         }
@@ -176,9 +176,9 @@ public class Generar_extractos {
         // Modificando como tal el documento
         extracto.set_numero_principal(año, ""+contrato, ""+consecutivo);    // hace el set al numero principal
         extracto.set_contrato(""+contrato);     // realiza el set al contrato
-        extracto.set_contratante(datos_contratante[2],  // Realiza el set al contratante
-                                 datos_contratante[1],
-                                 datos_contratante[0]);     
+        extracto.set_contratante(datos_per_contratante[2],  // Nombre del contratante
+                                 datos_per_contratante[1],  // tipo de documento
+                                 datos_per_contratante[0]); // Numero de documento
         extracto.set_tipo_contrato(Extracto.TIPO_CONTRATO_EMPRESARIAL);     // hace el set al tipo de contrato por defecto
 
         // Se encarga de hacer el set al origen y destino del extracto ocasional
@@ -263,6 +263,7 @@ public class Generar_extractos {
 
         // Guarda el extracto en la direccion indicada por el path, o el archivo de configuracion
         extracto.guardar(localizacion_fichero, sub_ocasional+" (" + consecutivo + ")");
+        Generar_contratos_ocasionales.generar_contrato_ocasional(placa, ""+contrato, url);
 
         // Retorna la direccion de guardado
         return localizacion_fichero + placa + sub_ocasional +" (" + consecutivo + ")";
@@ -275,20 +276,9 @@ public class Generar_extractos {
     // La idea es que este se encarga de exportar los extractos por el contrato
     // de tal forma que exporta los extractos a los vehiculos que tienen este contrato
     // Y posteriormente genera el extracto mensual
-    public static String generar_extracto_ocasionale(int contrato, String url){
+    public static String generar_extracto_ocasionales(int contrato, String url){
         
         return "";
-    }
-
-    public static String generar_contrato_ocasional(String placa, int contrato, String url){
-
-        return "";
-    }
-
-    public static String generar_contrato_ocasional(int contrato, String url){
-
-        return "";
-
     }
 
     private static boolean is_extemporaneo() {
