@@ -1233,7 +1233,6 @@ public class Principal extends JFrame{
      * la tabla ciudad y realizar actualizacion y insercion
      * dentro de la misma, adicionalmente configura la barra
      * de busqueda para el propocito de busqueda que requiera
-     * @see configuracion_panel_busqueda()
      * @see JPanel
      * @return JPanel
      */
@@ -2133,7 +2132,8 @@ public class Principal extends JFrame{
             try{
                 String ruta;
                 comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
-                ruta = Generar_extractos.generar_extracto_ocasional((String)tabla.getValueAt(select_row, 0),Integer.parseInt((String) tabla.getValueAt(select_row, 1)),Integer.parseInt((String) tabla.getValueAt(select_row, 2)), url);
+                ruta = Generar_extractos.generar_extracto_ocasional(Integer.parseInt((String) tabla.getValueAt(select_row, 2)), 
+                                                                    url);
                 runtime.exec(comando);
                 //runtime.exec(comando2);
                 for(int i = 0; i < comando2.length; i++){

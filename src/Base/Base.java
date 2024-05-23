@@ -3,6 +3,7 @@ package Base;
 import java.util.Vector;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 
@@ -2801,6 +2802,27 @@ public class Base extends Base_datos{
 
     }
 
+    public int consultar_uno_consecutivo_extracto_ocasional(String placa, int contrato)throws SQLException{
+        try{
+            consultar = "select * from extracto_ocasional where veh_placa = ? and con_id = ?";
+
+            pstate = coneccion.prepareStatement(consultar);
+            pstate.setString(1, placa);
+            pstate.setInt(2, contrato);
+    
+            resultado = pstate.executeQuery();
+    
+            if(resultado.next()){
+                return resultado.getInt(2);
+            }else{
+                throw new SQLException("No se encontraron resultados");
+            }
+        }finally{
+            resultado.close();
+            pstate.close();
+        }
+        
+    }
     public String[] consultar_uno_extracto_mensual(String placa, int consecutivo)throws SQLException{
         dato = new String[7];
 
@@ -3221,6 +3243,52 @@ public class Base extends Base_datos{
             throw ex;
         }
     }
+
+    /**
+     * Retorna un arreglo de placas asociados a un numero de contrato
+     * ejemplo {"SXT696", "SXT705"}, si estas dos estan asociadas a
+     * un contrato
+     * @param id
+     * @return Array whit data from veh_placa atribute
+     * @throws SQLException
+     */
+    public String[] consultar_placas_contrato_ocasional(int id)throws SQLException{
+        dato = new String[1];
+        consultar = "select veh_placa from extracto_ocasional where con_id = ?";
+        int cantidad = 0;
+
+        // Creacion del pstate para realizar la consulta
+        pstate = coneccion.prepareStatement("select count(*) from extracto_ocasional where con_id = ?");
+        pstate.setInt(1, id);
+        resultado = pstate.executeQuery();
+
+        cantidad = (resultado.next())?resultado.getInt(1):0;
+
+        if(cantidad == 0){
+            SQLException ex = new SQLException("No hay resultados para tu consulta");
+            throw ex;
+        }else{
+            
+            resultado.close();
+            pstate.close();
+            dato = new String[cantidad];
+        }
+
+        pstate = coneccion.prepareStatement(consultar);
+        pstate.setInt(1, id);
+
+        resultado = pstate.executeQuery();
+
+        for(int i = 0; resultado.next(); i++){
+            dato[i] = resultado.getString(1);
+        }
+
+        resultado.close();
+        pstate.close();
+        return dato;
+        
+    }
+
     public String[] consultar_uno_contrato_ocasional(int id)throws SQLException{
         dato = new String[8];
         consultar = "select * from contrato_ocasional where con_id = ?";
@@ -3554,6 +3622,8 @@ public class Base extends Base_datos{
         }
         return dato;
     }
+
+    
 
     // Funciones para conlutar actualizar y eliminar contratantes
     
