@@ -149,6 +149,7 @@ public class Generar_extractos {
         String[] datos_destino;
         String[][] datos_conductores;
         String[] vehiculo_empresa_externa;
+        String[] placas_contrato;
         String año;
         String localizacion_contrato;
         int datos_tipo_contrato;
@@ -166,6 +167,7 @@ public class Generar_extractos {
             datos_tipo_contrato = base.consultar_tipo_contrato_ocasional(Integer.parseInt(datos_contratante[0]));
             parque_automotor = Boolean.parseBoolean(base.consultar_uno_vehiculo(placa)[16]);
             vehiculo_empresa_externa = base.consultar_uno_vehiculo_externo(placa);
+            placas_contrato = base.consultar_placas_contrato_ocasional(contrato);
             
             // Verifica si el vehiculo a insertar contiene documentos para seguir con el proceso
             if(datos_vehiculo[0] == null){
@@ -264,7 +266,7 @@ public class Generar_extractos {
 
             // Guarda el extracto en la direccion indicada por el path, o el archivo de configuracion
             extracto.guardar(localizacion_fichero, sub_ocasional+" (" + consecutivo + ")");
-            localizacion_contrato = Generar_contratos_ocasionales.generar_contrato_ocasional(placa, ""+contrato, url);
+            localizacion_contrato = Generar_contratos_ocasionales.generar_contrato_ocasional(placas_contrato,""+contrato, url);
 
         // Retorna la direccion de guardado
                 }finally{
@@ -380,7 +382,7 @@ public class Generar_extractos {
                 parque_automotor = Boolean.parseBoolean(base.consultar_uno_vehiculo(placas_contrato[i])[16]);
                 vehiculo_empresa_externa = base.consultar_uno_vehiculo_externo(placas_contrato[i]);
                 consecutivo = base.consultar_uno_consecutivo_extracto_ocasional(placas_contrato[i], contrato);
-                
+
                 // Verifica si el vehiculo a insertar contiene documentos para seguir con el proceso
                 if(datos_vehiculo[0] == null){
                     NullPointerException ex = new NullPointerException("El vehiculo " + placas_contrato[i] + ".\nNo posee documentos");
@@ -435,7 +437,7 @@ public class Generar_extractos {
 
             }
             
-            localizacion_contrato = Generar_contratos_ocasionales.generar_contrato_ocasional(""+contrato, url);
+            localizacion_contrato = Generar_contratos_ocasionales.generar_contrato_ocasional(placas_contrato,""+contrato, url);
 
         }finally{
             base.close();

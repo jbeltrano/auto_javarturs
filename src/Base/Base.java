@@ -1843,6 +1843,29 @@ public class Base extends Base_datos{
 
     }
 
+    public int consultar_capacidad_vehiculo(String buscar)throws SQLException{
+        int auxiliar = 0;
+        consultar = "select veh_cantidad from vehiculo where veh_placa = ?";
+
+        pstate = coneccion.prepareStatement(consultar);
+        pstate.setString(1, buscar);
+
+        resultado = pstate.executeQuery();
+
+        if(resultado.next()){
+           auxiliar = resultado.getInt(1); 
+        }else{
+            resultado.close();
+            pstate.close();
+            throw new SQLException("No hay resultados para tu busqueda");
+        }
+
+        resultado.close();
+        pstate.close();
+
+        return auxiliar;
+    }
+
     public String[][] consultar_vehiculo(String buscar)throws SQLException{
 
         datos = new String[1][16];
@@ -3067,11 +3090,14 @@ public class Base extends Base_datos{
         }
 
     }
-
+    
     public void insertar_extracto_ocasional(String placa, int consecutivo, int contrato)throws SQLException{
 
         String accion_auxiliar = "";
         insertar = "insert into extracto_ocasional values (?,?,?)";
+        
+        
+        // Hace la insercion del extracto ocasional
         try{
 
 
@@ -3115,8 +3141,7 @@ public class Base extends Base_datos{
             coneccion.commit();
         }catch(SQLException e){
             coneccion.rollback();
-            SQLException ex = new SQLException("No fue posible insertar el extracto");
-            throw ex;
+            throw e;
         }finally{
             coneccion.setAutoCommit(true);
             pstate.close();
@@ -3640,7 +3665,7 @@ public class Base extends Base_datos{
     }
     
     public String[] consultar_uno_contratante(String contratante_id) throws SQLException{
-        dato = new String[7];
+        dato = new String[9];
         
         consultar = "select * from vw_contratante where con_contratante like ?";
 
@@ -3668,7 +3693,7 @@ public class Base extends Base_datos{
     }
     public String[][] consultar_contratante(String buscar) throws SQLException{
 
-        datos = new String[1][7];
+        datos = new String[1][9];
         int cantidad = 0;
         int i = 1;
 
@@ -3688,7 +3713,7 @@ public class Base extends Base_datos{
                 return datos;
             }
 
-            datos = new String[cantidad+1][7];
+            datos = new String[cantidad+1][9];
 
             resultado = state.executeQuery(consultar);
             
@@ -3699,6 +3724,8 @@ public class Base extends Base_datos{
             datos[0][4] = "NOMBRE RESPONSABLE";
             datos[0][5] = "CELULAR RESPONSABLE";
             datos[0][6] = "DIRECCION RESPONSABLE";
+            datos[0][7] = "MUNICIPIO";
+            datos[0][8] = "DEPARTAMENTO";
             
 
             while(resultado.next()){
@@ -3710,6 +3737,8 @@ public class Base extends Base_datos{
                 datos[i][4] = resultado.getString(5);
                 datos[i][5] = resultado.getString(6);
                 datos[i][6] = resultado.getString(7);
+                datos[i][7] = resultado.getString(8);
+                datos[i][8] = resultado.getString(9);
                 
                 i++;
             }

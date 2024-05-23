@@ -347,7 +347,7 @@ create table extracto_ocasional(
     veh_placa text not null,
     ext_consecutivo integer not null,
     con_id integer not null,
-    
+    unique(veh_placa,con_id),
     primary key(veh_placa, ext_consecutivo),
     foreign key(veh_placa) references vehiculo(veh_placa),
     foreign key(con_id) references contrato_ocasional(con_id)
@@ -418,14 +418,16 @@ create view vw_licencia as
     select per_id, per_nombre,cat_categoria, lic_fecha 
     from licencia natural join categoria natural join persona;
 
-create view vw_contratante as
+create view vw_contratante ascreate view vw_contratante as
 select con_contratante,
     tip_nombre as con_tipo_id,
     per_nombre as con_nombre,
     con_responsable,
     res_nombre,
     res_celular,
-    res_direccion
+    res_direccion,
+    ciu_nombre,
+    dep_nombre
         from (contratante 
             join persona on (per_id = con_contratante))
             natural join tipo_id natural join 
@@ -434,7 +436,9 @@ select con_contratante,
                 per_celular as res_celular, 
                 per_direccion as res_direccion
                     from contratante 
-                        join persona on (per_id = con_responsable) group by con_responsable);
+                        join persona on (per_id = con_responsable) group by con_responsable)
+            natural join ciudad 
+            natural join departamento;
 
 create view vw_contrato_mensual as
     select con_id,
@@ -461,10 +465,16 @@ create view vw_extracto_mensual as
         join ciudad on (ext_origen = ciu_id) 
         natural join departamento 
         natural join contrato_mensual 
-        natural join vw_contratante 
-        join (select ciu_id as ciudad_destino_id, ciu_nombre as ciudad_destino, dep_nombre as departamento_destino 
-            from ciudad 
-            natural join departamento) on (ciudad_destino_id = ext_destino);
+        natural join (select    con_contratante, con_tipo_id, 
+                                con_nombre, con_responsable, 
+                                res_nombre, res_celular, 
+                                res_direccion 
+                                    from vw_contratante)
+        join (select    ciu_id as ciudad_destino_id, 
+                        ciu_nombre as ciudad_destino, 
+                        dep_nombre as departamento_destino 
+                            from ciudad 
+                            natural join departamento) on (ciudad_destino_id = ext_destino)
 
 create view vw_vehiculo_extracto as
     select veh_placa, veh_modelo, veh_marca, cla_nombre, doc_interno, doc_top  
