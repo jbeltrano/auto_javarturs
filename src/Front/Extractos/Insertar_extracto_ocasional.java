@@ -4,8 +4,6 @@ import Base.Base;
 import Utilidades.Generar_extractos;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
-import Utilidades.Windows_bar;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -59,13 +57,6 @@ public class Insertar_extracto_ocasional extends Modal_documento{
         boton_guardar = new JButton("Guardar");
         boton_guardar_exportar = new JButton("Guardar y Exportar");
 
-        // Cambiando el scroll de las barras para las busquedas
-        
-        scroll_vehiculo.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll_vehiculo.getHorizontalScrollBar().setUI(new Windows_bar());
-
-        scroll_contrato.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll_contrato.getHorizontalScrollBar().setUI(new Windows_bar());
         // Inicializacion de los valores de las tablas
         base = new Base(url);
         try{

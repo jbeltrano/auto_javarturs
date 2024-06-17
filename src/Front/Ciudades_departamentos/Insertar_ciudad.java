@@ -2,6 +2,7 @@ package Front.Ciudades_departamentos;
 
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -27,6 +28,10 @@ public class Insertar_ciudad extends Modal_ciudades_departamentos{
 
 
     public Insertar_ciudad(JFrame padre, String url){
+        super(padre ,url);
+    }
+
+    public Insertar_ciudad(JDialog padre, String url){
         super(padre ,url);
     }
     

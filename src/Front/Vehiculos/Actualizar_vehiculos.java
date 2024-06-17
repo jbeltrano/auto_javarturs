@@ -48,6 +48,8 @@ public class Actualizar_vehiculos extends Insertar_vehiculos{
             text_propietario.setText(dato[14]);
             if(Boolean.parseBoolean(dato[16])){
                 boton_parque.setSelected(true);
+            }else{
+                boton_parque.setSelected(false);
             }
 
         }catch(SQLException ex){
@@ -56,17 +58,14 @@ public class Actualizar_vehiculos extends Insertar_vehiculos{
             this.setVisible(false);
         }
         base.close();
-
-        jPanel1.remove(boton_guardar);
-        boton_guardar = new JButton("Guardar");
-        boton_guardar.setBounds(10, 430, 100, 23);
-        jPanel1.add(boton_guardar);
-        jPanel1.revalidate();
-        jPanel1.repaint();
         
-        boton_guardar.addActionListener(accion ->{
 
-            boolean[] campos = new boolean[11];
+    }
+
+    @Override
+    protected void guardar(){
+
+        boolean[] campos = new boolean[11];
             boolean confirmacion = false;
             String propietario = "";
             int cilindrada = 0;
@@ -124,8 +123,6 @@ public class Actualizar_vehiculos extends Insertar_vehiculos{
                 JOptionPane.showMessageDialog(this, "Actualizacion para vehiculo: "+ text_placa.getText() + "\nRealizado correctamente.","",JOptionPane.QUESTION_MESSAGE);
                 this.setVisible(false);
             }
-
-        });
 
     }
 

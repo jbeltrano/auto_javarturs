@@ -11,10 +11,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import Base.Base;
+import Front.Ciudades_departamentos.Insertar_ciudad;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
-import Utilidades.Windows_bar;
-
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import java.awt.Dimension;
@@ -91,15 +90,6 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         fecha_final = new JDateChooser();
         combo_tipo_contrato = new JComboBox<>();
 
-        // Configuracion de las barras de scroll
-        scroll_contratante.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll_contratante.getHorizontalScrollBar().setUI(new Windows_bar());
-
-        scroll_origen.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll_origen.getHorizontalScrollBar().setUI(new Windows_bar());
-
-        scroll_destino.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll_destino.getHorizontalScrollBar().setUI(new Windows_bar());
         // incializando las tablas
         base = new Base(url);
         try{
@@ -200,7 +190,7 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         jPanel1.add(label_tipo_contrato);
 
         combo_tipo_contrato.setBounds(label_tipo_contrato.getX(),fecha_final.getY(),120,20);
-        combo_tipo_contrato.setSelectedItem("EMPRESARIAL");
+        combo_tipo_contrato.setSelectedItem("PARTICULAR");
         jPanel1.add(combo_tipo_contrato);
 
         label_origen.setText("Origen");
@@ -213,21 +203,12 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
             
             @Override
             public void accion() {
-                String datos[][] = null;
 
                 base = new Base(url);
                 try{
-                    datos = base.consultar_ciudades(text_origen.getText());
-                    tabla_origen = Modelo_tabla.set_tabla_ciudad(datos);
-                    tabla_origen.addMouseListener(new MouseAdapter() {
-            
-                        public void mousePressed(MouseEvent evt){
-                            int valor_auxilia = tabla_origen.getSelectedRow();
-                            text_origen.setText("" + tabla_origen.getValueAt(valor_auxilia, 0));
-                        }
-                    });
-                    scroll_origen.setViewportView(tabla_origen);
-                    
+                    JTable auxiliar = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(text_origen.getText()));
+                    tabla_origen.setModel(auxiliar.getModel());
+                    tabla_origen.setColumnModel(auxiliar.getColumnModel());
         
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -253,7 +234,13 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         tabla_origen.addMouseListener(new MouseAdapter() {
             
             public void mousePressed(MouseEvent evt){
-                accion_tabla_origen();
+                if(SwingUtilities.isLeftMouseButton(evt)){
+                    accion_tabla_origen();
+                }else{
+                    new Insertar_ciudad(ventana, url).setVisible(true);
+                    set_tabla_origen();
+                }
+                
             }
         });
 
@@ -300,7 +287,13 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         tabla_destino.addMouseListener(new MouseAdapter() {
             
             public void mousePressed(MouseEvent evt){
-                accion_tabla_destino();
+                
+                if(SwingUtilities.isLeftMouseButton(evt)){
+                    accion_tabla_destino();
+                }else{
+                    new Insertar_ciudad(ventana, url).setVisible(true);
+                    set_tabla_destino();
+                }
             }
         });        
 
@@ -422,5 +415,35 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         }catch(NumberFormatException ex){
             JOptionPane.showMessageDialog(this, "Los campos: \nNumero de contrato\nContratante\norigen y destino\nDeben ser de tipo numerico", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void set_tabla_origen(){
+        base = new Base(url);
+        try{
+            JTable auxiliar = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(text_origen.getText()));
+            tabla_origen.setModel(auxiliar.getModel());
+            tabla_origen.setColumnModel(auxiliar.getColumnModel());
+
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            ventana.setVisible(false);
+            base.close();
+        }
+        base.close();
+    }
+
+    private void set_tabla_destino(){
+        base = new Base(url);
+        try{
+            JTable auxiliar = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(text_destino.getText()));
+            tabla_destino.setModel(auxiliar.getModel());
+            tabla_destino.setColumnModel(auxiliar.getColumnModel());
+
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            ventana.setVisible(false);
+            base.close();
+        }
+        base.close();
     }
 }

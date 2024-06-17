@@ -4,16 +4,17 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import Base.Base;
+import Front.Ciudades_departamentos.Insertar_ciudad;
 import Utilidades.Generar_extractos;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
-import Utilidades.Windows_bar;
-
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import java.awt.Dimension;
@@ -91,21 +92,6 @@ public class Insertar_extracto_mensual extends Modal_documento {
         tabla_destino = new JTable();
         fecha_incial = new JDateChooser();
         fecha_final = new JDateChooser();
-        
-        
-        // Configuracion de barras de scroll
-
-        scroll_contratante.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll_contratante.getHorizontalScrollBar().setUI(new Windows_bar());
-
-        scroll_destino.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll_destino.getHorizontalScrollBar().setUI(new Windows_bar());
-
-        scroll_origen.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll_origen.getHorizontalScrollBar().setUI(new Windows_bar());
-
-        scroll_vehiculo.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll_vehiculo.getHorizontalScrollBar().setUI(new Windows_bar());
 
 
         // incializando las tablas
@@ -194,22 +180,8 @@ public class Insertar_extracto_mensual extends Modal_documento {
 
             @Override
             public void accion(){
-                String [][] datos = null;
-                base = new Base(url);
-                try{
-                    datos = base.consultar_contratos_mensuales(text_contratante.getText());
-                    JTable tabla_auxiliar = Modelo_tabla.set_tabla_contratos_mensuales(datos);
-                    tabla_contratante.setModel(tabla_auxiliar.getModel());
-                    tabla_contratante.setColumnModel(tabla_auxiliar.getColumnModel());
-                    scroll_contratante.setViewportView(tabla_contratante);
-                    
-        
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    ventana.setVisible(false);
-                    base.close();
-                }
-                base.close();
+                
+                set_tabla_contratante();
                 tabla_contratante.changeSelection(0, 0, false, false);
             }
 
@@ -222,7 +194,13 @@ public class Insertar_extracto_mensual extends Modal_documento {
         tabla_contratante.addMouseListener(new MouseAdapter() {
             
             public void mousePressed(MouseEvent evt){
-                accion_tabla_contratante();
+                if(SwingUtilities.isLeftMouseButton(evt)){
+                    accion_tabla_contratante();
+                }else{
+                    new Insertar_contratante(ventana, url).setVisible(true);
+                    set_tabla_contratante();
+                }
+                
             }
         });
 
@@ -260,7 +238,12 @@ public class Insertar_extracto_mensual extends Modal_documento {
         tabla_destino.addMouseListener(new MouseAdapter() {
             
             public void mousePressed(MouseEvent evt){
-                accion_tabla_destino();
+                if(SwingUtilities.isLeftMouseButton(evt)){
+                    accion_tabla_destino();
+                }else{
+                    new Insertar_ciudad(ventana, url).setVisible(true);
+                    set_tabla_destino();
+                }
             }
         });    
 
@@ -274,28 +257,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
             
             @Override
             public void accion() {
-                String datos[][] = null;
-
-                base = new Base(url);
-                try{
-                    datos = base.consultar_ciudades(text_origen.getText());
-                    tabla_origen = Modelo_tabla.set_tabla_ciudad(datos);
-                    tabla_origen.addMouseListener(new MouseAdapter() {
-            
-                        public void mousePressed(MouseEvent evt){
-                            int valor_auxilia = tabla_origen.getSelectedRow();
-                            text_origen.setText("" + tabla_origen.getValueAt(valor_auxilia, 0));
-                        }
-                    });
-                    scroll_origen.setViewportView(tabla_origen);
-                    
-        
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    ventana.setVisible(false);
-                    base.close();
-                }
-                base.close();
+                set_tabla_origen();
                 tabla_origen.changeSelection(0, 0, false, false);
                 
             }
@@ -314,7 +276,12 @@ public class Insertar_extracto_mensual extends Modal_documento {
         tabla_origen.addMouseListener(new MouseAdapter() {
             
             public void mousePressed(MouseEvent evt){
-                accion_tabla_origen();
+                if(SwingUtilities.isLeftMouseButton(evt)){
+                    accion_tabla_origen();
+                }else{
+                    new Insertar_ciudad(ventana, url).setVisible(true);
+                    set_tabla_origen();
+                }
             }
         });
 
@@ -328,24 +295,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
             @Override
             public void accion() {
                 
-                String datos[][] = null;
-                
-                base = new Base(url);
-                try{
-                    datos = base.consultar_ciudades(text_destino.getText());
-                    JTable tabla_aux = Modelo_tabla.set_tabla_ciudad(datos);
-                    tabla_destino.setModel(tabla_aux.getModel());
-                    tabla_destino.setColumnModel(tabla_aux.getColumnModel());
-                    
-                    scroll_destino.setViewportView(tabla_destino);
-                    
-        
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    ventana.setVisible(false);
-                    base.close();
-                }
-                base.close();
+                set_tabla_destino();
                 tabla_destino.changeSelection(0, 0, false, false);
 
             }
@@ -356,6 +306,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
                 
             }
         });
+
         jPanel1.add(text_destino);
 
         
@@ -501,5 +452,60 @@ public class Insertar_extracto_mensual extends Modal_documento {
     private void accion_tabla_destino(){
         int valor_auxilia = tabla_destino.getSelectedRow();
         text_destino.setText("" + tabla_destino.getValueAt(valor_auxilia, 0));
+    }
+
+    private void set_tabla_contratante(){
+        String [][] datos = null;
+        base = new Base(url);
+        try{
+            datos = base.consultar_contratos_mensuales(text_contratante.getText());
+            JTable tabla_auxiliar = Modelo_tabla.set_tabla_contratos_mensuales(datos);
+            tabla_contratante.setModel(tabla_auxiliar.getModel());
+            tabla_contratante.setColumnModel(tabla_auxiliar.getColumnModel());
+            
+
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            ventana.setVisible(false);
+            base.close();
+        }
+        base.close();
+    }
+
+    private void set_tabla_origen(){
+        String datos[][] = null;
+
+        base = new Base(url);
+        try{
+            datos = base.consultar_ciudades(text_origen.getText());
+            JTable auxiliar = Modelo_tabla.set_tabla_ciudad(datos);
+            tabla_origen.setModel(auxiliar.getModel());
+            tabla_origen.setColumnModel(auxiliar.getColumnModel());
+            
+
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            ventana.setVisible(false);
+            base.close();
+        }
+        base.close();
+    }
+    private void set_tabla_destino(){
+        String datos[][] = null;
+                
+        base = new Base(url);
+        try{
+            datos = base.consultar_ciudades(text_destino.getText());
+            JTable tabla_aux = Modelo_tabla.set_tabla_ciudad(datos);
+            tabla_destino.setModel(tabla_aux.getModel());
+            tabla_destino.setColumnModel(tabla_aux.getColumnModel());
+            
+
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            ventana.setVisible(false);
+            base.close();
+        }
+        base.close();
     }
 }

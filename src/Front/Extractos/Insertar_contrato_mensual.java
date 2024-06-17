@@ -18,7 +18,6 @@ import javax.swing.SwingUtilities;
 import Base.Base;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
-import Utilidades.Windows_bar;
 
 public class Insertar_contrato_mensual extends Modal_extracto{
 
@@ -56,10 +55,6 @@ public class Insertar_contrato_mensual extends Modal_extracto{
         boton_guardar = new javax.swing.JButton();
         combo_tipo_contrato = new JComboBox<>();
         label_tipo_contrato = new JLabel();
-
-        // Cambiando la barra del scroll
-        jScrollPane2.getVerticalScrollBar().setUI(new Windows_bar());
-        jScrollPane2.getHorizontalScrollBar().setUI(new Windows_bar());
         
         // Consultando los datos de los contratantes
         base = new Base(url);

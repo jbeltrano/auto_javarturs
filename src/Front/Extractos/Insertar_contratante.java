@@ -13,10 +13,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import Base.Base;
+import Front.Personas.Insertar_persona;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
-import Utilidades.Windows_bar;
 
 public class Insertar_contratante extends Modal_extracto{
     
@@ -33,6 +34,7 @@ public class Insertar_contratante extends Modal_extracto{
     private final int POS_X = 10;
     private String[][] datos_tabla_responsable;
     private String[][] datos_tabla_contratante;
+    private JDialog padre;
 
     public Insertar_contratante(JFrame padre, String url){
         super(padre, url);
@@ -46,7 +48,7 @@ public class Insertar_contratante extends Modal_extracto{
 
     @Override
     protected void iniciar_componentes(){
-
+        padre = this;
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -58,13 +60,6 @@ public class Insertar_contratante extends Modal_extracto{
         tabla_responsable = new javax.swing.JTable();
         boton_guardar = new javax.swing.JButton();
 
-        // Cambio de las barras de scroll
-
-        jScrollPane1.getVerticalScrollBar().setUI(new Windows_bar());
-        jScrollPane1.getHorizontalScrollBar().setUI(new Windows_bar());
-
-        jScrollPane2.getVerticalScrollBar().setUI(new Windows_bar());
-        jScrollPane2.getHorizontalScrollBar().setUI(new Windows_bar());
         // Consultando los datos de los contratantes
         base = new Base(url);
         try{
@@ -89,21 +84,7 @@ public class Insertar_contratante extends Modal_extracto{
 
             @Override
             public void accion(){
-
-                base = new Base(url);
-                try{
-                            
-                    datos_tabla_contratante = base.consultar_no_contratante(text_contratante.getText());
-                    JTable aux = Modelo_tabla.set_tabla_personas(datos_tabla_contratante);
-                    tabla_contratante.setModel(aux.getModel());
-                    tabla_contratante.setColumnModel(aux.getColumnModel());
-                            
-                
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                base.close();
-
+                set_tabla_contratante();
                 tabla_contratante.changeSelection(0, 0, false, false);
             }
 
@@ -141,9 +122,14 @@ public class Insertar_contratante extends Modal_extracto{
         tabla_contratante.addMouseListener(new MouseAdapter() {
             
             @Override
-            public void mouseClicked(MouseEvent e){
-
-                accion_tabla_contratante();
+            public void mousePressed(MouseEvent e){
+                if(SwingUtilities.isLeftMouseButton(e)){
+                    accion_tabla_contratante();
+                }else{
+                    new Insertar_persona(padre, url);
+                    set_tabla_contratante();
+                }
+                
                 
             }
         });
@@ -156,9 +142,15 @@ public class Insertar_contratante extends Modal_extracto{
         tabla_responsable.addMouseListener(new MouseAdapter() {
             
             @Override
-            public void mouseClicked(MouseEvent e){
+            public void mousePressed(MouseEvent e){
+                if(SwingUtilities.isLeftMouseButton(e)){
+                    accion_tabla_responsable();
+                }else{
+                    new Insertar_persona(padre, url);
+                    set_tabla_responsable();
+                }
                 
-                accion_tabla_responsable();
+                
             }
         });
         jScrollPane2.setViewportView(tabla_responsable);
@@ -241,19 +233,41 @@ public class Insertar_contratante extends Modal_extracto{
     }
 
     private void accion_text_responsable(String text){
-        base = new Base(url);
-                try{
+        set_tabla_responsable();
+        tabla_responsable.changeSelection(0, 0, false, false);
+    }
 
-                    datos_tabla_responsable = base.consultar_persona(text);
-                    JTable aux = Modelo_tabla.set_tabla_personas(datos_tabla_responsable);
-                    tabla_responsable.setModel(aux.getModel());
-                    tabla_responsable.setColumnModel(aux.getColumnModel());
+    public void set_tabla_contratante(){
+        base = new Base(url);
+        try{
+                    
+            datos_tabla_contratante = base.consultar_no_contratante(text_contratante.getText());
+            JTable aux = Modelo_tabla.set_tabla_personas(datos_tabla_contratante);
+            tabla_contratante.setModel(aux.getModel());
+            tabla_contratante.setColumnModel(aux.getColumnModel());
                     
         
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                base.close();
-                tabla_responsable.changeSelection(0, 0, false, false);
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        base.close();
+    }
+
+    public void set_tabla_responsable(){
+
+        base = new Base(url);
+        try{
+            
+            datos_tabla_responsable = base.consultar_persona(text_contratante.getText());
+            JTable aux = Modelo_tabla.set_tabla_personas(datos_tabla_contratante);
+            tabla_responsable.setModel(aux.getModel());
+            tabla_responsable.setColumnModel(aux.getColumnModel());
+                    
+        
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        base.close();
+
     }
 }

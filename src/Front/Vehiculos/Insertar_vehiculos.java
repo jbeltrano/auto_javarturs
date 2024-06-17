@@ -21,7 +21,6 @@ import Base.Base;
 import Front.Personas.Insertar_persona;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
-import Utilidades.Windows_bar;
 
 public class Insertar_vehiculos extends Modales_vehiculos{
     
@@ -106,9 +105,6 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         combo_servicio = new JComboBox<>();
         text_modelo = new JTextField();
 
-        // modificando las barras dle escroll
-        scroll_tabla.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll_tabla.getHorizontalScrollBar().setUI(new Windows_bar());
         jPanel1.setLayout(null);
 
         label_placa.setText("Placa");
@@ -166,6 +162,7 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         jPanel1.add(jLabel5);
         jLabel5.setBounds(110, 90, 50, 16);
         jPanel1.add(text_color);
+        text_color.setText("BLANCO VERDE");
         text_color.setBounds(110, 120, 100, 22);
 
         jLabel6.setText("Combustible");
@@ -241,7 +238,7 @@ public class Insertar_vehiculos extends Modales_vehiculos{
                 base = new Base(url);
                 try{
                     datos = base.consultar_persona(text_propietario.getText());
-                    JTable tabla_aux = Modelo_tabla.set_tabla_personas(datos); 
+                    JTable tabla_aux = Modelo_tabla.set_tabla_personas(datos);
                     tab.setModel(tabla_aux.getModel());
                     tab.setColumnModel(tabla_aux.getColumnModel());
         
@@ -307,15 +304,37 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         scroll_tabla.setViewportView(tab);
 
         jPanel1.add(scroll_tabla);
-        scroll_tabla.setBounds(10, 320, 450, 100);
+        scroll_tabla.setBounds(10, 320, 550, 200);
 
         boton_guardar.setText("Guardar");
         jPanel1.add(boton_guardar);
-        boton_guardar.setBounds(10, 430, 100, 23);
+        boton_guardar.setBounds(10, scroll_tabla.getY() + scroll_tabla.getHeight() + 10, 100, 23);
 
         boton_guardar.addActionListener(accion ->{
 
-            boolean[] campos = new boolean[12];
+            guardar();
+
+        });
+
+        GroupLayout layout = new GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+        );
+
+        pack();
+    }
+    
+    protected boolean dialog_vh_externo(){
+        return true;
+    };
+    protected void guardar(){
+        boolean[] campos = new boolean[12];
             boolean confirmacion = false;
             String propietario = "";
             int cilindrada = 0;
@@ -377,22 +396,5 @@ public class Insertar_vehiculos extends Modales_vehiculos{
                 JOptionPane.showMessageDialog(this, "Vehiculo guardado correctamente","",JOptionPane.QUESTION_MESSAGE);
                 this.setVisible(false);
             }
-
-        });
-
-        GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
-        );
-
-        pack();
     }
-   
-
 }

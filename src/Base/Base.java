@@ -2222,23 +2222,23 @@ public class Base extends Base_datos{
     
     public String[][] consultar_documentos(String buscar)throws SQLException{
 
-        datos = new String[1][8];
+        datos = new String[1][10];
         int cantidad = 0;
         int i = 1;
 
-        consultar = "select * from documento where veh_placa like \'" + buscar +"%\'";
+        consultar = "select * from vw_documento where veh_placa like \'" + buscar +"%\'";
 
         try{
             state = coneccion.createStatement();
 
             // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
-            resultado = state.executeQuery("select count() as total from documento where veh_placa like \'" + buscar +"%\'");
+            resultado = state.executeQuery("select count() as total from vw_documento where veh_placa like \'" + buscar +"%\'");
             
             if(resultado.next()){
                 cantidad = resultado.getInt("total");
             }
 
-            datos = new String[cantidad+1][8];
+            datos = new String[cantidad+1][10];
 
             resultado = state.executeQuery(consultar);
             
@@ -2250,6 +2250,8 @@ public class Base extends Base_datos{
             datos[0][5] = "FECHA RCE";
             datos[0][6] = "TOP";
             datos[0][7] = "FECHA TOP";
+            datos[0][8] = "TIPO ID";
+            datos[0][9] = "ID PROPIETARIO";
 
 
 
@@ -2263,6 +2265,8 @@ public class Base extends Base_datos{
                 datos[i][5] = resultado.getString(6);
                 datos[i][6] = resultado.getString(7);
                 datos[i][7] = resultado.getString(8);
+                datos[i][8] = resultado.getString(9);
+                datos[i][9] = resultado.getString(10);
                 
 
                 i++;
@@ -3801,5 +3805,37 @@ public class Base extends Base_datos{
         return dato;
     }
 
+    public void insertar_documento2(String placa, String nombre, byte[] datos)throws SQLException{
+        
+        insertar = "insert into documento2 values (?,?,?)";
+
+        pstate = coneccion.prepareStatement(insertar);
+
+        pstate.setString(1, placa);
+        pstate.setString(2, nombre);
+        pstate.setBytes(3, datos);
+
+        pstate.executeUpdate();
+
+        pstate.close();
+    }
+
+    public byte[] consultar_documento2(String placa)throws SQLException{
+
+        byte[] baytes = null;
+        consultar = "select * from documento2 where veh_placa = ?";
+
+        pstate = coneccion.prepareStatement(consultar);
+
+        pstate.setString(1, placa);
+
+        resultado = pstate.executeQuery();
+
+        if(resultado.next()){
+            baytes = resultado.getBytes(3);
+        }
+
+        return baytes;
+    }
     // Hacer un metodo para limpiar las tablas cuando las llenen con datos vacios
 }

@@ -17,6 +17,14 @@ public abstract class Modal_ciudades_departamentos extends JDialog{
         setLocationRelativeTo(padre);
     }
 
+    public Modal_ciudades_departamentos(JDialog padre, String url){
+        super(padre, true);
+        this.url = url;
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setPreferredSize(new Dimension(460,250));
+        iniciar_componentes();
+        setLocationRelativeTo(padre);
+    }
     protected abstract void iniciar_componentes();
     
 }

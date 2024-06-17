@@ -23,7 +23,6 @@ import java.util.Date;
 import Base.Base;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
-import Utilidades.Windows_bar;
 
 public class Insertar_conductor extends Modales_personas{
     
@@ -165,8 +164,6 @@ public class Insertar_conductor extends Modales_personas{
         });
 
         jScrollPane1.setViewportView(tabla_persona);
-        jScrollPane1.getVerticalScrollBar().setUI(new Windows_bar());
-        jScrollPane1.getHorizontalScrollBar().setUI(new Windows_bar());
         
 
         jPanel1.add(jScrollPane1);

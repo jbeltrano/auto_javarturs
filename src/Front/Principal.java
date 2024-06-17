@@ -28,13 +28,11 @@ import Utilidades.Generar_extractos;
 import Utilidades.Key_adapter;
 import Utilidades.Leer_link;
 import Utilidades.Modelo_tabla;
-import Utilidades.Windows_bar;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -48,9 +46,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JMenu;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-
 import com.formdev.flatlaf.FlatLightLaf;
-
 import java.awt.Desktop;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -94,6 +90,7 @@ public class Principal extends JFrame{
     private JButton vehiculos;
     private JButton conductores;
     private JButton documentos_vehiculos;
+    private JButton vehiculos_externos;
     private JButton boton_conductores;
     private JButton boton_personas;
     private Base base;
@@ -467,6 +464,7 @@ public class Principal extends JFrame{
         vehiculos = new JButton("Vehiculos");
         conductores = new JButton("Cond Vehiculos");
         documentos_vehiculos = new JButton("Doc Vehiculos");
+        vehiculos_externos = new JButton("Veh Externos");
 
         // configuracion de botones panel izquierdo
         tipo_vehiculo.setBounds(10, 10, 120, 20);
@@ -551,6 +549,34 @@ public class Principal extends JFrame{
                 boton_auxiliar.addActionListener(ac ->{
 
                     new Insertar_documento_vehiculo(this, url, "");
+                    panel_principal2.remove(pan);
+                    conductores.doClick();
+
+                });
+                pan.add(boton_auxiliar);
+                pan.setPreferredSize(new Dimension(120,40));
+                panel_principal2.add(pan,BorderLayout.EAST);
+            }
+
+            panel_principal2.add(panel_informacion, BorderLayout.CENTER);
+            panel_principal2.repaint();
+            panel_principal2.revalidate();
+
+        });
+
+        vehiculos_externos.setBounds(10,130, 120, 20);
+        vehiculos_externos.addActionListener(accion ->{
+            panel_principal2.remove(panel_informacion);
+            panel_principal2.remove(pan);
+            //panel_informacion = ver_vehiculos_externos();
+
+            if(tabla.getRowCount() == 0 ){
+                JButton boton_auxiliar = new JButton("Agregar");
+                pan = new JPanel(null);
+                boton_auxiliar.setBounds(10,10,100,20);
+                boton_auxiliar.addActionListener(ac ->{
+
+                    //new Insertar_vehiculo_externo(this, url, "");
                     panel_principal2.remove(pan);
                     conductores.doClick();
 
@@ -884,8 +910,7 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_documentos_vehiculos(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
         
 
         item_adicionar.addActionListener(accion ->{
@@ -935,8 +960,7 @@ public class Principal extends JFrame{
                     tabla = Modelo_tabla.set_tabla_documentos_vehiculos(base.consultar_documentos(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -975,8 +999,7 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
 
         item_adicionar.addActionListener(accion ->{
             new Insertar_vehiculo_conductor(this, url, "");
@@ -987,8 +1010,7 @@ public class Principal extends JFrame{
                 tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(text_busqueda.getText()));
                 tabla.setComponentPopupMenu(pop_menu);
                 scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
 
             }catch(SQLException ex){
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1014,8 +1036,7 @@ public class Principal extends JFrame{
                     tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
 
 
                 }catch(SQLException ex){
@@ -1038,8 +1059,7 @@ public class Principal extends JFrame{
                     tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -1127,8 +1147,7 @@ public class Principal extends JFrame{
         });
 
         scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
         panel.add(scroll,BorderLayout.CENTER);
         
         return panel;
@@ -1160,8 +1179,7 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_vehiculo(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
             int select_row = tabla.getSelectedRow();
@@ -1263,8 +1281,7 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_ciudad(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
 
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
@@ -1278,8 +1295,7 @@ public class Principal extends JFrame{
                 tabla = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(text_busqueda.getText()));
                 tabla.setComponentPopupMenu(pop_menu);
                 scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
                 base.close();
 
             }catch(SQLException ex){
@@ -1299,8 +1315,7 @@ public class Principal extends JFrame{
                 tabla = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(text_busqueda.getText()));
                 tabla.setComponentPopupMenu(pop_menu);
                 scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
                 base.close();
 
             }catch(SQLException ex){
@@ -1383,8 +1398,7 @@ public class Principal extends JFrame{
 
         tabla = Modelo_tabla.set_tabla_departamento(datos);
         scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
 
         JFrame padre = this;
         
@@ -1443,8 +1457,7 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_personas(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
 
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
@@ -1538,8 +1551,7 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_conductores(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
 
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
@@ -1636,8 +1648,7 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_extractos_mensuales(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
 
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
@@ -1787,8 +1798,7 @@ public class Principal extends JFrame{
                         tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
                         tabla.setComponentPopupMenu(pop_menu);
                         scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
                     } catch (SQLException ex) {
                         JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -1835,8 +1845,7 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_contratos_mensuales(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
 
         
         item_adicionar.addActionListener(accion ->{
@@ -1935,8 +1944,7 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_contratos_ocasionales(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
 
         
         item_adicionar.addActionListener(accion ->{
@@ -2070,8 +2078,7 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_extractos_ocasionales(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
 
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
@@ -2233,8 +2240,7 @@ public class Principal extends JFrame{
         tabla = Modelo_tabla.set_tabla_contratante(datos);
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
-        scroll.getVerticalScrollBar().setUI(new Windows_bar());
-        scroll.getHorizontalScrollBar().setUI(new Windows_bar());
+        
 
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{

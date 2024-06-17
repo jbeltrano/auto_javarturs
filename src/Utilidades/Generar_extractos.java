@@ -373,7 +373,7 @@ public class Generar_extractos {
             }else{
                 sub_ocasional = sub_ocasional + "NORMAL";
             }
-
+            
             // Hace un extracto por cada contrato
             for(int i = 0; i < placas_contrato.length; i++){
                 
@@ -382,7 +382,7 @@ public class Generar_extractos {
                 parque_automotor = Boolean.parseBoolean(base.consultar_uno_vehiculo(placas_contrato[i])[16]);
                 vehiculo_empresa_externa = base.consultar_uno_vehiculo_externo(placas_contrato[i]);
                 consecutivo = base.consultar_uno_consecutivo_extracto_ocasional(placas_contrato[i], contrato);
-
+                
                 // Verifica si el vehiculo a insertar contiene documentos para seguir con el proceso
                 if(datos_vehiculo[0] == null){
                     NullPointerException ex = new NullPointerException("El vehiculo " + placas_contrato[i] + ".\nNo posee documentos");
@@ -430,7 +430,8 @@ public class Generar_extractos {
                     throw ex;
                     
                 }
-
+                
+                
                 // Guarda el extracto en la direccion indicada por el path, o el archivo de configuracion
                 extracto.guardar(localizacion_fichero, sub_ocasional+" (" + consecutivo + ")");
                 
@@ -453,11 +454,13 @@ public class Generar_extractos {
         DayOfWeek diaDeLaSemana = ahora.getDayOfWeek();
         int hora = ahora.getHour();
 
-        // Verificar si es de lunes a viernes después de las 5 PM o sábado después de las 12 PM
-        if ((diaDeLaSemana != DayOfWeek.SATURDAY && diaDeLaSemana != DayOfWeek.SUNDAY && hora >= 17) ||
-            (diaDeLaSemana == DayOfWeek.SATURDAY && hora >= 12)) {
+        if(hora >= 17){                                                 // Si es mas de las 5 pm es extemporaneo
             return true;
-        } else {
+        } else if(diaDeLaSemana == DayOfWeek.SATURDAY && hora >= 12){   // si es sabado mas de las 12 pm es extemporaneo
+            return true;
+        } else if (diaDeLaSemana == DayOfWeek.SUNDAY) {                 // si es domingo es extemporaneo
+            return true;
+        } else {                                                        // caso contrario no es extemporaneo
             return false;
         }
     }

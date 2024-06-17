@@ -521,3 +521,12 @@ create view vw_extracto_ocasional as
 CREATE VIEW VW_VEHICULO_EXTERNO AS
 SELECT VEH_PLACA, PER_ID, PER_NOMBRE 
     FROM VEHICULO_EXTERNO NATURAL JOIN PERSONA;
+create view vw_documento as
+select  veh_placa, doc_interno, 
+        doc_fecha_soat, doc_fecha_rtm, 
+        doc_fecha_rcc, doc_fecha_rce, 
+        doc_top, doc_fecha_top, 
+        tip_nombre, veh_propietario 
+            from documento natural join vehiculo 
+            join persona on (veh_propietario = per_id) 
+            natural join tipo_id;
