@@ -28,27 +28,29 @@ import Utilidades.Generar_extractos;
 import Utilidades.Key_adapter;
 import Utilidades.Leer_link;
 import Utilidades.Modelo_tabla;
-import java.awt.Color;
-import java.awt.Component;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JMenu;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+
+import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import java.awt.Desktop;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.IOException;
@@ -119,9 +121,9 @@ public class Principal extends JFrame{
         this.url = url;
 
         try{
-            UIManager.setLookAndFeel(new FlatLightLaf());
+           UIManager.setLookAndFeel(new FlatLightLaf());
         }catch(Exception e){
-            System.out.println(e);
+           System.out.println(e);
         }
 
         setPreferredSize(new Dimension(1200,700));
@@ -1981,6 +1983,34 @@ public class Principal extends JFrame{
 
         });
 
+        item_exportar.addActionListener(accion ->{
+
+            int row = tabla.getSelectedRow();
+            int num_contrato = Integer.parseInt((String)tabla.getValueAt(row, 0));
+            
+            try{
+                String ruta = Generar_extractos.generar_extracto_ocasional(num_contrato, url);
+                JOptionPane.showMessageDialog(this, "Exportando el contrato N° " + num_contrato + ", Junto \na sus extractos correspondientes. \n\nPor favor espere...");
+                
+                comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
+                runtime.exec(comando);
+                
+                int proceso = runtime.exec(comando).waitFor();
+
+                if(proceso == 0){
+                    JOptionPane.showMessageDialog(this, "Proceso finalizado con exito.\nRuta de los documentos: "+ ruta);
+                }else{
+                    JOptionPane.showMessageDialog(this, "El proceso no pudo ser finalizado con exito. Error code: " + proceso);
+                }
+                
+
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }finally{
+                comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
+            }
+            
+        });
         item_plantilla.addActionListener(accion ->{
 
             int number = tabla.getSelectedRow();
@@ -2142,10 +2172,6 @@ public class Principal extends JFrame{
                 ruta = Generar_extractos.generar_extracto_ocasional(Integer.parseInt((String) tabla.getValueAt(select_row, 2)), 
                                                                     url);
                 runtime.exec(comando);
-                //runtime.exec(comando2);
-                for(int i = 0; i < comando2.length; i++){
-                    System.out.println(comando2[i]);
-                }
                 
                 JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
             }catch(Exception ex){

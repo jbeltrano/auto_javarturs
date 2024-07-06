@@ -314,7 +314,24 @@ public class Extracto {
      */
     public void guardar(String dir_salida) throws IOException{
 
-        guardar(dir_salida, "");
+        String nombre_archivo = get_cell(ROW_DATOS_VEHICULO1, COLUMN_PLACA) + ".xlsx";
+        try{
+            File file = new File(dir_salida,nombre_archivo);
+            OutputStream out;
+
+            if (!file.getParentFile().exists()) {
+                // Si no existe, intenta crearla
+                file.getParentFile().mkdirs();
+            }
+
+            out = new FileOutputStream(dir_salida +"\\"+ nombre_archivo);
+            libro.write(out);
+            out.close();
+            
+            
+        }catch(IOException ex){
+            throw ex;
+        }
         
     }
 

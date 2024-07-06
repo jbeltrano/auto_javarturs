@@ -34,6 +34,7 @@ public class Generar_extractos {
         String año;
         int datos_tipo_contrato;
         String localizacion_fichero = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
+        String localizacion2_fichero = "H:\\.shortcut-targets-by-id\\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\\0. EXTRACTOS Y CONTRATOS\\EXTRACTO DEL CONTRATO\\MENSUALES\\";
 
         try{
             // inicializacion del objeto para modificar la plantilla de extractos
@@ -115,6 +116,7 @@ public class Generar_extractos {
             extracto.set_responsable(datos_contratante[5], datos_contratante[4], datos_contratante[6], datos_contratante[7]);
             
             extracto.guardar(localizacion_fichero, "MENSUAL (" + consecutivo + ")");
+            extracto.guardar(localizacion2_fichero);
 
             return localizacion_fichero + placa +" MENSUAL (" + consecutivo + ")";
             
@@ -154,6 +156,7 @@ public class Generar_extractos {
         String localizacion_contrato;
         int datos_tipo_contrato;
         String localizacion_fichero = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
+        String localizacion2_fichero = "H:\\.shortcut-targets-by-id\\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\\0. EXTRACTOS Y CONTRATOS\\EXTRACTO DEL CONTRATO\\";
 
         try{
             // inicializacion del objeto para modificar la plantilla de extractos
@@ -266,6 +269,7 @@ public class Generar_extractos {
 
             // Guarda el extracto en la direccion indicada por el path, o el archivo de configuracion
             extracto.guardar(localizacion_fichero, sub_ocasional+" (" + consecutivo + ")");
+            extracto.guardar(localizacion2_fichero);
             localizacion_contrato = Generar_contratos_ocasionales.generar_contrato_ocasional(placas_contrato,""+contrato, url);
 
         // Retorna la direccion de guardado
@@ -299,6 +303,7 @@ public class Generar_extractos {
         int consecutivo;
         String placas_contrato[];    // Se utiliza para obtener las placas que hacen relacion al contrato
         String localizacion_fichero = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
+        String localizacion2_fichero = "H:\\.shortcut-targets-by-id\\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\\0. EXTRACTOS Y CONTRATOS\\EXTRACTO DEL CONTRATO\\";
 
         try{
             // Consultando la cantidad de extractos a realizar con el msimo contrato
@@ -434,6 +439,7 @@ public class Generar_extractos {
                 
                 // Guarda el extracto en la direccion indicada por el path, o el archivo de configuracion
                 extracto.guardar(localizacion_fichero, sub_ocasional+" (" + consecutivo + ")");
+                extracto.guardar(localizacion2_fichero);
                 
 
             }

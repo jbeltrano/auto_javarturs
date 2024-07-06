@@ -6,10 +6,21 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import Base.Base;
-import Utilidades.Contrato_ocasional;
 
 public class Generar_contratos_ocasionales {
     
+    /**
+     * Genera un contrato con los datos subministrados
+     * especificamente con la placa y numero de contrato
+     * que se requiera
+     * @param placa
+     * @param contrato
+     * @param url
+     * @return
+     * @throws SQLException
+     * @throws IOException
+     * @throws NullPointerException
+     */
     public static String generar_contrato_ocasional(String placa, String contrato, String url)throws SQLException, IOException, NullPointerException{
         
         Contrato_ocasional doc_contrato = null;
@@ -39,25 +50,25 @@ public class Generar_contratos_ocasionales {
             doc_contrato.set_numero_contrato(contrato);
 
             // hace un set al contratante
-            // if(contratante[1].equals("NIT")){      // En este caso si es un nit hace un set especial
-            //     doc_contrato.set_contratante(url_destino,   // Nombre de la empresa
-            //                                 url_destino,    // tipo de documento de la empresa
-            //                                 url_destino,    // Nit de la empresa
-            //                                 url_destino,    // Nompre representante
-            //                                 url_destino,    // Tipo documento representante
-            //                                 placa,          // Documento representante
-            //                                 contrato,       // Telefono representante
-            //                                 url,            // Direccion representante
-            //                                 url_destino);   // Ciudad Representante
+            if(contratante[1].equals("NIT") && !(contratante[0].equals(contratante[3]))){      // En este caso si es un nit hace un set especial
+                doc_contrato.set_contratante(contratante[2],   // Nombre de la empresa
+                                            contratante[1],    // tipo de documento de la empresa
+                                            contratante[0],    // Nit de la empresa
+                                            contratante[4],    // Nompre representante
+                                            "C.C.",    // Tipo documento representante
+                                            contratante[3],          // Documento representante
+                                            contratante[5],       // Telefono representante
+                                            contratante[6],            // Direccion representante
+                                            contratante[7] + " ("+contratante[8] + ")");   // Ciudad Representante
 
-            // }else{
+            }else{
                 doc_contrato.set_contratante(contratante[2],           // Nombre del contratante
                                         contratante[1],            // Tipo de documento
                                         contratante[0],            // Numero de documento
                                         contratante[5],            // Numero de telefono
                                         contratante[6],            // Direccion
                                         contratante[7] + " (" + contratante[8] + ")");  // Ciudad            
-            //}
+            }
             
             // Hace un set a la cantidad de pasajeros
             doc_contrato.set_cantidad_pasajeros(45);
@@ -90,7 +101,8 @@ public class Generar_contratos_ocasionales {
     public static String generar_contrato_ocasional(String[] placas,String contrato, String url)throws IOException, SQLException{
 
         Contrato_ocasional doc_contrato = null;
-        String url_destino = System.getProperty("user.home") + "\\Desktop\\Extractos\\Contratos Ocasionales\\";
+        //String url_destino = System.getProperty("user.home") + "\\Desktop\\Extractos\\Contratos Ocasionales\\";
+        String url_destino = "H:\\.shortcut-targets-by-id\\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\\0. EXTRACTOS Y CONTRATOS\\CONTRATOS DE SERVICIOS OCASIONALES\\";
         Base base;
         String contratante[];
         String contrato_ocasional[];
@@ -120,26 +132,27 @@ public class Generar_contratos_ocasionales {
             // Hace un set al numero de contrato
             doc_contrato.set_numero_contrato(contrato);
 
+            
             // hace un set al contratante
-            // if(contratante[1].equals("NIT")){      // En este caso si es un nit hace un set especial
-            //     doc_contrato.set_contratante(url_destino,   // Nombre de la empresa
-            //                                 url_destino,    // tipo de documento de la empresa
-            //                                 url_destino,    // Nit de la empresa
-            //                                 url_destino,    // Nompre representante
-            //                                 url_destino,    // Tipo documento representante
-            //                                 placa,          // Documento representante
-            //                                 contrato,       // Telefono representante
-            //                                 url,            // Direccion representante
-            //                                 url_destino);   // Ciudad Representante
+            if(contratante[1].equals("NIT") && !(contratante[0].equals(contratante[3]))){      // En este caso si es un nit hace un set especial
+                doc_contrato.set_contratante(contratante[2],   // Nombre de la empresa
+                                            contratante[1],    // tipo de documento de la empresa
+                                            contratante[0],    // Nit de la empresa
+                                            contratante[4],    // Nompre representante
+                                            "C.C.",    // Tipo documento representante
+                                            contratante[3],          // Documento representante
+                                            contratante[5],       // Telefono representante
+                                            contratante[6],            // Direccion representante
+                                            contratante[7] + " ("+contratante[8] + ")");   // Ciudad Representante
 
-            // }else{
+            }else{
                 doc_contrato.set_contratante(contratante[2],           // Nombre del contratante
                                             contratante[1],            // Tipo de documento
                                             contratante[0],            // Numero de documento
                                             contratante[5],            // Numero de telefono
                                             contratante[6],            // Direccion
                                             contratante[7] + " (" + contratante[8] + ")");  // Ciudad
-            //}
+            }
             
             // Hace un set a la cantidad de vehiculos
             doc_contrato.set_cantidad_vehiculos(placas.length);

@@ -82,7 +82,7 @@ public class Contrato_ocasional{
      * @param ciudad
      */
     public void set_contratante(String nombre_empresa, String tipo_documento_empresa, String numero_documento_empresa,String nombre, String tipo_documento, String numero_documento, String telefono, String direccion, String ciudad){
-
+        
     }
     /**
      * Este metodo se encargar de modificar el parrafo
