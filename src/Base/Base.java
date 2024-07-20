@@ -3,7 +3,6 @@ package Base;
 import java.util.Vector;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLWarning;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 
@@ -41,9 +40,19 @@ public class Base extends Base_datos{
             pstate.executeUpdate();
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     }
     
+    /**
+     * Actualiza en la base de datos
+     * el nombre o tipo de clase de vehiculo
+     * dependiendo el id ingresado
+     * @param id
+     * @param nombre
+     * @throws SQLException
+     */
     public void actualizar_clase_vehiculo(int id, String nombre)throws SQLException{
         
         actualizar = "update clase_vehiculo set cla_nombre = ? where cla_id = ?";
@@ -57,9 +66,19 @@ public class Base extends Base_datos{
             pstate.executeUpdate();
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     }
 
+    /**
+     * Actualiza la clase o tipo de
+     * vehiculo mediante la busqueda por 
+     * el nombre
+     * @param nombre_inicial
+     * @param nombre_final
+     * @throws SQLException
+     */
     public void actualizar_clase_vehiculo(String nombre_inicial, String nombre_final)throws SQLException{
         actualizar = "update clase_vehiculo set cla_nombre = ? where cla_nombre like ?";
 
@@ -72,35 +91,44 @@ public class Base extends Base_datos{
             pstate.executeUpdate();
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     }
     
+    /**
+     * Elimina la clase o tipo de vehiculo
+     * mediante el id ingresado
+     * @param id
+     * @throws SQLException
+     */
     public void eliminar_clase_vehiculo(int id)throws SQLException{
         borrar = "delete from clase_vehiculo where cla_id = ?";
-        consultar = "select count(cla_id) as total from vehiculo where cla_id = ?";
 
         try{
-            // consultando cuantos elementos existen en la tabla vehiculo
-            pstate = coneccion.prepareStatement(consultar);
+
+            pstate = coneccion.prepareStatement(borrar);
+                
             pstate.setInt(1, id);
 
-            resultado = pstate.executeQuery();
-            System.out.println(resultado.getInt("total"));
-            if(resultado.getInt("total") > 0){
-                SQLException exception = new SQLException("No es posible eliminar este registro. Error 1\nConsultar documento");
-                throw exception;
-            }else{
-                pstate = coneccion.prepareStatement(borrar);
-                
-                pstate.setInt(1, id);
-
-                pstate.executeUpdate();
-            }
+            pstate.executeUpdate();
+            
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     }
 
+    /**
+     * Consulta todas las clases de vehiculo
+     * y las retorna en forma de vector,
+     * dependiendo la columna que se pase como
+     * parametro
+     * @param columna
+     * @return
+     * @throws SQLException
+     */
     public Vector <String> consultar_clase_vehiculo(int columna)throws SQLException{
         Vector<String> vector = new Vector<>();
 
@@ -142,12 +170,21 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            state.close();
+            resultado.close();
         }
 
 
         return vector;
     }
 
+    /**
+     * Retorna todos los registros que hay
+     * en la clase de vehiculo en forma de matriz
+     * @return
+     * @throws SQLException
+    */
     public String[][] consultar_clase_vehiculo()throws SQLException{
         datos = new String[1][20];
         int cantidad = 0;

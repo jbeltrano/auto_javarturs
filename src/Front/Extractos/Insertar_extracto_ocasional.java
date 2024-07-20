@@ -278,10 +278,10 @@ public class Insertar_extracto_ocasional extends Modal_documento{
 
             consecutivo = base.consultar_consecutivo_ocasional(text_placa.getText());
             if(consecutivo == 0){
-                text_consecutivo.setEnabled(true);
+                
                 text_consecutivo.setText("");
             }else{
-                text_consecutivo.setEnabled(false);
+                
                 text_consecutivo.setText("" + (consecutivo + 1));
             }
 
