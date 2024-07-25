@@ -102,7 +102,7 @@ public class Generar_contratos_ocasionales {
 
         Contrato_ocasional doc_contrato = null;
         //String url_destino = System.getProperty("user.home") + "\\Desktop\\Extractos\\Contratos Ocasionales\\";
-        String url_destino = "H:\\.shortcut-targets-by-id\\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\\0. EXTRACTOS Y CONTRATOS\\CONTRATOS DE SERVICIOS OCASIONALES\\";
+        String url_destino = "L:\\.shortcut-targets-by-id\\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\\0. EXTRACTOS Y CONTRATOS\\CONTRATOS DE SERVICIOS OCASIONALES\\";
         Base base;
         String contratante[];
         String contrato_ocasional[];

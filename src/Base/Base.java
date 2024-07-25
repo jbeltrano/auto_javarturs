@@ -200,6 +200,7 @@ public class Base extends Base_datos{
             
             if(resultado.next()){
                 cantidad = resultado.getInt("total");
+                resultado.close();
             }
 
             if(cantidad == 0){
@@ -223,11 +224,21 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
         return datos;
     }
 
+    /**
+     * Consulta un la clase de un vehiculo pasando como paramentro
+     * el id del vehiculo
+     * @param id de tipo String, como identificacion de la clase del vehiculo
+     * @return
+     * @throws SQLException
+     */
     public String[] consultar_uno_clase_vehiculo(String id)throws SQLException{
         dato = new String[2];
         dato[0] = null;
@@ -255,11 +266,17 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            pstate.close();
         }
         return dato;
     }
 
-    // metodos para SERVICIO
+    /**
+     * Se encarga de consultar el
+     * tipo de servicio vehicular
+     */
     public String[] consultar_servicio()throws SQLException{
         dato = new String[2];
         dato[0] = null;
@@ -273,6 +290,7 @@ public class Base extends Base_datos{
             resultado = state.executeQuery("select count(ser_id) as total from servicio");
             if(resultado.next()){
                 dato = new String[resultado.getInt("total")];
+                resultado.close();
             }
             
             resultado = state.executeQuery(consultar);
@@ -284,11 +302,19 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
         return dato;
     }
 
-    // Metodos para insertar, eliminar, actualizar y consultar TIPO ID
+    /**
+     * Inserta el tipo de id para una persona o entidad
+     * dijitando el nombre a ocupar como tipo de id
+     * @param tip_nombre
+     * @throws SQLException
+     */
     public void insertar_tipo_id(String tip_nombre)throws SQLException{
         insertar = "insert into tipo_id (tip_nombre) values (?)";
         try{
@@ -300,9 +326,20 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     }
 
+    /**
+     * Actualiza el tipo de id, especificamente
+     * el nombre del tipo de id.
+     * Utiliza a {@code id} para identificar el tipo de id
+     * y lo remplaza con {@code tip_nombre} en la base de datos
+     * @param id
+     * @param tip_nombre
+     * @throws SQLException
+     */
     public void actualizar_tipo_id(int id, String tip_nombre)throws SQLException{
         actualizar = "update tipo_id set tip_nombre = ? where tip_id = ?";
 
@@ -315,9 +352,17 @@ public class Base extends Base_datos{
             pstate.executeUpdate();
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     }
 
+    /**
+     * Elimina el registro en la base de datos
+     * identificado con el parametro {@code id}
+     * @param id
+     * @throws SQLException
+     */
     public void eliminar_tipo_id(int id)throws SQLException{
         borrar = "delete from tipo_id where tip_id = ?";
 
@@ -329,9 +374,19 @@ public class Base extends Base_datos{
             pstate.executeQuery();
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     }
 
+    /**
+     * Retorna un {@code String[]} dependiendo
+     * de la columna que se pase en el parametro {@code columna}
+     * siempre y cuando la columna exista en la base de datos
+     * @param columna
+     * @return
+     * @throws SQLException
+     */
     public String[] consultar_tipo_id(int columna)throws SQLException{
         
         datos = consultar_tipo_id();
@@ -342,6 +397,12 @@ public class Base extends Base_datos{
         return dato;
     }
 
+    /**
+     * Retorna una matrix con los registros
+     * que se encuentren en la base de datos
+     * @return String[][]
+     * @throws SQLException
+     */
     public String[][] consultar_tipo_id()throws SQLException{
         datos = new String[1][20];
         int cantidad = 0;
@@ -357,6 +418,7 @@ public class Base extends Base_datos{
             
             if(resultado.next()){
                 cantidad = resultado.getInt("total");
+                resultado.close();
             }
 
             if(cantidad == 0){
@@ -380,11 +442,22 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
         return datos;
     }
 
+    /**
+     * Retorna un arreglo con un registro
+     * completo de la base de datos identificado
+     * con el parametro {@code id}
+     * @param id
+     * @return String[]
+     * @throws SQLException
+     */
     public String[] consultar_uno_tipo_id(int id)throws SQLException{
         dato = new String[2];
         dato[0] = null;
@@ -407,11 +480,22 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            pstate.close();
         }
         return dato;
     }
 
-    // Metodos para insertar, eliminar, actualizar y consultar CIUDAD
+    /**
+     * Inserta una ciudad donde {@code dep_id}
+     * es el departamento al que va a pertenecer
+     * la ciudad y {@code ciu_nombre} es el nombre
+     * de la ciudad a registrar
+     * @param dep_id
+     * @param ciu_nombre
+     * @throws SQLException
+     */
     public void insertar_ciudad(int dep_id, String ciu_nombre)throws SQLException{
         
         insertar = "insert into ciudad (ciu_nombre, dep_id) values (?,?)";
@@ -426,9 +510,17 @@ public class Base extends Base_datos{
             pstate.executeUpdate();
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     }
 
+    /**
+     * Elimina el registro de una ciudad identificada
+     * con el parametro {@code ciu_id}
+     * @param ciu_id
+     * @throws SQLException
+     */
     public void eliminar_ciudad(String ciu_id)throws SQLException{
         borrar = "delete from ciudad where ciu_id = ?";
 
@@ -441,9 +533,20 @@ public class Base extends Base_datos{
         
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     }
 
+    /**
+     * Actualiza el nombre de la ciudad
+     * identificandola con {@code ciu_id},
+     * mientras que el nombre a actualizar
+     * se pasa en el parametro {@code ciu_nombre}
+     * @param ciu_id
+     * @param ciu_nombre
+     * @throws SQLException
+     */
     public void actualizar_ciudad(int ciu_id, String ciu_nombre)throws SQLException{
 
         actualizar = "update ciudad set ciu_nombre = ? where ciu_id = ?";
@@ -460,11 +563,18 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     }
 
-    
-
+    /**
+     * Retorna todos los registros de
+     * ciudades que se encuentren en la
+     * base de datos
+     * @return String[][]
+     * @throws SQLException
+     */
     public String [][] consultar_ciudad()throws SQLException{
         datos = new String[1][20];
         int cantidad = 0;
@@ -480,6 +590,7 @@ public class Base extends Base_datos{
             
             if(resultado.next()){
                 cantidad = resultado.getInt("total");
+                resultado.close();
             }
 
             if(cantidad == 0){
@@ -505,8 +616,70 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
+        return datos;
+    }
+
+    /**
+     * Retorna una matrix con todos los
+     * registros filtrados por el parametros
+     * {@code buscar}, este puede realizar la
+     * busqueda como un departamento o una ciudad
+     * @param buscar
+     * @return String[][]
+     * @throws SQLException
+     */
+    public String [][] consultar_ciudad(String buscar)throws SQLException{
+        datos = new String[1][20];
+        int cantidad = 0;
+        int i = 1;
+
+        consultar = "select ciu_id, ciu_nombre, dep_nombre from ciudad natural join departamento where dep_nombre like \'%"+buscar+"%\'";
+
+        try{
+            state = coneccion.createStatement();
+            
+            // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
+            resultado = state.executeQuery("select count() as total from ciudad natural join departamento where dep_nombre like \'%"+buscar+"%\'");
+            
+            
+            if(resultado.next()){
+                cantidad = resultado.getInt("total");
+                resultado.close();
+            }
+
+            if(cantidad == 0){
+                return datos;
+            }
+
+            datos = new String[cantidad+1][3];
+
+            resultado = state.executeQuery(consultar);
+            
+            datos[0][0] = "ID";
+            datos[0][1] = "CIUDAD";
+            datos[0][2] = "DEPARTAMENTO";
+
+            while(resultado.next()){
+
+                datos[i][0] = new String("" + resultado.getInt("ciu_id"));
+                datos[i][1] = resultado.getString("ciu_nombre");
+                datos[i][2] = resultado.getString("dep_nombre");
+                
+                i++;
+            }
+
+        }catch(SQLException ex){
+            
+            throw ex;
+        }finally{
+            resultado.close();
+            state.close();
+        }
         return datos;
     }
 
@@ -526,69 +699,20 @@ public class Base extends Base_datos{
         
         return dato;
     }
-    
-    public String [][] consultar_ciudad(String buscar)throws SQLException{
-        datos = new String[1][20];
-        int cantidad = 0;
-        int i = 1;
-
-        consultar = "select ciu_id, ciu_nombre, dep_nombre from ciudad natural join departamento where dep_nombre like ?";
-
-        try{
-            pstate = coneccion.prepareStatement(consultar);
-            state = coneccion.createStatement();
-            
-            pstate.setString(1, buscar);
-            // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
-            resultado = state.executeQuery("select count() as total from ciudad natural join departamento where dep_nombre like \'"+buscar+"\'");
-            
-            
-            if(resultado.next()){
-                cantidad = resultado.getInt("total");
-            }
-
-            if(cantidad == 0){
-                return datos;
-            }
-
-            datos = new String[cantidad+1][3];
-
-            resultado = pstate.executeQuery();
-            
-            datos[0][0] = "ID";
-            datos[0][1] = "CIUDAD";
-            datos[0][2] = "DEPARTAMENTO";
-
-            while(resultado.next()){
-
-                datos[i][0] = new String("" + resultado.getInt("ciu_id"));
-                datos[i][1] = resultado.getString("ciu_nombre");
-                datos[i][2] = resultado.getString("dep_nombre");
-                
-                i++;
-            }
-
-        }catch(SQLException ex){
-            
-            throw ex;
-        }
-
-        return datos;
-    }
 
     public String [][] consultar_ciudades(String buscar)throws SQLException{
         datos = new String[1][3];
         int cantidad = 0;
         int i = 1;
 
-        consultar = "select ciu_id, ciu_nombre, dep_nombre from ciudad natural join departamento where ciu_id like \'" + buscar + "\' or ciu_nombre like \'"+buscar+"%\' or dep_nombre like \'"+buscar+"%\'";
+        consultar = "select ciu_id, ciu_nombre, dep_nombre from ciudad natural join departamento where ciu_id like \'" + buscar + "\' or ciu_nombre like \'%"+buscar+"%\' or dep_nombre like \'%"+buscar+"%\'";
 
         try{
             
             state = coneccion.createStatement();
             
             // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
-            resultado = state.executeQuery("select count() as total from ciudad natural join departamento where ciu_id like \'" + buscar + "\' or ciu_nombre like \'"+buscar+"%\' or dep_nombre like \'"+buscar+"%\'");
+            resultado = state.executeQuery("select count() as total from ciudad natural join departamento where ciu_id like \'" + buscar + "\' or ciu_nombre like \'%"+buscar+"%\' or dep_nombre like \'%"+buscar+"%\'");
             
             
             if(resultado.next()){

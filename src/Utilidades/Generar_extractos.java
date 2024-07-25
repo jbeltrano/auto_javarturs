@@ -156,7 +156,7 @@ public class Generar_extractos {
         String localizacion_contrato;
         int datos_tipo_contrato;
         String localizacion_fichero = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
-        String localizacion2_fichero = "H:\\.shortcut-targets-by-id\\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\\0. EXTRACTOS Y CONTRATOS\\EXTRACTO DEL CONTRATO\\";
+        String localizacion2_fichero = "L:\\.shortcut-targets-by-id\\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\\0. EXTRACTOS Y CONTRATOS\\EXTRACTO DEL CONTRATO";
 
         try{
             // inicializacion del objeto para modificar la plantilla de extractos
@@ -303,7 +303,7 @@ public class Generar_extractos {
         int consecutivo;
         String placas_contrato[];    // Se utiliza para obtener las placas que hacen relacion al contrato
         String localizacion_fichero = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
-        String localizacion2_fichero = "H:\\.shortcut-targets-by-id\\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\\0. EXTRACTOS Y CONTRATOS\\EXTRACTO DEL CONTRATO\\";
+        String localizacion2_fichero = "L:\\.shortcut-targets-by-id\\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\\0. EXTRACTOS Y CONTRATOS\\EXTRACTO DEL CONTRATO\\";
 
         try{
             // Consultando la cantidad de extractos a realizar con el msimo contrato
