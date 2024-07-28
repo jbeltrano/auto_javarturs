@@ -104,7 +104,8 @@ public class Insertar_contratante extends Modal_extracto{
             @Override
             public void accion(){
                 
-                accion_text_responsable(text_responsable.getText());
+                set_tabla_responsable();
+                tabla_responsable.changeSelection(0, 0, false, false);
 
             }
 
@@ -221,7 +222,9 @@ public class Insertar_contratante extends Modal_extracto{
         int row = tabla_contratante.getSelectedRow();
         text_contratante.setText("" + tabla_contratante.getValueAt(row, 0));
         text_responsable.setText("" + tabla_contratante.getValueAt(row, 0)); 
-        accion_text_responsable(text_responsable.getText());
+        set_tabla_responsable();
+        tabla_responsable.changeSelection(0, 0, false, false);
+
 
     }
 
@@ -230,11 +233,6 @@ public class Insertar_contratante extends Modal_extracto{
         int row = tabla_responsable.getSelectedRow();
         text_responsable.setText("" + tabla_responsable.getValueAt(row, 0));
 
-    }
-
-    private void accion_text_responsable(String text){
-        set_tabla_responsable();
-        tabla_responsable.changeSelection(0, 0, false, false);
     }
 
     public void set_tabla_contratante(){
@@ -258,8 +256,8 @@ public class Insertar_contratante extends Modal_extracto{
         base = new Base(url);
         try{
             
-            datos_tabla_responsable = base.consultar_persona(text_contratante.getText());
-            JTable aux = Modelo_tabla.set_tabla_personas(datos_tabla_contratante);
+            datos_tabla_responsable = base.consultar_persona(text_responsable.getText());
+            JTable aux = Modelo_tabla.set_tabla_personas(datos_tabla_responsable);
             tabla_responsable.setModel(aux.getModel());
             tabla_responsable.setColumnModel(aux.getColumnModel());
                     

@@ -889,7 +889,12 @@ public class Base extends Base_datos{
 
     }
 
-    // Metodos para departamento
+    /**
+     * Retorna un {@code String[]} con cont
+     * todos los nombres de los departamentos
+     * @return String[]
+     * @throws SQLException
+     */
     public String[] consultar_departamento()throws SQLException{
         dato = new String[1];
         int cantidad = 0;
@@ -905,6 +910,7 @@ public class Base extends Base_datos{
             
             if(resultado.next()){
                 cantidad = resultado.getInt("total");
+                resultado.close();
             }
 
             if(cantidad == 0){
@@ -924,11 +930,22 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
         return dato;
     }
 
+    /**
+     * Retorna una matrix de {@code String[][]},
+     * donde aparecen los nombre y id de los
+     * diferentes departamentos registrados en la
+     * base de datos
+     * @return
+     * @throws SQLException
+     */
     public String[][] consultar_departamentos()throws SQLException{
         datos = new String[1][2];
         int cantidad = 0;
@@ -947,6 +964,7 @@ public class Base extends Base_datos{
             
             if(resultado.next()){
                 cantidad = resultado.getInt("total");
+                resultado.close();
             }
 
             if(cantidad == 0){
@@ -970,11 +988,22 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
         return datos;
     }
 
+    /**
+     * Retorna una matrix de {@code String[][]},
+     * con los id y nombres de los departamentos, usando
+     * como parametro de busqueda {@code buscar}
+     * @param buscar
+     * @return
+     * @throws SQLException
+     */
     public String[][] consultar_departamentos(String buscar)throws SQLException{
         datos = new String[1][2];
         int cantidad = 0;
@@ -991,6 +1020,7 @@ public class Base extends Base_datos{
             
             if(resultado.next()){
                 cantidad = resultado.getInt("total");
+                resultado.close();
             }
 
             if(cantidad == 0){
@@ -1014,11 +1044,23 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
         return datos;
     }
 
+    /**
+     * Retorna el id del tepartamento con un
+     * dato de tipo {@code int}, utilizando
+     * como parametro de busqueda el nombre exacto del
+     * departamento usando el parametro {@code departamento}
+     * @param departamento
+     * @return int
+     * @throws SQLException
+     */
     public int consultar_id_departamento(String departamento) throws SQLException{
 
         consultar = "select dep_id from departamento where dep_nombre = ?";
@@ -1037,10 +1079,25 @@ public class Base extends Base_datos{
             }
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            pstate.close();
         }
     }
 
-    // Metodos para insertar, eliminar, actualizar y consultar PERSONA
+    /**
+     * Realiza la insercion de una persona en la base de datos
+     * utilizando los diversos parametros dependiendo del tipo de
+     * dato a insertar en la base de datos
+     * @param per_id
+     * @param tip_id
+     * @param per_nombre
+     * @param per_celular
+     * @param ciu_id
+     * @param per_direccion
+     * @param per_correo
+     * @throws SQLException
+     */
     public void insertar_persona(String per_id, int tip_id, String per_nombre, String per_celular, int ciu_id, String per_direccion, String per_correo)throws SQLException{
         insertar = "insert into persona values (?,?,?,?,?,?,?)";
         per_nombre = Capitalizar_Strings.capitalizarNombre(per_nombre);
@@ -1061,9 +1118,17 @@ public class Base extends Base_datos{
             pstate.executeUpdate();
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     }
 
+    /**
+     * Se encarga de eliminar un registro de la base de datos
+     * cuando se le pase como parametro el id de la persona
+     * @param per_id
+     * @throws SQLException
+     */
     public void eliminar_persona(String per_id)throws SQLException{
 
         borrar = "delete from persona where per_id = ?";
@@ -1078,9 +1143,24 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     }
 
+    /**
+     * Actualiza la informacion de una persona, siempre y cuando
+     * el {@code per_id} coincida con el id de la persona en la
+     * base de datos. Y el resto de parametros actualizan el registro.
+     * @param per_id
+     * @param tip_id
+     * @param per_nombre
+     * @param per_celular
+     * @param ciu_id
+     * @param per_direccion
+     * @param per_correo
+     * @throws SQLException
+     */
     public void actualizar_persona(String per_id, int tip_id, String per_nombre, String per_celular, int ciu_id, String per_direccion, String per_correo) throws SQLException{
         actualizar = "update persona set  tip_id = ?, per_nombre = ?, per_celular = ?, ciu_id = ?, per_direccion = ?, per_correo = ? where per_id = ?";
 
@@ -1102,9 +1182,20 @@ public class Base extends Base_datos{
             pstate.executeUpdate();
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     } 
 
+    /**
+     * Retorna una matrix de tipo {@code String[][]}
+     * con los diferentes registros que en cuentre con el
+     * parametro {@code buscar}, el filtro lo hace por nombres
+     * apellidos, incluso el id de la persona
+     * @param buscar
+     * @return
+     * @throws SQLException
+     */
     public String[][] consultar_persona(String buscar)throws SQLException{
         datos = new String[1][20];
         int cantidad = 0;
@@ -1120,6 +1211,7 @@ public class Base extends Base_datos{
             
             if(resultado.next()){
                 cantidad = resultado.getInt("total");
+                resultado.close();
             }
 
             if(cantidad == 0){
@@ -1155,6 +1247,9 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
         return datos;
@@ -1162,6 +1257,16 @@ public class Base extends Base_datos{
     
     }
     
+    /**
+     * Retorna una matrix de tipo {@code String[][]},
+     * con los registros de las personas que no sean
+     * contratantes, haciendo el filtro con el parametro
+     * {@code buscar}
+     * 
+     * @param buscar
+     * @return
+     * @throws SQLException
+     */
     public String[][] consultar_no_contratante(String buscar)throws SQLException{
         datos = new String[1][20];
         int cantidad = 0;
@@ -1177,7 +1282,9 @@ public class Base extends Base_datos{
             
             if(resultado.next()){
                 cantidad = resultado.getInt("total");
+                
             }
+            resultado.close();
 
             if(cantidad == 0){
                 return datos;
@@ -1212,6 +1319,9 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
         return datos;
@@ -1219,6 +1329,14 @@ public class Base extends Base_datos{
     
     }
 
+    /**
+     * Se encarga de retornar una matrix de
+     * tipo {@code String[][]}, con todos los
+     * registros de la base de datos sobre la
+     * tabla persona
+     * @return
+     * @throws SQLException
+     */
     public String[][] consultar_persona()throws SQLException{
 
         datos = new String[1][20];
@@ -1236,6 +1354,7 @@ public class Base extends Base_datos{
             if(resultado.next()){
                 cantidad = resultado.getInt("total");
             }
+            resultado.close();
 
             if(cantidad == 0){
                 return datos;
@@ -1270,11 +1389,24 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
         return datos;
     }
 
+    /**
+     * Retorna un {@code String[]}, con el resgistro
+     * completo de la base de datos de la primer persona
+     * encontrada por el parametro {@code buscar}, el cual
+     * es el id de la persona.
+     * 
+     * @param buscar
+     * @return
+     * @throws SQLException
+     */
     public String[] consultar_uno_persona(String buscar)throws SQLException{
 
         dato = new String[8];
@@ -1309,13 +1441,25 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
         return dato;
 
     }
     
-    // Metodos para consultar a personas naturales
+    
+    /**
+     * Retorna una matrix de tipo {@code String[][]},
+     * con los diferentes registros de las personas que
+     * no sean persona juridica, utilizando tambien el filtro
+     * {@code buscar} para filtrar los diferentes registros.
+     * @param buscar
+     * @return
+     * @throws SQLException
+     */
     public String[][] consultar_persona_natural(String buscar)throws SQLException{
         datos = new String[1][20];
         int cantidad = 0;
@@ -1331,7 +1475,9 @@ public class Base extends Base_datos{
             
             if(resultado.next()){
                 cantidad = resultado.getInt("total");
+                resultado.close();
             }
+            
 
             if(cantidad == 0){
                 return datos;
@@ -1365,13 +1511,15 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
         return datos;
 
     
     }
-    
     
 
     // Metodo para insertar, eliminar, actualizar y consultar TIPO EMPLEADO
