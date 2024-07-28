@@ -683,6 +683,16 @@ public class Base extends Base_datos{
         return datos;
     }
 
+    /**
+     * Retorna un {@code String[]} buscando
+     * con el parametro {@code ciudad}, y con
+     * el parametro {@code columna} se define
+     * la columna a retornar
+     * @param buscar
+     * @param columna
+     * @return
+     * @throws SQLException
+     */
     public String [] consultar_ciudad(String buscar, int columna)throws SQLException{
         
         dato = new String[1];
@@ -700,23 +710,31 @@ public class Base extends Base_datos{
         return dato;
     }
 
+    /**
+     * Retorna una matrix de las diferentes ciudades
+     * bucando los registros con el parametro {@code buscar}
+     * @param buscar
+     * @return String[][]
+     * @throws SQLException
+     */
     public String [][] consultar_ciudades(String buscar)throws SQLException{
         datos = new String[1][3];
         int cantidad = 0;
         int i = 1;
 
-        consultar = "select ciu_id, ciu_nombre, dep_nombre from ciudad natural join departamento where ciu_id like \'" + buscar + "\' or ciu_nombre like \'%"+buscar+"%\' or dep_nombre like \'%"+buscar+"%\'";
+        consultar = "select ciu_id, ciu_nombre, dep_nombre from ciudad natural join departamento where ciu_id like \'" + buscar + "\' or ciu_nombre like \'%"+buscar+"%\' or dep_nombre like \'"+buscar+"%\'";
 
         try{
             
             state = coneccion.createStatement();
             
             // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
-            resultado = state.executeQuery("select count() as total from ciudad natural join departamento where ciu_id like \'" + buscar + "\' or ciu_nombre like \'%"+buscar+"%\' or dep_nombre like \'%"+buscar+"%\'");
+            resultado = state.executeQuery("select count() as total from ciudad natural join departamento where ciu_id like \'" + buscar + "\' or ciu_nombre like \'%"+buscar+"%\' or dep_nombre like \'"+buscar+"%\'");
             
             
             if(resultado.next()){
                 cantidad = resultado.getInt("total");
+                resultado.close();
             }
 
             if(cantidad == 0){
@@ -743,11 +761,26 @@ public class Base extends Base_datos{
         }catch(SQLException ex){
             
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
         return datos;
     }
 
+    /**
+     * Retorna un {@code String[]} el cual contiene
+     * un registro completo de una ciudad buscada
+     * mediante el parametro {@code buscar}, el cual
+     * puede ser el id o el nombre a buscar
+     * 
+     * Retorna el registro en bruto, es decir sin hacer
+     * joins dentro de la base de datos
+     * @param buscar
+     * @return String[]
+     * @throws SQLException
+     */
     public String [] consultar_uno_ciudad(String buscar)throws SQLException{
 
         dato = new String[3];
@@ -775,11 +808,23 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
         return dato;
     }
 
+    /**
+     * Retorna un registro de la base de datos en {@code String[]} 
+     * en un formato especifico donde aparecen los nombres en ves
+     * de los identificadores. Utilizando el parametro {@code buscar}
+     * 
+     * @param buscar
+     * @return String[]
+     * @throws SQLException
+     */
     public String[] consultar_uno_ciudades(String buscar)throws SQLException{
 
         dato = new String[3];
@@ -807,11 +852,22 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
         return dato;
     }
 
+    /**
+     * Se encarga de insertar un registro en la base de datos
+     * donde se pasa como parametros la {@code ciudad} y el
+     * {@code departamento} en valores de tipo {@code String}
+     * @param ciudad
+     * @param departamento
+     * @throws SQLException
+     */
     public void insertar_ciudad(String ciudad, String departamento) throws SQLException{
 
         insertar = "insert into ciudad (ciu_nombre, dep_id) values (?, (select dep_id from departamento where dep_nombre = ?))";
@@ -827,6 +883,8 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
 
     }
@@ -3256,36 +3314,62 @@ public class Base extends Base_datos{
 
     }
     
+    /**
+     * Se encarga de incertar un extracto ocasional con los
+     * parametros:
+     * 
+     * {@code placa} el cual identifica el vehiculo.
+     * {@code consecutivo} determina el consecutivo del extracto.
+     * {@code contrato} determina el numero de contrato vinculado al extracto.
+     * 
+     * Dependiendo del numero consecutivo se determina si se actualiza o no en
+     * la tabla de los numero consecutivos para los extractos ocasionales
+     * 
+     * @param placa
+     * @param consecutivo
+     * @param contrato
+     * @throws SQLException
+     */
     public void insertar_extracto_ocasional(String placa, int consecutivo, int contrato)throws SQLException{
 
         String accion_auxiliar = "";
+        int consecutivo2 = 0;
         insertar = "insert into extracto_ocasional values (?,?,?)";
         
-        
-        // Hace la insercion del extracto ocasional
         try{
 
-
+            /*Busca en la tabla de consecutivos para los extractos ocasionales si hay uno asosciado a la placa ingresada*/
             state = coneccion.createStatement();
             resultado = state.executeQuery("select con_numero from consecutivo_extracto_ocasional where con_placa = \'"+placa+"\'");
-            if(resultado.next()){
-                if(consecutivo < resultado.getInt(1)){
-                    consecutivo = resultado.getInt(1);
 
+            // Si existe un registro
+            if(resultado.next()){
+                // Determina si el consecutivo ingresado es mayor que el que existe en la tabla
+                if(consecutivo < resultado.getInt(1)){ /* Si el consecutivo ingresado es menor que el de la tabla
+                                                                      guardamos el consecutivo de la tabla en consecutivo2
+                                                                      de esta forma no altermos el orden el consecutivo como tal
+                                                                      y seguimos manteniendo el registro, permitiendonos hacer
+                                                                      registros hacia atras*/
+                    consecutivo2 = resultado.getInt(1);
+                    
                 }
 
+                // En este caso se define una actualizacion del registro, puesto que ya hay uno existente
                 accion_auxiliar = "update consecutivo_extracto_ocasional set con_numero = ? where con_placa = ?";
 
-            }else{
+            }else{  // En caso de no encontrar un regsitro en la tabla, creara un asociado a la placa del vehiculo
                 accion_auxiliar = "insert into consecutivo_extracto_ocasional (con_numero, con_placa) values (?,?)";
-                if(consecutivo <= 0){
+                if(consecutivo <= 0){   // En este caso verifica que el consecutivo no sea menor o igual que cero
                     consecutivo = 1;
                 }
             }
 
-            resultado.close();
+            
 
+            // Define el auto comit como false en caso de requerir hacer un roleback
             coneccion.setAutoCommit(false);
+
+            // Perara los datos a insertar en el extracto ocasional
             pstate = coneccion.prepareStatement(insertar);
 
             pstate.setString(1, placa);
@@ -3296,19 +3380,22 @@ public class Base extends Base_datos{
             pstate.executeUpdate();
             pstate.close();
 
+            // Prepara los datos a insertar en el consecutivo extracto mensual
             pstate = coneccion.prepareStatement(accion_auxiliar);
 
-            pstate.setInt(1, consecutivo);
+            pstate.setInt(1, consecutivo2);
             pstate.setString(2, placa);
 
             pstate.executeUpdate();
 
+            // Si todo ah salido bien hace un commit
             coneccion.commit();
-        }catch(SQLException e){
+        }catch(SQLException e){ // Si algo fallo hace el roleback
             coneccion.rollback();
             throw e;
         }finally{
             coneccion.setAutoCommit(true);
+            resultado.close();
             pstate.close();
         }
 

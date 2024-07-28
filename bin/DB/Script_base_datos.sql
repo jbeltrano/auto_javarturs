@@ -418,7 +418,7 @@ create view vw_licencia as
     select per_id, per_nombre,cat_categoria, lic_fecha 
     from licencia natural join categoria natural join persona;
 
-create view vw_contratante ascreate view vw_contratante as
+create view vw_contratante as
 select con_contratante,
     tip_nombre as con_tipo_id,
     per_nombre as con_nombre,
@@ -474,7 +474,7 @@ create view vw_extracto_mensual as
                         ciu_nombre as ciudad_destino, 
                         dep_nombre as departamento_destino 
                             from ciudad 
-                            natural join departamento) on (ciudad_destino_id = ext_destino)
+                            natural join departamento) on (ciudad_destino_id = ext_destino);
 
 create view vw_vehiculo_extracto as
     select veh_placa, veh_modelo, veh_marca, cla_nombre, doc_interno, doc_top  
