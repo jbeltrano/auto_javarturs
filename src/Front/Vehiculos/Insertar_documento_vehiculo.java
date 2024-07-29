@@ -41,6 +41,7 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
     protected JDateChooser fecha_top;
     protected JDateChooser fecha_polizas;
     protected JDialog ventana;
+    private boolean flag_is_particular;
 
     public Insertar_documento_vehiculo(JFrame frame, String url, String valor){
         super(frame, url, valor);
@@ -72,6 +73,7 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
         fecha_rtm = new JDateChooser(fecha_actual);
         fecha_polizas = new JDateChooser(fecha_actual);
         fecha_top = new JDateChooser(fecha_actual);
+        flag_is_particular = false;
 
 
         // Configuracion de las barras de scroll
@@ -131,6 +133,8 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
             public void mouseClicked(MouseEvent evt){
                 int valor_auxilia = tabla_vehiculo.getSelectedRow();
                 text_placa.setText("" + tabla_vehiculo.getValueAt(valor_auxilia, 0));
+
+                is_particular(text_placa.getText());
             }
 
         });
@@ -246,6 +250,36 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
 
     }
 
+    /**
+     * Este metodo se encarga de verificar
+     * si un vehiculo es particular, en caso de
+     * serlo, modificara algunos atributos, para
+     * evitar errores en la base de datos
+     * @param placa
+     */
+    protected void is_particular(String placa){
+
+        base = new Base(url);
+        try{
+            if(base.is_particular(placa)){
+                flag_is_particular = true;
+                text_numero_interno.setEnabled(false);
+                fecha_polizas.setEnabled(false);
+                fecha_top.setEnabled(false);
+                text_top.setEnabled(false);
+            }else{
+                flag_is_particular = false;
+                text_numero_interno.setEnabled(true);
+                fecha_polizas.setEnabled(true);
+                fecha_top.setEnabled(true);
+                text_top.setEnabled(true);
+            }
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
+        }
+    }
     protected void datos_vehiculo(){
         base = new Base(url);
         try{
