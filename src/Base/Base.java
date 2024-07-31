@@ -2683,6 +2683,31 @@ public class Base extends Base_datos{
 
     }
 
+    public boolean is_particular(String placa)throws SQLException{
+        boolean flag = false;
+        consultar = "select ser_id from vehiculo where veh_placa like ?";
+
+        try{
+            pstate = coneccion.prepareStatement(consultar);
+            
+            pstate.setString(1, placa);
+
+            resultado = pstate.executeQuery();
+
+            if(resultado.next()){
+                flag = (resultado.getInt(1) == 1);
+            }else{
+                throw new SQLException("No se encontro el resultado en la base de datos");
+            }
+        }catch(SQLException ex){
+            throw ex;
+
+        }finally{
+            pstate.close();
+        }
+
+        return flag;
+    }
     // Metodos para vehiculos sin doucumentos
     public String[][] consultar_vehiculo_sin_documento(boolean todos)throws SQLException{
 
