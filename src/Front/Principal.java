@@ -44,6 +44,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.BorderLayout;
@@ -52,6 +53,10 @@ import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
@@ -120,9 +125,9 @@ public class Principal extends JFrame{
         this.url = url;
 
         try{
-           UIManager.setLookAndFeel(new FlatLightLaf());
-        }catch(Exception e){
-           System.out.println(e);
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        }catch(Exception ex){
+            System.out.println(ex);
         }
 
         setPreferredSize(new Dimension(1200,700));
@@ -131,6 +136,13 @@ public class Principal extends JFrame{
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // Llama a un método que maneje la lógica de cierre
+                dispose();
+            }
+        });
     }
 
     /**
@@ -2238,7 +2250,6 @@ public class Principal extends JFrame{
     }
 
     // Metodos relacionados con contratante
-    
 
     private JPanel ver_contratante(){
         
@@ -2249,6 +2260,7 @@ public class Principal extends JFrame{
         
         // Inicializaicon pop_menu
         config_pop_menu();
+        
 
         // Obteniendo datos de la base de datos
         base = new Base(url);
@@ -2269,6 +2281,8 @@ public class Principal extends JFrame{
 
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
+            panel.revalidate();
+            panel.repaint();
             int select_row = tabla.getSelectedRow();
 
             
@@ -2361,6 +2375,7 @@ public class Principal extends JFrame{
         pop_menu.add(item_adicionar);
         pop_menu.add(item_actualizar);
         pop_menu.add(item_eliminar);
+
     }  
     
     private void config_pop_menu_extractos(){
@@ -2382,5 +2397,8 @@ public class Principal extends JFrame{
         pop_menu.add(item_exportar_todos);
         pop_menu.add(item_actualizar_todos);
     }
+
+    
+    
     
 }

@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 
+import javax.swing.SwingUtilities;
+
 import Base.Base;
 import Front.Principal;
 
@@ -25,7 +27,13 @@ public class Main {
         }finally{
             base.close();
         }
-        new Principal("src\\DB\\base.db");
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new Principal("src\\DB\\base.db");
+            }
+        });
+        
 
         
     }

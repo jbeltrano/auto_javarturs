@@ -199,6 +199,8 @@ public class Insertar_contratante extends Modal_extracto{
         add(jPanel1);
 
         pack();
+        jPanel1.revalidate();
+        jPanel1.repaint();
 
     }
 

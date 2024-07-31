@@ -13,6 +13,7 @@ public class Actualizar_contratante extends Insertar_contratante{
         super(padre, url);
         this.id = id;
         modificar();
+        
     }
     
     private void modificar(){
