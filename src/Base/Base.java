@@ -1522,7 +1522,15 @@ public class Base extends Base_datos{
     }
     
 
-    // Metodo para insertar, eliminar, actualizar y consultar TIPO EMPLEADO
+
+    /**
+     * Esta funcion se encarga de insertar
+     * los tipos de empleados utilizando el
+     * {@code nombre} como el nombre o tipo
+     * de empleado.
+     * @param nombre
+     * @throws SQLException
+     */
     public void insertar_tipo_empleado(String nombre)throws SQLException{
         insertar = "insert into tipo_empleado (tiem_nombre) values (?)";
 
@@ -1535,9 +1543,18 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     }
 
+    /**
+     * Este metodo se encarga de eliminar el
+     * tipo de empleado pasado por el parametro
+     * {@code id} que es de tipo {@code int}
+     * @param id
+     * @throws SQLException
+     */
     public void eliminar_tipo_empleado(int id)throws SQLException{
         borrar = "delete from tipo_empleado where tiem_id = ?";
 
@@ -1552,6 +1569,13 @@ public class Base extends Base_datos{
         }
     }
     
+    /**
+     * Retorna una matrix de tipo {@code String[][]},
+     * la cual contiene todos los datos del tipo empleado
+     * que estan almacenados en la base de datos
+     * @return
+     * @throws SQLException
+     */
     public String [][] consultar_tipo_empleado()throws SQLException{
     
         datos = new String[1][20];
@@ -1563,16 +1587,14 @@ public class Base extends Base_datos{
         try{
             state = coneccion.createStatement();
  
-            // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
+            // Obtiene la cantidad de elementos que vamos a necesitar declarar para nuestra matrix
             resultado = state.executeQuery("select count() as total from tipo_empleado");
             
             if(resultado.next()){
                 cantidad = resultado.getInt("total");
             }
 
-            if(cantidad == 0){
-                return datos;
-            }
+            resultado.close();
 
             datos = new String[cantidad+1][2];
 
@@ -1592,13 +1614,25 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
         return datos;
 
     }
 
-    // Metodos para inertar, eliminar, actualizar y consultar EPS
+    /**
+     * Se encarga de insertar las diferentes
+     * eps en las que puede estar afiliado
+     * un empleado utilizando el parametro
+     * {@code eps_nombre} el cual contiene
+     * el nombre de la eps.
+     * 
+     * @param eps_nombre
+     * @throws SQLException
+     */
     public void insertar_eps(String eps_nombre)throws SQLException{
         insertar = "insert into eps (eps_nombre) values (?)";
 
@@ -1611,9 +1645,20 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     }
 
+    /**
+     * Se encarga de eliminar un registro de
+     * eps en la base de datos identificandolo
+     * con el parametro {@code id} que es de tipo
+     * {@code int}.
+     * 
+     * @param id
+     * @throws SQLException
+     */
     public void eliminar_eps(int id)throws SQLException{
         borrar = "delete from eps where eps_id = ?";
 
@@ -1625,9 +1670,19 @@ public class Base extends Base_datos{
             pstate.executeUpdate();
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     }
 
+    /**
+     * Retorna una matrix de tipo {@code String[][]},
+     * la cual contiene los diferentes registros que hay
+     * en la base de datos sobre las eps.
+     * 
+     * @return
+     * @throws SQLException
+     */
     public String[][] consultar_eps()throws SQLException{
 
         datos = new String[1][20];
@@ -1645,10 +1700,7 @@ public class Base extends Base_datos{
             if(resultado.next()){
                 cantidad = resultado.getInt("total");
             }
-
-            if(cantidad == 0){
-                return datos;
-            }
+            resultado.close();
 
             datos = new String[cantidad+1][2];
 
@@ -1668,6 +1720,9 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
         return datos;
@@ -1675,7 +1730,14 @@ public class Base extends Base_datos{
     }
     
     
-    // Metodos para insertar, eliminar, actualizar y consultar PENSION
+    /**
+     * Se encarga de insertar los diferentes
+     * tipos de pensiones en los que los empleados
+     * pueden estar afiliados utilizando el parametro
+     * {@code pen_nombre} como el nombre de pension.
+     * @param pen_nombre
+     * @throws SQLException
+     */
     public void insertar_pension(String pen_nombre)throws SQLException{
         insertar = "insert into pension (pen_nombre) values (?)";
 
@@ -1688,9 +1750,21 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            pstate.close();
         }
     }
 
+    /**
+     * Se encarga de eliminar un registro de
+     * la base de datos de las pensiones,
+     * utilizando el registro {@code id},
+     * de tipo {@code int}, el cual identifica
+     * el tipo o nombre de pension.
+     * 
+     * @param id
+     * @throws SQLException
+     */
     public void eliminar_pension(int id)throws SQLException{
         borrar = "delete from pension where pen_id = " + id;
 
@@ -1701,9 +1775,19 @@ public class Base extends Base_datos{
             
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            state.close();
         }
     }
     
+    /**
+     * Retorna una matrix de tipo {@code String[][]},
+     * la cual contiene los diferentes registros de
+     * pension en la base de datos.
+     * 
+     * @return
+     * @throws SQLException
+     */
     public String[][] consultar_pension()throws SQLException{
         datos = new String[1][20];
         int cantidad = 0;
@@ -1719,11 +1803,9 @@ public class Base extends Base_datos{
             
             if(resultado.next()){
                 cantidad = resultado.getInt("total");
+                
             }
-
-            if(cantidad == 0){
-                return datos;
-            }
+            resultado.close();
 
             datos = new String[cantidad+1][2];
 
@@ -1743,6 +1825,9 @@ public class Base extends Base_datos{
 
         }catch(SQLException ex){
             throw ex;
+        }finally{
+            resultado.close();
+            state.close();
         }
 
         return datos;

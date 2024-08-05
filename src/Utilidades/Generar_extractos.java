@@ -34,7 +34,7 @@ public class Generar_extractos {
         String año;
         int datos_tipo_contrato;
         String localizacion_fichero = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
-        String localizacion2_fichero = "H:\\.shortcut-targets-by-id\\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\\0. EXTRACTOS Y CONTRATOS\\EXTRACTO DEL CONTRATO\\MENSUALES\\";
+        String localizacion2_fichero = "L:\\.shortcut-targets-by-id\\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\\0. EXTRACTOS Y CONTRATOS\\EXTRACTO DEL CONTRATO\\MENSUALES\\";
 
         try{
             // inicializacion del objeto para modificar la plantilla de extractos
