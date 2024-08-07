@@ -2,7 +2,9 @@ package Front.Personas;
 
 import java.awt.Rectangle;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javax.swing.JButton;
@@ -50,8 +52,7 @@ public class Actualizar_conductor extends Insertar_conductor{
             text_documento.setText(dato[0]);
             combo_conductor.setSelectedIndex(Integer.parseInt(dato[1])-1);
             fecha_licencia = LocalDate.parse(dato[2], formatter);
-            buscar_fecha.setDate(new Date(fecha_licencia.getYear()-1900, fecha_licencia.getMonthValue()-1, fecha_licencia.getDayOfMonth()));
-            
+            buscar_fecha.setDate(Date.from(fecha_licencia.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             base.close();
@@ -77,9 +78,11 @@ public class Actualizar_conductor extends Insertar_conductor{
                 try{
                     Double.parseDouble(text_documento.getText());
                     Date data = buscar_fecha.getDate();
+                    SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
                     base = new Base(url);
                     try{
-                        base.actualizar_licencia(""+ text_documento.getText(), combo_conductor.getSelectedIndex()+1, (data.getYear()+1900) + "-" + (data.getMonth()+1) + "-" + data.getDate());
+                        base.actualizar_licencia((String) text_documento.getText(), combo_conductor.getSelectedIndex()+1, formato.format(data));
+                        //base.actualizar_licencia(""+ text_documento.getText(), combo_conductor.getSelectedIndex()+1, (data.getYear()+1900) + "-" + (data.getMonth()+1) + "-" + data.getDate());
                         JOptionPane.showMessageDialog(this, "Licencia actualizada con Exito", "AL", JOptionPane.INFORMATION_MESSAGE);
                         this.setVisible(false);
                         base.close();
