@@ -183,50 +183,7 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
         boton_guardar.setBounds(10, 420, 90, 23);
         boton_guardar.addActionListener(accion ->{
             
-            String ffecha_soat = "";
-            String ffecha_rtm = "";
-            String ffecha_top = "";
-            String ffecha_polizas = "";
-            int top = 0;
-            int interno = 0;
-            SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
-
-            ffecha_soat = formato.format(fecha_soat.getDate());
-            ffecha_rtm = formato.format(fecha_rtm.getDate());
-            ffecha_polizas = formato.format(fecha_polizas.getDate());
-            ffecha_top = formato.format(fecha_top.getDate());
-
-            try{
-
-                top = Integer.parseInt(text_top.getText());
-                interno = Integer.parseInt(text_numero_interno.getText());
-
-                if(text_placa.getText().equals("")){
-                    
-                    JOptionPane.showMessageDialog(this, "El campo: Placa es obligatorio", "Error", JOptionPane.ERROR_MESSAGE);
-                
-                }else{
-                    base = new Base(url);
-                    try{
-
-                        base.insertar_documentos(text_placa.getText(), ffecha_soat, ffecha_rtm, top, ffecha_top, ffecha_polizas, interno);
-                        base.close();
-                        JOptionPane.showMessageDialog(this, "El Los documentos para el vehiculo " + text_placa.getText() +"\nFueron insertados correctamente.","",JOptionPane.INFORMATION_MESSAGE);
-                        setVisible(false);
-                    
-                    }catch(SQLException ex){
-                    
-                        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    
-                    }finally{
-                        base.close();
-                    }
-                    
-                }
-
-            }catch(NumberFormatException ex){
-                JOptionPane.showMessageDialog(this, "Los campos:\nTarjeda de Operacion\nNumero Interno\nDeben ser de tipo Numerico", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            guardar();
 
         });
 
