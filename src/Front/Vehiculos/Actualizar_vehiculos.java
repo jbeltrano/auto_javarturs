@@ -1,8 +1,6 @@
 package Front.Vehiculos;
 
 import java.sql.SQLException;
-
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 

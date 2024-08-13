@@ -44,8 +44,6 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-
-import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -53,8 +51,6 @@ import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -111,9 +107,9 @@ public class Principal extends JFrame{
     private static final String comando[] = {System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe",
                                             System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf.ps1",
                                             System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales"};
-    private static final String comando2[] = {System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe",
-                                            System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf2.ps1",
-                                            System.getProperty("user.home") + "\\Desktop\\Extractos\\Contratos Ocasionales"};
+    // private static final String comando2[] = {System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe",
+    //                                         System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf2.ps1",
+    //                                         System.getProperty("user.home") + "\\Desktop\\Extractos\\Contratos Ocasionales"};
     
     /** 
      * Este es el constructor general para la clase Principal

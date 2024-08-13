@@ -61,7 +61,7 @@ public class Actualizar_peronas extends Insertar_persona{
             boolean band = true;
             String mostrar = "Los campos:\n";
             int tipo_documento,ciudad;
-            long celular, documento;
+            
 
             if(text_documento.getText().equals("")){
                 band = false;
@@ -86,8 +86,9 @@ public class Actualizar_peronas extends Insertar_persona{
                 this.setVisible(false);
             }else{
                 try{
-                    celular = Long.parseLong(text_celular.getText());
-                    documento = Long.parseLong(text_documento.getText());
+                    
+                    Long.parseLong(text_celular.getText());
+                    Long.parseLong(text_documento.getText());
                     tipo_documento = combo_tipo_documento.getSelectedIndex() + 1;
                     base = new Base(url);
                     try {

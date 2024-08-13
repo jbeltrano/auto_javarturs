@@ -1,8 +1,7 @@
 package Front.Vehiculos;
 
-//import java.sql.Date;
-import java.util.Date;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.awt.Rectangle;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -53,58 +52,82 @@ public class Actualizar_documento_vehiculo extends Insertar_documento_vehiculo{
         jPanel1.revalidate();
         jPanel1.repaint();
         boton_guardar.addActionListener(accion ->{
-            Date fecha = null;
-            String ffecha_soat = "";
-            String ffecha_rtm = "";
-            String ffecha_top = "";
-            String ffecha_polizas = "";
-            int top = 0;
-            int interno = 0;
-
-            fecha = fecha_soat.getDate();
-            ffecha_soat = (fecha.getYear()+1900) + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
-
-            fecha = fecha_rtm.getDate();
-            ffecha_rtm = (fecha.getYear()+1900) + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
-
-            fecha = fecha_top.getDate();
-            ffecha_top = (fecha.getYear()+1900) + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
-
-            fecha = fecha_polizas.getDate();
-            ffecha_polizas = (fecha.getYear()+1900) + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
-
-            try{
-
-                top = Integer.parseInt(text_top.getText());
-                interno = Integer.parseInt(text_numero_interno.getText());
-
-                if(text_placa.getText().equals("")){
-                    
-                    JOptionPane.showMessageDialog(this, "El campo: Placa es obligatorio", "Error", JOptionPane.ERROR_MESSAGE);
-                
-                }else{
-                    base = new Base(url);
-                    try{
-
-                        base.actualizar_documento(valor, ffecha_soat, ffecha_rtm, top, ffecha_top, ffecha_polizas, interno);
-                        base.close();
-                        JOptionPane.showMessageDialog(this, "El Los documentos para el vehiculo " + text_placa.getText() +"\nFueron actualizados correctamente.","",JOptionPane.INFORMATION_MESSAGE);
-                        setVisible(false);
-                    
-                    }catch(SQLException ex){
-                    
-                        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    
-                    }finally{
-                        base.close();
-                    }
-                    
-                }
-
-            }catch(NumberFormatException ex){
-                JOptionPane.showMessageDialog(this, "Los campos:\nTarjeda de Operacion\nNumero Interno\nDeben ser de tipo Numerico", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            guardar();
 
         });
     }
+
+    @Override
+    protected void guardar(){
+
+        String ffecha_soat = "";
+        String ffecha_rtm = "";
+        String ffecha_top = "";
+        String ffecha_polizas = "";
+        int top = 0;
+        int interno = 0;
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
+        
+        if(flag_is_particular){
+            ffecha_soat = formato.format(fecha_soat.getDate());
+            ffecha_rtm = formato.format(fecha_rtm.getDate());
+        }else{
+            ffecha_soat = formato.format(fecha_soat.getDate());
+            ffecha_rtm = formato.format(fecha_rtm.getDate());
+            ffecha_polizas = formato.format(fecha_polizas.getDate());
+            ffecha_top = formato.format(fecha_top.getDate());
+        }
+        try{
+            
+            top = Integer.parseInt(text_top.getText());
+            interno = Integer.parseInt(text_numero_interno.getText());
+
+            if(text_placa.getText().equals("")){
+                
+                JOptionPane.showMessageDialog(this, "El campo: Placa es obligatorio", "Error", JOptionPane.ERROR_MESSAGE);
+            
+            }else{
+                base = new Base(url);
+                try{
+
+                    if(flag_is_particular){     // En caso de ser un vehiculo de servicio particular
+                        
+                        base.actualizar_documento(  text_placa.getText(),   // Identificador o placa del vehiculo
+                                                    ffecha_soat,            // Fecha de vencimiento del soat
+                                                    ffecha_rtm);            // Fecha de vencimiento de la tecnomecanica
+                        
+                    }else{                      // En caso de ser un vehiculo de servicio publico
+
+                        
+                        base.actualizar_documento(text_placa.getText(),  // Identificador o placa del vehiculo
+                                                ffecha_soat,            // Fecha de vencimiento del soat
+                                                ffecha_rtm,             // Fecha de vencimiento de la tecnomecanica
+                                                top,                    // Numero de tarjeta de operacion
+                                                ffecha_top,             // Fecha de vencimiento de la tarjeta de operacion
+                                                ffecha_polizas,         // Fecha de vencimiento de las polizas rcc y rce
+                                                interno);               // Numero interno del vehiculo
+                    
+                    }
+                    JOptionPane.showMessageDialog(this, "El Los documentos para el vehiculo " + text_placa.getText() +"\nFueron insertados correctamente.","",JOptionPane.INFORMATION_MESSAGE);
+                    setVisible(false);
+                
+                }catch(SQLException ex){
+                
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                
+                }finally{
+                    base.close();
+                }
+                
+            }
+    
+                
+            
+            
+        }catch(NumberFormatException ex){
+            JOptionPane.showMessageDialog(this, "Los campos:\nTarjeda de Operacion\nNumero Interno\nDeben ser de tipo Numerico", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+    }
+
 }

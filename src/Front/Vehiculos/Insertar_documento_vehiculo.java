@@ -42,7 +42,7 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
     protected JDateChooser fecha_top;
     protected JDateChooser fecha_polizas;
     protected JDialog ventana;
-    private boolean flag_is_particular;
+    protected boolean flag_is_particular;
 
     public Insertar_documento_vehiculo(JFrame frame, String url, String valor){
         super(frame, url, valor);
@@ -315,6 +315,7 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
         }
         
     }
+
     /**
      * Este metodo se encarga de verificar
      * si un vehiculo es particular, en caso de

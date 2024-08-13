@@ -9,7 +9,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

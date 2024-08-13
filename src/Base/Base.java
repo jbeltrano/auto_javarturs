@@ -2696,6 +2696,36 @@ public class Base extends Base_datos{
 
     }
     
+    /**
+     * Se encarga de actualizar los documentos
+     * de un vehiculo en general el metodo es para
+     * los vehiculos de tipo de servicio particular
+     * puesto que los demas documentos no son necesarios
+     * @param placa
+     * @param fehca_soat
+     * @param fecha_rtm
+     * @throws SQLException
+     */
+    public void actualizar_documento(String placa, String fehca_soat, String fecha_rtm)throws SQLException{
+
+        actualizar = "update documento set doc_fecha_soat = ?, doc_fecha_rtm = ? where veh_placa = ?";
+
+        try{
+            pstate = coneccion.prepareStatement(actualizar);
+
+            pstate.setString(1, fehca_soat);
+            pstate.setString(2, fecha_rtm);
+            pstate.setString(3, placa);
+
+            pstate.executeUpdate();
+
+        }catch(SQLException ex){
+            throw ex;
+        }finally{
+            pstate.close();
+        }
+    }
+
     public void actualizar_documento(String placa, String fehca_soat, String fecha_rtm, int top, String fecha_top, String fecha_polizas, int interno )throws SQLException{
 
         actualizar = "update documento set doc_interno = ?, doc_fecha_soat = ?, doc_fecha_rtm = ?, doc_fecha_rcc = ?, doc_fecha_rce = ?, doc_top = ?, doc_fecha_top = ? where veh_placa = ?";
