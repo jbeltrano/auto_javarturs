@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JButton;
@@ -181,25 +182,19 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
         jPanel1.add(boton_guardar);
         boton_guardar.setBounds(10, 420, 90, 23);
         boton_guardar.addActionListener(accion ->{
-            Date fecha = null;
+            
             String ffecha_soat = "";
             String ffecha_rtm = "";
             String ffecha_top = "";
             String ffecha_polizas = "";
             int top = 0;
             int interno = 0;
+            SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
 
-            fecha = fecha_soat.getDate();
-            ffecha_soat = (fecha.getYear()+1900) + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
-
-            fecha = fecha_rtm.getDate();
-            ffecha_rtm = (fecha.getYear()+1900) + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
-
-            fecha = fecha_top.getDate();
-            ffecha_top = (fecha.getYear()+1900) + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
-
-            fecha = fecha_polizas.getDate();
-            ffecha_polizas = (fecha.getYear()+1900) + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
+            ffecha_soat = formato.format(fecha_soat.getDate());
+            ffecha_rtm = formato.format(fecha_rtm.getDate());
+            ffecha_polizas = formato.format(fecha_polizas.getDate());
+            ffecha_top = formato.format(fecha_top.getDate());
 
             try{
 
@@ -250,6 +245,76 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
 
     }
 
+    protected void guardar(){
+
+        String ffecha_soat = "";
+        String ffecha_rtm = "";
+        String ffecha_top = "";
+        String ffecha_polizas = "";
+        int top = 0;
+        int interno = 0;
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
+        
+        if(flag_is_particular){
+            ffecha_soat = formato.format(fecha_soat.getDate());
+            ffecha_rtm = formato.format(fecha_rtm.getDate());
+        }else{
+            ffecha_soat = formato.format(fecha_soat.getDate());
+            ffecha_rtm = formato.format(fecha_rtm.getDate());
+            ffecha_polizas = formato.format(fecha_polizas.getDate());
+            ffecha_top = formato.format(fecha_top.getDate());
+        }
+        try{
+            
+            top = Integer.parseInt(text_top.getText());
+            interno = Integer.parseInt(text_numero_interno.getText());
+
+            if(text_placa.getText().equals("")){
+                
+                JOptionPane.showMessageDialog(this, "El campo: Placa es obligatorio", "Error", JOptionPane.ERROR_MESSAGE);
+            
+            }else{
+                base = new Base(url);
+                try{
+
+                    if(flag_is_particular){     // En caso de ser un vehiculo de servicio particular
+                        
+                        base.insertar_documentos(text_placa.getText(),  // Vehiculo al cual se le hace la insercion
+                                                ffecha_soat,            // Fecha de vencimiento del soat
+                                                ffecha_rtm);            // Fecha de vencimiento de la tecnomecanica
+                        
+                    }else{                      // En caso de ser un vehiculo de servicio publico
+
+                        base.insertar_documentos(text_placa.getText(),  // Vehiculo al cual se le hace la insercion
+                                                ffecha_soat,            // Fecha de vencimiento del soat
+                                                ffecha_rtm,             // Fecha de vencimiento de la tecnomecanica
+                                                top,                    // Numero de tarjeta de operacion
+                                                ffecha_top,             // Fecha de vencimiento de la tarjeta de operacion
+                                                ffecha_polizas,         // Fecha de vencimiento de las polizas rcc y rce
+                                                interno);               // Numero interno del vehiculo
+                    
+                    }
+                    JOptionPane.showMessageDialog(this, "El Los documentos para el vehiculo " + text_placa.getText() +"\nFueron insertados correctamente.","",JOptionPane.INFORMATION_MESSAGE);
+                    setVisible(false);
+                
+                }catch(SQLException ex){
+                
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                
+                }finally{
+                    base.close();
+                }
+                
+            }
+    
+                
+            
+            
+        }catch(NumberFormatException ex){
+            JOptionPane.showMessageDialog(this, "Los campos:\nTarjeda de Operacion\nNumero Interno\nDeben ser de tipo Numerico", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+    }
     /**
      * Este metodo se encarga de verificar
      * si un vehiculo es particular, en caso de

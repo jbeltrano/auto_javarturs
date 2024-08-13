@@ -2632,6 +2632,53 @@ public class Base extends Base_datos{
         }
     }
 
+    /**
+     * Se encarga de insertar los documentos de un vehiculo
+     * pero unicamente es valido para los vehiculos de
+     * servicio particular.
+     * @param placa
+     * @param fehca_soat
+     * @param fecha_rtm
+     * @throws SQLException
+     */
+    public void insertar_documentos(String placa, String fehca_soat, String fecha_rtm)throws SQLException{
+        int var_auxiliar = 0;
+        insertar = "insert into documento (veh_placa, doc_fecha_soat, doc_fecha_rtm) values (?,?,?)";
+        consultar = "select count(veh_placa) from documento where veh_placa like \'" + placa + "\'";
+
+
+        try{
+            state = coneccion.createStatement();
+            resultado = state.executeQuery(consultar);
+
+            if(resultado.next()){
+                var_auxiliar = resultado.getInt(1);
+            }
+            
+            
+            if(var_auxiliar == 1){
+                SQLException ex = new SQLException("El vehiculo "+ placa + ", ya tiene documentos relacionados\nError 4.");
+                throw ex;
+            }
+
+            pstate = coneccion.prepareStatement(insertar);
+
+            pstate.setString(1, placa);
+            pstate.setString(2, fehca_soat);
+            pstate.setString(3, fecha_rtm);
+            
+
+            pstate.executeUpdate();
+
+        }catch(SQLException ex){
+            throw ex;
+        }finally{
+            resultado.close();
+            state.close();
+            pstate.close();
+        }
+    }
+
     public void eliminar_documento(String placa)throws SQLException{
 
         borrar = "delete from documento where veh_placa = ?";
