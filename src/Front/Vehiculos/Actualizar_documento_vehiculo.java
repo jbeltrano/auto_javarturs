@@ -2,8 +2,6 @@ package Front.Vehiculos;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.awt.Rectangle;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -17,44 +15,37 @@ public class Actualizar_documento_vehiculo extends Insertar_documento_vehiculo{
     }
 
     private void actualizar_documentos(){
-        Rectangle posicion_boton = boton_guardar.getBounds();
         String []dato = null;
         base = new Base(url);
+        
         try{
             dato = base.consultar_uno_documentos(valor);
+            
+            
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             setVisible(false);
+        }finally{
             base.close();
         }
-        base.close();
 
-        
-        //Cargando los valores de los diferentes campos
+        is_particular(valor);
+        // Carga los documentos que siempre estaran para cualquier vehiculo
         text_placa.setText(valor);
-        text_numero_interno.setText(dato[1]);
         fecha_soat.setDate(java.sql.Date.valueOf(dato[2]));
         fecha_rtm.setDate(java.sql.Date.valueOf(dato[3]));
-        fecha_polizas.setDate(java.sql.Date.valueOf(dato[4]));
-        text_top.setText(dato[6]);
-        fecha_top.setDate(java.sql.Date.valueOf(dato[7]));
+
+        if(!flag_is_particular){ // Si el vehiculo es de servicio publico carga estos documentos
+            text_numero_interno.setText(dato[1]);
+            fecha_polizas.setDate(java.sql.Date.valueOf(dato[4]));
+            text_top.setText(dato[6]);
+            fecha_top.setDate(java.sql.Date.valueOf(dato[7]));
+        }
 
         // Estableciendo los valores que no se van a habilitar
         text_placa.setEnabled(false);
         tabla_vehiculo.setEnabled(false);
         tabla_vehiculo.setDragEnabled(false);
-
-        // Restablecciendo los addaciton listener del boton guardar para actualizar en vez de guardar o crear un nuevo registro
-        jPanel1.remove(boton_guardar);
-        boton_guardar = new JButton("Guardar");
-        jPanel1.add(boton_guardar);
-        boton_guardar.setBounds(posicion_boton);
-        jPanel1.revalidate();
-        jPanel1.repaint();
-        boton_guardar.addActionListener(accion ->{
-            guardar();
-
-        });
     }
 
     @Override
@@ -79,9 +70,11 @@ public class Actualizar_documento_vehiculo extends Insertar_documento_vehiculo{
         }
         try{
             
-            top = Integer.parseInt(text_top.getText());
-            interno = Integer.parseInt(text_numero_interno.getText());
-
+            if(!flag_is_particular){
+                top = Integer.parseInt(text_top.getText());
+                interno = Integer.parseInt(text_numero_interno.getText());    
+            }
+            
             if(text_placa.getText().equals("")){
                 
                 JOptionPane.showMessageDialog(this, "El campo: Placa es obligatorio", "Error", JOptionPane.ERROR_MESSAGE);
@@ -92,14 +85,12 @@ public class Actualizar_documento_vehiculo extends Insertar_documento_vehiculo{
 
                     if(flag_is_particular){     // En caso de ser un vehiculo de servicio particular
                         
-                        base.actualizar_documento(  text_placa.getText(),   // Identificador o placa del vehiculo
-                                                    ffecha_soat,            // Fecha de vencimiento del soat
-                                                    ffecha_rtm);            // Fecha de vencimiento de la tecnomecanica
+                        base.actualizar_documento(text_placa.getText(),  // Vehiculo al cual se le hace la insercion
+                                                ffecha_soat,            // Fecha de vencimiento del soat
+                                                ffecha_rtm);            // Fecha de vencimiento de la tecnomecanica
                         
                     }else{                      // En caso de ser un vehiculo de servicio publico
-
-                        
-                        base.actualizar_documento(text_placa.getText(),  // Identificador o placa del vehiculo
+                        base.actualizar_documento(text_placa.getText(),  // Vehiculo al cual se le hace la insercion
                                                 ffecha_soat,            // Fecha de vencimiento del soat
                                                 ffecha_rtm,             // Fecha de vencimiento de la tecnomecanica
                                                 top,                    // Numero de tarjeta de operacion
@@ -129,5 +120,7 @@ public class Actualizar_documento_vehiculo extends Insertar_documento_vehiculo{
         }
         
     }
+
+    
 
 }

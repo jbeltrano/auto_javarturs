@@ -2788,16 +2788,21 @@ public class Base extends Base_datos{
 
             while(resultado.next()){
 
-                datos[i][0] = resultado.getString(1);
-                datos[i][1] = resultado.getString(2);
-                datos[i][2] = resultado.getString(3);
-                datos[i][3] = resultado.getString(4);
-                datos[i][4] = resultado.getString(5);
-                datos[i][5] = resultado.getString(6);
-                datos[i][6] = resultado.getString(7);
-                datos[i][7] = resultado.getString(8);
-                datos[i][8] = resultado.getString(9);
-                datos[i][9] = resultado.getString(10);
+                datos[i][0] = resultado.getString(1);               // Placa del vehiculo
+                datos[i][1] = ( resultado.getString(2) == null)?    // Numero interno del vehiculo
+                                "NULL":resultado.getString(2);
+                datos[i][2] = resultado.getString(3);               // Fecha final Soat del vehiculo
+                datos[i][3] = resultado.getString(4);               // Fecha final Rtm del vehiculo
+                datos[i][4] = ( resultado.getString(5) == null)?    // Fecha final Rcc del vehiculo
+                                "NULL":resultado.getString(5);
+                datos[i][5] = ( resultado.getString(6) == null)?    // Fecha final Rce del vehiculo
+                                "NULL":resultado.getString(6);
+                datos[i][6] = ( resultado.getString(7) == null)?    // Numero de top del vehiculo
+                                "NULL":resultado.getString(7);
+                datos[i][7] = ( resultado.getString(8) == null)?    // Fecha final top del vehiculo
+                                "NULL":resultado.getString(8);
+                datos[i][8] = resultado.getString(9);               // Tipo de id del propietario del vehiculo
+                datos[i][9] = resultado.getString(10);              // Id del propietario del vehiculo
                 
 
                 i++;
@@ -2828,14 +2833,20 @@ public class Base extends Base_datos{
 
             if (resultado.next()){
 
-                dato[0] = resultado.getString(1);
-                dato[1] = resultado.getString(2);
-                dato[2] = resultado.getString(3);
-                dato[3] = resultado.getString(4);
-                dato[4] = resultado.getString(5);
-                dato[5] = resultado.getString(6);
-                dato[6] = resultado.getString(7);
-                dato[7] = resultado.getString(8);
+                dato[0] = resultado.getString(1);               // Placa del vehiculo
+                dato[1] = ( resultado.getString(2) == null)?    // Numero interno del vehiculo
+                                "NULL":resultado.getString(2);
+                dato[2] = resultado.getString(3);               // Fecha final Soat del vehiculo
+                dato[3] = resultado.getString(4);               // Fecha final Rtm del vehiculo
+                dato[4] = ( resultado.getString(5) == null)?    // Fecha final Rcc del vehiculo
+                                "NULL":resultado.getString(5);
+                dato[5] = ( resultado.getString(6) == null)?    // Fecha final Rce del vehiculo
+                                "NULL":resultado.getString(6);
+                dato[6] = ( resultado.getString(7) == null)?    // Numero de top del vehiculo
+                                "NULL":resultado.getString(7);
+                dato[7] = ( resultado.getString(8) == null)?    // Fecha final top del vehiculo
+                                "NULL":resultado.getString(8);
+                                
                 
             }
             

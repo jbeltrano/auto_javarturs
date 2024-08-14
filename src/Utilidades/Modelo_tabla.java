@@ -695,13 +695,15 @@ public class Modelo_tabla {
                 // Virifica las columnas donde se encuentran las fechas                
                 if (column == 2 || column == 3 || column == 4 || column == 5 || column == 7) {
                     //Incializa las variables necesarias para el calculo
-                    long cantidad_dias = 0;
-                    String valor = table.getValueAt(row, column).toString();
-                    LocalDate fecha_sistema = LocalDate.now();      // Obtiene la fecha actual del sistema para hacer la comparacion
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
-                    LocalDate fecha_tabla = LocalDate.parse(valor,formatter);       // Aplica el formato que se declaro anteriormente
-                    cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);        // Compara las dos fechas para obtener la cantidad de dias entre estas dos
-
+                    long cantidad_dias = 100;
+                    String valor;
+                    if(table.getValueAt(row, column).toString() != "NULL"){
+                        valor = table.getValueAt(row, column).toString();
+                        LocalDate fecha_sistema = LocalDate.now();      // Obtiene la fecha actual del sistema para hacer la comparacion
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
+                        LocalDate fecha_tabla = LocalDate.parse(valor,formatter);       // Aplica el formato que se declaro anteriormente
+                        cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);        // Compara las dos fechas para obtener la cantidad de dias entre estas dos
+                    }
                     // Esto es para que los ToolTip funcionen correctamente
                     ToolTipManager.sharedInstance().setInitialDelay(0);
                     ToolTipManager.sharedInstance().setDismissDelay(60000);

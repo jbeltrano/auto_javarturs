@@ -223,8 +223,10 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
         }
         try{
             
-            top = Integer.parseInt(text_top.getText());
-            interno = Integer.parseInt(text_numero_interno.getText());
+            if(!flag_is_particular){
+                top = Integer.parseInt(text_top.getText());
+                interno = Integer.parseInt(text_numero_interno.getText());
+            }
 
             if(text_placa.getText().equals("")){
                 
