@@ -11,6 +11,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JOptionPane;
 import java.sql.SQLException;
+
 import Base.Base;
 import java.awt.Dimension;
 
@@ -180,60 +181,7 @@ public class Insertar_persona extends Modales_personas{
         jPanel1.add(boton_guardar);
         boton_guardar.setBounds(17, 250, 100, 23);
         boton_guardar.addActionListener(accion ->{
-            boolean band = true;
-            String mostrar = "Los campos:\n";
-            int tipo_documento,ciudad;
-            long celular = 0, documento = 0;
-
-            if(text_documento.getText().equals("")){
-                band = false;
-                mostrar = mostrar.concat("Documento\n");
-            }
-            if(text_nombre.getText().equals("")){
-                band = false;
-                mostrar = mostrar.concat("Nombre o Razon Social\n");
-            }
-            if(text_celular.getText().equals("")){
-                band = false;
-                mostrar = mostrar.concat("Celular\n");
-            }
-            if(text_direccion.getText().equals("")){
-                band = false;
-                mostrar = mostrar.concat("Direccion\n");
-            }
-            if(text_correo.getText().equals("")){
-                text_correo.setText("Indefinido");
-            }
-            mostrar = mostrar.concat("Son Obligatorios.");
-
-            if(!band){
-                JOptionPane.showMessageDialog(this, mostrar, "Error",JOptionPane.ERROR_MESSAGE);
-                
-            }else{
-                try{
-                    celular = Long.parseLong(text_celular.getText());
-                    documento = Long.parseLong(text_documento.getText());
-                    tipo_documento = combo_tipo_documento.getSelectedIndex() + 1;
-                    base = new Base(url);
-                    try {
-                        ciudad = Integer.parseInt(base.consultar_uno_ciudad((String)combo_municipio.getSelectedItem())[0]);
-                        base.insertar_persona(text_documento.getText(),tipo_documento,text_nombre.getText(),text_celular.getText(),ciudad,text_direccion.getText(), text_correo.getText());
-                        if(radio_contratante.isSelected()){
-                            base.insertar_contratante(text_documento.getText(), text_documento.getText());
-                        }
-                        base.close();
-                        JOptionPane.showMessageDialog(this, "Persona Insertada correctamente");
-                        this.setVisible(false);
-                    } catch (SQLException e) {
-                        JOptionPane.showMessageDialog(this, e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-                        base.close();
-                        this.setVisible(false);
-                    }
-                    
-                }catch(NumberFormatException e){
-                    JOptionPane.showMessageDialog(this, "Los campos:\nDocumento y Celular\nDeben ser datos de tipo Entero","Error",JOptionPane.ERROR_MESSAGE);
-                }
-            }
+            guardar();
         });
 
         GroupLayout layout = new GroupLayout(getContentPane());
@@ -250,4 +198,104 @@ public class Insertar_persona extends Modales_personas{
         pack();
     }
 
+    /**
+     * Se encarga de guarar la informacion
+     * del formulario una vez ingresada en su
+     * totalidad
+     */
+    protected void guardar(){
+        
+        boolean band = true;    // Se marca falsa si hay algun error
+        String mostrar = "Los campos:\n";   // Guarda todos los errores
+        int tipo_documento,ciudad;          // Guarda el id del tipo de documento y ciudad
+
+        /*
+         * Esta estructura se encarga de verificar si
+         * hay errores o no se han completado todos los
+         * campos del formulario utilizando la bandera band
+         */
+        if(text_documento.getText().equals("")){
+            band = false;
+            mostrar = mostrar.concat("Documento\n");
+        }
+        if(text_nombre.getText().equals("")){
+            band = false;
+            mostrar = mostrar.concat("Nombre o Razon Social\n");
+        }
+        if(text_celular.getText().equals("")){
+            band = false;
+            mostrar = mostrar.concat("Celular\n");
+        }
+        if(text_direccion.getText().equals("")){
+            band = false;
+            mostrar = mostrar.concat("Direccion\n");
+        }
+        if(text_correo.getText().equals("")){
+            text_correo.setText("Indefinido");
+        }
+        mostrar = mostrar.concat("Son Obligatorios.");
+
+        if(!band){  // En caso de haber errores lo muestra en una ventana
+            JOptionPane.showMessageDialog(  this,       // Padre al que pertenece la ventana
+                                            mostrar,    // Mensaje que muestra la ventana
+                                            "Error",    // Titulo de la ventana
+                                            JOptionPane.ERROR_MESSAGE); // Icono de la ventana
+            
+        }else{  // En caso que no haya errores procede a guardar en la base de datos
+            
+            try{
+
+                Long.parseLong(text_celular.getText());       // Obtiene el dato numerico para celular
+                Long.parseLong(text_documento.getText());   // Obtiene el dato numerico para el tipo de documento
+                tipo_documento = combo_tipo_documento.getSelectedIndex() + 1;   // Determina el id del tipo de documento
+
+                base = new Base(url);   // Establece coneccion para la base de datos
+
+                try {
+                    
+                    ciudad = Integer.parseInt(          // Convierte el dato a entero
+                            base.consultar_uno_ciudad(  // Consulta en la base de datos la ciudad
+                            (String)combo_municipio.getSelectedItem())[0]); // Pasa como parametro el nombre del municipio
+                    
+                    // Inserta a la persona con los datos que hay en el formulario
+                    base.insertar_persona(  text_documento.getText(),   // Es el numero de documento de la persona
+                                            tipo_documento,             // Es el tipo de documento de la persona
+                                            text_nombre.getText(),      // Es el nombre de la persona
+                                            text_celular.getText(),     // Es el numero de celular de la persona
+                                            ciudad,                     // Es el id de la ciudad de la persona
+                                            text_direccion.getText(),   // Es la direccion de residencia de la persona
+                                            text_correo.getText());     // Es el correo electronico de la persona
+
+                    
+                    if(radio_contratante.isSelected()){ // Verifica si el radiobutton esta seleccionado
+                        // En caso de estar seleccionado lo registra como un contratante
+                        base.insertar_contratante(  text_documento.getText(),   // Es el numero de documento para el contratante
+                                                    text_documento.getText());  // ES el numero de documento para el responsable
+
+                    }
+                    
+                    // Imprime un mensaje que todo salio correcto
+                    JOptionPane.showMessageDialog(this, "Persona Insertada correctamente");
+                    
+                } catch (SQLException e) {
+                    // Imprime un mnesaje si hay errores
+                    JOptionPane.showMessageDialog(  this,   // Es el padre al que pertenece la ventana
+                                                    e.getMessage(), // Es el mensaje que apare en la ventana
+                                                    "Error",    // Es el titulo de la ventana
+                                                    JOptionPane.ERROR_MESSAGE); // Es el icono que aparece en la ventana
+
+                }finally{
+                    base.close();   // Cierra la coneccion con la base de datos
+                    this.setVisible(false); // Hace invisible la ventana para despues cerrarla
+                }
+                
+            }catch(NumberFormatException e){    // Si no hay datos de tipo numerico en los campos muestra los errores
+
+                JOptionPane.showMessageDialog(  this,   // Padre de la ventana
+                                                "Los campos:\nDocumento y Celular\nDeben ser datos de tipo Entero", // Mensaje en la ventana
+                                                "Error",                // Titulo de la ventana
+                                                JOptionPane.ERROR_MESSAGE); // Icono de la ventana
+            }
+        }
+    }
 }

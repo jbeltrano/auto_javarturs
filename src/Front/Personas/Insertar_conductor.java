@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -180,28 +182,7 @@ public class Insertar_conductor extends Modales_personas{
         boton_guardar.setBounds(10, 230, 90, 23);
         boton_guardar.addActionListener(accion ->{
             
-            if(text_documento.getText().compareTo("") == 0){
-                JOptionPane.showMessageDialog(padre, "Todos los campos son obligatorios", "Error", JOptionPane.ERROR_MESSAGE);
-            }else{
-
-                try{
-                    Double.parseDouble(text_documento.getText());
-                    Date data = buscar_fecha.getDate();
-                    base = new Base(url);
-                    try{
-                        base.insertar_licencia(""+ text_documento.getText(), combo_conductor.getSelectedIndex()+1, (data.getYear()+1900) + "-" + (data.getMonth()+1) + "-" + data.getDate());
-                        JOptionPane.showMessageDialog(padre, "Licencia incertada con Exito", "IE", JOptionPane.INFORMATION_MESSAGE);
-                        padre.setVisible(false);
-                        base.close();
-                    }catch(SQLException ex){
-                        JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                        base.close();
-                    }
-
-                }catch(NumberFormatException e){
-                    JOptionPane.showMessageDialog(padre, "No ingresaste un dato numerico. \nPor favor selecciona un elemento de la tabla", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
+            guardar();
             
         });
 
@@ -220,6 +201,54 @@ public class Insertar_conductor extends Modales_personas{
 
     }
 
+    protected void guardar(){
+        
+        // En caso de haber campos vacios genera un error y no ejecuta el guardado
+        if(text_documento.getText().compareTo("") == 0){
+            JOptionPane.showMessageDialog(padre, "Todos los campos son obligatorios", "Error", JOptionPane.ERROR_MESSAGE);
+        }else{  // Si todos los campos estan llenos entonces procede a guardar
+            
+            try{
+                SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");    // Formato para la fecha
+                String fecha = formato.format(buscar_fecha.getDate());      // Establece el Date en un String con el formato
+                Double.parseDouble(text_documento.getText());       // Verifica si el numero de documento es un numero                     
+
+                base = new Base(url);   // Abre un objeto de tipo base para hacer consultas u otro tipo de acciones a la base de datos
+                
+                try{
+                    // Inserta los datos en la base de datos
+                    base.insertar_licencia( text_documento.getText(),               // Numero de documento del conductor
+                                            combo_conductor.getSelectedIndex()+1,   // Tipo de licencia de conduccion
+                                            fecha);                                 // Fecha de vencimiento de la licencia
+
+                    // El mensaje saldra si todo salio con exito
+                    JOptionPane.showMessageDialog(padre,    // Padre al que pertenece la ventana emergente
+                                            "Licencia incertada con Exito", // Mensage que muestra la ventana
+                                            "IE",                             // Titulo de la ventana  
+                                            JOptionPane.INFORMATION_MESSAGE);       // Tipo de icono que aparece en la ventana
+                
+                    // Hace invicible la ventana antes de cerrarla
+                    padre.setVisible(false);
+                }catch(SQLException ex){
+                    // Si hay un error lo muestra en una ventana modal
+                    JOptionPane.showMessageDialog(  padre,  // Padre al que pertenece la ventana
+                                                    ex.getMessage(),    // Mensaje de error que se muestra en la ventana
+                                                    "Error",      // Titulo de la ventana
+                                                    JOptionPane.ERROR_MESSAGE); // Tipo de icono en la ventana
+
+                }finally{
+                    base.close();   // Finaliza la coneccion con la base de datos
+                }
+
+            }catch(NumberFormatException e){
+                // Muestra un mensaje si el tipo de dato no es numerico
+                JOptionPane.showMessageDialog(  padre,  // Padre al que pertenece la ventana
+                                                "No ingresaste un dato numerico. \nPor favor selecciona un elemento de la tabla",   // Mensaje que muestra la ventana
+                                                "Error",              // Titulo de la ventana
+                                                JOptionPane.ERROR_MESSAGE); // Tipo de icono que aparece en la ventana
+            }
+        }
+    }
 
 }
 

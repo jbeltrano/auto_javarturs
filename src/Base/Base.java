@@ -1089,13 +1089,15 @@ public class Base extends Base_datos{
      * Realiza la insercion de una persona en la base de datos
      * utilizando los diversos parametros dependiendo del tipo de
      * dato a insertar en la base de datos
-     * @param per_id
-     * @param tip_id
-     * @param per_nombre
-     * @param per_celular
-     * @param ciu_id
-     * @param per_direccion
-     * @param per_correo
+     * 
+     * @param per_id Es el id o numero de documento de la persona
+     * @param tip_id Es el tipo de documento de la persona
+     * @param per_nombre Es el nombre de la persona
+     * @param per_celular Es el numero de celular de la persona
+     * @param ciu_id Es el id de la ciudad de la persona
+     * @param per_direccion Es la direccion de la persona
+     * @param per_correo Es el correo de la persona
+     * 
      * @throws SQLException
      */
     public void insertar_persona(String per_id, int tip_id, String per_nombre, String per_celular, int ciu_id, String per_direccion, String per_correo)throws SQLException{
