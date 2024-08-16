@@ -3,7 +3,7 @@ package Front.Vehiculos;
 import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
+import Base.Clase_vehiculo;
 import Base.Base;
 
 public class Actualizar_vehiculos extends Insertar_vehiculos{
@@ -110,7 +110,7 @@ public class Actualizar_vehiculos extends Insertar_vehiculos{
             if(confirmacion){
                 base = new Base(url);
                 try{
-                    dato = base.consultar_uno_clase_vehiculo(combo_tipo_vehiculo.getSelectedItem()+"");
+                    dato = ((Clase_vehiculo)base).consultar_uno_clase_vehiculo(combo_tipo_vehiculo.getSelectedItem()+"");
                     base.actualizar_vehiculo(text_placa.getText(),cilindrada, text_color.getText(), text_motor.getText(), text_chasis.getText(), pasajeros, propietario, boton_parque.isSelected());
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);

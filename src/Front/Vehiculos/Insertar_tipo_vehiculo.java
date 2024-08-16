@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JFrame;
-import Base.Base;
+import Base.Clase_vehiculo;
 
 
 public class Insertar_tipo_vehiculo extends Modales_vehiculos{
@@ -46,7 +46,7 @@ public class Insertar_tipo_vehiculo extends Modales_vehiculos{
             }catch(SQLException ex){
                 System.out.println(ex);
             }
-            base = new Base(url);
+            base = new Clase_vehiculo(url);
             if(valor  == null){
                 JOptionPane.showMessageDialog(this, "Este elemento no es valido o ya existe.","Error", JOptionPane.ERROR_MESSAGE);
             }

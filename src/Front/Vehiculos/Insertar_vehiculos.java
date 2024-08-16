@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.GroupLayout;
 import Base.Base;
+import Base.Clase_vehiculo;
 import Front.Personas.Insertar_persona;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
@@ -138,16 +139,16 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         jPanel1.add(text_modelo);
 
 
-        base = new Base(url);
+        base = new Clase_vehiculo(url);
         try{
-            vector = base.consultar_clase_vehiculo(2);
+            vector = ((Clase_vehiculo)base).consultar_clase_vehiculo(2);
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR);
-            base.close();
             this.setVisible(false);
+        }finally{
+            base.close();
         }
         
-        base.close();
         combo_tipo_vehiculo = new JComboBox<>(vector);
         jPanel1.add(combo_tipo_vehiculo);
         combo_tipo_vehiculo.setBounds(110, 40, 72, 22);
@@ -235,7 +236,7 @@ public class Insertar_vehiculos extends Modales_vehiculos{
                 String datos[][] = null;
                 
                 
-                base = new Base(url);
+                base = new Clase_vehiculo(url);
                 try{
                     datos = base.consultar_persona(text_propietario.getText());
                     JTable tabla_aux = Modelo_tabla.set_tabla_personas(datos);
@@ -385,7 +386,7 @@ public class Insertar_vehiculos extends Modales_vehiculos{
             if(confirmacion){
                 base = new Base(url);
                 try{
-                    dato = base.consultar_uno_clase_vehiculo(combo_tipo_vehiculo.getSelectedItem()+"");
+                    dato = ((Clase_vehiculo)base).consultar_uno_clase_vehiculo(combo_tipo_vehiculo.getSelectedItem()+"");
                     base.insertar_vehiculo(text_placa.getText().toUpperCase(), Integer.parseInt(dato[0]),modelo,text_marca.getText().toUpperCase(), text_linea.getText().toUpperCase(), cilindrada, text_color.getText().toUpperCase(),combo_servicio.getSelectedIndex()+1, text_combustible.getText().toUpperCase(), text_carroceria.getText().toUpperCase(), text_motor.getText().toUpperCase(), text_chasis.getText().toUpperCase(), pasajeros, propietario, boton_parque.isSelected());
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);

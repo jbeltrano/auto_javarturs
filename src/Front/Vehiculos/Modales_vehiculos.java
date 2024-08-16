@@ -3,6 +3,7 @@ package Front.Vehiculos;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import Base.Base;
+
 import java.awt.Dimension;
 
 public abstract class Modales_vehiculos extends JDialog{

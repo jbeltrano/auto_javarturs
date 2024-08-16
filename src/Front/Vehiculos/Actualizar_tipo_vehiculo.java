@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import Base.Base;
+import Base.Clase_vehiculo;
 
 public class Actualizar_tipo_vehiculo extends Modales_vehiculos{
     
@@ -30,9 +31,9 @@ public class Actualizar_tipo_vehiculo extends Modales_vehiculos{
         // incializacion de valores
         valores = new String[2];
 
-        base = new Base(url);
+        base = new Clase_vehiculo(url);
         try{
-            valores = base.consultar_uno_clase_vehiculo(valor);
+            valores = ((Clase_vehiculo)base).consultar_uno_clase_vehiculo(valor);
         }catch(SQLException ex){
             System.out.println(ex);
         }
@@ -55,7 +56,7 @@ public class Actualizar_tipo_vehiculo extends Modales_vehiculos{
 
             try{
 
-                base.actualizar_clase_vehiculo(id, tipo_vehiculo.getText());
+                ((Clase_vehiculo)base).actualizar_clase_vehiculo(id, tipo_vehiculo.getText());
                 System.out.println("hola");
                 JOptionPane.showMessageDialog(this, "Tipo de id: " + id + "\nActualizado con Exito.","Actualizacion", JOptionPane.INFORMATION_MESSAGE);
             

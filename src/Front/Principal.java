@@ -1,6 +1,7 @@
 package Front;
 
 import Base.Base;
+import Base.Clase_vehiculo;
 import Front.Ciudades_departamentos.Actualizar_ciudad;
 import Front.Ciudades_departamentos.Insertar_ciudad;
 import Front.Extractos.Actualizar_contratante;
@@ -1095,9 +1096,9 @@ public class Principal extends JFrame{
         
         config_pop_menu();
 
-        base = new Base(url);
+        base = new Clase_vehiculo(url);
         try{
-            datos = base.consultar_clase_vehiculo();
+            datos = ((Clase_vehiculo)base).consultar_clase_vehiculo();
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
         }
@@ -1143,7 +1144,7 @@ public class Principal extends JFrame{
             if(number == 0){
                 base = new Base(url);
                 try{
-                    base.eliminar_clase_vehiculo(Integer.parseInt(valor));
+                    ((Clase_vehiculo)base).eliminar_clase_vehiculo(Integer.parseInt(valor));
                     JOptionPane.showMessageDialog(this, "Item eliminado correctamente");
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
@@ -2393,8 +2394,4 @@ public class Principal extends JFrame{
         pop_menu.add(item_exportar_todos);
         pop_menu.add(item_actualizar_todos);
     }
-
-    
-    
-    
 }
