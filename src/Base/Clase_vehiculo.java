@@ -5,6 +5,9 @@ import java.util.Vector;
 
 public class Clase_vehiculo extends Base{
 
+    private static final int NUMERO_ATRIBUTOS_TABLA = 2;
+    private static final String[] NOMBRES_CABEZA_TABLA = {"ID", "TIPO VEHICULO"};
+
     /**
      * Metodo constructor
      * @param url Es la ruta del archivo
@@ -178,7 +181,7 @@ public class Clase_vehiculo extends Base{
      * @throws SQLException
     */
     public String[][] consultar_clase_vehiculo()throws SQLException{
-        String datos[][] = new String[1][20];
+        datos = new String[1][20];
         int cantidad = 0;
         int i = 1;
         
@@ -203,8 +206,7 @@ public class Clase_vehiculo extends Base{
 
             resultado = state.executeQuery(consultar);
             
-            datos[0][0] = "ID";
-            datos[0][1] = "TIPO VEHICULO";
+            set_nombres_cabecera();
 
             while(resultado.next()){
 
@@ -232,7 +234,7 @@ public class Clase_vehiculo extends Base{
      * @throws SQLException
      */
     public String[] consultar_uno_clase_vehiculo(String id)throws SQLException{
-        String dato[] = new String[2];
+        dato = new String[NUMERO_ATRIBUTOS_TABLA];
         dato[0] = null;
         dato[1] = null;
 
@@ -264,4 +266,10 @@ public class Clase_vehiculo extends Base{
         }
         return dato;
     }
+
+    @Override
+    protected void set_nombres_cabecera(){
+        datos[0] = NOMBRES_CABEZA_TABLA;
+    }
+
 }

@@ -1,6 +1,5 @@
 package Base;
 
-import java.util.Vector;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
@@ -11,16 +10,18 @@ import Utilidades.Capitalizar_Strings;
 public class Base extends Base_datos{
 
     
-    private String[] dato;
-    private String[][] datos;
+    protected String[] dato;
+    protected String[][] datos;
 
 
     /* Construtor basico ingresando url base de datos con la plantilla estandar */
     public Base(String url){
         super(url);
     }
-    
 
+    protected void set_nombres_cabecera(){
+        
+    }
     /**
      * Se encarga de consultar el
      * tipo de servicio vehicular

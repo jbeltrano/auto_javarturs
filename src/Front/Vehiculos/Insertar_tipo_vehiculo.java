@@ -41,7 +41,7 @@ public class Insertar_tipo_vehiculo extends Modales_vehiculos{
             
             try{
 
-                valor = base.consultar_uno_clase_vehiculo(tipo_vehiculo.getText())[0];
+                valor = ((Clase_vehiculo)base).consultar_uno_clase_vehiculo(tipo_vehiculo.getText())[0];
 
             }catch(SQLException ex){
                 System.out.println(ex);
@@ -53,8 +53,8 @@ public class Insertar_tipo_vehiculo extends Modales_vehiculos{
             else if(tipo_vehiculo.getText().length() >0){
 
                 try{
-                    base.insertar_clase_vehiculo(tipo_vehiculo.getText());
-                    base.actualizar_clase_vehiculo(id, tipo_vehiculo.getText());
+                    ((Clase_vehiculo)base).insertar_clase_vehiculo(tipo_vehiculo.getText());
+                    ((Clase_vehiculo)base).actualizar_clase_vehiculo(id, tipo_vehiculo.getText());
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
                 }
