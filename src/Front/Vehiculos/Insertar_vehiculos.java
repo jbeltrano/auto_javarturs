@@ -334,68 +334,71 @@ public class Insertar_vehiculos extends Modales_vehiculos{
     protected boolean dialog_vh_externo(){
         return true;
     };
+
     protected void guardar(){
         boolean[] campos = new boolean[12];
-            boolean confirmacion = false;
-            String propietario = "";
-            int cilindrada = 0;
-            int pasajeros = 0;
-            int modelo = 0;
+        boolean confirmacion = false;
+        String propietario = "";
+        int cilindrada = 0;
+        int pasajeros = 0;
+        int modelo = 0;
 
-            // guardamos si los diferentes campos estan llenos o no en el arreglo
-            campos[0] = (text_placa.getText().compareTo("") == 0)? true:false;
-            campos[1] = (text_marca.getText().compareTo("") == 0)? true:false;
-            campos[2] = (text_linea.getText().compareTo("") == 0)? true:false;
-            campos[3] = (text_cilindrada.getText().compareTo("") == 0)? true:false;
-            campos[4] = (text_color.getText().compareTo("") == 0)? true:false;
-            campos[5] = (text_combustible.getText().compareTo("") == 0)? true:false;
-            campos[6] = (text_carroceria.getText().compareTo("") == 0)? true:false;
-            campos[7] = (text_motor.getText().compareTo("") == 0)? true:false;
-            campos[8] = (text_chasis.getText().compareTo("") == 0)? true:false;
-            campos[9] = (text_pasajeros.getText().compareTo("") == 0)? true:false;
-            campos[10] = (text_propietario.getText().compareTo("") == 0)? true:false;
-            campos[11] = (text_propietario.getText().compareTo("") == 0)? true:false;
+        // guardamos si los diferentes campos estan llenos o no en el arreglo
+        campos[0] = (text_placa.getText().compareTo("") == 0)? true:false;
+        campos[1] = (text_marca.getText().compareTo("") == 0)? true:false;
+        campos[2] = (text_linea.getText().compareTo("") == 0)? true:false;
+        campos[3] = (text_cilindrada.getText().compareTo("") == 0)? true:false;
+        campos[4] = (text_color.getText().compareTo("") == 0)? true:false;
+        campos[5] = (text_combustible.getText().compareTo("") == 0)? true:false;
+        campos[6] = (text_carroceria.getText().compareTo("") == 0)? true:false;
+        campos[7] = (text_motor.getText().compareTo("") == 0)? true:false;
+        campos[8] = (text_chasis.getText().compareTo("") == 0)? true:false;
+        campos[9] = (text_pasajeros.getText().compareTo("") == 0)? true:false;
+        campos[10] = (text_propietario.getText().compareTo("") == 0)? true:false;
+        campos[11] = (text_propietario.getText().compareTo("") == 0)? true:false;
+        
+        // verificamos que campos tiene true y cuales false, para botar el respectivo error
+        for(int i = 0; i< campos.length; i++){
+            if(campos[i]){
+                JOptionPane.showMessageDialog(this, "Faltan campos por llenar","",JOptionPane.INFORMATION_MESSAGE);
+                confirmacion = false;
+                break;
+            }else{
+                confirmacion = true;
+            }
+        }
+
+        // verificamos que los campos que deben ser numeros si sean numeros y no otro tipo de datos
+        if(confirmacion){
+            try{
+
+                cilindrada = Integer.parseInt(text_cilindrada.getText());
+                pasajeros = Integer.parseUnsignedInt(text_pasajeros.getText());
+                propietario = "" + Integer.parseInt(text_propietario.getText());
+                modelo = Integer.parseInt(text_modelo.getText());
+
+
+            }catch(NumberFormatException ex){
+                JOptionPane.showMessageDialog(this, "Los campos:\nCilindrada\nPasajeros\nPropietario\nModelo\nDeben ser valores enteros","Error", JOptionPane.ERROR_MESSAGE);
+                confirmacion = false;
+            }
             
-            // verificamos que campos tiene true y cuales false, para botar el respectivo error
-            for(int i = 0; i< campos.length; i++){
-                if(campos[i]){
-                    JOptionPane.showMessageDialog(this, "Faltan campos por llenar","",JOptionPane.INFORMATION_MESSAGE);
-                    confirmacion = false;
-                    break;
-                }else{
-                    confirmacion = true;
-                }
-            }
-
-            // verificamos que los campos que deben ser numeros si sean numeros y no otro tipo de datos
-            if(confirmacion){
-                try{
-
-                    cilindrada = Integer.parseInt(text_cilindrada.getText());
-                    pasajeros = Integer.parseUnsignedInt(text_pasajeros.getText());
-                    propietario = "" + Integer.parseInt(text_propietario.getText());
-                    modelo = Integer.parseInt(text_modelo.getText());
-
-
-                }catch(NumberFormatException ex){
-                    JOptionPane.showMessageDialog(this, "Los campos:\nCilindrada\nPasajeros\nPropietario\nModelo\nDeben ser valores enteros","Error", JOptionPane.ERROR_MESSAGE);
-                    confirmacion = false;
-                }
-                
-            }
-            if(confirmacion){
-                base = new Base(url);
-                try{
-                    dato = ((Clase_vehiculo)base).consultar_uno_clase_vehiculo(combo_tipo_vehiculo.getSelectedItem()+"");
-                    base.insertar_vehiculo(text_placa.getText().toUpperCase(), Integer.parseInt(dato[0]),modelo,text_marca.getText().toUpperCase(), text_linea.getText().toUpperCase(), cilindrada, text_color.getText().toUpperCase(),combo_servicio.getSelectedIndex()+1, text_combustible.getText().toUpperCase(), text_carroceria.getText().toUpperCase(), text_motor.getText().toUpperCase(), text_chasis.getText().toUpperCase(), pasajeros, propietario, boton_parque.isSelected());
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-                    base.close();
-                    this.setVisible(false);
-                }
+        }
+        if(confirmacion){
+            base = new Base(url);
+            Clase_vehiculo base2 = new Clase_vehiculo(url);
+            try{
+                dato = base2.consultar_uno_clase_vehiculo(combo_tipo_vehiculo.getSelectedItem()+"");
+                base.insertar_vehiculo(text_placa.getText().toUpperCase(), Integer.parseInt(dato[0]),modelo,text_marca.getText().toUpperCase(), text_linea.getText().toUpperCase(), cilindrada, text_color.getText().toUpperCase(),combo_servicio.getSelectedIndex()+1, text_combustible.getText().toUpperCase(), text_carroceria.getText().toUpperCase(), text_motor.getText().toUpperCase(), text_chasis.getText().toUpperCase(), pasajeros, propietario, boton_parque.isSelected());
+            }catch(SQLException ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                 base.close();
-                JOptionPane.showMessageDialog(this, "Vehiculo guardado correctamente","",JOptionPane.QUESTION_MESSAGE);
+                base2.close();
                 this.setVisible(false);
             }
+            base.close();
+            JOptionPane.showMessageDialog(this, "Vehiculo guardado correctamente","",JOptionPane.QUESTION_MESSAGE);
+            this.setVisible(false);
+        }
     }
 }

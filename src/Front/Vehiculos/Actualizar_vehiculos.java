@@ -109,8 +109,9 @@ public class Actualizar_vehiculos extends Insertar_vehiculos{
             }
             if(confirmacion){
                 base = new Base(url);
+                Clase_vehiculo base2 = new Clase_vehiculo(url);
                 try{
-                    dato = ((Clase_vehiculo)base).consultar_uno_clase_vehiculo(combo_tipo_vehiculo.getSelectedItem()+"");
+                    dato = base2.consultar_uno_clase_vehiculo(combo_tipo_vehiculo.getSelectedItem()+"");
                     base.actualizar_vehiculo(text_placa.getText(),cilindrada, text_color.getText(), text_motor.getText(), text_chasis.getText(), pasajeros, propietario, boton_parque.isSelected());
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
