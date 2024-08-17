@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import Base.Base;
+import Base.Ciudad;
 import Front.Ciudades_departamentos.Insertar_ciudad;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
@@ -92,12 +93,13 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
 
         // incializando las tablas
         base = new Base(url);
+        Ciudad base_ciudad = new Ciudad(url);
         try{
 
             text_numero_contrato.setText("" + (base.consultar_maximo_contrato_ocasional()+1));
             tabla_contratante = Modelo_tabla.set_tabla_contratante(base.consultar_contratante(""));
-            tabla_origen = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(""));
-            tabla_destino = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(""));
+            tabla_origen = Modelo_tabla.set_tabla_ciudad(base_ciudad.consultar_ciudades(""));
+            tabla_destino = Modelo_tabla.set_tabla_ciudad(base_ciudad.consultar_ciudades(""));
             combo_tipo_contrato = new JComboBox<>(base.consultar_tipo_contrato());
             
 
@@ -105,8 +107,10 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             base.close();
             setVisible(false);
+        }finally{
+            base.close();
+            base_ciudad.close();
         }
-        base.close();
         
         label_numero_contrato.setText("Numero de Contrato");
         jPanel1.add(label_numero_contrato);
@@ -204,9 +208,9 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
             @Override
             public void accion() {
 
-                base = new Base(url);
+                base = new Ciudad(url);
                 try{
-                    JTable auxiliar = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(text_origen.getText()));
+                    JTable auxiliar = Modelo_tabla.set_tabla_ciudad(((Ciudad)base).consultar_ciudades(text_origen.getText()));
                     tabla_origen.setModel(auxiliar.getModel());
                     tabla_origen.setColumnModel(auxiliar.getColumnModel());
         
@@ -256,9 +260,9 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
                 
                 String datos[][] = null;
                 
-                base = new Base(url);
+                base = new Ciudad(url);
                 try{
-                    datos = base.consultar_ciudades(text_destino.getText());
+                    datos = ((Ciudad)base).consultar_ciudades(text_destino.getText());
                     JTable tabla_aux = Modelo_tabla.set_tabla_ciudad(datos);
                     tabla_destino.setModel(tabla_aux.getModel());
                     tabla_destino.setColumnModel(tabla_aux.getColumnModel());
@@ -418,24 +422,25 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
     }
 
     private void set_tabla_origen(){
-        base = new Base(url);
+        base = new Ciudad(url);
         try{
-            JTable auxiliar = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(text_origen.getText()));
+            JTable auxiliar = Modelo_tabla.set_tabla_ciudad(((Ciudad)base).consultar_ciudades(text_origen.getText()));
             tabla_origen.setModel(auxiliar.getModel());
             tabla_origen.setColumnModel(auxiliar.getColumnModel());
 
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             ventana.setVisible(false);
+            
+        }finally{
             base.close();
         }
-        base.close();
     }
 
     private void set_tabla_destino(){
-        base = new Base(url);
+        base = new Ciudad(url);
         try{
-            JTable auxiliar = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(text_destino.getText()));
+            JTable auxiliar = Modelo_tabla.set_tabla_ciudad(((Ciudad)base).consultar_ciudades(text_destino.getText()));
             tabla_destino.setModel(auxiliar.getModel());
             tabla_destino.setColumnModel(auxiliar.getColumnModel());
 

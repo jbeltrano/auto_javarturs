@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import Base.Base;
+import Base.Ciudad;
 
 public class Actualizar_peronas extends Insertar_persona{
     
@@ -91,14 +92,17 @@ public class Actualizar_peronas extends Insertar_persona{
                     Long.parseLong(text_documento.getText());
                     tipo_documento = combo_tipo_documento.getSelectedIndex() + 1;
                     base = new Base(url);
+                    Ciudad base_Ciudad = new Ciudad(url);
                     try {
-                        ciudad = Integer.parseInt(base.consultar_uno_ciudad((String)combo_municipio.getSelectedItem())[0]);
+                        ciudad = Integer.parseInt(base_Ciudad.consultar_uno_ciudad((String)combo_municipio.getSelectedItem())[0]);
                         base.actualizar_persona(text_documento.getText(), tipo_documento, text_nombre.getText(), text_celular.getText(), ciudad, text_direccion.getText(), text_correo.getText());
-                        base.close();
+        
                         JOptionPane.showMessageDialog(this, "Persona actualizada correctamente");
-                        this.setVisible(false);
+                        
                     } catch (SQLException e) {
                         JOptionPane.showMessageDialog(this, e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                        
+                    }finally{
                         base.close();
                         this.setVisible(false);
                     }

@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import Base.Base;
+import Base.Ciudad;
 
 public class Generar_contratos_ocasionales {
 
@@ -26,12 +27,13 @@ public class Generar_contratos_ocasionales {
         int cantidad_pasajeros = 0;
 
         base = new Base(url);
+        Ciudad base_ciudad = new Ciudad(url);
         try{
             // Carga la infromarcion necesaria
             contrato_ocasional = base.consultar_uno_contrato_ocasional(Integer.parseInt(contrato));
             contratante = base.consultar_uno_contratante(contrato_ocasional[1]);
-            origen = base.consultar_uno_ciudades(contrato_ocasional[4]);
-            destino = base.consultar_uno_ciudades(contrato_ocasional[5]);
+            origen = base_ciudad.consultar_uno_ciudades(contrato_ocasional[4]);
+            destino = base_ciudad.consultar_uno_ciudades(contrato_ocasional[5]);
             fecha_inicial = LocalDate.parse(contrato_ocasional[2], formatter);
             fecha_final = LocalDate.parse(contrato_ocasional[3], formatter);
             doc_contrato = new Contrato_ocasional("src\\Formatos\\Documento.docx"); // Inicializa el documento

@@ -13,6 +13,9 @@ import javax.swing.JOptionPane;
 import java.sql.SQLException;
 
 import Base.Base;
+import Base.Ciudad;
+import Base.Tipo_id;
+
 import java.awt.Dimension;
 
 public class Insertar_persona extends Modales_personas{
@@ -80,17 +83,21 @@ public class Insertar_persona extends Modales_personas{
         jPanel1.add(jLabel1);
         jLabel1.setBounds(17, 6, 103, 16);
 
-        base = new Base(url);
+        base = new Tipo_id(url);
+        Ciudad base_ciudad = new Ciudad(url);
         try{
-            combo_tipo_documento = new JComboBox<>(base.consultar_tipo_id(1));
+            combo_tipo_documento = new JComboBox<>(((Tipo_id)base).consultar_tipo_id(1));
             combo_departamento = new JComboBox<>(base.consultar_departamento());
-            combo_municipio = new JComboBox<>(base.consultar_ciudad(""+combo_departamento.getSelectedItem(), 1));
+            combo_municipio = new JComboBox<>(base_ciudad.consultar_ciudad(""+combo_departamento.getSelectedItem(), 1));
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
-            base.close();
+            
             this.setVisible(false);
+        }finally{
+            base.close();
+            base_ciudad.close();
         }
-        base.close();
+        
         jPanel1.add(combo_tipo_documento);
         combo_tipo_documento.setBounds(17, 28, 103, 22);
 
@@ -123,18 +130,19 @@ public class Insertar_persona extends Modales_personas{
         jLabel5.setBounds(292, 68, 90, 16);
 
         combo_departamento.addActionListener(accion ->{
-            base = new Base(url);
+            base = new Ciudad(url);
             try{
-                String dato[] = base.consultar_ciudad((String)combo_departamento.getSelectedItem(), 1);
+                String dato[] = ((Ciudad)base).consultar_ciudad((String)combo_departamento.getSelectedItem(), 1);
                 combo_municipio.removeAllItems();
                 for(String valor : dato){
                     combo_municipio.addItem(valor);
                 }
             }catch(SQLException ex){
                 JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                
+            }finally{
                 base.close();
             }
-            base.close();
         });
         combo_departamento.setSelectedItem("Meta");
         jPanel1.add(combo_departamento);
@@ -250,11 +258,11 @@ public class Insertar_persona extends Modales_personas{
                 tipo_documento = combo_tipo_documento.getSelectedIndex() + 1;   // Determina el id del tipo de documento
 
                 base = new Base(url);   // Establece coneccion para la base de datos
-
+                Ciudad base_ciudad = new Ciudad(url);   // Establece la coneccion para la bese de datos con las tablas ciudad
                 try {
                     
                     ciudad = Integer.parseInt(          // Convierte el dato a entero
-                            base.consultar_uno_ciudad(  // Consulta en la base de datos la ciudad
+                            base_ciudad.consultar_uno_ciudad(  // Consulta en la base de datos la ciudad
                             (String)combo_municipio.getSelectedItem())[0]); // Pasa como parametro el nombre del municipio
                     
                     // Inserta a la persona con los datos que hay en el formulario

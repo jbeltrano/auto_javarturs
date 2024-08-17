@@ -11,6 +11,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import Base.Base;
+import Base.Ciudad;
 
 public class Insertar_ciudad extends Modal_ciudades_departamentos{
 
@@ -102,10 +103,10 @@ public class Insertar_ciudad extends Modal_ciudades_departamentos{
                 JOptionPane.showMessageDialog(this, "Por favor diligenciar el campo Ciudad");
             }else{
                 
-                base = new Base(url);
+                base = new Ciudad(url);
                 try{
 
-                    base.insertar_ciudad(text_ciudad.getText(), (String) combo_departamento.getSelectedItem());
+                    ((Ciudad)base).insertar_ciudad(text_ciudad.getText(), (String) combo_departamento.getSelectedItem());
                     base.close();
                     JOptionPane.showMessageDialog(this, "Ciudad insertada con exito");
                     setVisible(false);

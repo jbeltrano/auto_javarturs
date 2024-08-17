@@ -1,6 +1,7 @@
 package Front;
 
 import Base.Base;
+import Base.Ciudad;
 import Base.Clase_vehiculo;
 import Front.Ciudades_departamentos.Actualizar_ciudad;
 import Front.Ciudades_departamentos.Insertar_ciudad;
@@ -1277,14 +1278,14 @@ public class Principal extends JFrame{
         pop_menu.remove(2); // La idea es que el usuario no pueda remover la ciudad
 
         // Obteniendo datos de la base de datos
-        base = new Base(url);
+        base = new Ciudad(url);
         try{
-            datos = base.consultar_ciudad();
+            datos = ((Ciudad)base).consultar_ciudad();
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
-        
-        base.close();
 
         // Configuracion de la visualizacion y opciones de la tabla
 
@@ -1299,17 +1300,17 @@ public class Principal extends JFrame{
 
             
             new Actualizar_ciudad(this, url, (String) tabla.getValueAt(select_row, 1), (String) tabla.getValueAt(select_row, 2), Integer.parseInt((String) tabla.getValueAt(select_row, 0))).setVisible(true);
-            base = new Base(url);
+            base = new Ciudad(url);
             try{
                 
-                tabla = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(text_busqueda.getText()));
+                tabla = Modelo_tabla.set_tabla_ciudad(((Ciudad)base).consultar_ciudades(text_busqueda.getText()));
                 tabla.setComponentPopupMenu(pop_menu);
                 scroll.setViewportView(tabla);
         
-                base.close();
 
             }catch(SQLException ex){
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }finally{
                 base.close();
             }
             
@@ -1319,17 +1320,18 @@ public class Principal extends JFrame{
 
             new Insertar_ciudad(this, url).setVisible(true);
             
-            base = new Base(url);
+            base = new Ciudad(url);
             try{
 
-                tabla = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(text_busqueda.getText()));
+                tabla = Modelo_tabla.set_tabla_ciudad(((Ciudad)base).consultar_ciudades(text_busqueda.getText()));
                 tabla.setComponentPopupMenu(pop_menu);
                 scroll.setViewportView(tabla);
         
-                base.close();
 
             }catch(SQLException ex){
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                
+            }finally{
                 base.close();
             }
 
@@ -1342,14 +1344,15 @@ public class Principal extends JFrame{
 
             number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar la ciudad:\n"+ valor, "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
-                base = new Base(url);
+                base = new Ciudad(url);
                 try{
-                    base.eliminar_ciudad(valor);
+                    ((Ciudad)base).eliminar_ciudad(valor);
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
                 
-                base.close();
                 JOptionPane.showMessageDialog(this, "Ciudad eliminada correctamente");
                 boton_ciudad.doClick();
             }
@@ -1362,9 +1365,9 @@ public class Principal extends JFrame{
         
             @Override
             public void accion(){
-                base = new Base(url);
+                base = new Ciudad(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_ciudad(base.consultar_ciudades(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_ciudad(((Ciudad)base).consultar_ciudades(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){

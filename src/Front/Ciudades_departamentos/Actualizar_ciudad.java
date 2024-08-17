@@ -3,8 +3,7 @@ package Front.Ciudades_departamentos;
 import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
-import Base.Base;
+import Base.Ciudad;
 
 public class Actualizar_ciudad extends Insertar_ciudad{
 
@@ -41,10 +40,10 @@ public class Actualizar_ciudad extends Insertar_ciudad{
                 JOptionPane.showMessageDialog(this, "Por favor diligenciar el campo Ciudad");
             }else{
                 
-                base = new Base(url);
+                base = new Ciudad(url);
                 try{
 
-                    base.actualizar_ciudad(id_ciudad, text_ciudad.getText());
+                    ((Ciudad)base).actualizar_ciudad(id_ciudad, text_ciudad.getText());
                     base.close();
                     JOptionPane.showMessageDialog(this, "Ciudad actualizada con exito");
                     setVisible(false);

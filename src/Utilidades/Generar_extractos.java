@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import Base.Base;
+import Base.Ciudad;
 
 public class Generar_extractos {
 
@@ -23,6 +24,7 @@ public class Generar_extractos {
     public static String generar_extracto_mensual_excel(String placa, int consecutivo, String url)throws SQLException, IOException, NullPointerException{
         Extracto extracto;
         Base base = new Base(url);
+        Ciudad base_ciudad = new Ciudad(url);
         boolean parque_automotor = true;
         String[] datos_extracto;
         String[] datos_vehiculo;
@@ -42,8 +44,8 @@ public class Generar_extractos {
             datos_extracto = base.consultar_uno_extracto_mensual(placa, consecutivo);
             datos_contratante = base.consultar_uno_contrato_mensual(Integer.parseInt(datos_extracto[2]));
             datos_conductores = base.consultar_conductor_has_vehiculo(placa);
-            datos_origen = base.consultar_uno_ciudades(datos_extracto[5]);
-            datos_destino = base.consultar_uno_ciudades(datos_extracto[6]);
+            datos_origen = base_ciudad.consultar_uno_ciudades(datos_extracto[5]);
+            datos_destino = base_ciudad.consultar_uno_ciudades(datos_extracto[6]);
             datos_vehiculo = base.consultar_uno_vw_vehiculo_extracto(placa);
             datos_tipo_contrato = base.consultar_tipo_contrato_mensual(Integer.parseInt(datos_contratante[0]));
             parque_automotor = Boolean.parseBoolean(base.consultar_uno_vehiculo(placa)[16]);
@@ -142,6 +144,7 @@ public class Generar_extractos {
     public static String generar_extracto_ocasional(String placa, int consecutivo,int contrato, String url)throws SQLException, IOException, NullPointerException{
         Extracto extracto;
         Base base = new Base(url);
+        Ciudad base_ciudad = new Ciudad(url);
         boolean parque_automotor = true;
         String sub_ocasional = "OCASIONAL ";
         String[] datos_per_contratante;
@@ -164,8 +167,8 @@ public class Generar_extractos {
             datos_contratante = base.consultar_uno_contrato_ocasional(contrato);
             datos_per_contratante = base.consultar_uno_contratante(datos_contratante[1]);
             datos_conductores = base.consultar_conductor_has_vehiculo(placa);
-            datos_origen = base.consultar_uno_ciudades(datos_contratante[4]);
-            datos_destino = base.consultar_uno_ciudades(datos_contratante[5]);
+            datos_origen = base_ciudad.consultar_uno_ciudades(datos_contratante[4]);
+            datos_destino = base_ciudad.consultar_uno_ciudades(datos_contratante[5]);
             datos_vehiculo = base.consultar_uno_vw_vehiculo_extracto(placa);
             datos_tipo_contrato = base.consultar_tipo_contrato_ocasional(Integer.parseInt(datos_contratante[0]));
             parque_automotor = Boolean.parseBoolean(base.consultar_uno_vehiculo(placa)[16]);
@@ -288,6 +291,7 @@ public class Generar_extractos {
         
         Extracto extracto = null;
         Base base = new Base(url);
+        Ciudad base_ciudad = new Ciudad(url);
         boolean parque_automotor = true;
         String sub_ocasional = "OCASIONAL ";
         String[] datos_per_contratante;
@@ -312,8 +316,8 @@ public class Generar_extractos {
             // inicializacion del objeto para modificar la plantilla de extractos
             extracto = new Extracto("src\\Formatos\\Extracto.xlsx");
             datos_contratante = base.consultar_uno_contrato_ocasional(contrato);
-            datos_origen = base.consultar_uno_ciudades(datos_contratante[4]);
-            datos_destino = base.consultar_uno_ciudades(datos_contratante[5]);
+            datos_origen = base_ciudad.consultar_uno_ciudades(datos_contratante[4]);
+            datos_destino = base_ciudad.consultar_uno_ciudades(datos_contratante[5]);
             datos_per_contratante = base.consultar_uno_contratante(datos_contratante[1]);
             datos_tipo_contrato = base.consultar_tipo_contrato_ocasional(Integer.parseInt(datos_contratante[0]));
             
