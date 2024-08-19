@@ -22,6 +22,7 @@ import com.toedter.calendar.JDateChooser;
 import java.util.Calendar;
 import java.util.Date;
 import Base.Base;
+import Base.Persona;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
 
@@ -83,9 +84,9 @@ public class Insertar_conductor extends Modales_personas{
         jPanel1.add(combo_conductor);
         combo_conductor.setBounds(147, 28, 87, 22);
 
-        base = new Base(url);
+        base = new Persona(url);
         try{
-            datos = base.consultar_persona_natural("");
+            datos = ((Persona)base).consultar_persona_natural("");
             combo_conductor.setModel(new DefaultComboBoxModel<>(base.get_datos_tabla(base.consultar_categoria(), 1)));
             tabla_persona = Modelo_tabla.set_tabla_personas(datos);
 
@@ -101,9 +102,9 @@ public class Insertar_conductor extends Modales_personas{
             public void mouseClicked(MouseEvent evt){
                 if(SwingUtilities.isRightMouseButton(evt)){
                     new Insertar_persona(padre, url);
-                    base = new Base(url);
+                    base = new Persona(url);
                 try{
-                    datos = base.consultar_persona_natural("");
+                    datos = ((Persona)base).consultar_persona_natural("");
                     JTable tab = Modelo_tabla.set_tabla_personas(datos);
                     tabla_persona.setModel(tab.getModel());
                     tabla_persona.setColumnModel(tab.getColumnModel());
@@ -132,9 +133,9 @@ public class Insertar_conductor extends Modales_personas{
                 String variable_auxiliar = text_documento.getText();
                 
                 
-                base = new Base(url);
+                base = new Persona(url);
                 try{
-                    datos = base.consultar_persona_natural(variable_auxiliar);
+                    datos = ((Persona)base).consultar_persona_natural(variable_auxiliar);
                     JTable tab = Modelo_tabla.set_tabla_personas(datos);
                     tabla_persona.setModel(tab.getModel());
                     tabla_persona.setColumnModel(tab.getColumnModel());

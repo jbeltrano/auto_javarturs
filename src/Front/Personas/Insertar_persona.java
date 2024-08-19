@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import Base.Base;
 import Base.Ciudad;
 import Base.Departamento;
+import Base.Persona;
 import Base.Tipo_id;
 
 import java.awt.Dimension;
@@ -259,7 +260,7 @@ public class Insertar_persona extends Modales_personas{
                 Long.parseLong(text_documento.getText());   // Obtiene el dato numerico para el tipo de documento
                 tipo_documento = combo_tipo_documento.getSelectedIndex() + 1;   // Determina el id del tipo de documento
 
-                base = new Base(url);   // Establece coneccion para la base de datos
+                base = new Persona(url);   // Establece coneccion para la base de datos
                 Ciudad base_ciudad = new Ciudad(url);   // Establece la coneccion para la bese de datos con las tablas ciudad
                 try {
                     
@@ -268,7 +269,7 @@ public class Insertar_persona extends Modales_personas{
                             (String)combo_municipio.getSelectedItem())[0]); // Pasa como parametro el nombre del municipio
                     
                     // Inserta a la persona con los datos que hay en el formulario
-                    base.insertar_persona(  text_documento.getText(),   // Es el numero de documento de la persona
+                    ((Persona)base).insertar_persona(  text_documento.getText(),   // Es el numero de documento de la persona
                                             tipo_documento,             // Es el tipo de documento de la persona
                                             text_nombre.getText(),      // Es el nombre de la persona
                                             text_celular.getText(),     // Es el numero de celular de la persona

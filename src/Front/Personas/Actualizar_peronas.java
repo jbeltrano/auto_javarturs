@@ -5,9 +5,8 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
-import Base.Base;
 import Base.Ciudad;
+import Base.Persona;
 
 public class Actualizar_peronas extends Insertar_persona{
     
@@ -27,19 +26,19 @@ public class Actualizar_peronas extends Insertar_persona{
         radio_contratante.setVisible(false);
         label_contratante.setVisible(false);
 
-        base = new Base(url);
+        base = new Persona(url);
 
         try{
             
-            dato = base.consultar_uno_persona(buscar);
+            dato = ((Persona)base).consultar_uno_persona(buscar);
 
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            base.close();
             setVisible(false);
 
+        }finally{
+            base.close();
         }
-        base.close();
 
         // Inicializando componentes
         
@@ -91,11 +90,11 @@ public class Actualizar_peronas extends Insertar_persona{
                     Long.parseLong(text_celular.getText());
                     Long.parseLong(text_documento.getText());
                     tipo_documento = combo_tipo_documento.getSelectedIndex() + 1;
-                    base = new Base(url);
+                    base = new Persona(url);
                     Ciudad base_Ciudad = new Ciudad(url);
                     try {
                         ciudad = Integer.parseInt(base_Ciudad.consultar_uno_ciudad((String)combo_municipio.getSelectedItem())[0]);
-                        base.actualizar_persona(text_documento.getText(), tipo_documento, text_nombre.getText(), text_celular.getText(), ciudad, text_direccion.getText(), text_correo.getText());
+                        ((Persona)base).actualizar_persona(text_documento.getText(), tipo_documento, text_nombre.getText(), text_celular.getText(), ciudad, text_direccion.getText(), text_correo.getText());
         
                         JOptionPane.showMessageDialog(this, "Persona actualizada correctamente");
                         

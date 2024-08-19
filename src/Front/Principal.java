@@ -4,6 +4,7 @@ import Base.Base;
 import Base.Ciudad;
 import Base.Clase_vehiculo;
 import Base.Departamento;
+import Base.Persona;
 import Front.Ciudades_departamentos.Actualizar_ciudad;
 import Front.Ciudades_departamentos.Insertar_ciudad;
 import Front.Extractos.Actualizar_contratante;
@@ -1457,9 +1458,9 @@ public class Principal extends JFrame{
         config_pop_menu();
 
         // Obteniendo datos de la base de datos
-        base = new Base(url);
+        base = new Persona(url);
         try{
-            datos = base.consultar_persona();
+            datos = ((Persona)base).consultar_persona();
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
         }
@@ -1497,14 +1498,15 @@ public class Principal extends JFrame{
 
             number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar la persona:\n"+ valor, "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
-                base = new Base(url);
+                base = new Persona(url);
                 try{
-                    base.eliminar_persona(valor);
+                    ((Persona)base).eliminar_persona(valor);
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                
-                base.close();
+
                 JOptionPane.showMessageDialog(this, "Persona eliminada correctamente");
                 boton_personas.doClick();
             }
@@ -1515,9 +1517,9 @@ public class Principal extends JFrame{
         text_busqueda.addKeyListener(new Key_adapter() {
             @Override
             public void accion(){
-                base = new Base(url);
+                base = new Persona(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_personas(base.consultar_persona(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_personas(((Persona)base).consultar_persona(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){

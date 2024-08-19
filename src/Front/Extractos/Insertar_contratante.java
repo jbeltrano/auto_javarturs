@@ -15,6 +15,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import Base.Base;
+import Base.Persona;
 import Front.Personas.Insertar_persona;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
@@ -61,15 +62,17 @@ public class Insertar_contratante extends Modal_extracto{
         boton_guardar = new javax.swing.JButton();
 
         // Consultando los datos de los contratantes
-        base = new Base(url);
+        base = new Persona(url);
         try{
-            datos_tabla_contratante = base.consultar_no_contratante("");
-            datos_tabla_responsable = base.consultar_persona();
+            datos_tabla_contratante = ((Persona)base).consultar_no_contratante("");
+            datos_tabla_responsable = ((Persona)base).consultar_persona();
 
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
-        base.close();
+        
         jPanel1.setLayout(null);
 
         jLabel1.setText("Contratante");
@@ -238,10 +241,10 @@ public class Insertar_contratante extends Modal_extracto{
     }
 
     public void set_tabla_contratante(){
-        base = new Base(url);
+        base = new Persona(url);
         try{
                     
-            datos_tabla_contratante = base.consultar_no_contratante(text_contratante.getText());
+            datos_tabla_contratante = ((Persona)base).consultar_no_contratante(text_contratante.getText());
             JTable aux = Modelo_tabla.set_tabla_personas(datos_tabla_contratante);
             tabla_contratante.setModel(aux.getModel());
             tabla_contratante.setColumnModel(aux.getColumnModel());
@@ -249,16 +252,17 @@ public class Insertar_contratante extends Modal_extracto{
         
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
-        base.close();
     }
 
     public void set_tabla_responsable(){
 
-        base = new Base(url);
+        base = new Persona(url);
         try{
             
-            datos_tabla_responsable = base.consultar_persona(text_responsable.getText());
+            datos_tabla_responsable = ((Persona)base).consultar_persona(text_responsable.getText());
             JTable aux = Modelo_tabla.set_tabla_personas(datos_tabla_responsable);
             tabla_responsable.setModel(aux.getModel());
             tabla_responsable.setColumnModel(aux.getColumnModel());

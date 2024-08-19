@@ -19,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.GroupLayout;
 import Base.Base;
 import Base.Clase_vehiculo;
+import Base.Persona;
 import Front.Personas.Insertar_persona;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
@@ -237,8 +238,9 @@ public class Insertar_vehiculos extends Modales_vehiculos{
                 
                 
                 base = new Clase_vehiculo(url);
+                Persona base_persona = new Persona(url);
                 try{
-                    datos = base.consultar_persona(text_propietario.getText());
+                    datos = base_persona.consultar_persona(text_propietario.getText());
                     JTable tabla_aux = Modelo_tabla.set_tabla_personas(datos);
                     tab.setModel(tabla_aux.getModel());
                     tab.setColumnModel(tabla_aux.getColumnModel());
@@ -249,6 +251,7 @@ public class Insertar_vehiculos extends Modales_vehiculos{
                     base.close();
                 }finally{
                     base.close();
+                    base_persona.close();
                 }
                 
             }
@@ -262,13 +265,14 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         jPanel1.add(text_propietario);
         text_propietario.setBounds(130, 280, 120, 22);
 
-        base = new Base(url);
+        base = new Persona(url);
         try{
-            datos = base.consultar_persona();
+            datos = ((Persona)base).consultar_persona();
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
-        base.close();
 
         tab = Modelo_tabla.set_tabla_personas(datos);
         
@@ -281,18 +285,19 @@ public class Insertar_vehiculos extends Modales_vehiculos{
                     Insertar_persona persona = new Insertar_persona(padre, url);
                     persona.setVisible(false);
                     persona = null;
-                    base = new Base(url);
+                    base = new Persona(url);
                     try {
-                        datos = base.consultar_persona();
+                        datos = ((Persona)base).consultar_persona();
                         JTable tabla_aux = Modelo_tabla.set_tabla_personas(datos);
                         tab.setModel(tabla_aux.getModel());
                         tab.setColumnModel(tabla_aux.getColumnModel());
                         
                     } catch (SQLException ec) {
                         JOptionPane.showMessageDialog(null, ec.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                        
+                    }finally{
                         base.close();
                     }
-                    base.close();
 
                 }else{
                     int valor_auxilia = tab.getSelectedRow();
