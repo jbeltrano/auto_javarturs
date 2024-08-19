@@ -11,8 +11,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JOptionPane;
 import java.sql.SQLException;
-
-import Base.Base;
 import Base.Ciudad;
 import Base.Departamento;
 import Base.Persona;
