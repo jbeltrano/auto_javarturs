@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import Base.Base;
 import Base.Ciudad;
+import Base.Departamento;
 
 public class Insertar_ciudad extends Modal_ciudades_departamentos{
 
@@ -54,15 +55,16 @@ public class Insertar_ciudad extends Modal_ciudades_departamentos{
         jLabel1.setBounds(POSICION_X, POSICION_X, 96, ALTURA_Y);
     
         // Cargando los datos necesarios para el comobo_departamento
-        base = new Base(url);
+        base = new Departamento(url);
         try{
-            combo_departamento.setModel(new DefaultComboBoxModel<>(base.consultar_departamento()));
+            combo_departamento.setModel(new DefaultComboBoxModel<>(((Departamento)base).consultar_departamento()));
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            base.close();
             setVisible(false);
+        }finally{
+            base.close();
         }
-        base.close();
+        
         combo_departamento.setSelectedItem("Meta");
         combo_departamento.setMaximumRowCount(7);
         panel.add(combo_departamento);

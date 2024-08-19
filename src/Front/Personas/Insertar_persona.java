@@ -14,6 +14,7 @@ import java.sql.SQLException;
 
 import Base.Base;
 import Base.Ciudad;
+import Base.Departamento;
 import Base.Tipo_id;
 
 import java.awt.Dimension;
@@ -85,17 +86,18 @@ public class Insertar_persona extends Modales_personas{
 
         base = new Tipo_id(url);
         Ciudad base_ciudad = new Ciudad(url);
+        Departamento base_departamento = new Departamento(url);
         try{
             combo_tipo_documento = new JComboBox<>(((Tipo_id)base).consultar_tipo_id(1));
-            combo_departamento = new JComboBox<>(base.consultar_departamento());
+            combo_departamento = new JComboBox<>(base_departamento.consultar_departamento());
             combo_municipio = new JComboBox<>(base_ciudad.consultar_ciudad(""+combo_departamento.getSelectedItem(), 1));
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
-            
             this.setVisible(false);
         }finally{
             base.close();
             base_ciudad.close();
+            base_departamento.close();
         }
         
         jPanel1.add(combo_tipo_documento);

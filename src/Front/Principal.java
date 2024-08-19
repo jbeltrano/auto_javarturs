@@ -3,6 +3,7 @@ package Front;
 import Base.Base;
 import Base.Ciudad;
 import Base.Clase_vehiculo;
+import Base.Departamento;
 import Front.Ciudades_departamentos.Actualizar_ciudad;
 import Front.Ciudades_departamentos.Insertar_ciudad;
 import Front.Extractos.Actualizar_contratante;
@@ -1398,9 +1399,9 @@ public class Principal extends JFrame{
         String[][] datos = null;
 
         // Obteniendo datos de la base de datos
-        base = new Base(url);
+        base = new Departamento(url);
         try{
-            datos = base.consultar_departamentos();
+            datos = ((Departamento)base).consultar_departamentos();
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
         }
@@ -1419,9 +1420,9 @@ public class Principal extends JFrame{
             
             @Override
             public void accion(){
-                base = new Base(url);
+                base = new Departamento(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_departamento(base.consultar_departamentos(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_departamento(((Departamento)base).consultar_departamentos(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
