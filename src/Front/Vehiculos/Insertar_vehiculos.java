@@ -20,6 +20,7 @@ import javax.swing.GroupLayout;
 import Base.Base;
 import Base.Clase_vehiculo;
 import Base.Persona;
+import Base.Vehiculo;
 import Front.Personas.Insertar_persona;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
@@ -391,17 +392,20 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         }
         if(confirmacion){
             base = new Base(url);
-            Clase_vehiculo base2 = new Clase_vehiculo(url);
+            Clase_vehiculo base_clase_vehiculo = new Clase_vehiculo(url);
+            Vehiculo base_vehiculo = new Vehiculo(url);
             try{
-                dato = base2.consultar_uno_clase_vehiculo(combo_tipo_vehiculo.getSelectedItem()+"");
-                base.insertar_vehiculo(text_placa.getText().toUpperCase(), Integer.parseInt(dato[0]),modelo,text_marca.getText().toUpperCase(), text_linea.getText().toUpperCase(), cilindrada, text_color.getText().toUpperCase(),combo_servicio.getSelectedIndex()+1, text_combustible.getText().toUpperCase(), text_carroceria.getText().toUpperCase(), text_motor.getText().toUpperCase(), text_chasis.getText().toUpperCase(), pasajeros, propietario, boton_parque.isSelected());
+                dato = base_clase_vehiculo.consultar_uno_clase_vehiculo(combo_tipo_vehiculo.getSelectedItem()+"");
+                base_vehiculo.insertar_vehiculo(text_placa.getText().toUpperCase(), Integer.parseInt(dato[0]),modelo,text_marca.getText().toUpperCase(), text_linea.getText().toUpperCase(), cilindrada, text_color.getText().toUpperCase(),combo_servicio.getSelectedIndex()+1, text_combustible.getText().toUpperCase(), text_carroceria.getText().toUpperCase(), text_motor.getText().toUpperCase(), text_chasis.getText().toUpperCase(), pasajeros, propietario, boton_parque.isSelected());
             }catch(SQLException ex){
                 JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-                base.close();
-                base2.close();
+                
                 this.setVisible(false);
+            }finally{
+                base.close();
+                base_clase_vehiculo.close();
+                base_vehiculo.close();
             }
-            base.close();
             JOptionPane.showMessageDialog(this, "Vehiculo guardado correctamente","",JOptionPane.QUESTION_MESSAGE);
             this.setVisible(false);
         }

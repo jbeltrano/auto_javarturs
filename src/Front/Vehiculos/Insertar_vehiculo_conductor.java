@@ -19,6 +19,7 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import Base.Base;
+import Base.Vehiculo;
 
 public class Insertar_vehiculo_conductor extends Modales_vehiculos{
     
@@ -34,6 +35,7 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
     private JTextField text_placa;
     private String[][] datos;
     private JFrame padre;
+    protected Vehiculo base_Vehiculo;
 
     public Insertar_vehiculo_conductor(JFrame padre, String url, String valor){
 
@@ -74,9 +76,9 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
                 }else{
                     variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
                 }
-                base = new Base(url);
+                base = new Vehiculo(url);
                 try{
-                    datos = base.consultar_vehiculo(variable_auxiliar);
+                    datos = ((Vehiculo)base).consultar_vehiculo(variable_auxiliar);
                     tabla_vehiculo.setModel(Modelo_tabla.set_modelo_tablas(datos));
                     
         
@@ -124,13 +126,16 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
 
         // Configuracion de tablas modelo
         base = new Base(url);
+        base_Vehiculo = new Vehiculo(url);
         try{
-            tabla_vehiculo.setModel(Modelo_tabla.set_modelo_tablas(base.consultar_vehiculo(true)));
+            tabla_vehiculo.setModel(Modelo_tabla.set_modelo_tablas(base_Vehiculo.consultar_vehiculo(true)));
             tabla_conductor.setModel(Modelo_tabla.set_modelo_tablas(base.consultar_licencia()));
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
+            base_Vehiculo.close();
         }
-        base.close();
         
         //configuracion tabla vehiculo
         tabla_vehiculo.getTableHeader().setReorderingAllowed(false);
@@ -206,8 +211,8 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
                 try{
                     //En este caso verificamos que si se digito un numero de identidad valido
                     Double.parseDouble(text_conductor.getText());
-                    base = new Base(url);
-                    datos = base.consultar_vehiculo(text_placa.getText());
+                    base_Vehiculo = new Vehiculo(url);
+                    datos = base_Vehiculo.consultar_vehiculo(text_placa.getText());
                     
                     // Esto es una forma de comprobar que los datos que diligencio el usuario pertenecen unicamente a un vehiculo y no hay mas concurrencias
                     if(datos.length == 2){
@@ -223,7 +228,9 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
                     JOptionPane.showMessageDialog(this, "El campo conductor debe ser de tipo numerico","Error",JOptionPane.ERROR_MESSAGE);
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-                    base.close();
+                    
+                }finally{
+                    base_Vehiculo.close();
                 }
 
             }

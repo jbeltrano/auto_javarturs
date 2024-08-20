@@ -6,6 +6,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import Base.Base;
 import Base.Ciudad;
+import Base.Vehiculo;
 
 public class Generar_extractos {
 
@@ -24,6 +25,7 @@ public class Generar_extractos {
     public static String generar_extracto_mensual_excel(String placa, int consecutivo, String url)throws SQLException, IOException, NullPointerException{
         Extracto extracto;
         Base base = new Base(url);
+        Vehiculo base_vehiculo = new Vehiculo(url);
         Ciudad base_ciudad = new Ciudad(url);
         boolean parque_automotor = true;
         String[] datos_extracto;
@@ -48,7 +50,7 @@ public class Generar_extractos {
             datos_destino = base_ciudad.consultar_uno_ciudades(datos_extracto[6]);
             datos_vehiculo = base.consultar_uno_vw_vehiculo_extracto(placa);
             datos_tipo_contrato = base.consultar_tipo_contrato_mensual(Integer.parseInt(datos_contratante[0]));
-            parque_automotor = Boolean.parseBoolean(base.consultar_uno_vehiculo(placa)[16]);
+            parque_automotor = Boolean.parseBoolean(base_vehiculo.consultar_uno_vehiculo(placa)[16]);
             vehiculo_empresa_externa = base.consultar_uno_vehiculo_externo(placa);
 
             if(datos_vehiculo[0] == null){
@@ -124,6 +126,8 @@ public class Generar_extractos {
             
         }finally{
             base.close();
+            base_vehiculo.close();
+            base_ciudad.close();
         }
         
     }
@@ -144,6 +148,7 @@ public class Generar_extractos {
     public static String generar_extracto_ocasional(String placa, int consecutivo,int contrato, String url)throws SQLException, IOException, NullPointerException{
         Extracto extracto;
         Base base = new Base(url);
+        Vehiculo base_vehiculo = new Vehiculo(url);
         Ciudad base_ciudad = new Ciudad(url);
         boolean parque_automotor = true;
         String sub_ocasional = "OCASIONAL ";
@@ -171,7 +176,7 @@ public class Generar_extractos {
             datos_destino = base_ciudad.consultar_uno_ciudades(datos_contratante[5]);
             datos_vehiculo = base.consultar_uno_vw_vehiculo_extracto(placa);
             datos_tipo_contrato = base.consultar_tipo_contrato_ocasional(Integer.parseInt(datos_contratante[0]));
-            parque_automotor = Boolean.parseBoolean(base.consultar_uno_vehiculo(placa)[16]);
+            parque_automotor = Boolean.parseBoolean(base_vehiculo.consultar_uno_vehiculo(placa)[16]);
             vehiculo_empresa_externa = base.consultar_uno_vehiculo_externo(placa);
             placas_contrato = base.consultar_placas_contrato_ocasional(contrato);
             
@@ -276,8 +281,10 @@ public class Generar_extractos {
             localizacion_contrato = Generar_contratos_ocasionales.generar_contrato_ocasional(placas_contrato,""+contrato, url);
 
         // Retorna la direccion de guardado
-                }finally{
+        }finally{
             base.close();
+            base_vehiculo.close();
+            base_ciudad.close();
         }
         
         return localizacion_fichero + placa + sub_ocasional +" (" + consecutivo + ")\n El contrato se guardo en: " + localizacion_contrato;
@@ -291,6 +298,7 @@ public class Generar_extractos {
         
         Extracto extracto = null;
         Base base = new Base(url);
+        Vehiculo base_vehiculo = new Vehiculo(url);
         Ciudad base_ciudad = new Ciudad(url);
         boolean parque_automotor = true;
         String sub_ocasional = "OCASIONAL ";
@@ -388,7 +396,7 @@ public class Generar_extractos {
                 
                 datos_conductores = base.consultar_conductor_has_vehiculo(placas_contrato[i]);
                 datos_vehiculo = base.consultar_uno_vw_vehiculo_extracto(placas_contrato[i]);
-                parque_automotor = Boolean.parseBoolean(base.consultar_uno_vehiculo(placas_contrato[i])[16]);
+                parque_automotor = Boolean.parseBoolean(base_vehiculo.consultar_uno_vehiculo(placas_contrato[i])[16]);
                 vehiculo_empresa_externa = base.consultar_uno_vehiculo_externo(placas_contrato[i]);
                 consecutivo = base.consultar_uno_consecutivo_extracto_ocasional(placas_contrato[i], contrato);
                 
@@ -452,6 +460,8 @@ public class Generar_extractos {
 
         }finally{
             base.close();
+            base_vehiculo.close();
+            base_ciudad.close();
             extracto.close();
         }
         // Retorna la localizacion del los extractos

@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import Base.Base;
 import Base.Ciudad;
+import Base.Vehiculo;
 
 public class Generar_contratos_ocasionales {
 
@@ -28,6 +29,7 @@ public class Generar_contratos_ocasionales {
 
         base = new Base(url);
         Ciudad base_ciudad = new Ciudad(url);
+        Vehiculo base_Vehiculo = new Vehiculo(url);
         try{
             // Carga la infromarcion necesaria
             contrato_ocasional = base.consultar_uno_contrato_ocasional(Integer.parseInt(contrato));
@@ -40,7 +42,7 @@ public class Generar_contratos_ocasionales {
 
             // Consulta la capacidad maxima entre los dos set_cantidad_vehiculos
             for(int i = 0; i < placas.length; i++){
-                int aux = base.consultar_capacidad_vehiculo(placas[i]);
+                int aux = base_Vehiculo.consultar_capacidad_vehiculo(placas[i]);
                 cantidad_pasajeros = (aux >= cantidad_pasajeros)?aux:cantidad_pasajeros;
             }
             // Hace un set al numero de contrato
@@ -94,6 +96,7 @@ public class Generar_contratos_ocasionales {
             doc_contrato.guardar(url_destino2,placas);
         }finally{
             base.close();
+            base_Vehiculo.close();
             doc_contrato.close();
             
         }

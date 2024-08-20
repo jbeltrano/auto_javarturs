@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import Base.Base;
 import Base.Ciudad;
+import Base.Vehiculo;
 import Front.Ciudades_departamentos.Insertar_ciudad;
 import Utilidades.Generar_extractos;
 import Utilidades.Key_adapter;
@@ -98,9 +99,10 @@ public class Insertar_extracto_mensual extends Modal_documento {
         // incializando las tablas
         base = new Base(url);
         Ciudad base_ciudad = new Ciudad(url);
+        Vehiculo base_vehiculo = new Vehiculo(url);
         try{
 
-            tabla_vehiculo = Modelo_tabla.set_tabla_vehiculo(base.consultar_vehiculo(true));
+            tabla_vehiculo = Modelo_tabla.set_tabla_vehiculo(base_vehiculo.consultar_vehiculo(true));
             tabla_contratante = Modelo_tabla.set_tabla_contratos_mensuales(base.consultar_contratos_mensuales(""));
             tabla_origen = Modelo_tabla.set_tabla_ciudad(base_ciudad.consultar_ciudades(""));
             tabla_destino = Modelo_tabla.set_tabla_ciudad(base_ciudad.consultar_ciudades(""));
@@ -128,9 +130,10 @@ public class Insertar_extracto_mensual extends Modal_documento {
                 String datos[][] = null;
 
                 base = new Base(url);
+                Vehiculo base_vehiculo = new Vehiculo(url);
                 try{
                     
-                    datos = base.consultar_vehiculo(text_placa.getText());
+                    datos = base_vehiculo.consultar_vehiculo(text_placa.getText());
                     JTable tabla_auxiliar = Modelo_tabla.set_tabla_vehiculo(datos);
                     tabla_vehiculo.setModel(tabla_auxiliar.getModel());
                     tabla_vehiculo.setColumnModel(tabla_auxiliar.getColumnModel());
@@ -140,9 +143,11 @@ public class Insertar_extracto_mensual extends Modal_documento {
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     ventana.setVisible(false);
+                    
+                }finally{
                     base.close();
+                    base_vehiculo.close();
                 }
-                base.close();
 
                 tabla_vehiculo.changeSelection(0, 0, false, false);
                 

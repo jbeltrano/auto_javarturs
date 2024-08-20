@@ -1,6 +1,7 @@
 package Front.Extractos;
 
 import Base.Base;
+import Base.Vehiculo;
 import Utilidades.Generar_extractos;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
@@ -59,8 +60,9 @@ public class Insertar_extracto_ocasional extends Modal_documento{
 
         // Inicializacion de los valores de las tablas
         base = new Base(url);
+        Vehiculo base_vehiculo = new Vehiculo(url);
         try{
-            String[][] datos_vehiculo = base.consultar_vehiculo("");
+            String[][] datos_vehiculo = base_vehiculo.consultar_vehiculo("");
             String[][] datos_contrato = base.consultar_contrato_ocasional("");
 
             tabla_vehiculo = Modelo_tabla.set_tabla_vehiculo(datos_vehiculo);
@@ -86,9 +88,10 @@ public class Insertar_extracto_ocasional extends Modal_documento{
                 String datos[][] = null;
 
                 base = new Base(url);
+                Vehiculo base_vehiculo = new Vehiculo(url);
                 try{
 
-                    datos = base.consultar_vehiculo(text_placa.getText());
+                    datos = base_vehiculo.consultar_vehiculo(text_placa.getText());
                     JTable tabla_auxiliar = Modelo_tabla.set_tabla_vehiculo(datos);
                     tabla_vehiculo.setModel(tabla_auxiliar.getModel());
                     tabla_vehiculo.setColumnModel(tabla_auxiliar.getColumnModel());
@@ -100,6 +103,7 @@ public class Insertar_extracto_ocasional extends Modal_documento{
                     ventana.setVisible(false);
                 }finally{
                     base.close();
+                    base_vehiculo.close();
                 }
 
                 tabla_vehiculo.changeSelection(0, 0, false, false);

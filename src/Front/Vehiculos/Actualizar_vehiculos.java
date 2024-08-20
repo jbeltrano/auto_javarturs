@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import Base.Clase_vehiculo;
-import Base.Base;
+import Base.Vehiculo;
 
 public class Actualizar_vehiculos extends Insertar_vehiculos{
 
@@ -27,9 +27,9 @@ public class Actualizar_vehiculos extends Insertar_vehiculos{
         text_carroceria.setEnabled(false);
         text_combustible.setEnabled(false);
         
-        base = new Base(url);
+        base = new Vehiculo(url);
         try{
-            dato = base.consultar_uno_vehiculo(valor);
+            dato = ((Vehiculo)base).consultar_uno_vehiculo(valor);
             text_placa.setText(dato[0]);
             combo_tipo_vehiculo.setSelectedItem(dato[1]);
             text_modelo.setText(dato[2]);
@@ -52,10 +52,11 @@ public class Actualizar_vehiculos extends Insertar_vehiculos{
 
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-            base.close();
+            
             this.setVisible(false);
+        }finally{
+            base.close();
         }
-        base.close();
         
 
     }
@@ -108,11 +109,11 @@ public class Actualizar_vehiculos extends Insertar_vehiculos{
                 
             }
             if(confirmacion){
-                base = new Base(url);
+                base = new Vehiculo(url);
                 Clase_vehiculo base2 = new Clase_vehiculo(url);
                 try{
                     dato = base2.consultar_uno_clase_vehiculo(combo_tipo_vehiculo.getSelectedItem()+"");
-                    base.actualizar_vehiculo(text_placa.getText(),cilindrada, text_color.getText(), text_motor.getText(), text_chasis.getText(), pasajeros, propietario, boton_parque.isSelected());
+                    ((Vehiculo)base).actualizar_vehiculo(text_placa.getText(),cilindrada, text_color.getText(), text_motor.getText(), text_chasis.getText(), pasajeros, propietario, boton_parque.isSelected());
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                     base.close();

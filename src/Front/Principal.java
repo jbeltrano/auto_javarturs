@@ -5,6 +5,7 @@ import Base.Ciudad;
 import Base.Clase_vehiculo;
 import Base.Departamento;
 import Base.Persona;
+import Base.Vehiculo;
 import Front.Ciudades_departamentos.Actualizar_ciudad;
 import Front.Ciudades_departamentos.Insertar_ciudad;
 import Front.Extractos.Actualizar_contratante;
@@ -77,6 +78,7 @@ public class Principal extends JFrame{
     private JMenu menu_2;
     private JMenu menu_3;
     private JMenu menu_4;
+    private JMenu menu_5;
     private JMenuBar barra_menu;
     private ImageIcon imagen1;
     private ImageIcon icono;
@@ -207,12 +209,18 @@ public class Principal extends JFrame{
         String link_runt_persona = cola.poll();
         String link_runt_liquidacion = cola.poll();
         String link_runt_pagos = cola.poll();
+        cola.clear();
+
+        cola = Leer_link.get_seguridad_social();
+        String link_ssocial_fosyga = cola.poll();
+        String link_ssocial_aportes_en_linea = cola.poll();
 
         // Configuracion de los diferentes componentes
         menu_1 = new JMenu("Ayuda");
         menu_2 = new JMenu("Inicio");
         menu_3 = new JMenu("Runt");
         menu_4 = new JMenu("Portafoleo");
+        menu_5 = new JMenu("Seg. Social");
         
         
 
@@ -292,6 +300,25 @@ public class Principal extends JFrame{
             }
         });
         
+        JMenuItem fosyga = new JMenuItem("Fosyga");
+        fosyga.addActionListener(accion ->{
+            try{
+                Desktop.getDesktop().browse(new URI(link_ssocial_fosyga));
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        JMenuItem aportes_en_linea = new JMenuItem("Apt. en linea");
+        aportes_en_linea.addActionListener(accion ->{
+
+            try{
+                Desktop.getDesktop().browse(new URI(link_ssocial_aportes_en_linea));
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
+            }
+
+        });
         
 
         // Adicionamiento
@@ -308,10 +335,14 @@ public class Principal extends JFrame{
 
         menu_4.add(pag_portafoleo);
 
+        menu_5.add(fosyga);
+        menu_5.add(aportes_en_linea);
+
         barra_menu.add(menu_2);
         barra_menu.add(menu_1);
         barra_menu.add(menu_3);
         barra_menu.add(menu_4);
+        barra_menu.add(menu_5);
     }
 
     private void configuracion_panel_busqueda(){
@@ -1178,14 +1209,15 @@ public class Principal extends JFrame{
         config_pop_menu();
 
         // Obteniendo datos de la base de datos
-        base = new Base(url);
+        base = new Vehiculo(url);
         try{
-            datos = base.consultar_vehiculo(true);
+            datos = ((Vehiculo)base).consultar_vehiculo(true);
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
         
-        base.close();
 
         // Configuracion de la visualizacion y opciones de la tabla
 
@@ -1215,16 +1247,16 @@ public class Principal extends JFrame{
 
             number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el vehiculo:\n"+ valor, "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
-                base = new Base(url);
+                base = new Vehiculo(url);
                 try{
-                    base.eliminar_vehiculo(valor);
+                    ((Vehiculo)base).eliminar_vehiculo(valor);
                     JOptionPane.showMessageDialog(this, "Vehiculo eliminado correctamente");
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
                 
-                base.close();
-                vehiculos.doClick();
             }
                   
         });
@@ -1234,9 +1266,9 @@ public class Principal extends JFrame{
         text_busqueda.addKeyListener(new Key_adapter() {
             @Override
             public void accion(){
-                base = new Base(url);
+                base = new Vehiculo(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_vehiculo(base.consultar_vehiculo(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_vehiculo(((Vehiculo)base).consultar_vehiculo(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){

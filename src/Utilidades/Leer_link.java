@@ -52,4 +52,26 @@ public class Leer_link {
         return cola;
     }
 
+    public static LinkedList<String> get_seguridad_social()throws IOException{
+        LinkedList<String> cola = new LinkedList<>();
+        String aux;
+        Scanner leer;
+
+        leer = new Scanner(new File("src\\config\\links.csv"));
+
+        while(leer.hasNextLine()){
+            
+            aux = leer.nextLine();
+
+            if(aux.contains("ssocial")){
+
+                cola.offer(aux.split(";")[2]);
+                
+            }
+        }
+        
+        leer.close();
+        return cola;
+    }
+
 }
