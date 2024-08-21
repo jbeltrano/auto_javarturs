@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-
 import javax.swing.SwingUtilities;
-
 import Base.Base;
 import Front.Principal;
 

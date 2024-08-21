@@ -17,6 +17,45 @@ public class Vehiculo extends Base{
     }
 
     /**
+     * Sirve para determinar si un vehiculo
+     * es de servicio particular o de serivicio
+     * publico.
+     * 
+     * @param placa Es la placa del vehiculo a
+     * consultar.
+     * 
+     * @return boolean.
+     * 
+     * @throws SQLException
+     */
+    public boolean is_particular(String placa)throws SQLException{
+        boolean flag = false;
+        consultar = "select ser_id from vehiculo where veh_placa like ?";
+
+        try{
+            pstate = coneccion.prepareStatement(consultar);
+            
+            pstate.setString(1, placa);
+
+            resultado = pstate.executeQuery();
+
+            if(resultado.next()){
+                flag = (resultado.getInt(1) == 1);
+            }else{
+                throw new SQLException("No se encontro el resultado en la base de datos");
+            }
+        }catch(SQLException ex){
+            throw ex;
+
+        }finally{
+            pstate.close();
+            resultado.close();
+        }
+
+        return flag;
+    }
+
+    /**
      * Inserta un registro de vehiculo en la base de datos.
      * 
      * @param veh_placa Es la placa y identificador

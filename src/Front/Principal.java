@@ -4,8 +4,10 @@ import Base.Base;
 import Base.Ciudad;
 import Base.Clase_vehiculo;
 import Base.Departamento;
+import Base.Documentos;
 import Base.Persona;
 import Base.Vehiculo;
+import Base.Vehiculo_has_conductor;
 import Front.Ciudades_departamentos.Actualizar_ciudad;
 import Front.Ciudades_departamentos.Insertar_ciudad;
 import Front.Extractos.Actualizar_contratante;
@@ -940,15 +942,15 @@ public class Principal extends JFrame{
         configuracion_panel_busqueda();
         config_pop_menu();
 
-        base = new Base(url);
+        base = new Documentos(url);
         try{
-            datos = base.consultar_documentos("");
+            datos = ((Documentos)base).consultar_documentos("");
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            base.close();
             this.dispose();
+        }finally{
+            base.close();
         }
-        base.close();
 
         // Implementacion para que la tabla cambie de colores dependiendo el valor que tiene la celda
         tabla = Modelo_tabla.set_tabla_documentos_vehiculos(datos);
@@ -980,15 +982,16 @@ public class Principal extends JFrame{
 
             number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el registro\n"+ placa_vehiculo +"|"+tabla.getValueAt(number, 3), "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
-                base = new Base(url);
+                base = new Documentos(url);
                 try{
-                    base.eliminar_documento(placa_vehiculo);
+                    ((Documentos)base).eliminar_documento(placa_vehiculo);
                     JOptionPane.showMessageDialog(this, "Registro eliminado correctamente");
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
 
-                base.close();
                 documentos_vehiculos.doClick();
             }
                   
@@ -999,16 +1002,17 @@ public class Principal extends JFrame{
            
             @Override
             public void accion(){
-                base = new Base(url);
+                base = new Documentos(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_documentos_vehiculos(base.consultar_documentos(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_documentos_vehiculos(((Documentos)base).consultar_documentos(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla);
         
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                base.close();
             }
 
             @Override
@@ -1031,9 +1035,9 @@ public class Principal extends JFrame{
 
         config_pop_menu();
         pop_menu.remove(1);
-        base = new Base(url);
+        base = new Vehiculo_has_conductor(url);
         try{
-            datos = base.consultar_conductor_has_vehiculo();
+            datos = ((Vehiculo_has_conductor)base).consultar_conductor_has_vehiculo();
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
         }
@@ -1048,10 +1052,10 @@ public class Principal extends JFrame{
         item_adicionar.addActionListener(accion ->{
             new Insertar_vehiculo_conductor(this, url, "");
             
-            base = new Base(url);
+            base = new Vehiculo_has_conductor(url);
             try{
 
-                tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(text_busqueda.getText()));
+                tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(((Vehiculo_has_conductor)base).consultar_conductor_has_vehiculo(text_busqueda.getText()));
                 tabla.setComponentPopupMenu(pop_menu);
                 scroll.setViewportView(tabla);
         
@@ -1072,12 +1076,12 @@ public class Principal extends JFrame{
 
             number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el registro\n"+ placa_vehiculo +"|"+tabla.getValueAt(number, 3), "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
-                base = new Base(url);
+                base = new Vehiculo_has_conductor(url);
                 try{
-                    base.eliminar_vehiculo_has_conductor(conductor_id,placa_vehiculo);
+                    ((Vehiculo_has_conductor)base).eliminar_vehiculo_has_conductor(conductor_id,placa_vehiculo);
                     JOptionPane.showMessageDialog(this, "Registro eliminado correctamente");
 
-                    tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(((Vehiculo_has_conductor)base).consultar_conductor_has_vehiculo(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla);
         
@@ -1098,9 +1102,9 @@ public class Principal extends JFrame{
         text_busqueda.addKeyListener(new Key_adapter() {
             @Override
             public void accion(){
-                base = new Base(url);
+                base = new Vehiculo_has_conductor(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(base.consultar_conductor_has_vehiculo(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(((Vehiculo_has_conductor)base).consultar_conductor_has_vehiculo(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla);
         

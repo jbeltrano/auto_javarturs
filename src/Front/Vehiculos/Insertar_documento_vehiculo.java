@@ -18,6 +18,8 @@ import javax.swing.JTextField;
 import java.awt.event.MouseEvent;
 import com.toedter.calendar.JDateChooser;
 import Base.Base;
+import Base.Documentos;
+import Base.Vehiculo;
 import Utilidades.Modelo_tabla;
 
 public class Insertar_documento_vehiculo extends Modales_vehiculos{
@@ -233,18 +235,18 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
                 JOptionPane.showMessageDialog(this, "El campo: Placa es obligatorio", "Error", JOptionPane.ERROR_MESSAGE);
             
             }else{
-                base = new Base(url);
+                base = new Documentos(url);
                 try{
 
                     if(flag_is_particular){     // En caso de ser un vehiculo de servicio particular
                         
-                        base.insertar_documentos(text_placa.getText(),  // Vehiculo al cual se le hace la insercion
+                        ((Documentos)base).insertar_documentos(text_placa.getText(),  // Vehiculo al cual se le hace la insercion
                                                 ffecha_soat,            // Fecha de vencimiento del soat
                                                 ffecha_rtm);            // Fecha de vencimiento de la tecnomecanica
                         
                     }else{                      // En caso de ser un vehiculo de servicio publico
 
-                        base.insertar_documentos(text_placa.getText(),  // Vehiculo al cual se le hace la insercion
+                        ((Documentos)base).insertar_documentos(text_placa.getText(),  // Vehiculo al cual se le hace la insercion
                                                 ffecha_soat,            // Fecha de vencimiento del soat
                                                 ffecha_rtm,             // Fecha de vencimiento de la tecnomecanica
                                                 top,                    // Numero de tarjeta de operacion
@@ -284,9 +286,9 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
      */
     protected void is_particular(String placa){
 
-        base = new Base(url);
+        base = new Vehiculo(url);
         try{
-            if(base.is_particular(placa)){
+            if(((Vehiculo)base).is_particular(placa)){
                 flag_is_particular = true;
                 text_numero_interno.setEnabled(false);
                 fecha_polizas.setEnabled(false);
@@ -306,26 +308,28 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
         }
     }
     protected void datos_vehiculo(){
-        base = new Base(url);
+        base = new Documentos(url);
         try{
-            datos = base.consultar_vehiculo_sin_documento(true);
+            datos = ((Documentos)base).consultar_vehiculo_sin_documento(true);
             tabla_vehiculo.setModel(Modelo_tabla.set_modelo_tablas(datos));
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
-        base.close();
     }
 
     protected void datos_vehiculo(String varible_busqueda){
 
-        base = new Base(url);
+        base = new Documentos(url);
         try{
-            datos = base.consultar_vehiculo_sin_documento(varible_busqueda);
+            datos = ((Documentos)base).consultar_vehiculo_sin_documento(varible_busqueda);
             tabla_vehiculo.setModel(Modelo_tabla.set_modelo_tablas(datos));
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
-        base.close();
 
     }
 }

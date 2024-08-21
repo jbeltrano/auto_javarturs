@@ -20,6 +20,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import Base.Base;
 import Base.Vehiculo;
+import Base.Vehiculo_has_conductor;
 
 public class Insertar_vehiculo_conductor extends Modales_vehiculos{
     
@@ -85,9 +86,10 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     ventana.setVisible(false);
+                    
+                }finally{
                     base.close();
                 }
-                base.close();
             }
         });
         jPanel1.add(text_placa);
@@ -118,9 +120,9 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     ventana.setVisible(false);
+                }finally{
                     base.close();
                 }
-                base.close();
             }
         });
 
@@ -216,14 +218,15 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
                     
                     // Esto es una forma de comprobar que los datos que diligencio el usuario pertenecen unicamente a un vehiculo y no hay mas concurrencias
                     if(datos.length == 2){
-                        base.insertar_vehiuclo_has_conductor(text_conductor.getText(), datos[1][0]);
+                        base = new Vehiculo_has_conductor(url);
+                        ((Vehiculo_has_conductor)base).insertar_vehiuclo_has_conductor(text_conductor.getText(), datos[1][0]);
                         JOptionPane.showMessageDialog(this, "El conductor " + text_conductor.getText() + ", Fue asignado correctamente\nal vehiculo " + datos[1][0]);
 
                         this.setVisible(false);
                     }else{
                         JOptionPane.showMessageDialog(this, "No escribiste La placa correctamente.\nPor favor selecciona un vehiculo de la tabla");
                     }
-                    base.close();
+                    
                 }catch(NumberFormatException ex){
                     JOptionPane.showMessageDialog(this, "El campo conductor debe ser de tipo numerico","Error",JOptionPane.ERROR_MESSAGE);
                 }catch(SQLException ex){
@@ -231,6 +234,7 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
                     
                 }finally{
                     base_Vehiculo.close();
+                    base.close();
                 }
 
             }

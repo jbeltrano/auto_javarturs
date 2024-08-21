@@ -4,8 +4,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
-import Base.Base;
+import Base.Documentos;
 
 public class Actualizar_documento_vehiculo extends Insertar_documento_vehiculo{
     
@@ -16,10 +15,10 @@ public class Actualizar_documento_vehiculo extends Insertar_documento_vehiculo{
 
     private void actualizar_documentos(){
         String []dato = null;
-        base = new Base(url);
+        base = new Documentos(url);
         
         try{
-            dato = base.consultar_uno_documentos(valor);
+            dato = ((Documentos)base).consultar_uno_documentos(valor);
             
             
         }catch(SQLException ex){
@@ -80,17 +79,17 @@ public class Actualizar_documento_vehiculo extends Insertar_documento_vehiculo{
                 JOptionPane.showMessageDialog(this, "El campo: Placa es obligatorio", "Error", JOptionPane.ERROR_MESSAGE);
             
             }else{
-                base = new Base(url);
+                base = new Documentos(url);
                 try{
 
                     if(flag_is_particular){     // En caso de ser un vehiculo de servicio particular
                         
-                        base.actualizar_documento(text_placa.getText(),  // Vehiculo al cual se le hace la insercion
+                        ((Documentos)base).actualizar_documento(text_placa.getText(),  // Vehiculo al cual se le hace la insercion
                                                 ffecha_soat,            // Fecha de vencimiento del soat
                                                 ffecha_rtm);            // Fecha de vencimiento de la tecnomecanica
                         
                     }else{                      // En caso de ser un vehiculo de servicio publico
-                        base.actualizar_documento(text_placa.getText(),  // Vehiculo al cual se le hace la insercion
+                        ((Documentos)base).actualizar_documento(text_placa.getText(),  // Vehiculo al cual se le hace la insercion
                                                 ffecha_soat,            // Fecha de vencimiento del soat
                                                 ffecha_rtm,             // Fecha de vencimiento de la tecnomecanica
                                                 top,                    // Numero de tarjeta de operacion
