@@ -2,7 +2,6 @@ package Base;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 
 public class Base extends Base_datos{
@@ -17,6 +16,10 @@ public class Base extends Base_datos{
         super(url);
     }
 
+    /**
+     * Metodo que debe ser heredado para modificar o 
+     * establecer las cabeceras de las tablas.
+     */
     protected void set_nombres_cabecera(){
         
     }
@@ -61,285 +64,9 @@ public class Base extends Base_datos{
         }
         return dato;
     }
-
-        // Metodos para licencia
-    public void insertar_licencia(String per_id, int categoria, String fecha)throws SQLException{
-        
-        insertar = "insert into licencia values (?,?,?)";
-        try{
-            pstate = coneccion.prepareStatement(insertar);
-            pstate.setString(1, per_id);
-            pstate.setInt(2, categoria);
-            pstate.setString(3, fecha);
-
-            pstate.executeUpdate();
-            
-        }catch(SQLException ex){
-            SQLException e = new SQLException("No fue posible insertar licencia\nError 1.");
-            throw e;
-        }
-    }
-
-    public void actualizar_licencia(String per_id, int categoria, String fecha) throws SQLException{
-
-        actualizar = "update licencia set lic_fecha = ?, cat_id = ? where per_id = ?";
-
-        try{
-            pstate = coneccion.prepareStatement(actualizar);
-
-            pstate.setString(1, fecha);
-            pstate.setInt(2, categoria);
-            pstate.setString(3,per_id);
-            
-
-            pstate.executeUpdate();
-        }catch(SQLException ex){
-            SQLException e = new SQLException("No es posible realizar la actualizacion.\nError 3");
-            throw e;
-        }
-    }
-
-    public void actualizar_licencia(String per_id, int categoria_antigua, int categoria_nueva, String fecha)throws SQLException{
-
-        actualizar = "update licencia set lic_fecha = ?, cat_id = ? where per_id = ? and cat_id = ?";
-
-        try{
-            pstate = coneccion.prepareStatement(actualizar);
-
-            pstate.setDate(1, Date.valueOf(fecha));
-            pstate.setInt(2, categoria_nueva);
-            pstate.setString(3,per_id);
-            pstate.setInt(4, categoria_antigua);
-
-            pstate.executeUpdate();
-        }catch(SQLException ex){
-            SQLException e = new SQLException("No es posible realizar la actualizacion.\nError 3");
-            throw e;
-        }
-
-    }
-
-    public void eliminar_licencia(String per_id, int categoria)throws SQLException{
-        
-        borrar = "delete from licencia where per_id = ? and cat_id = ?";
-
-        try{
-            pstate = coneccion.prepareStatement(borrar);
-
-            pstate.setString(1, per_id);
-            pstate.setInt(2, categoria);
-
-            pstate.executeUpdate();
-        }catch(SQLException ex){
-            SQLException e = new SQLException("No es posible eliminar el elemento.\nError 1");
-            throw e;
-        }
-    }
-
-    public String[][] consultar_licencia(String buscar)throws SQLException{
-
-        datos = new String[1][4];
-        int cantidad = 0;
-        int i = 1;
-
-        consultar = "select * from vw_licencia where per_id like \'" + buscar + "%\' or per_nombre like \'%" + buscar + "%\'";
-
-        try{
-            state = coneccion.createStatement();
-
-            // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
-            resultado = state.executeQuery("select count() as total from vw_licencia where per_id like \'" + buscar + "%\' or per_nombre like \'%" + buscar + "%\'");
-            
-            if(resultado.next()){
-                cantidad = resultado.getInt("total");
-            }
-
-            datos = new String[cantidad+1][4];
-
-            resultado = state.executeQuery(consultar);
-            
-            datos[0][0] = "NUMERO";
-            datos[0][1] = "NOMBRE";
-            datos[0][2] = "CATEGORIA";
-            datos[0][3] = "FECHA_VENCIMIENTO";
-
-
-
-            while(resultado.next()){
-
-                datos[i][0] = resultado.getString(1);
-                datos[i][1] = resultado.getString(2);
-                datos[i][2] = resultado.getString(3);
-                datos[i][3] = resultado.getString(4);
-                
-
-                i++;
-            }
-
-        }catch(SQLException ex){
-            throw ex;
-        }
-
-        return datos;
-    }
-    public String[][] consultar_licencia()throws SQLException{
-
-        datos = new String[1][4];
-        int cantidad = 0;
-        int i = 1;
-
-        consultar = "select * from vw_licencia";
-
-        try{
-            state = coneccion.createStatement();
-
-            // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
-            resultado = state.executeQuery("select count() as total from licencia");
-            
-            if(resultado.next()){
-                cantidad = resultado.getInt("total");
-            }
-
-            datos = new String[cantidad+1][4];
-
-            resultado = state.executeQuery(consultar);
-            
-            datos[0][0] = "NUMERO";
-            datos[0][1] = "NOMBRE";
-            datos[0][2] = "CATEGORIA";
-            datos[0][3] = "FECHA_VENCIMIENTO";
-
-
-
-            while(resultado.next()){
-
-                datos[i][0] = resultado.getString(1);
-                datos[i][1] = resultado.getString(2);
-                datos[i][2] = resultado.getString(3);
-                datos[i][3] = resultado.getString(4);
-                
-
-                i++;
-            }
-
-        }catch(SQLException ex){
-            throw ex;
-        }
-
-        return datos;
-    }
-
-    public String[] consultar_uno_licencia(String buscar) throws SQLException{
-        dato = new String[3];
-
-        consultar = "select * from licencia where per_id = \'" + buscar + "\'";
-
-        try{
-            state = coneccion.createStatement();
-            resultado = state.executeQuery(consultar);
-
-            if(resultado.next()){
-                dato[0] = resultado.getString(1);
-                dato[1] = resultado.getString(2);
-                dato[2] = resultado.getString(3);
-            }
-
-        }catch(SQLException ex){
-            throw ex;
-        }
-
-        return dato;
-    }
     
     // Metodos para consultar la categoria de la licencia de conduccion
-    public String[][] consultar_categoria()throws SQLException{
-
-        datos = new String[1][2];
-        int cantidad = 0;
-        int i = 1;
-
-        consultar = "select * from categoria";
-
-        try{
-            state = coneccion.createStatement();
-
-            // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
-            resultado = state.executeQuery("select count() as total from categoria");
-            
-            if(resultado.next()){
-                cantidad = resultado.getInt("total");
-            }
-
-            datos = new String[cantidad+1][4];
-
-            resultado = state.executeQuery(consultar);
-            
-            datos[0][0] = "ID";
-            datos[0][1] = "CATEGORIA";
-
-
-
-            while(resultado.next()){
-
-                datos[i][0] = resultado.getString(1);
-                datos[i][1] = resultado.getString(2);
-                
-                i++;
-            }
-
-        }catch(SQLException ex){
-            throw ex;
-        }
-
-        return datos;
-    }
-
-
-    public String[] consultar_uno_categoria(String id)throws SQLException{
-
-        int id_numero = 0;
-        boolean flag = false;
-        dato = new String[2];
-        for(int i = 0; i < dato.length; i++){
-            dato[i] = null;
-        }
-
-        try{
-            
-            Integer.parseInt(id);
-            consultar = "select * from categoria where cat_id = ?";
-            flag = true;
-
-        }catch(NumberFormatException ex){
-            consultar = "select * from categoria where cat_categoria like ?";
-        }
-        
-
-        try{
-            pstate = coneccion.prepareStatement(consultar);
-
-            if(flag){
-                pstate.setInt(1, id_numero);
-            }else{
-                pstate.setString(1, id);
-            }
-            
-            resultado = pstate.executeQuery();
-
-            if (resultado.next()){
-
-                dato[0] = resultado.getString(1);
-                dato[1] = resultado.getString(2);
-                
-            }
-            
-
-        }catch(SQLException ex){
-            throw ex;
-        }
-        return dato;
-
-    }
+    
 
     // Metodos para relacionados con extractos mensuales
 
@@ -705,7 +432,7 @@ public class Base extends Base_datos{
     public void insertar_extracto_ocasional(String placa, int consecutivo, int contrato)throws SQLException{
 
         String accion_auxiliar = "";
-        int consecutivo2 = 0;
+        int consecutivo2 = consecutivo;
         insertar = "insert into extracto_ocasional values (?,?,?)";
         
         try{
@@ -713,7 +440,7 @@ public class Base extends Base_datos{
             /*Busca en la tabla de consecutivos para los extractos ocasionales si hay uno asosciado a la placa ingresada*/
             state = coneccion.createStatement();
             resultado = state.executeQuery("select con_numero from consecutivo_extracto_ocasional where con_placa = \'"+placa+"\'");
-
+            
             // Si existe un registro
             if(resultado.next()){
                 // Determina si el consecutivo ingresado es mayor que el que existe en la tabla
@@ -725,14 +452,15 @@ public class Base extends Base_datos{
                     consecutivo2 = resultado.getInt(1);
                     
                 }
-
                 // En este caso se define una actualizacion del registro, puesto que ya hay uno existente
                 accion_auxiliar = "update consecutivo_extracto_ocasional set con_numero = ? where con_placa = ?";
 
             }else{  // En caso de no encontrar un regsitro en la tabla, creara un asociado a la placa del vehiculo
+                
                 accion_auxiliar = "insert into consecutivo_extracto_ocasional (con_numero, con_placa) values (?,?)";
                 if(consecutivo <= 0){   // En este caso verifica que el consecutivo no sea menor o igual que cero
-                    consecutivo = 1;
+                    consecutivo2 = consecutivo = 1;
+
                 }
             }
 
@@ -750,7 +478,7 @@ public class Base extends Base_datos{
 
 
             pstate.executeUpdate();
-            pstate.close();
+            
 
             // Prepara los datos a insertar en el consecutivo extracto mensual
             pstate = coneccion.prepareStatement(accion_auxiliar);
@@ -768,6 +496,7 @@ public class Base extends Base_datos{
         }finally{
             coneccion.setAutoCommit(true);
             resultado.close();
+            state.close();
             pstate.close();
         }
 

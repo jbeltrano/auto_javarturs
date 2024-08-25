@@ -21,7 +21,7 @@ import java.awt.event.MouseEvent;
 import com.toedter.calendar.JDateChooser;
 import java.util.Calendar;
 import java.util.Date;
-import Base.Base;
+import Base.Licencia;
 import Base.Persona;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
@@ -85,15 +85,17 @@ public class Insertar_conductor extends Modales_personas{
         combo_conductor.setBounds(147, 28, 87, 22);
 
         base = new Persona(url);
+        Licencia base_licencia = new Licencia(url);
         try{
             datos = ((Persona)base).consultar_persona_natural("");
-            combo_conductor.setModel(new DefaultComboBoxModel<>(base.get_datos_tabla(base.consultar_categoria(), 1)));
+            combo_conductor.setModel(new DefaultComboBoxModel<>(base.get_datos_tabla(base_licencia.consultar_categoria(), 1)));
             tabla_persona = Modelo_tabla.set_tabla_personas(datos);
 
         }catch(SQLException e){
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally{
             base.close();
+            base_licencia.close();
         }
 
         tabla_persona.addMouseListener(new MouseAdapter() {
@@ -213,11 +215,11 @@ public class Insertar_conductor extends Modales_personas{
                 String fecha = formato.format(buscar_fecha.getDate());      // Establece el Date en un String con el formato
                 Double.parseDouble(text_documento.getText());       // Verifica si el numero de documento es un numero                     
 
-                base = new Base(url);   // Abre un objeto de tipo base para hacer consultas u otro tipo de acciones a la base de datos
+                base = new Licencia(url);   // Abre un objeto de tipo base para hacer consultas u otro tipo de acciones a la base de datos
                 
                 try{
                     // Inserta los datos en la base de datos
-                    base.insertar_licencia( text_documento.getText(),               // Numero de documento del conductor
+                    ((Licencia)base).insertar_licencia( text_documento.getText(),               // Numero de documento del conductor
                                             combo_conductor.getSelectedIndex()+1,   // Tipo de licencia de conduccion
                                             fecha);                                 // Fecha de vencimiento de la licencia
 

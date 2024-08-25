@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import Base.Base;
+import Base.Licencia;
 
 public class Actualizar_conductor extends Insertar_conductor{
     
@@ -42,12 +43,12 @@ public class Actualizar_conductor extends Insertar_conductor{
     private void actualizar_conductor(){
         Rectangle pos_boton_guardar = boton_guardar.getBounds();
         dato = null;
-        base = new Base(url);
+        base = new Licencia(url);
 
         formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
         fecha_licencia = null;
         try{
-            dato = base.consultar_uno_licencia(id_busqueda);
+            dato = ((Licencia)base).consultar_uno_licencia(id_busqueda);
 
             text_documento.setText(dato[0]);
             combo_conductor.setSelectedIndex(Integer.parseInt(dato[1])-1);
@@ -55,10 +56,10 @@ public class Actualizar_conductor extends Insertar_conductor{
             buscar_fecha.setDate(Date.from(fecha_licencia.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            base.close();
             setVisible(false);
+        }finally{
+            base.close();
         }
-        base.close();
 
 
         text_documento.setEnabled(false);
@@ -79,15 +80,16 @@ public class Actualizar_conductor extends Insertar_conductor{
                     Double.parseDouble(text_documento.getText());
                     Date data = buscar_fecha.getDate();
                     SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
-                    base = new Base(url);
+                    base = new Licencia(url);
                     try{
-                        base.actualizar_licencia((String) text_documento.getText(), combo_conductor.getSelectedIndex()+1, formato.format(data));
+                        ((Licencia)base).actualizar_licencia((String) text_documento.getText(), combo_conductor.getSelectedIndex()+1, formato.format(data));
                         //base.actualizar_licencia(""+ text_documento.getText(), combo_conductor.getSelectedIndex()+1, (data.getYear()+1900) + "-" + (data.getMonth()+1) + "-" + data.getDate());
                         JOptionPane.showMessageDialog(this, "Licencia actualizada con Exito", "AL", JOptionPane.INFORMATION_MESSAGE);
                         this.setVisible(false);
-                        base.close();
                     }catch(SQLException ex){
                         JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        
+                    }finally{
                         base.close();
                     }
 

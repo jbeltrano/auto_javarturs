@@ -5,6 +5,7 @@ import Base.Ciudad;
 import Base.Clase_vehiculo;
 import Base.Departamento;
 import Base.Documentos;
+import Base.Licencia;
 import Base.Persona;
 import Base.Vehiculo;
 import Base.Vehiculo_has_conductor;
@@ -115,9 +116,9 @@ public class Principal extends JFrame{
     private static final String comando[] = {System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe",
                                             System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf.ps1",
                                             System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales"};
-    // private static final String comando2[] = {System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe",
-    //                                         System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf2.ps1",
-    //                                         System.getProperty("user.home") + "\\Desktop\\Extractos\\Contratos Ocasionales"};
+    private static final String comando2[] = {System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe",
+                                            System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf2.ps1",
+                                             System.getProperty("user.home") + "\\Desktop\\Extractos\\Contratos Ocasionales"};
     
     /** 
      * Este es el constructor general para la clase Principal
@@ -1589,14 +1590,15 @@ public class Principal extends JFrame{
         config_pop_menu();
 
         // Obteniendo datos de la base de datos
-        base = new Base(url);
+        base = new Licencia(url);
         try{
-            datos = base.consultar_licencia();
+            datos = ((Licencia)base).consultar_licencia();
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
         
-        base.close();
 
         // Configuracion de la visualizacion y opciones de la tabla
 
@@ -1629,15 +1631,16 @@ public class Principal extends JFrame{
             String cat = "" + tabla.getValueAt(number, 2);
             number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar al conductor:\n"+ id, "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
-                base = new Base(url);
+                base = new Licencia(url);
                 try{
-                    number = Integer.parseInt(base.consultar_uno_categoria(cat) [0]);
-                    base.eliminar_licencia(id, number);
+                    number = Integer.parseInt(((Licencia)base).consultar_uno_categoria(cat) [0]);
+                    ((Licencia)base).eliminar_licencia(id, number);
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
                 
-                base.close();
                 JOptionPane.showMessageDialog(this, "Conductor eliminada correctamente");
                 boton_conductores.doClick();
             }
@@ -1649,15 +1652,16 @@ public class Principal extends JFrame{
             @Override
             public void accion(){
 
-                base = new Base(url);
+                base = new Licencia(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_conductores(base.consultar_licencia(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_conductores(((Licencia)base).consultar_licencia(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                base.close();
 
             }
 
@@ -2037,6 +2041,7 @@ public class Principal extends JFrame{
 
             int row = tabla.getSelectedRow();
             int num_contrato = Integer.parseInt((String)tabla.getValueAt(row, 0));
+            
             
             try{
                 String ruta = Generar_extractos.generar_extracto_ocasional(num_contrato, url);

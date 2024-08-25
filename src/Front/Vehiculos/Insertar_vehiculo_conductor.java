@@ -19,6 +19,7 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import Base.Base;
+import Base.Licencia;
 import Base.Vehiculo;
 import Base.Vehiculo_has_conductor;
 
@@ -111,9 +112,9 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
                 }else{
                     variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
                 }
-                base = new Base(url);
+                base = new Licencia(url);
                 try{
-                    datos = base.consultar_licencia(variable_auxiliar);
+                    datos = ((Licencia)base).consultar_licencia(variable_auxiliar);
                     tabla_conductor.setModel(Modelo_tabla.set_modelo_tablas(datos));
                     
         
@@ -127,11 +128,11 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
         });
 
         // Configuracion de tablas modelo
-        base = new Base(url);
+        base = new Licencia(url);
         base_Vehiculo = new Vehiculo(url);
         try{
             tabla_vehiculo.setModel(Modelo_tabla.set_modelo_tablas(base_Vehiculo.consultar_vehiculo(true)));
-            tabla_conductor.setModel(Modelo_tabla.set_modelo_tablas(base.consultar_licencia()));
+            tabla_conductor.setModel(Modelo_tabla.set_modelo_tablas(((Licencia)base).consultar_licencia()));
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
         }finally{
@@ -165,15 +166,16 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
                 if(SwingUtilities.isRightMouseButton(evt)){
                     new Insertar_conductor(padre,url).setVisible(true);
 
-                    base = new Base(url);
+                    base = new Licencia(url);
                     try{
-                        tabla_conductor.setModel(Modelo_tabla.set_modelo_tablas(base.consultar_licencia()));
+                        tabla_conductor.setModel(Modelo_tabla.set_modelo_tablas(((Licencia)base).consultar_licencia()));
                     }catch(SQLException ex){
                         JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                        base.close();
                         setVisible(false);
+                    }finally{
+                        base.close();
+                        
                     }
-                    base.close();
                 }else{
                     int valor_auxilia = tabla_conductor.getSelectedRow();
                     text_conductor.setText("" + tabla_conductor.getValueAt(valor_auxilia, 0));    

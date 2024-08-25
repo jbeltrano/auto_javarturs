@@ -17,7 +17,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import java.awt.event.MouseEvent;
 import com.toedter.calendar.JDateChooser;
-import Base.Base;
 import Base.Documentos;
 import Base.Vehiculo;
 import Utilidades.Modelo_tabla;

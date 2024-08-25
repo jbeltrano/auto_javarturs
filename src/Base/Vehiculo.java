@@ -469,7 +469,7 @@ public class Vehiculo extends Base{
             pstate.setString(1, id);
             resultado = pstate.executeQuery();
 
-            pstate.close();
+            
 
             pstate = coneccion.prepareStatement(consutlar2);
             pstate.setString(1, id);

@@ -326,7 +326,7 @@ public class Generar_extractos {
         try{
             // Consultando la cantidad de extractos a realizar con el msimo contrato
             placas_contrato = base.consultar_placas_contrato_ocasional(contrato);
-
+            
             // inicializacion del objeto para modificar la plantilla de extractos
             extracto = new Extracto("src\\Formatos\\Extracto.xlsx");
             datos_contratante = base.consultar_uno_contrato_ocasional(contrato);
@@ -343,6 +343,7 @@ public class Generar_extractos {
                                     datos_per_contratante[0]); // Numero de documento
             extracto.set_tipo_contrato(Extracto.TIPO_CONTRATO_EMPRESARIAL);     // hace el set al tipo de contrato por defecto
 
+            
             if(Integer.parseInt(datos_origen[0]) != 0 && Integer.parseInt(datos_destino[0]) != 0){
                 extracto.set_origen_destino(datos_origen[1],    // Establece el municipio de origen
                                             datos_origen[2],    // Establece el departamento de origen
@@ -379,17 +380,17 @@ public class Generar_extractos {
                 extracto.set_tipo_contrato(Extracto.PARTICULAR);
 
             }
-
+            
             // Establece las fechas iniciales y finales del extracto
             extracto.set_fecha_inicial(datos_contratante[2]);
             extracto.set_fecha_final(datos_contratante[3]);
-
+            
             // hace el set del responsable del contrato
             extracto.set_responsable(datos_per_contratante[4], 
             datos_per_contratante[3], 
             datos_per_contratante[5], 
             datos_per_contratante[6]);
-
+            
             // verifica si el extracto sale como extemporaneo o normal
             if(is_extemporaneo()){
                 sub_ocasional = sub_ocasional + "EXTEMPORANEO";
@@ -415,7 +416,6 @@ public class Generar_extractos {
 
                 // Modificando como tal el documento
                 extracto.set_numero_principal(año, ""+contrato, ""+consecutivo);    // hace el set al numero principal
-                
                 // Se encarga de hacer el set al origen y destino del extracto ocasional
                 // Verificando si es origen destino o ruta como tal, si tiene solo un origen o solo un destino
                 
@@ -430,13 +430,11 @@ public class Generar_extractos {
 
                 
 
-
                 // Verifica si el vehiculo es parte del parque automotor de la empresa
                 // caso contrario simplemente continua con el proceso
                 if(!parque_automotor){
                     extracto.set_convenio(vehiculo_empresa_externa[1], vehiculo_empresa_externa[2]);
                 }
-
                 // Verifica los conductores que tiene el vehiculo para continuar con el proceso
                 if(datos_conductores.length > 1){
                     extracto.set_conductor1(datos_conductores[1][3], datos_conductores[1][2], datos_conductores[1][5]);
