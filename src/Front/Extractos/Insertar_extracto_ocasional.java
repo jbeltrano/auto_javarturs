@@ -1,6 +1,7 @@
 package Front.Extractos;
 
 import Base.Base;
+import Base.Extractos;
 import Base.Vehiculo;
 import Utilidades.Generar_extractos;
 import Utilidades.Key_adapter;
@@ -237,7 +238,7 @@ public class Insertar_extracto_ocasional extends Modal_documento{
         String vehiculo;
         int contrato;
 
-        base = new Base(url);
+        base = new Extractos(url);
         try{
 
             vehiculo = (text_placa.getText().compareTo("") == 0)?null: text_placa.getText();
@@ -246,7 +247,7 @@ public class Insertar_extracto_ocasional extends Modal_documento{
 
             if(vehiculo != null && contrato != 0 && consecutivo != 0){
 
-                base.insertar_extracto_ocasional(vehiculo, consecutivo, contrato);
+                ((Extractos)base).insertar_extracto_ocasional(vehiculo, consecutivo, contrato);
                 JOptionPane.showMessageDialog(this, "Extracto ocasional guardado correctamente", "Transaccion exitosa", JOptionPane.INFORMATION_MESSAGE);
                 return true;
 
@@ -277,10 +278,10 @@ public class Insertar_extracto_ocasional extends Modal_documento{
         int valor_auxilia = tabla_vehiculo.getSelectedRow();
         int consecutivo = 0;
         text_placa.setText("" + tabla_vehiculo.getValueAt(valor_auxilia, 0));
-        base = new Base(url);
+        base = new Extractos(url);
         try{
 
-            consecutivo = base.consultar_consecutivo_ocasional(text_placa.getText());
+            consecutivo = ((Extractos)base).consultar_consecutivo_ocasional(text_placa.getText());
             if(consecutivo == 0){
                 
                 text_consecutivo.setText("");

@@ -1,11 +1,9 @@
 package Front.Extractos;
 
 import java.sql.SQLException;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
-import Base.Base;
+import Base.Extractos;
 
 public class Actualizar_extracto_ocasional extends Insertar_extracto_ocasional {
     
@@ -54,7 +52,7 @@ public class Actualizar_extracto_ocasional extends Insertar_extracto_ocasional {
             String vehiculo;
             int contrato;
 
-            base = new Base(url);
+            base = new Extractos(url);
             try{
 
                 vehiculo = (text_placa.getText().compareTo("") == 0)?null: text_placa.getText();
@@ -63,7 +61,7 @@ public class Actualizar_extracto_ocasional extends Insertar_extracto_ocasional {
 
                 if(vehiculo != null && contrato != 0 && consecutivo != 0){
 
-                    base.actualizar_extracto_ocasional(vehiculo, consecutivo, contrato);
+                    ((Extractos)base).actualizar_extracto_ocasional(vehiculo, consecutivo, contrato);
                     JOptionPane.showMessageDialog(this, "Extracto ocasional Actualizado y guardado correctamente", "Transaccion exitosa", JOptionPane.INFORMATION_MESSAGE);
                     return true;
 

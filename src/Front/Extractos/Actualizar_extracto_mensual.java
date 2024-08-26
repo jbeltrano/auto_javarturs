@@ -5,7 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import Base.Base;
+import Base.Extractos;
 
 public class Actualizar_extracto_mensual extends Insertar_extracto_mensual{
     
@@ -33,12 +33,12 @@ public class Actualizar_extracto_mensual extends Insertar_extracto_mensual{
 
 
         // Cargando la informacion
-        base = new Base(url);
+        base = new Extractos(url);
         try{
 
             // inicializando los valores
             SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-            datos = base.consultar_uno_extracto_mensual(placa, consecutivo);
+            datos = ((Extractos)base).consultar_uno_extracto_mensual(placa, consecutivo);
             text_placa.setText(placa);
             text_consecutivo.setText(datos[1]);
             text_contratante.setText(datos[2]);
@@ -72,7 +72,7 @@ public class Actualizar_extracto_mensual extends Insertar_extracto_mensual{
             int destino;
             SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
     
-            base = new Base(url);
+            base = new Extractos(url);
             try{
     
                 vehiculo = (text_placa.getText().compareTo("") == 0)?null: text_placa.getText();
@@ -85,7 +85,7 @@ public class Actualizar_extracto_mensual extends Insertar_extracto_mensual{
                 
                 if(vehiculo != null && contratante != 0 && origen != 0 && destino != -1 && consecutivo != 0){
     
-                    base.actualizar_extracto_mensual(vehiculo, consecutivo, contratante, ffecha_inicial, ffecha_final, origen, destino);
+                    ((Extractos)base).actualizar_extracto_mensual(vehiculo, consecutivo, contratante, ffecha_inicial, ffecha_final, origen, destino);
                     JOptionPane.showMessageDialog(this, "Extracto mensual guardado correctamente", "Transaccion exitosa", JOptionPane.INFORMATION_MESSAGE);
                     base.close();
                     return true;
@@ -101,6 +101,8 @@ public class Actualizar_extracto_mensual extends Insertar_extracto_mensual{
             }catch(NumberFormatException ex){
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
+            }finally{
+                base.close();
             }
         
         }else{

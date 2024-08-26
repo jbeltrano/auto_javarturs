@@ -1,7 +1,6 @@
 package Front.Vehiculos;
 
 import java.sql.SQLException;
-
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -18,7 +17,6 @@ import Utilidades.Modelo_tabla;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
-import Base.Base;
 import Base.Licencia;
 import Base.Vehiculo;
 import Base.Vehiculo_has_conductor;

@@ -6,8 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import com.toedter.calendar.JDateChooser;
-
-import Base.Base;
+import Base.Extractos;
 
 import java.awt.Dimension;
 import java.sql.SQLException;
@@ -84,9 +83,9 @@ public class Actualizar_todo_ext_mensual extends Modal_extracto{
 
         ffecha_inicial = formato.format(fecha_inicial.getDate());
         ffecha_final = formato.format(fecha_final.getDate());
-        base = new Base(url);
+        base = new Extractos(url);
         try{
-            base.actualizar_todos_extractos_mensuales(ffecha_inicial, ffecha_final);
+            ((Extractos)base).actualizar_todos_extractos_mensuales(ffecha_inicial, ffecha_final);
             JOptionPane.showMessageDialog(this, "Extractos actualizados con exito", "Transaccion exitosa", JOptionPane.INFORMATION_MESSAGE);
             setVisible(false);
         }catch(SQLException ex){

@@ -5,6 +5,7 @@ import Base.Ciudad;
 import Base.Clase_vehiculo;
 import Base.Departamento;
 import Base.Documentos;
+import Base.Extractos;
 import Base.Licencia;
 import Base.Persona;
 import Base.Vehiculo;
@@ -32,6 +33,7 @@ import Front.Vehiculos.Insertar_documento_vehiculo;
 import Front.Vehiculos.Insertar_tipo_vehiculo;
 import Front.Vehiculos.Insertar_vehiculo_conductor;
 import Front.Vehiculos.Insertar_vehiculos;
+import Utilidades.Extracto;
 import Utilidades.Generar_extractos;
 import Utilidades.Key_adapter;
 import Utilidades.Leer_link;
@@ -1690,9 +1692,9 @@ public class Principal extends JFrame{
         config_pop_menu_extractos();
 
         // Obteniendo datos de la base de datos
-        base = new Base(url);
+        base = new Extractos(url);
         try{
-            datos = base.consultar_vw_extracto_mensual("");
+            datos = ((Extractos)base).consultar_vw_extracto_mensual("");
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
         }
@@ -1711,9 +1713,9 @@ public class Principal extends JFrame{
             int row = tabla.getSelectedRow();
             // actualizar_extracto
             new Actualizar_extracto_mensual(this, url,(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1)),false).setVisible(true);
-            base = new Base(url);
+            base = new Extractos(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_extractos_mensuales(((Extractos)base).consultar_vw_extracto_mensual(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -1728,9 +1730,9 @@ public class Principal extends JFrame{
             int row = tabla.getSelectedRow();
             // actualizar_extracto
             new Actualizar_extracto_mensual(this, url,(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1)),true).setVisible(true);
-            base = new Base(url);
+            base = new Extractos(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_extractos_mensuales(((Extractos)base).consultar_vw_extracto_mensual(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -1742,9 +1744,9 @@ public class Principal extends JFrame{
         item_adicionar.addActionListener(accion ->{
 
             new Insertar_extracto_mensual(this, url).setVisible(true);
-            base = new Base(url);
+            base = new Extractos(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_extractos_mensuales(((Extractos)base).consultar_vw_extracto_mensual(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                     
@@ -1770,9 +1772,9 @@ public class Principal extends JFrame{
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
             
-            base = new Base(url);
+            base = new Extractos(url);
             try{
-                tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                tabla = Modelo_tabla.set_tabla_extractos_mensuales(((Extractos)base).consultar_vw_extracto_mensual(text_busqueda.getText()));
                 tabla.setComponentPopupMenu(pop_menu);
                 scroll.setViewportView(tabla );
                 
@@ -1790,10 +1792,10 @@ public class Principal extends JFrame{
             String consecutivo = "" + tabla.getValueAt(number, 1);
             number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el extracto " + consecutivo + "\ndel vehiculo "+placa,  "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
-                base = new Base(url);
+                base = new Extractos(url);
                 try{
                     // realizando la eliminacion del registro
-                    base.eliminar_extracto_mensual(placa, Integer.parseInt(consecutivo));
+                    ((Extractos)base).eliminar_extracto_mensual(placa, Integer.parseInt(consecutivo));
 
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
@@ -1830,9 +1832,9 @@ public class Principal extends JFrame{
 
             new Actualizar_todo_ext_mensual(this, url).setVisible(true);
 
-            base = new Base(url);
+            base = new Extractos(url);
             try{
-                tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                tabla = Modelo_tabla.set_tabla_extractos_mensuales(((Extractos)base).consultar_vw_extracto_mensual(text_busqueda.getText()));
                 tabla.setComponentPopupMenu(pop_menu);
                 scroll.setViewportView(tabla );
                 
@@ -1849,9 +1851,9 @@ public class Principal extends JFrame{
             @Override
             public void accion(){
 
-                base = new Base(url);
+                base = new Extractos(url);
                     try {
-                        tabla = Modelo_tabla.set_tabla_extractos_mensuales(base.consultar_vw_extracto_mensual(text_busqueda.getText()));
+                        tabla = Modelo_tabla.set_tabla_extractos_mensuales(((Extractos)base).consultar_vw_extracto_mensual(text_busqueda.getText()));
                         tabla.setComponentPopupMenu(pop_menu);
                         scroll.setViewportView(tabla);
         
@@ -2149,9 +2151,9 @@ public class Principal extends JFrame{
         pop_menu.remove(item_exportar_todos);
 
         // Obteniendo datos de la base de datos
-        base = new Base(url);
+        base = new Extractos(url);
         try{
-            datos = base.consultar_vw_extracto_ocasional("");
+            datos = ((Extractos)base).consultar_vw_extracto_ocasional("");
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
         }
@@ -2173,9 +2175,9 @@ public class Principal extends JFrame{
             String contrato = (String) tabla.getValueAt(row, 2);
             // actualizar_extracto
             new Actualizar_extracto_ocasional(this, url, placa, consecutivo, contrato, false).setVisible(true);
-            base = new Base(url);
+            base = new Extractos(url);
                 try{
-                    JTable aux_tabla = Modelo_tabla.set_tabla_extractos_ocasionales(base.consultar_vw_extracto_ocasional(text_busqueda.getText()));
+                    JTable aux_tabla = Modelo_tabla.set_tabla_extractos_ocasionales(((Extractos)base).consultar_vw_extracto_ocasional(text_busqueda.getText()));
                     
                     tabla.setModel(aux_tabla.getModel());
                     tabla.setColumnModel(aux_tabla.getColumnModel());
@@ -2190,9 +2192,9 @@ public class Principal extends JFrame{
         item_adicionar.addActionListener(accion ->{
 
             new Insertar_extracto_ocasional(this, url).setVisible(true);
-            base = new Base(url);
+            base = new Extractos(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_extractos_ocasionales(base.consultar_vw_extracto_ocasional(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_extractos_ocasionales(((Extractos)base).consultar_vw_extracto_ocasional(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -2208,9 +2210,9 @@ public class Principal extends JFrame{
 
             new Actualizar_extracto_ocasional(this, url, placa, consecutivo, contrato, true).setVisible(true);
 
-            base = new Base(url);
+            base = new Extractos(url);
             try{
-                JTable tab_aux = Modelo_tabla.set_tabla_extractos_ocasionales(base.consultar_vw_extracto_ocasional(text_busqueda.getText()));
+                JTable tab_aux = Modelo_tabla.set_tabla_extractos_ocasionales(((Extractos)base).consultar_vw_extracto_ocasional(text_busqueda.getText()));
                 tabla.setModel(tab_aux.getModel());
                 tabla.setColumnModel(tab_aux.getColumnModel());
             }catch(SQLException ex){
@@ -2245,10 +2247,10 @@ public class Principal extends JFrame{
             String consecutivo = "" + tabla.getValueAt(number, 1);
             number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el extracto " + consecutivo + "\ndel vehiculo "+placa,  "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
-                base = new Base(url);
+                base = new Extractos(url);
                 try{
                     // realizando la eliminacion del registro
-                    base.eliminar_extracto_ocasional(placa, Integer.parseInt(consecutivo));
+                    ((Extractos)base).eliminar_extracto_ocasional(placa, Integer.parseInt(consecutivo));
 
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
@@ -2268,9 +2270,9 @@ public class Principal extends JFrame{
             @Override
             public void accion(){
 
-                base = new Base(url);
+                base = new Extractos(url);
                     try {
-                        JTable tab_aux = Modelo_tabla.set_tabla_extractos_ocasionales(base.consultar_vw_extracto_ocasional(text_busqueda.getText()));
+                        JTable tab_aux = Modelo_tabla.set_tabla_extractos_ocasionales(((Extractos)base).consultar_vw_extracto_ocasional(text_busqueda.getText()));
                         tabla.setModel(tab_aux.getModel());
                         tabla.setColumnModel(tab_aux.getColumnModel());
                     } catch (SQLException ex) {

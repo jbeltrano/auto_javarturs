@@ -11,8 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
-import Base.Base;
 import Base.Licencia;
 
 public class Actualizar_conductor extends Insertar_conductor{

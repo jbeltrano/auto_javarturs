@@ -5,13 +5,13 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import Base.Base;
 import Base.Ciudad;
+import Base.Extractos;
 import Base.Vehiculo;
 import Front.Ciudades_departamentos.Insertar_ciudad;
 import Utilidades.Generar_extractos;
@@ -389,7 +389,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
         int destino;
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
 
-        base = new Base(url);
+        base = new Extractos(url);
         try{
 
             vehiculo = (text_placa.getText().compareTo("") == 0)?null: text_placa.getText();
@@ -402,7 +402,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
             
             if(vehiculo != null && contratante != 0 && origen != 0 && destino != -1 && consecutivo != 0){
 
-                base.insertar_extracto_mensual(vehiculo, contratante, ffecha_inicial, ffecha_final, origen, destino, consecutivo);
+                ((Extractos)base).insertar_extracto_mensual(vehiculo, contratante, ffecha_inicial, ffecha_final, origen, destino, consecutivo);
                 JOptionPane.showMessageDialog(this, "Extracto mensual guardado correctamente", "Transaccion exitosa", JOptionPane.INFORMATION_MESSAGE);
                 return true;
 
@@ -428,10 +428,10 @@ public class Insertar_extracto_mensual extends Modal_documento {
         int valor_auxilia = tabla_vehiculo.getSelectedRow();
         int consecutivo = 0;
         text_placa.setText("" + tabla_vehiculo.getValueAt(valor_auxilia, 0));
-        base = new Base(url);
+        base = new Extractos(url);
         try{
 
-            consecutivo = base.consultar_consecutivo_mensual(text_placa.getText());
+            consecutivo = ((Extractos)base).consultar_consecutivo_mensual(text_placa.getText());
             if(consecutivo == 0){
                 text_consecutivo.setEnabled(true);
                 text_consecutivo.setText("");
