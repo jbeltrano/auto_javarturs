@@ -8,6 +8,7 @@ import java.time.temporal.ChronoUnit;
 import Base.Base;
 import Base.Ciudad;
 import Base.Vehiculo;
+import Base.BContrato_ocasional;
 
 public class Generar_contratos_ocasionales {
 
@@ -30,9 +31,10 @@ public class Generar_contratos_ocasionales {
         base = new Base(url);
         Ciudad base_ciudad = new Ciudad(url);
         Vehiculo base_Vehiculo = new Vehiculo(url);
+        BContrato_ocasional base_contrato_ocasional = new BContrato_ocasional(url);
         try{
             // Carga la infromarcion necesaria
-            contrato_ocasional = base.consultar_uno_contrato_ocasional(Integer.parseInt(contrato));
+            contrato_ocasional = base_contrato_ocasional.consultar_uno_contrato_ocasional(Integer.parseInt(contrato));
             contratante = base.consultar_uno_contratante(contrato_ocasional[1]);
             origen = base_ciudad.consultar_uno_ciudades(contrato_ocasional[4]);
             destino = base_ciudad.consultar_uno_ciudades(contrato_ocasional[5]);
@@ -98,7 +100,7 @@ public class Generar_contratos_ocasionales {
             base.close();
             base_Vehiculo.close();
             doc_contrato.close();
-            
+            base_contrato_ocasional.close();
         }
         return url_destino;
 

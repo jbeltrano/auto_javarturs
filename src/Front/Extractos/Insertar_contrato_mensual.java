@@ -16,6 +16,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import Base.Base;
+import Base.BContrato_ocasional;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
 
@@ -57,12 +58,12 @@ public class Insertar_contrato_mensual extends Modal_extracto{
         label_tipo_contrato = new JLabel();
         
         // Consultando los datos de los contratantes
-        base = new Base(url);
+        base = new BContrato_ocasional(url);
         
         try{
             datos = base.consultar_contratante("");
             ultimo_contrato = "" + (Integer.parseInt(base.consultar_ultimo_contrato_mensual()) +1);
-            combo_tipo_contrato = new JComboBox<>(base.consultar_tipo_contrato());
+            combo_tipo_contrato = new JComboBox<>(((BContrato_ocasional)base).consultar_tipo_contrato());
 
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

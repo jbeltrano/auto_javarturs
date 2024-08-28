@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import Base.Base;
 import Base.Ciudad;
+import Base.BContrato_ocasional;
 import Front.Ciudades_departamentos.Insertar_ciudad;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
@@ -92,15 +93,15 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         combo_tipo_contrato = new JComboBox<>();
 
         // incializando las tablas
-        base = new Base(url);
+        base = new BContrato_ocasional(url);
         Ciudad base_ciudad = new Ciudad(url);
         try{
 
-            text_numero_contrato.setText("" + (base.consultar_maximo_contrato_ocasional()+1));
+            text_numero_contrato.setText("" + (((BContrato_ocasional)base).consultar_maximo_contrato_ocasional()+1));
             tabla_contratante = Modelo_tabla.set_tabla_contratante(base.consultar_contratante(""));
             tabla_origen = Modelo_tabla.set_tabla_ciudad(base_ciudad.consultar_ciudades(""));
             tabla_destino = Modelo_tabla.set_tabla_ciudad(base_ciudad.consultar_ciudades(""));
-            combo_tipo_contrato = new JComboBox<>(base.consultar_tipo_contrato());
+            combo_tipo_contrato = new JComboBox<>(((BContrato_ocasional)base).consultar_tipo_contrato());
             
 
         }catch(SQLException ex){
@@ -384,7 +385,7 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         double valor_contrato;
         text_valor_contrato.setText(text_valor_contrato.getText().replaceAll(",", "."));
         
-        base = new Base(url);
+        base = new BContrato_ocasional(url);
         try{
             Integer.parseInt(text_contratante.getText());
             numero_contrato = (text_numero_contrato.getText().compareTo("") == 0)?null: Integer.parseInt(text_numero_contrato.getText());
@@ -398,7 +399,7 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
             
             if(contratante != null && origen != 0 && destino != 0 && numero_contrato != 0 && valor_contrato != 0){
 
-                base.insertar_contrato_ocasional(numero_contrato, 
+                ((BContrato_ocasional)base).insertar_contrato_ocasional(numero_contrato, 
                                                  contratante, 
                                                  ffecha_inicial, 
                                                  ffecha_final, 
@@ -407,7 +408,6 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
                                                  valor_contrato,
                                                  tipo_contrato);
                 JOptionPane.showMessageDialog(this, "Contrato Ocasional guardado correctamente", "Transaccion exitosa", JOptionPane.INFORMATION_MESSAGE);
-                base.close();
                 setVisible(false);
 
             }else{
@@ -418,6 +418,8 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }catch(NumberFormatException ex){
             JOptionPane.showMessageDialog(this, "Los campos: \nNumero de contrato\nContratante\norigen y destino\nDeben ser de tipo numerico", "Error", JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
     }
 

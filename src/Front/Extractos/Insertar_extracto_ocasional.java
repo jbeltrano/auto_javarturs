@@ -1,6 +1,7 @@
 package Front.Extractos;
 
 import Base.Base;
+import Base.Contrato_ocasional;
 import Base.Extractos;
 import Base.Vehiculo;
 import Utilidades.Generar_extractos;
@@ -60,11 +61,11 @@ public class Insertar_extracto_ocasional extends Modal_documento{
         boton_guardar_exportar = new JButton("Guardar y Exportar");
 
         // Inicializacion de los valores de las tablas
-        base = new Base(url);
+        base = new Contrato_ocasional(url);
         Vehiculo base_vehiculo = new Vehiculo(url);
         try{
             String[][] datos_vehiculo = base_vehiculo.consultar_vehiculo("");
-            String[][] datos_contrato = base.consultar_contrato_ocasional("");
+            String[][] datos_contrato = ((Contrato_ocasional)base).consultar_contrato_ocasional("");
 
             tabla_vehiculo = Modelo_tabla.set_tabla_vehiculo(datos_vehiculo);
             tabla_contrato = Modelo_tabla.set_tabla_contratos_ocasionales(datos_contrato);
@@ -77,6 +78,7 @@ public class Insertar_extracto_ocasional extends Modal_documento{
             JOptionPane.showMessageDialog(this, ex.getMessage(),"Error" ,JOptionPane.ERROR_MESSAGE);
         }finally {
             base.close();
+            base_vehiculo.close();
         }
         label_vehiculo.setBounds(POS_X,POS_X,100,HEIGHT);
         panel.add(label_vehiculo);
@@ -138,9 +140,9 @@ public class Insertar_extracto_ocasional extends Modal_documento{
 
                 String datos[][] = null;
 
-                base = new Base(url);
+                base = new Contrato_ocasional(url);
                 try{
-                    datos = base.consultar_contrato_ocasional(text_contrato.getText());
+                    datos = ((Contrato_ocasional)base).consultar_contrato_ocasional(text_contrato.getText());
                     JTable tabla_auxiliar = Modelo_tabla.set_tabla_contratos_ocasionales(datos);
                     tabla_contrato.setModel(tabla_auxiliar.getModel());
                     tabla_contrato.setColumnModel(tabla_auxiliar.getColumnModel());

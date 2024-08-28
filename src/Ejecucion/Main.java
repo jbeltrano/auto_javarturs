@@ -14,7 +14,7 @@ public class Main {
     public static void main(String[] args) {
         Base base = null;
         try{
-            base = new Base("src\\DB\\base.db");        
+            base = new Base("src\\DB\\base.db");
 
             base.insertar_documento2("SXT705","documento.pdf",leerArchivo("C:\\Users\\Juan Beltran\\Desktop\\Parcial practico.pdf"));
             

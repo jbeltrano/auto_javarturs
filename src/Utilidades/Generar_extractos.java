@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+
+import Base.BContrato_ocasional;
 import Base.Base;
 import Base.Ciudad;
 import Base.Vehiculo;
@@ -157,6 +159,7 @@ public class Generar_extractos {
         Vehiculo base_vehiculo = new Vehiculo(url);
         Ciudad base_ciudad = new Ciudad(url);
         Vehiculo_has_conductor base_vhc = new Vehiculo_has_conductor(url);
+        BContrato_ocasional base_co = new BContrato_ocasional(url);
         boolean parque_automotor = true;
         String sub_ocasional = "OCASIONAL ";
         String[] datos_per_contratante;
@@ -176,16 +179,16 @@ public class Generar_extractos {
         try{
             // inicializacion del objeto para modificar la plantilla de extractos
             extracto = new Extracto("src\\Formatos\\Extracto.xlsx");
-            datos_contratante = base.consultar_uno_contrato_ocasional(contrato);
+            datos_contratante = base_co.consultar_uno_contrato_ocasional(contrato);
             datos_per_contratante = base.consultar_uno_contratante(datos_contratante[1]);
             datos_conductores = base_vhc.consultar_conductor_has_vehiculo(placa);
             datos_origen = base_ciudad.consultar_uno_ciudades(datos_contratante[4]);
             datos_destino = base_ciudad.consultar_uno_ciudades(datos_contratante[5]);
             datos_vehiculo = base.consultar_uno_vw_vehiculo_extracto(placa);
-            datos_tipo_contrato = base.consultar_tipo_contrato_ocasional(Integer.parseInt(datos_contratante[0]));
+            datos_tipo_contrato = base_co.consultar_tipo_contrato_ocasional(Integer.parseInt(datos_contratante[0]));
             parque_automotor = Boolean.parseBoolean(base_vehiculo.consultar_uno_vehiculo(placa)[16]);
             vehiculo_empresa_externa = base.consultar_uno_vehiculo_externo(placa);
-            placas_contrato = base.consultar_placas_contrato_ocasional(contrato);
+            placas_contrato = base_co.consultar_placas_contrato_ocasional(contrato);
             
             // Verifica si el vehiculo a insertar contiene documentos para seguir con el proceso
             if(datos_vehiculo[0] == null){
@@ -293,6 +296,7 @@ public class Generar_extractos {
             base_vehiculo.close();
             base_ciudad.close();
             base_vhc.close();
+            base_co.close();
         }
         
         return localizacion_fichero + placa + sub_ocasional +" (" + consecutivo + ")\n El contrato se guardo en: " + localizacion_contrato;
@@ -310,6 +314,7 @@ public class Generar_extractos {
         Ciudad base_ciudad = new Ciudad(url);
         Vehiculo_has_conductor base_vhc = new Vehiculo_has_conductor(url);
         Extractos base_extractos = new Extractos(url);
+        BContrato_ocasional base_co = new BContrato_ocasional(url);
         boolean parque_automotor = true;
         String sub_ocasional = "OCASIONAL ";
         String[] datos_per_contratante;
@@ -329,15 +334,15 @@ public class Generar_extractos {
 
         try{
             // Consultando la cantidad de extractos a realizar con el msimo contrato
-            placas_contrato = base.consultar_placas_contrato_ocasional(contrato);
+            placas_contrato = base_co.consultar_placas_contrato_ocasional(contrato);
             
             // inicializacion del objeto para modificar la plantilla de extractos
             extracto = new Extracto("src\\Formatos\\Extracto.xlsx");
-            datos_contratante = base.consultar_uno_contrato_ocasional(contrato);
+            datos_contratante = base_co.consultar_uno_contrato_ocasional(contrato);
             datos_origen = base_ciudad.consultar_uno_ciudades(datos_contratante[4]);
             datos_destino = base_ciudad.consultar_uno_ciudades(datos_contratante[5]);
             datos_per_contratante = base.consultar_uno_contratante(datos_contratante[1]);
-            datos_tipo_contrato = base.consultar_tipo_contrato_ocasional(Integer.parseInt(datos_contratante[0]));
+            datos_tipo_contrato = base_co.consultar_tipo_contrato_ocasional(Integer.parseInt(datos_contratante[0]));
             
             año = datos_contratante[3].split("-")[0];
 
@@ -473,6 +478,7 @@ public class Generar_extractos {
             extracto.close();
             base_vhc.close();
             base_extractos.close();
+            base_co.close();
         }
         // Retorna la localizacion del los extractos
         return localizacion_fichero + "\n Contrato guardado en: " + localizacion_contrato;

@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import Base.Base;
+import Base.BContrato_ocasional;
 
 public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
     
@@ -28,12 +28,12 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
             text_numero_contrato.setEnabled(false);
         }
         
-        base = new Base(url);
+        base = new BContrato_ocasional(url);
         try{
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
             LocalDate fInicial;
             LocalDate fFinal;
-            datos = base.consultar_uno_contrato_ocasional(id);
+            datos = ((BContrato_ocasional)base).consultar_uno_contrato_ocasional(id);
 
             if(!is_plantilla){
                 text_numero_contrato.setText(datos[0]);
@@ -53,8 +53,10 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             setVisible(false);
+        }finally{
+            base.close();
         }
-        base.close();
+        
     }
 
     @Override
@@ -71,7 +73,7 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
             double valor_contrato;
             text_valor_contrato.setText(text_valor_contrato.getText().replaceAll(",", "."));
             
-            base = new Base(url);
+            base = new BContrato_ocasional(url);
             try{
                 Integer.parseInt(text_contratante.getText());
                 numero_contrato = (text_numero_contrato.getText().compareTo("") == 0)?null: Integer.parseInt(text_numero_contrato.getText());
@@ -85,7 +87,7 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
                 
                 if(contratante != null && origen != 0 && destino != 0 && numero_contrato != 0 && valor_contrato != 0){
     
-                    base.actualizar_contrato_ocasional(numero_contrato, 
+                    ((BContrato_ocasional)base).actualizar_contrato_ocasional(numero_contrato, 
                                                        contratante,
                                                        ffecha_inicial, 
                                                        ffecha_final, 
@@ -95,7 +97,6 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
                                                        tipo_contrato);
     
                     JOptionPane.showMessageDialog(this, "Contrato Ocasional guardado correctamente", "Transaccion exitosa", JOptionPane.INFORMATION_MESSAGE);
-                    base.close();
                     setVisible(false);
     
                 }else{
@@ -106,6 +107,8 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }catch(NumberFormatException ex){
                 JOptionPane.showMessageDialog(this, "Los campos: \nNumero de contrato\nContratante\norigen y destino\nDeben ser de tipo numerico", "Error", JOptionPane.ERROR_MESSAGE);
+            }finally{
+                base.close();
             }
         }else{
             super.guardar();
