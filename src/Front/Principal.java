@@ -3,6 +3,8 @@ package Front;
 import Base.Base;
 import Base.Ciudad;
 import Base.Clase_vehiculo;
+import Base.Contratante;
+import Base.Contrato_mensual;
 import Base.BContrato_ocasional;
 import Base.Departamento;
 import Base.Documentos;
@@ -34,7 +36,6 @@ import Front.Vehiculos.Insertar_documento_vehiculo;
 import Front.Vehiculos.Insertar_tipo_vehiculo;
 import Front.Vehiculos.Insertar_vehiculo_conductor;
 import Front.Vehiculos.Insertar_vehiculos;
-import Utilidades.Extracto;
 import Utilidades.Generar_extractos;
 import Utilidades.Key_adapter;
 import Utilidades.Leer_link;
@@ -1890,14 +1891,15 @@ public class Principal extends JFrame{
         pop_menu.remove(1);
 
         // Obteniendo datos de la base de datos
-        base = new Base(url);
+        base = new Contrato_mensual(url);
         try{
-            datos = base.consultar_contratos_mensuales("");
+            datos = ((Contrato_mensual)base).consultar_contratos_mensuales("");
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
         
-        base.close();
 
         // Configuracion de la visualizacion y opciones de la tabla
 
@@ -1911,15 +1913,16 @@ public class Principal extends JFrame{
 
             new Insertar_contrato_mensual(this, url).setVisible(true);
 
-            base = new Base(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_contratos_mensuales(base.consultar_contratos_mensuales(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            base.close();
+            base = new Contrato_mensual(url);
+            try{
+                tabla = Modelo_tabla.set_tabla_contratos_mensuales(((Contrato_mensual)base).consultar_contratos_mensuales(text_busqueda.getText()));
+                tabla.setComponentPopupMenu(pop_menu);
+                scroll.setViewportView(tabla );
+            }catch(SQLException ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }finally{
+                base.close();
+            }
 
         });
 
@@ -1930,14 +1933,15 @@ public class Principal extends JFrame{
             String nombre = "" + tabla.getValueAt(number, 2);
             number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el contrato:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
-                base = new Base(url);
+                base = new Contrato_mensual(url);
                 try{
-                    base.eliminar_contrato_mensual(Integer.parseInt(id));
+                    ((Contrato_mensual)base).eliminar_contrato_mensual(Integer.parseInt(id));
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
                 
-                base.close();
                 JOptionPane.showMessageDialog(this, "Contrato eliminado correctamente");
                 boton_contratos_mensuales.doClick();
             }
@@ -1949,15 +1953,16 @@ public class Principal extends JFrame{
             @Override
             public void accion(){
 
-                base = new Base(url);
+                base = new Contrato_mensual(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_contratos_mensuales(base.consultar_contratos_mensuales(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_contratos_mensuales(((Contrato_mensual)base).consultar_contratos_mensuales(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                base.close();
 
             }
 
@@ -2310,14 +2315,14 @@ public class Principal extends JFrame{
         
 
         // Obteniendo datos de la base de datos
-        base = new Base(url);
+        base = new Contratante(url);
         try{
-            datos = base.consultar_contratante("");
+            datos = ((Contratante)base).consultar_contratante("");
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
-        
-        base.close();
 
         // Configuracion de la visualizacion y opciones de la tabla
 
@@ -2334,9 +2339,9 @@ public class Principal extends JFrame{
 
             
             new Actualizar_contratante(this, url,(String) tabla.getValueAt(select_row, 0)).setVisible(true);
-            base = new Base(url);
+            base = new Contratante(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_contratante(base.consultar_contratante(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_contratante(((Contratante)base).consultar_contratante(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -2349,9 +2354,9 @@ public class Principal extends JFrame{
 
             new Insertar_contratante(this, url).setVisible(true);
 
-            base = new Base(url);
+            base = new Contratante(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_contratante(base.consultar_contratante(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_contratante(((Contratante)base).consultar_contratante(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
@@ -2368,9 +2373,9 @@ public class Principal extends JFrame{
             String nombre = "" + tabla.getValueAt(number, 2);
             number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar al contratante:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
-                base = new Base(url);
+                base = new Contratante(url);
                 try{
-                    base.eliminar_contratante(id);
+                    ((Contratante)base).eliminar_contratante(id);
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
                 }
@@ -2387,9 +2392,9 @@ public class Principal extends JFrame{
             @Override
             public void accion(){
 
-                base = new Base(url);
+                base = new Contratante(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_contratante(base.consultar_contratante(text_busqueda.getText()));
+                    tabla = Modelo_tabla.set_tabla_contratante(((Contratante)base).consultar_contratante(text_busqueda.getText()));
                     tabla.setComponentPopupMenu(pop_menu);
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){

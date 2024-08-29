@@ -517,4 +517,48 @@ public class Extractos extends Base{
         pstate.executeUpdate();
         pstate.close();
     }
+
+    public String[]consultar_uno_vehiculo_externo(String placa)throws SQLException{
+        dato = new String[3];
+        pstate = coneccion.prepareStatement("select * from vw_vehiculo_externo where veh_placa = ?");
+
+        pstate.setString(1, placa);
+
+        resultado = pstate.executeQuery();
+
+        if(resultado.next()){
+            dato[0] = resultado.getString(1);
+            dato[1] = resultado.getString(2);
+            dato[2] = resultado.getString(3);
+        }
+
+        pstate.close();
+        resultado.close();
+        return dato;
+    }
+
+    public String[] consultar_uno_vw_vehiculo_extracto(String placa)throws SQLException{
+        dato = new String[6];
+
+        consultar = "select * from vw_vehiculo_extracto where veh_placa = ?";
+
+        pstate = coneccion.prepareStatement(consultar);
+
+        pstate.setString(1, placa);
+
+        resultado = pstate.executeQuery();
+
+        if(resultado.next()){
+            
+            dato[0] = resultado.getString(1);
+            dato[1] = resultado.getString(2);
+            dato[2] = resultado.getString(3);
+            dato[3] = resultado.getString(4);
+            dato[4] = resultado.getString(5);
+            dato[5] = resultado.getString(6);
+ 
+        }
+        return dato;
+    }
+    
 }

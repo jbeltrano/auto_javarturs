@@ -14,7 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import Base.Base;
+import Base.Contratante;
 import Base.Persona;
 import Front.Personas.Insertar_persona;
 import Utilidades.Key_adapter;
@@ -214,9 +214,9 @@ public class Insertar_contratante extends Modal_extracto{
 
     protected void guardar()throws SQLException{
 
-        base = new Base(url);
+        base = new Contratante(url);
 
-        base.insertar_contratante(text_contratante.getText(), text_responsable.getText());
+        ((Contratante)base).insertar_contratante(text_contratante.getText(), text_responsable.getText());
 
         base.close();
 

@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 import javax.swing.JOptionPane;
 import java.sql.SQLException;
 import Base.Ciudad;
+import Base.Contratante;
 import Base.Departamento;
 import Base.Persona;
 import Base.Tipo_id;
@@ -259,6 +260,7 @@ public class Insertar_persona extends Modales_personas{
                 tipo_documento = combo_tipo_documento.getSelectedIndex() + 1;   // Determina el id del tipo de documento
 
                 base = new Persona(url);   // Establece coneccion para la base de datos
+                Contratante base_contratante = new Contratante(url);    // Establece la coneccion con la base de datos para contratante
                 Ciudad base_ciudad = new Ciudad(url);   // Establece la coneccion para la bese de datos con las tablas ciudad
                 try {
                     
@@ -278,7 +280,7 @@ public class Insertar_persona extends Modales_personas{
                     
                     if(radio_contratante.isSelected()){ // Verifica si el radiobutton esta seleccionado
                         // En caso de estar seleccionado lo registra como un contratante
-                        base.insertar_contratante(  text_documento.getText(),   // Es el numero de documento para el contratante
+                        base_contratante.insertar_contratante(  text_documento.getText(),   // Es el numero de documento para el contratante
                                                     text_documento.getText());  // ES el numero de documento para el responsable
 
                     }
@@ -295,6 +297,7 @@ public class Insertar_persona extends Modales_personas{
 
                 }finally{
                     base.close();   // Cierra la coneccion con la base de datos
+                    base_contratante.close();
                     this.setVisible(false); // Hace invisible la ventana para despues cerrarla
                 }
                 

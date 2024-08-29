@@ -15,7 +15,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import Base.Base;
+import Base.Contratante;
+import Base.Contrato_mensual;
 import Base.BContrato_ocasional;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
@@ -59,16 +60,21 @@ public class Insertar_contrato_mensual extends Modal_extracto{
         
         // Consultando los datos de los contratantes
         base = new BContrato_ocasional(url);
+        Contratante base_contratante = new Contratante(url);
+        Contrato_mensual base_cm = new Contrato_mensual(url);
         
         try{
-            datos = base.consultar_contratante("");
-            ultimo_contrato = "" + (Integer.parseInt(base.consultar_ultimo_contrato_mensual()) +1);
+            datos = base_contratante.consultar_contratante("");
+            ultimo_contrato = "" + (Integer.parseInt(base_cm.consultar_ultimo_contrato_mensual()) +1);
             combo_tipo_contrato = new JComboBox<>(((BContrato_ocasional)base).consultar_tipo_contrato());
 
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
+            base_contratante.close();
+            base_cm.close();
         }
-        base.close();
         panel.setLayout(null);
 
         label1.setText("Numero de contrato");
@@ -90,10 +96,10 @@ public class Insertar_contrato_mensual extends Modal_extracto{
             @Override
             public void accion(){
 
-                base = new Base(url);
+                base = new Contratante(url);
                 try{
 
-                    datos = base.consultar_contratante(text_contratante.getText());
+                    datos = ((Contratante)base).consultar_contratante(text_contratante.getText());
                     JTable aux = Modelo_tabla.set_tabla_contratante(datos);
                     tabla_contratante.setModel(aux.getModel());
                     tabla_contratante.setColumnModel(aux.getColumnModel());
@@ -197,9 +203,9 @@ public class Insertar_contrato_mensual extends Modal_extracto{
     
     protected void guardar()throws SQLException{
         int numero_contrato = Integer.parseInt(text_contrato.getText());
-        base = new Base(url);
+        base = new Contrato_mensual(url);
 
-        base.insertar_contrato_mensual((numero_contrato == 0)?1:numero_contrato, text_contratante.getText(), combo_tipo_contrato.getSelectedIndex()+1);
+        ((Contrato_mensual)base).insertar_contrato_mensual((numero_contrato == 0)?1:numero_contrato, text_contratante.getText(), combo_tipo_contrato.getSelectedIndex()+1);
 
         base.close();
 

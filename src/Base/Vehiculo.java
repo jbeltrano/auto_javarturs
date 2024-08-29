@@ -508,5 +508,47 @@ public class Vehiculo extends Base{
         return dato;
 
     }
+
+    
+    /**
+     * Se encarga de retornar un arreglo
+     * con los diferentes tipos de servicio
+     * que puede tener un vehiculo
+     * @return un String[] como
+     * lista de los diferentes tipos de
+     * servicio.
+     * @throws SQLException
+     */
+    public String[] consultar_servicio()throws SQLException{
+        dato = new String[2];
+        dato[0] = null;
+        dato[1] = null;
+
+        consultar = "select * from servicio";
+
+        try{
+            
+            state = coneccion.createStatement();
+            resultado = state.executeQuery("select count(ser_id) as total from servicio");
+            if(resultado.next()){
+                dato = new String[resultado.getInt("total")];
+                resultado.close();
+            }
+            
+            resultado = state.executeQuery(consultar);
+
+            for(int i = 0; resultado.next(); i++){
+                dato[i] = resultado.getString(2);
+            }
+            
+
+        }catch(SQLException ex){
+            throw ex;
+        }finally{
+            resultado.close();
+            state.close();
+        }
+        return dato;
+    }
     
 }

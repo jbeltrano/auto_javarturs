@@ -1,10 +1,8 @@
 package Front.Extractos;
 
 import java.sql.SQLException;
-
 import javax.swing.JFrame;
-
-import Base.Base;
+import Base.Contratante;
 
 public class Actualizar_contratante extends Insertar_contratante{
 
@@ -27,9 +25,9 @@ public class Actualizar_contratante extends Insertar_contratante{
     @Override
     protected void guardar()throws SQLException{
 
-        base = new Base(url);
+        base = new Contratante(url);
 
-        base.actualizar_contratante(text_contratante.getText(), text_responsable.getText());
+        ((Contratante)base).actualizar_contratante(text_contratante.getText(), text_responsable.getText());
 
         base.close();
 

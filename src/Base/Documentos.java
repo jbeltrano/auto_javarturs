@@ -577,4 +577,38 @@ public class Documentos extends Base{
         return datos;
 
     }
+
+    public void insertar_documento2(String placa, String nombre, byte[] datos)throws SQLException{
+        
+        insertar = "insert into documento2 values (?,?,?)";
+
+        pstate = coneccion.prepareStatement(insertar);
+
+        pstate.setString(1, placa);
+        pstate.setString(2, nombre);
+        pstate.setBytes(3, datos);
+
+        pstate.executeUpdate();
+
+        pstate.close();
+    }
+
+    public byte[] consultar_documento2(String placa)throws SQLException{
+
+        byte[] baytes = null;
+        consultar = "select * from documento2 where veh_placa = ?";
+
+        pstate = coneccion.prepareStatement(consultar);
+
+        pstate.setString(1, placa);
+
+        resultado = pstate.executeQuery();
+
+        if(resultado.next()){
+            baytes = resultado.getBytes(3);
+        }
+
+        return baytes;
+    }
+    
 }

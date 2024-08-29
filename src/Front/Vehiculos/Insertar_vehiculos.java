@@ -187,9 +187,9 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         label_servicio.setBounds(450,90,70,16);
         jPanel1.add(label_servicio);
 
-        base = new Base(url);
+        base = new Vehiculo(url);
         try{
-            combo_servicio = new JComboBox<>(base.consultar_servicio());
+            combo_servicio = new JComboBox<>(((Vehiculo)base).consultar_servicio());
             combo_servicio.setSelectedIndex(1);
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);

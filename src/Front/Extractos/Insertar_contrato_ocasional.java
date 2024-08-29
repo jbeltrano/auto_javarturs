@@ -10,8 +10,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import Base.Base;
 import Base.Ciudad;
+import Base.Contratante;
 import Base.BContrato_ocasional;
 import Front.Ciudades_departamentos.Insertar_ciudad;
 import Utilidades.Key_adapter;
@@ -95,10 +95,12 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         // incializando las tablas
         base = new BContrato_ocasional(url);
         Ciudad base_ciudad = new Ciudad(url);
+        Contratante base_contratante = new Contratante(url);
+
         try{
 
             text_numero_contrato.setText("" + (((BContrato_ocasional)base).consultar_maximo_contrato_ocasional()+1));
-            tabla_contratante = Modelo_tabla.set_tabla_contratante(base.consultar_contratante(""));
+            tabla_contratante = Modelo_tabla.set_tabla_contratante(base_contratante.consultar_contratante(""));
             tabla_origen = Modelo_tabla.set_tabla_ciudad(base_ciudad.consultar_ciudades(""));
             tabla_destino = Modelo_tabla.set_tabla_ciudad(base_ciudad.consultar_ciudades(""));
             combo_tipo_contrato = new JComboBox<>(((BContrato_ocasional)base).consultar_tipo_contrato());
@@ -111,6 +113,7 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         }finally{
             base.close();
             base_ciudad.close();
+            base_contratante.close();
         }
         
         label_numero_contrato.setText("Numero de Contrato");
@@ -355,9 +358,9 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
     private void set_tabla_contratante(){
 
         String [][] datos = null;
-        base = new Base(url);
+        base = new Contratante(url);
         try{
-            datos = base.consultar_contratante(text_contratante.getText());
+            datos = ((Contratante)base).consultar_contratante(text_contratante.getText());
             JTable tabla_auxiliar = Modelo_tabla.set_tabla_contratante(datos);
             tabla_contratante.setModel(tabla_auxiliar.getModel());
             tabla_contratante.setColumnModel(tabla_auxiliar.getColumnModel());

@@ -2,9 +2,9 @@ package Base;
 
 import java.sql.SQLException;
 
-public class Contrato_ocasional extends Base {
+public class BContrato_ocasional extends Base {
     
-    public Contrato_ocasional(String url){
+    public BContrato_ocasional(String url){
         super(url);
     }
 

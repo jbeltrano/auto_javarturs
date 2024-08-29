@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import Base.BContrato_ocasional;
 import Base.Base;
 import Base.Ciudad;
+import Base.Contratante;
+import Base.Contrato_mensual;
 import Base.Vehiculo;
 import Base.Vehiculo_has_conductor;
 import Base.Extractos;
@@ -32,6 +34,7 @@ public class Generar_extractos {
         Vehiculo base_vehiculo = new Vehiculo(url);
         Ciudad base_ciudad = new Ciudad(url);
         Vehiculo_has_conductor base_vhc = new Vehiculo_has_conductor(url);
+        Contrato_mensual base_cm = new Contrato_mensual(url);
         Extractos base_extractos = new Extractos(url);
         boolean parque_automotor = true;
         String[] datos_extracto;
@@ -50,14 +53,14 @@ public class Generar_extractos {
             // inicializacion del objeto para modificar la plantilla de extractos
             extracto = new Extracto("src\\Formatos\\Extracto.xlsx");
             datos_extracto = base_extractos.consultar_uno_extracto_mensual(placa, consecutivo);
-            datos_contratante = base.consultar_uno_contrato_mensual(Integer.parseInt(datos_extracto[2]));
+            datos_contratante = base_cm.consultar_uno_contrato_mensual(Integer.parseInt(datos_extracto[2]));
             datos_conductores = base_vhc.consultar_conductor_has_vehiculo(placa);
             datos_origen = base_ciudad.consultar_uno_ciudades(datos_extracto[5]);
             datos_destino = base_ciudad.consultar_uno_ciudades(datos_extracto[6]);
-            datos_vehiculo = base.consultar_uno_vw_vehiculo_extracto(placa);
-            datos_tipo_contrato = base.consultar_tipo_contrato_mensual(Integer.parseInt(datos_contratante[0]));
+            datos_vehiculo = base_extractos.consultar_uno_vw_vehiculo_extracto(placa);
+            datos_tipo_contrato = base_cm.consultar_tipo_contrato_mensual(Integer.parseInt(datos_contratante[0]));
             parque_automotor = Boolean.parseBoolean(base_vehiculo.consultar_uno_vehiculo(placa)[16]);
-            vehiculo_empresa_externa = base.consultar_uno_vehiculo_externo(placa);
+            vehiculo_empresa_externa = base_extractos.consultar_uno_vehiculo_externo(placa);
 
             if(datos_vehiculo[0] == null){
                 NullPointerException ex = new NullPointerException("El vehiculo " + placa + ".\nNo posee documentos");
@@ -136,6 +139,7 @@ public class Generar_extractos {
             base_ciudad.close();
             base_vhc.close();
             base_extractos.close();
+            base_cm.close();
         }
         
     }
@@ -160,6 +164,8 @@ public class Generar_extractos {
         Ciudad base_ciudad = new Ciudad(url);
         Vehiculo_has_conductor base_vhc = new Vehiculo_has_conductor(url);
         BContrato_ocasional base_co = new BContrato_ocasional(url);
+        Contratante base_contratante = new Contratante(url);
+        Extractos base_extracto = new Extractos(url);
         boolean parque_automotor = true;
         String sub_ocasional = "OCASIONAL ";
         String[] datos_per_contratante;
@@ -180,14 +186,14 @@ public class Generar_extractos {
             // inicializacion del objeto para modificar la plantilla de extractos
             extracto = new Extracto("src\\Formatos\\Extracto.xlsx");
             datos_contratante = base_co.consultar_uno_contrato_ocasional(contrato);
-            datos_per_contratante = base.consultar_uno_contratante(datos_contratante[1]);
+            datos_per_contratante = base_contratante.consultar_uno_contratante(datos_contratante[1]);
             datos_conductores = base_vhc.consultar_conductor_has_vehiculo(placa);
             datos_origen = base_ciudad.consultar_uno_ciudades(datos_contratante[4]);
             datos_destino = base_ciudad.consultar_uno_ciudades(datos_contratante[5]);
-            datos_vehiculo = base.consultar_uno_vw_vehiculo_extracto(placa);
+            datos_vehiculo = base_extracto.consultar_uno_vw_vehiculo_extracto(placa);
             datos_tipo_contrato = base_co.consultar_tipo_contrato_ocasional(Integer.parseInt(datos_contratante[0]));
             parque_automotor = Boolean.parseBoolean(base_vehiculo.consultar_uno_vehiculo(placa)[16]);
-            vehiculo_empresa_externa = base.consultar_uno_vehiculo_externo(placa);
+            vehiculo_empresa_externa = base_extracto.consultar_uno_vehiculo_externo(placa);
             placas_contrato = base_co.consultar_placas_contrato_ocasional(contrato);
             
             // Verifica si el vehiculo a insertar contiene documentos para seguir con el proceso
@@ -297,6 +303,8 @@ public class Generar_extractos {
             base_ciudad.close();
             base_vhc.close();
             base_co.close();
+            base_extracto.close();
+            base_contratante.close();
         }
         
         return localizacion_fichero + placa + sub_ocasional +" (" + consecutivo + ")\n El contrato se guardo en: " + localizacion_contrato;
@@ -315,6 +323,7 @@ public class Generar_extractos {
         Vehiculo_has_conductor base_vhc = new Vehiculo_has_conductor(url);
         Extractos base_extractos = new Extractos(url);
         BContrato_ocasional base_co = new BContrato_ocasional(url);
+        Contratante base_contratante = new Contratante(url);
         boolean parque_automotor = true;
         String sub_ocasional = "OCASIONAL ";
         String[] datos_per_contratante;
@@ -341,7 +350,7 @@ public class Generar_extractos {
             datos_contratante = base_co.consultar_uno_contrato_ocasional(contrato);
             datos_origen = base_ciudad.consultar_uno_ciudades(datos_contratante[4]);
             datos_destino = base_ciudad.consultar_uno_ciudades(datos_contratante[5]);
-            datos_per_contratante = base.consultar_uno_contratante(datos_contratante[1]);
+            datos_per_contratante = base_contratante.consultar_uno_contratante(datos_contratante[1]);
             datos_tipo_contrato = base_co.consultar_tipo_contrato_ocasional(Integer.parseInt(datos_contratante[0]));
             
             año = datos_contratante[3].split("-")[0];
@@ -411,9 +420,9 @@ public class Generar_extractos {
             for(int i = 0; i < placas_contrato.length; i++){
                 
                 datos_conductores = base_vhc.consultar_conductor_has_vehiculo(placas_contrato[i]);
-                datos_vehiculo = base.consultar_uno_vw_vehiculo_extracto(placas_contrato[i]);
+                datos_vehiculo = base_extractos.consultar_uno_vw_vehiculo_extracto(placas_contrato[i]);
                 parque_automotor = Boolean.parseBoolean(base_vehiculo.consultar_uno_vehiculo(placas_contrato[i])[16]);
-                vehiculo_empresa_externa = base.consultar_uno_vehiculo_externo(placas_contrato[i]);
+                vehiculo_empresa_externa = base_extractos.consultar_uno_vehiculo_externo(placas_contrato[i]);
                 consecutivo = base_extractos.consultar_uno_consecutivo_extracto_ocasional(placas_contrato[i], contrato);
                 
                 // Verifica si el vehiculo a insertar contiene documentos para seguir con el proceso
@@ -479,6 +488,7 @@ public class Generar_extractos {
             base_vhc.close();
             base_extractos.close();
             base_co.close();
+            base_contratante.close();
         }
         // Retorna la localizacion del los extractos
         return localizacion_fichero + "\n Contrato guardado en: " + localizacion_contrato;
