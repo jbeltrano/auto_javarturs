@@ -174,7 +174,6 @@ public class Principal extends JFrame{
         barra_menu = new JMenuBar();
         panel_secundario = new JPanel(null);
         panel_principal2 = new JPanel();
-
         // Configuraicon de los diferentes componentes
         try{
 
@@ -228,8 +227,6 @@ public class Principal extends JFrame{
         menu_3 = new JMenu("Runt");
         menu_4 = new JMenu("Portafoleo");
         menu_5 = new JMenu("Seg. Social");
-        
-        
 
         // Creacion de variables necesarias para el menu
         // Para ayuda
@@ -539,6 +536,7 @@ public class Principal extends JFrame{
             panel_principal2.remove(pan);
             panel_informacion = ver_vehiculo();
             
+
             if(tabla.getRowCount() == 0 ){
                 JButton boton_auxiliar = new JButton("Agregar");
                 pan = new JPanel(null);
@@ -668,7 +666,7 @@ public class Principal extends JFrame{
     }
 
     private void configuracion_empleados(){
-        System.out.println("inicio empleados");
+        JOptionPane.showMessageDialog(this, "En este momento el portal de empleados\nno se encuentra habilitado", "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     private void configuracion_personas(){
@@ -936,6 +934,10 @@ public class Principal extends JFrame{
 
     }
 
+
+    // La idea es que apartir de aqui todos estos metodos ya no se
+    // encuentren en la interfaz principal sino que cada panel sea una
+    // clase toalmente independiente a la clase principal.
     // Metodos relacionados con los vehiculos
     
     private JPanel ver_documentos_vehiculos(){
