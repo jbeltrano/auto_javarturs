@@ -1047,9 +1047,9 @@ public class Principal extends JFrame{
             datos = ((Vehiculo_has_conductor)base).consultar_conductor_has_vehiculo();
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
-        
-        base.close();
         
         tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(datos);
         tabla.setComponentPopupMenu(pop_menu);
@@ -1070,8 +1070,9 @@ public class Principal extends JFrame{
             }catch(SQLException ex){
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
+            }finally{
+                base.close();
             }
-            base.close();
         });
         
         item_eliminar.addActionListener(accion ->{
@@ -1096,9 +1097,9 @@ public class Principal extends JFrame{
 
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-
-                base.close();
 
             }
                   
@@ -1117,8 +1118,9 @@ public class Principal extends JFrame{
         
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                base.close();
             }
 
             @Override
@@ -1146,9 +1148,10 @@ public class Principal extends JFrame{
             datos = ((Clase_vehiculo)base).consultar_clase_vehiculo();
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
 
-        base.close();
 
         modelo = Modelo_tabla.set_modelo_tablas(datos);
         tabla = new JTable(modelo);
@@ -1193,9 +1196,9 @@ public class Principal extends JFrame{
                     JOptionPane.showMessageDialog(this, "Item eliminado correctamente");
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-
-                base.close();
                 tipo_vehiculo.doClick();
             }
                   
@@ -1284,8 +1287,9 @@ public class Principal extends JFrame{
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                base.close();
             }
 
             @Override
@@ -1417,8 +1421,9 @@ public class Principal extends JFrame{
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                base.close();
             }
 
             @Override
@@ -1448,9 +1453,9 @@ public class Principal extends JFrame{
             datos = ((Departamento)base).consultar_departamentos();
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
-        
-        base.close();
 
         // Configuracion de la visualizacion y opciones de la tabla
 
@@ -1471,8 +1476,9 @@ public class Principal extends JFrame{
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                base.close();
             }
 
             @Override
@@ -1506,9 +1512,10 @@ public class Principal extends JFrame{
             datos = ((Persona)base).consultar_persona();
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
         
-        base.close();
 
         // Configuracion de la visualizacion y opciones de la tabla
 
@@ -1567,8 +1574,9 @@ public class Principal extends JFrame{
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                base.close();
             }
 
             @Override
@@ -1701,9 +1709,10 @@ public class Principal extends JFrame{
             datos = ((Extractos)base).consultar_vw_extracto_mensual("");
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
         
-        base.close();
 
         // Configuracion de la visualizacion y opciones de la tabla
 
@@ -1724,8 +1733,9 @@ public class Principal extends JFrame{
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                base.close();
             
 
         });
@@ -1741,8 +1751,9 @@ public class Principal extends JFrame{
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                base.close();
 
         });
         item_adicionar.addActionListener(accion ->{
@@ -1756,8 +1767,9 @@ public class Principal extends JFrame{
                     
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                base.close();
         });
 
         item_exportar.addActionListener(accion ->{
@@ -1784,8 +1796,9 @@ public class Principal extends JFrame{
                 
             }catch(SQLException ex){
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }finally{
+                base.close();
             }
-            base.close();
 
 
         });
@@ -1803,9 +1816,10 @@ public class Principal extends JFrame{
 
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
                 
-                base.close();
                 JOptionPane.showMessageDialog(this, "Extracto eliminado correctamente");
                 boton_extractos_mensuales.doClick();
             }
@@ -1844,8 +1858,9 @@ public class Principal extends JFrame{
                 
             }catch(SQLException ex){
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }finally{
+                base.close();
             }
-            base.close();
 
         });
         JFrame padre = this;
@@ -1863,8 +1878,9 @@ public class Principal extends JFrame{
         
                     } catch (SQLException ex) {
                         JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }finally{
+                        base.close();
                     }
-                    base.close();
 
             }
 
@@ -2001,9 +2017,10 @@ public class Principal extends JFrame{
             datos = ((BContrato_ocasional)base).consultar_contrato_ocasional("");
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
         
-        base.close();
 
         // Configuracion de la visualizacion y opciones de la tabla
 
@@ -2018,14 +2035,15 @@ public class Principal extends JFrame{
             new Insertar_contrato_ocasional(this, url).setVisible(true);
 
             base = new BContrato_ocasional(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_contratos_ocasionales(((BContrato_ocasional)base).consultar_contrato_ocasional(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            base.close();
+            try{
+                tabla = Modelo_tabla.set_tabla_contratos_ocasionales(((BContrato_ocasional)base).consultar_contrato_ocasional(text_busqueda.getText()));
+                tabla.setComponentPopupMenu(pop_menu);
+                scroll.setViewportView(tabla );
+            }catch(SQLException ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }finally{
+                base.close();
+            }
 
         });
 
@@ -2036,14 +2054,15 @@ public class Principal extends JFrame{
             new Actualizar_contrato_ocasional(this, url, id, false).setVisible(true);
 
             base = new BContrato_ocasional(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_contratos_ocasionales(((BContrato_ocasional)base).consultar_contrato_ocasional(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            base.close();
+            try{
+                tabla = Modelo_tabla.set_tabla_contratos_ocasionales(((BContrato_ocasional)base).consultar_contrato_ocasional(text_busqueda.getText()));
+                tabla.setComponentPopupMenu(pop_menu);
+                scroll.setViewportView(tabla );
+            }catch(SQLException ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }finally{
+                base.close();
+            }
 
         });
 
@@ -2090,8 +2109,9 @@ public class Principal extends JFrame{
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-            base.close();
         });
 
         item_eliminar.addActionListener(accion ->{
@@ -2128,8 +2148,9 @@ public class Principal extends JFrame{
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                base.close();
 
             }
 
@@ -2164,9 +2185,10 @@ public class Principal extends JFrame{
             datos = ((Extractos)base).consultar_vw_extracto_ocasional("");
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
         
-        base.close();
 
         // Configuracion de la visualizacion y opciones de la tabla
 
@@ -2192,8 +2214,9 @@ public class Principal extends JFrame{
 
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                base.close();
             
 
         });
@@ -2207,8 +2230,9 @@ public class Principal extends JFrame{
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                base.close();
         });
         item_plantilla.addActionListener(accion ->{
             int row = tabla.getSelectedRow();
@@ -2262,9 +2286,10 @@ public class Principal extends JFrame{
 
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
                 
-                base.close();
                 JOptionPane.showMessageDialog(this, "Extracto eliminado correctamente");
                 boton_extractos_ocasionales.doClick();
             }
@@ -2348,8 +2373,9 @@ public class Principal extends JFrame{
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-            base.close();
 
         });
         item_adicionar.addActionListener(accion ->{
@@ -2363,8 +2389,9 @@ public class Principal extends JFrame{
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-            base.close();
 
         });
 
@@ -2380,9 +2407,10 @@ public class Principal extends JFrame{
                     ((Contratante)base).eliminar_contratante(id);
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
                 
-                base.close();
                 JOptionPane.showMessageDialog(this, "Contratante eliminado correctamente");
                 boton_contratante.doClick();
             }
@@ -2401,8 +2429,9 @@ public class Principal extends JFrame{
                     scroll.setViewportView(tabla );
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                base.close();
 
             }
 
