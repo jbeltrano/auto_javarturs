@@ -20,6 +20,8 @@ public abstract class Modal_extracto extends JDialog{
         setPreferredSize(set_dimension());
         pack();
         setLocationRelativeTo(padre);
+        revalidate();
+        repaint();
 
     }
 
@@ -31,6 +33,8 @@ public abstract class Modal_extracto extends JDialog{
         setPreferredSize(set_dimension());
         pack();
         setLocationRelativeTo(padre);
+        revalidate();
+        repaint();
 
     }
 

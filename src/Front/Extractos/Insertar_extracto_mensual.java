@@ -18,7 +18,6 @@ import Front.Ciudades_departamentos.Insertar_ciudad;
 import Utilidades.Generar_extractos;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
-import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -71,7 +70,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
     protected void iniciar_componentes(){
 
         fecha_sistema = Calendar.getInstance().getTime();
-        jPanel1 = new JPanel();
+        jPanel1 = new JPanel(null);
         text_placa = new JTextField();
         label_vehiculo = new JLabel();
         scroll_vehiculo = new JScrollPane();
@@ -118,12 +117,11 @@ public class Insertar_extracto_mensual extends Modal_documento {
             base_cm.close();
         }
         
+        // Modificacion label vehiculo.
         label_vehiculo.setText("Vehiculo");
-        jPanel1.add(label_vehiculo);
         label_vehiculo.setBounds(POSICION_X, POSICION_X, 64, LONGITUD_Y);
 
-        jPanel1.setLayout(null);
-        jPanel1.add(text_placa);
+        // Modificacion labet text placa.
         text_placa.setBounds(POSICION_X, label_vehiculo.getY()+ label_vehiculo.getHeight() + 10, 130, LONGITUD_Y);
         text_placa.addKeyListener(new Key_adapter() {
             
@@ -135,12 +133,19 @@ public class Insertar_extracto_mensual extends Modal_documento {
                 Vehiculo base_vehiculo = new Vehiculo(url);
                 try{
                     
+                    // Dependiendo de lo que vaya ingresando el usuario, se modifica la tabla
                     datos = base_vehiculo.consultar_vehiculo(text_placa.getText());
                     JTable tabla_auxiliar = Modelo_tabla.set_tabla_vehiculo(datos);
                     tabla_vehiculo.setModel(tabla_auxiliar.getModel());
                     tabla_vehiculo.setColumnModel(tabla_auxiliar.getColumnModel());
                     scroll_vehiculo.setViewportView(tabla_vehiculo);
-                    
+
+                    // Va seleccionando el primer argumento que aparesca en la tabla si existe
+                    tabla_vehiculo.changeSelection(0, 0, false, false);
+
+                    // Repinta el panel
+                    jPanel1.revalidate();
+                    jPanel1.repaint();
         
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -150,8 +155,6 @@ public class Insertar_extracto_mensual extends Modal_documento {
                     base.close();
                     base_vehiculo.close();
                 }
-
-                tabla_vehiculo.changeSelection(0, 0, false, false);
                 
             }
 
@@ -165,6 +168,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
 
         });
         
+        // Modifica la tabla como tal y lo agrega al scroll respectivo
         tabla_vehiculo.addMouseListener(new MouseAdapter() {
             
             public void mousePressed(MouseEvent evt){
@@ -175,24 +179,24 @@ public class Insertar_extracto_mensual extends Modal_documento {
 
         });
 
-        scroll_vehiculo.setViewportView(tabla_vehiculo);
-
-        jPanel1.add(scroll_vehiculo);
+        scroll_vehiculo.setViewportView(tabla_vehiculo);        
         scroll_vehiculo.setBounds(10, 70, 210, 100);
 
+        // Modifica el label contratante
         label_contratante.setText("Contratante");
-        jPanel1.add(label_contratante);
         label_contratante.setBounds(260, POSICION_X, 90, LONGITUD_Y);
-        jPanel1.add(text_contratante);
+
+        // Modifica el text contratante.
         text_contratante.setBounds(260, label_contratante.getY() + label_contratante.getHeight() +10 , 150, LONGITUD_Y);
         text_contratante.addKeyListener(new Key_adapter() {
-            
 
             @Override
             public void accion(){
                 
                 set_tabla_contratante();
                 tabla_contratante.changeSelection(0, 0, false, false);
+                jPanel1.revalidate();
+                jPanel1.repaint();
             }
 
             @Override
@@ -216,34 +220,27 @@ public class Insertar_extracto_mensual extends Modal_documento {
 
         scroll_contratante.setViewportView(tabla_contratante);
 
-        jPanel1.add(scroll_contratante);
         scroll_contratante.setBounds(260, 70, 350, 100);
 
         label_consecutivo.setText("Consecutivo");
         label_consecutivo.setBounds(text_contratante.getX() + text_contratante.getWidth() + 30, POSICION_X, 90, LONGITUD_Y);
-        jPanel1.add(label_consecutivo);
 
         text_consecutivo.setEnabled(false);
         text_consecutivo.setText("");
         text_consecutivo.setBounds(label_consecutivo.getX(), label_consecutivo.getY() + label_consecutivo.getHeight() + 10, 100, LONGITUD_Y);
-        jPanel1.add(text_consecutivo);
 
         label_fecha_inicial.setText("Fecha inicial");
-        jPanel1.add(label_fecha_inicial);
         label_fecha_inicial.setBounds(150, 200, 80, 16);
 
         fecha_incial.setDate(fecha_sistema);
         fecha_incial.setBounds(150, 230, 130, LONGITUD_Y);
-        jPanel1.add(fecha_incial);
 
         fecha_final.setDate(fecha_sistema);
         label_fecha_final.setText("Fecha final");
-        jPanel1.add(label_fecha_final);
         label_fecha_final.setBounds(320, 200, 90, 16);
 
         fecha_final.setBounds(320, 230, 130, LONGITUD_Y);
         
-        jPanel1.add(fecha_final);
 
         tabla_destino.addMouseListener(new MouseAdapter() {
             
@@ -259,7 +256,6 @@ public class Insertar_extracto_mensual extends Modal_documento {
 
         label_origen.setText("Origen");
         label_origen.setBounds(POSICION_X, fecha_incial.getY() + LONGITUD_Y + 20, 130, LONGITUD_Y);
-        jPanel1.add(label_origen);
 
         text_origen.setBounds(POSICION_X, label_origen.getY() + LONGITUD_Y + 10, 130, LONGITUD_Y);
         text_origen.addKeyListener(new Key_adapter() {
@@ -269,6 +265,8 @@ public class Insertar_extracto_mensual extends Modal_documento {
             public void accion() {
                 set_tabla_origen();
                 tabla_origen.changeSelection(0, 0, false, false);
+                jPanel1.revalidate();
+                jPanel1.repaint();
                 
             }
             @Override
@@ -277,11 +275,9 @@ public class Insertar_extracto_mensual extends Modal_documento {
             }
         });
 
-        jPanel1.add(text_origen);
 
         scroll_origen.setViewportView(tabla_origen);
         scroll_origen.setBounds(POSICION_X, text_origen.getY() + LONGITUD_Y + 10, 300, 100);
-        jPanel1.add(scroll_origen);
 
         tabla_origen.addMouseListener(new MouseAdapter() {
             
@@ -297,7 +293,6 @@ public class Insertar_extracto_mensual extends Modal_documento {
 
         label_destino.setText("Destino");
         label_destino.setBounds(label_contratante.getX()+60, label_origen.getY(), 130, LONGITUD_Y);
-        jPanel1.add(label_destino);
 
         text_destino.setBounds(label_destino.getX(), label_destino.getY() + LONGITUD_Y + 10, 130, LONGITUD_Y);
         text_destino.addKeyListener(new Key_adapter() {
@@ -307,6 +302,8 @@ public class Insertar_extracto_mensual extends Modal_documento {
                 
                 set_tabla_destino();
                 tabla_destino.changeSelection(0, 0, false, false);
+                jPanel1.revalidate();
+                jPanel1.repaint();
 
             }
             @Override
@@ -317,15 +314,12 @@ public class Insertar_extracto_mensual extends Modal_documento {
             }
         });
 
-        jPanel1.add(text_destino);
 
         
         scroll_destino.setViewportView(tabla_destino);
         scroll_destino.setBounds(text_destino.getX(), text_destino.getY() + LONGITUD_Y + 10, 300, 100);
-        jPanel1.add(scroll_destino);
 
         boton_exportar.setText("Guardar y Exportar");
-        jPanel1.add(boton_exportar);
         boton_exportar.setBounds(150, 450, 140, 23);
         boton_exportar.addActionListener(accion ->{
             boolean band = guardar_extracto_mensual();
@@ -352,7 +346,6 @@ public class Insertar_extracto_mensual extends Modal_documento {
         });
 
         boton_guardar.setText("Guardar");
-        jPanel1.add(boton_guardar);
         boton_guardar.setBounds(20, 450, 100, 23);
         boton_guardar.addActionListener(accion ->{
             boolean band = guardar_extracto_mensual();
@@ -360,18 +353,29 @@ public class Insertar_extracto_mensual extends Modal_documento {
                 setVisible(false);
         });
         
-        GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        
+        jPanel1.add(boton_guardar);
+        jPanel1.add(boton_exportar);
+        jPanel1.add(scroll_destino);
+        jPanel1.add(text_destino);
+        jPanel1.add(label_destino);
+        jPanel1.add(scroll_origen);
+        jPanel1.add(text_origen);
+        jPanel1.add(label_origen);
+        jPanel1.add(fecha_final);
+        jPanel1.add(label_fecha_final);
+        jPanel1.add(fecha_incial);
+        jPanel1.add(label_fecha_inicial);
+        jPanel1.add(text_consecutivo);
+        jPanel1.add(label_consecutivo);
+        jPanel1.add(scroll_contratante);
+        jPanel1.add(text_contratante);
+        jPanel1.add(label_contratante);
+        jPanel1.add(scroll_vehiculo);
+        jPanel1.add(text_placa);
+        jPanel1.add(label_vehiculo);
 
-        pack();
+        add(jPanel1);
     }
     
     @Override
@@ -446,22 +450,31 @@ public class Insertar_extracto_mensual extends Modal_documento {
             JOptionPane.showMessageDialog(ventana, ex.getMessage());
         }finally{
             base.close();
+            jPanel1.revalidate();
+            jPanel1.repaint();
         }
     }
 
     private void accion_tabla_contratante(){
         int valor_auxilia = tabla_contratante.getSelectedRow();
         text_contratante.setText("" + tabla_contratante.getValueAt(valor_auxilia, 0));
+        
+        jPanel1.revalidate();
+        jPanel1.repaint();
     }
 
     private void accion_tabla_origen(){
         int valor_auxilia = tabla_origen.getSelectedRow();
         text_origen.setText("" + tabla_origen.getValueAt(valor_auxilia, 0));
+        jPanel1.revalidate();
+        jPanel1.repaint();
     }
     
     private void accion_tabla_destino(){
         int valor_auxilia = tabla_destino.getSelectedRow();
         text_destino.setText("" + tabla_destino.getValueAt(valor_auxilia, 0));
+        jPanel1.revalidate();
+        jPanel1.repaint();
     }
 
     private void set_tabla_contratante(){
@@ -473,13 +486,15 @@ public class Insertar_extracto_mensual extends Modal_documento {
             tabla_contratante.setModel(tabla_auxiliar.getModel());
             tabla_contratante.setColumnModel(tabla_auxiliar.getColumnModel());
             
+            jPanel1.revalidate();
+            jPanel1.repaint();
 
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             ventana.setVisible(false);
+        }finally{
             base.close();
         }
-        base.close();
     }
 
     private void set_tabla_origen(){
@@ -492,6 +507,8 @@ public class Insertar_extracto_mensual extends Modal_documento {
             tabla_origen.setModel(auxiliar.getModel());
             tabla_origen.setColumnModel(auxiliar.getColumnModel());
             
+            jPanel1.revalidate();
+            jPanel1.repaint();
 
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -512,6 +529,8 @@ public class Insertar_extracto_mensual extends Modal_documento {
             tabla_destino.setModel(tabla_aux.getModel());
             tabla_destino.setColumnModel(tabla_aux.getColumnModel());
             
+            jPanel1.revalidate();
+            jPanel1.repaint();
 
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

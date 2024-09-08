@@ -416,8 +416,8 @@ public class Principal extends JFrame{
         panel_secundario.add(base_personas);
         panel_secundario.add(extractos);
 
-        panel_secundario.repaint();
         panel_secundario.revalidate();
+        panel_secundario.repaint();
         
     }
 
@@ -427,8 +427,8 @@ public class Principal extends JFrame{
         panel_principal2.setLayout(new BorderLayout());
         panel_principal2.removeAll();
         panel_principal2.add(limagen1,BorderLayout.CENTER);
-        panel_principal2.repaint();
         panel_principal2.revalidate();
+        panel_principal2.repaint();
 
         panel_secundario.removeAll();
         configuracion_panel_secundario();
@@ -456,8 +456,8 @@ public class Principal extends JFrame{
 
            // Agregacion al panel
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
-            panel_principal2.repaint();
-            panel_principal2.revalidate();
+            
+            
         });
         boton_ciudad.doClick();
 
@@ -470,8 +470,8 @@ public class Principal extends JFrame{
 
            // Agregacion al panel
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
-            panel_principal2.repaint();
             panel_principal2.revalidate();
+            panel_principal2.repaint();
 
         });
 
@@ -489,8 +489,8 @@ public class Principal extends JFrame{
         panel_principal2.add(label_principal,BorderLayout.NORTH);
         panel_principal2.add(panel_izq,BorderLayout.WEST);
         panel_principal2.add(panel_informacion, BorderLayout.CENTER);
-        panel_principal2.repaint();
         panel_principal2.revalidate();
+        panel_principal2.repaint();
 
     }
 
@@ -524,8 +524,8 @@ public class Principal extends JFrame{
 
            // Agregacion al panel
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
-            panel_principal2.repaint();
             panel_principal2.revalidate();
+            panel_principal2.repaint();
 
         });
 
@@ -553,8 +553,9 @@ public class Principal extends JFrame{
             }
 
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
+            panel_principal2.revalidate();
             panel_principal2.repaint();
-            panel_principal.revalidate();
+            
         });
         vehiculos.doClick();
         conductores.setBounds(10,70,120,20);
@@ -581,8 +582,8 @@ public class Principal extends JFrame{
             }
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
-            panel_principal2.repaint();
             panel_principal2.revalidate();
+            panel_principal2.repaint();
         });
 
         documentos_vehiculos.setBounds(10,100, 120, 20);
@@ -608,8 +609,8 @@ public class Principal extends JFrame{
             }
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
-            panel_principal2.repaint();
             panel_principal2.revalidate();
+            panel_principal2.repaint();
 
         });
 
@@ -636,8 +637,8 @@ public class Principal extends JFrame{
             }
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
-            panel_principal2.repaint();
             panel_principal2.revalidate();
+            panel_principal2.repaint();
 
         });
         
@@ -660,8 +661,8 @@ public class Principal extends JFrame{
         //panel_principal2.add(panel_izq,BorderLayout.WEST);
 
         // Mostrando los componentes en pantalla
-        panel_principal2.repaint();
         panel_principal2.revalidate();
+        panel_principal2.repaint();
 
     }
 
@@ -692,8 +693,8 @@ public class Principal extends JFrame{
 
            // Agregacion al panel
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
-            panel_principal2.repaint();
             panel_principal2.revalidate();
+            panel_principal2.repaint();
 
         });
         boton_personas.doClick();
@@ -720,8 +721,8 @@ public class Principal extends JFrame{
             }
 
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
+            panel_principal2.revalidate();
             panel_principal2.repaint();
-            panel_principal.revalidate();
         });
         
         // configuracion label principal
@@ -740,8 +741,8 @@ public class Principal extends JFrame{
         panel_principal2.add(panel_informacion, BorderLayout.CENTER);
 
         // Mostrando los componentes en pantalla
-        panel_principal2.repaint();
         panel_principal2.revalidate();
+        panel_principal2.repaint();
 
     }
 
@@ -786,8 +787,8 @@ public class Principal extends JFrame{
                 panel_principal2.add(pan,BorderLayout.EAST);
             }
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
-            panel_principal2.repaint();
             panel_principal2.revalidate();
+            panel_principal2.repaint();
 
         });
         
@@ -818,8 +819,8 @@ public class Principal extends JFrame{
             }
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
-            panel_principal2.repaint();
             panel_principal2.revalidate();
+            panel_principal2.repaint();
         });
 
         boton_contratos_mensuales.setBounds(10, boton_extractos_ocasionales.getY() + boton_extractos_ocasionales.getHeight() + 10, 120, 20);
@@ -848,8 +849,8 @@ public class Principal extends JFrame{
             }
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
-            panel_principal2.repaint();
-            panel_principal2.revalidate(); 
+            panel_principal2.revalidate();
+            panel_principal2.repaint(); 
         });
 
         boton_contratos_ocasionales.setBounds(10, boton_contratos_mensuales.getY() + boton_contratos_mensuales.getHeight() + 10 ,120, 20);
@@ -877,8 +878,8 @@ public class Principal extends JFrame{
             }
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
-            panel_principal2.repaint();
-            panel_principal2.revalidate(); 
+            panel_principal2.revalidate();
+            panel_principal2.repaint(); 
         });
 
         boton_contratante.setBounds(10, boton_contratos_ocasionales.getY() + boton_contratos_ocasionales.getHeight() + 10 ,120, 20);
@@ -908,8 +909,8 @@ public class Principal extends JFrame{
             }
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
-            panel_principal2.repaint();
-            panel_principal2.revalidate(); 
+            panel_principal2.revalidate();
+            panel_principal2.repaint(); 
         });
 
         label_principal.setFont(new Font("britannic bold", Font.BOLD, 20));
@@ -929,8 +930,8 @@ public class Principal extends JFrame{
         panel_principal2.add(label_principal,BorderLayout.NORTH);
         panel_principal2.add(panel_izq,BorderLayout.WEST);
         panel_principal2.add(panel_informacion, BorderLayout.CENTER);
-        panel_principal2.repaint();
         panel_principal2.revalidate();
+        panel_principal2.repaint();
 
     }
 
