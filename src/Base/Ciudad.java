@@ -6,6 +6,8 @@ import Utilidades.Capitalizar_Strings;
 
 public class Ciudad extends Base{
     
+    private String[] HEAD_TABLA = {"ID", "CIUDAD", "DEPARTAMENTO"};
+
     public Ciudad(String url){
         super(url);
     }
@@ -123,9 +125,7 @@ public class Ciudad extends Base{
 
             resultado = state.executeQuery(consultar);
             
-            datos[0][0] = "ID";
-            datos[0][1] = "CIUDAD";
-            datos[0][2] = "DEPARTAMENTO";
+            datos[0] = HEAD_TABLA;
 
             while(resultado.next()){
 
@@ -182,9 +182,7 @@ public class Ciudad extends Base{
 
             resultado = state.executeQuery(consultar);
             
-            datos[0][0] = "ID";
-            datos[0][1] = "CIUDAD";
-            datos[0][2] = "DEPARTAMENTO";
+            datos[0] = HEAD_TABLA;
 
             while(resultado.next()){
 
@@ -267,9 +265,7 @@ public class Ciudad extends Base{
 
             resultado = state.executeQuery(consultar);
             
-            datos[0][0] = "ID";
-            datos[0][1] = "CIUDAD";
-            datos[0][2] = "DEPARTAMENTO";
+            datos[0] = HEAD_TABLA;
 
             while(resultado.next()){
 

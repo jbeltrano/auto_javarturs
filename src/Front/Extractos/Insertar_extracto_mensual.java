@@ -113,7 +113,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             setVisible(false);
         }finally{
-            base.close();
+            base_vehiculo.close();
             base_ciudad.close();
             base_cm.close();
         }

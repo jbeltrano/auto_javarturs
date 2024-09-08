@@ -267,7 +267,7 @@ public class Clase_vehiculo extends Base{
         return dato;
     }
 
-    @Override
+    
     protected void set_nombres_cabecera(){
         datos[0] = NOMBRES_CABEZA_TABLA;
     }

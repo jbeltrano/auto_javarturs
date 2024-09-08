@@ -107,8 +107,9 @@ public class Insertar_contrato_mensual extends Modal_extracto{
         
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
                 }
-                base.close();
 
             }
 

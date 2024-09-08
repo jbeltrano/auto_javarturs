@@ -33,13 +33,7 @@ public class Base{
         iniciar_base();     // Establece coneccion con la base de datos
     }
 
-    /**
-     * Metodo que debe ser heredado para modificar o 
-     * establecer las cabeceras de las tablas.
-     */
-    protected void set_nombres_cabecera(){
-        
-    }
+    
     
     /**
      * Este metodo se encarga de inicializar la base de datos
