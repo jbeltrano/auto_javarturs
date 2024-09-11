@@ -1,5 +1,7 @@
 package Front;
 
+import java.awt.Point;
+import javax.swing.JViewport;
 import java.awt.Desktop;
 import java.awt.Color;
 import java.awt.Font;
@@ -2485,24 +2487,62 @@ public class Principal extends JFrame{
 
 class CustomPopupMenu extends JPopupMenu {
 
+    // @Override
+    // public void show(Component invoker, int x, int y) {
+    //     if (invoker != null) {
+    //         // Obtener el tamaño del componente invocador (por ejemplo, el panel o la tabla)
+    //         Dimension invokerSize = invoker.getSize();
+    //         Dimension popupSize = this.getPreferredSize();
+    //         System.out.println(invokerSize.height);
+    //         System.out.println(y);
+            
+    //         // Ajustar la posición si el popup se sale del componente invocador
+    //         if(x > invokerSize.width){
+    //             x = invokerSize.width;
+    //         }
+    //         if(y > invokerSize.height){
+    //             y = invokerSize.height-(y -invokerSize.height);
+    //         }
+    //         System.out.println(y);
+    //         System.out.println();
+    //         if (x + popupSize.width > invokerSize.width) {
+    //             x = invokerSize.width - popupSize.width;
+    //         }
+    //         if (y + popupSize.height > invokerSize.height) {
+    //             y = invokerSize.height - popupSize.height;
+    //         }
+    //     }
+
+    //     // Llamar al método show original para mostrar el popup
+    //     super.show(invoker, x, y);
+    // }
+
     @Override
     public void show(Component invoker, int x, int y) {
-        if (invoker != null) {
-            // Obtener el tamaño del componente invocador (por ejemplo, el panel o la tabla)
-            Dimension invokerSize = invoker.getParent().getSize();
+        if (invoker != null && invoker.getParent() instanceof JViewport) {
+            JViewport viewport = (JViewport) invoker.getParent();
+            Dimension viewportSize = viewport.getSize();
+            Point viewportPosition = viewport.getViewPosition();
             Dimension popupSize = this.getPreferredSize();
 
-            
-            // Ajustar la posición si el popup se sale del componente invocador
-            if (x + popupSize.width > invokerSize.width) {
-                x = invokerSize.width - popupSize.width;
+            // Ajustar la posición para que el menú emergente esté dentro del viewport
+            if (x + popupSize.width > viewportPosition.x + viewportSize.width) {
+                x = (viewportPosition.x + viewportSize.width) - popupSize.width;
             }
-            if (y + popupSize.height > invokerSize.height) {
-                y = invokerSize.height - popupSize.height;
+            if (y + popupSize.height > viewportPosition.y + viewportSize.height) {
+                y = (viewportPosition.y + viewportSize.height) - popupSize.height;
+            }
+
+            // Ajustar la posición para no mostrar el popup fuera del JScrollPane
+            if (x < viewportPosition.x) {
+                x = viewportPosition.x;
+            }
+            if (y < viewportPosition.y) {
+                y = viewportPosition.y;
             }
         }
 
-        // Llamar al método show original para mostrar el popup
+        // Llamar al método original para mostrar el popup
         super.show(invoker, x, y);
     }
 }
