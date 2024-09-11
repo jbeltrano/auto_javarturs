@@ -65,7 +65,7 @@ public class Modelo_tabla {
 
     public static JTable set_tabla_contratante(String[][] datos){
         
-        JTable tab;
+        JTable tab = new JTable();
         DefaultTableModel modelo; 
         TableColumnModel clum_model;
         

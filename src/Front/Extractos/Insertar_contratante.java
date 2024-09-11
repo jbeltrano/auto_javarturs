@@ -22,6 +22,7 @@ import Utilidades.Modelo_tabla;
 
 public class Insertar_contratante extends Modal_extracto{
     
+    private static final int POS_X = 10;
     private JButton boton_guardar;
     private JLabel jLabel1;
     private JLabel jLabel2;
@@ -32,63 +33,63 @@ public class Insertar_contratante extends Modal_extracto{
     protected JTable tabla_responsable;
     protected JTextField text_contratante;
     protected JTextField text_responsable;
-    private final int POS_X = 10;
     private String[][] datos_tabla_responsable;
     private String[][] datos_tabla_contratante;
-    private JDialog padre;
+    private JDialog ventana;
 
     public Insertar_contratante(JFrame padre, String url){
         super(padre, url);
-
+        ventana = this;
     }
 
     public Insertar_contratante(JDialog padre, String url){
         super(padre, url);
-
+        ventana = this;
     }
 
     @Override
     protected void iniciar_componentes(){
-        padre = this;
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        text_contratante = new javax.swing.JTextField();
-        text_responsable = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tabla_contratante = new javax.swing.JTable();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tabla_responsable = new javax.swing.JTable();
-        boton_guardar = new javax.swing.JButton();
+        
+        jPanel1 = new JPanel(null);
+        jLabel1 = new JLabel();
+        jLabel2 = new JLabel();
+        text_contratante = new JTextField();
+        text_responsable = new JTextField();
+        jScrollPane1 = new JScrollPane();
+        tabla_contratante = new JTable();
+        jScrollPane2 = new JScrollPane();
+        tabla_responsable = new JTable();
+        boton_guardar = new JButton();
 
         // Consultando los datos de los contratantes
         base = new Persona(url);
         try{
-            datos_tabla_contratante = ((Persona)base).consultar_no_contratante("");
-            datos_tabla_responsable = ((Persona)base).consultar_persona();
-
+            
+            tabla_contratante = Modelo_tabla.set_tabla_personas(((Persona)base).consultar_no_contratante(""));
+            tabla_responsable = Modelo_tabla.set_tabla_personas(((Persona)base).consultar_persona());
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally{
             base.close();
         }
         
-        jPanel1.setLayout(null);
 
         jLabel1.setText("Contratante");
-        jPanel1.add(jLabel1);
+        
         jLabel1.setBounds(POS_X, POS_X, 83, 16);
 
         jLabel2.setText("Responsable");
-        jPanel1.add(jLabel2);
         jLabel2.setBounds(315, POS_X, 98, 16);
 
+        text_contratante.setBounds(POS_X, 28, 200, 22);
         text_contratante.addKeyListener(new Key_adapter() {
 
             @Override
             public void accion(){
                 set_tabla_contratante();
                 tabla_contratante.changeSelection(0, 0, false, false);
+                jPanel1.revalidate();
+                jPanel1.repaint();
             }
 
             @Override
@@ -99,8 +100,7 @@ public class Insertar_contratante extends Modal_extracto{
             }
         });
 
-        jPanel1.add(text_contratante);
-        text_contratante.setBounds(POS_X, 28, 200, 22);
+        text_responsable.setBounds(315, 28, 200, 22);
         text_responsable.addKeyListener(new Key_adapter() {
             
 
@@ -119,10 +119,9 @@ public class Insertar_contratante extends Modal_extracto{
             }
         });
 
-        jPanel1.add(text_responsable);
-        text_responsable.setBounds(315, 28, 200, 22);
+        
 
-        tabla_contratante = Modelo_tabla.set_tabla_personas(datos_tabla_contratante);
+        
         tabla_contratante.addMouseListener(new MouseAdapter() {
             
             @Override
@@ -130,7 +129,7 @@ public class Insertar_contratante extends Modal_extracto{
                 if(SwingUtilities.isLeftMouseButton(e)){
                     accion_tabla_contratante();
                 }else{
-                    new Insertar_persona(padre, url);
+                    new Insertar_persona(ventana, url);
                     set_tabla_contratante();
                 }
                 
@@ -139,10 +138,9 @@ public class Insertar_contratante extends Modal_extracto{
         });
 
         jScrollPane1.setViewportView(tabla_contratante);
-        jPanel1.add(jScrollPane1);
         jScrollPane1.setBounds(POS_X, 77, 277, 140);
 
-        tabla_responsable = Modelo_tabla.set_tabla_personas(datos_tabla_responsable);
+        
         tabla_responsable.addMouseListener(new MouseAdapter() {
             
             @Override
@@ -150,7 +148,7 @@ public class Insertar_contratante extends Modal_extracto{
                 if(SwingUtilities.isLeftMouseButton(e)){
                     accion_tabla_responsable();
                 }else{
-                    new Insertar_persona(padre, url);
+                    new Insertar_persona(ventana, url);
                     set_tabla_responsable();
                 }
                 
@@ -158,11 +156,9 @@ public class Insertar_contratante extends Modal_extracto{
             }
         });
         jScrollPane2.setViewportView(tabla_responsable);
-        jPanel1.add(jScrollPane2);
         jScrollPane2.setBounds(315, 77, 277, 140);
 
         boton_guardar.setText("Guardar");
-        jPanel1.add(boton_guardar);
         boton_guardar.setBounds(POS_X, 250, 100, 23);
         boton_guardar.addActionListener(accion ->{
             String errores = "Los datos:\n";
@@ -199,11 +195,16 @@ public class Insertar_contratante extends Modal_extracto{
             }
         });
 
-        add(jPanel1);
+        
+        jPanel1.add(boton_guardar);
+        jPanel1.add(jScrollPane2);
+        jPanel1.add(jScrollPane1);
+        jPanel1.add(text_responsable);
+        jPanel1.add(text_contratante);
+        jPanel1.add(jLabel2);
+        jPanel1.add(jLabel1);
 
-        pack();
-        jPanel1.revalidate();
-        jPanel1.repaint();
+        add(jPanel1);
 
     }
 
@@ -218,7 +219,6 @@ public class Insertar_contratante extends Modal_extracto{
 
         ((Contratante)base).insertar_contratante(text_contratante.getText(), text_responsable.getText());
 
-        base.close();
 
     }
 
@@ -229,7 +229,9 @@ public class Insertar_contratante extends Modal_extracto{
         text_responsable.setText("" + tabla_contratante.getValueAt(row, 0)); 
         set_tabla_responsable();
         tabla_responsable.changeSelection(0, 0, false, false);
-
+        
+        jPanel1.revalidate();
+        jPanel1.repaint();
 
     }
 
@@ -238,6 +240,8 @@ public class Insertar_contratante extends Modal_extracto{
         int row = tabla_responsable.getSelectedRow();
         text_responsable.setText("" + tabla_responsable.getValueAt(row, 0));
 
+        jPanel1.revalidate();
+        jPanel1.repaint();
     }
 
     public void set_tabla_contratante(){
@@ -248,7 +252,10 @@ public class Insertar_contratante extends Modal_extracto{
             JTable aux = Modelo_tabla.set_tabla_personas(datos_tabla_contratante);
             tabla_contratante.setModel(aux.getModel());
             tabla_contratante.setColumnModel(aux.getColumnModel());
-                    
+            
+
+            jPanel1.revalidate();
+            jPanel1.repaint();
         
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -267,11 +274,15 @@ public class Insertar_contratante extends Modal_extracto{
             tabla_responsable.setModel(aux.getModel());
             tabla_responsable.setColumnModel(aux.getColumnModel());
                     
-        
+
+            jPanel1.revalidate();
+            jPanel1.repaint();
+
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
         }
-        base.close();
 
     }
 }

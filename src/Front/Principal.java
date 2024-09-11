@@ -1,5 +1,11 @@
 package Front;
 
+import java.awt.Desktop;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.BorderLayout;
 import Base.Base;
 import Base.Ciudad;
 import Base.Clase_vehiculo;
@@ -57,12 +63,7 @@ import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import com.formdev.flatlaf.FlatLightLaf;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.Font;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -91,7 +92,7 @@ public class Principal extends JFrame{
     private ImageIcon icono;
     private JLabel limagen1;
     private JTable tabla;
-    private JPopupMenu pop_menu;
+    private CustomPopupMenu pop_menu;
     private JMenuItem item_adicionar;
     private JMenuItem item_actualizar;
     private JMenuItem item_plantilla;
@@ -555,7 +556,7 @@ public class Principal extends JFrame{
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
             panel_principal2.revalidate();
             panel_principal2.repaint();
-            
+
         });
         vehiculos.doClick();
         conductores.setBounds(10,70,120,20);
@@ -884,6 +885,7 @@ public class Principal extends JFrame{
 
         boton_contratante.setBounds(10, boton_contratos_ocasionales.getY() + boton_contratos_ocasionales.getHeight() + 10 ,120, 20);
         boton_contratante.addActionListener(accion ->{
+
             panel_principal2.remove(panel_informacion);
             if(panel_principal2.getComponentCount() > 2){
                 panel_principal2.remove(pan);
@@ -2340,7 +2342,6 @@ public class Principal extends JFrame{
         
         // Inicializaicon pop_menu
         config_pop_menu();
-        
 
         // Obteniendo datos de la base de datos
         base = new Contratante(url);
@@ -2358,11 +2359,8 @@ public class Principal extends JFrame{
         tabla.setComponentPopupMenu(pop_menu);
         scroll.setViewportView(tabla);
         
-
         // Configuracion de los item 
         item_actualizar.addActionListener(accion->{
-            panel.revalidate();
-            panel.repaint();
             int select_row = tabla.getSelectedRow();
 
             
@@ -2385,9 +2383,9 @@ public class Principal extends JFrame{
 
             base = new Contratante(url);
                 try{
-                    tabla = Modelo_tabla.set_tabla_contratante(((Contratante)base).consultar_contratante(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
+                    JTable tb = Modelo_tabla.set_tabla_contratante(((Contratante)base).consultar_contratante(text_busqueda.getText()));
+                    tabla.setModel(tb.getModel());
+                    tabla.setColumnModel(tb.getColumnModel());
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }finally{
@@ -2450,16 +2448,18 @@ public class Principal extends JFrame{
 
     // Metodos Auxiliares
     private void config_pop_menu(){
-        item_actualizar = new JMenuItem("Actualizar");
+        pop_menu = null;
+        pop_menu = new CustomPopupMenu();
+
+        item_actualizar = new JMenuItem("Modificar");
         item_adicionar = new JMenuItem("Adicionar");
         item_eliminar = new JMenuItem("Eliminar");
 
-        pop_menu = new JPopupMenu();
-        
         pop_menu.add(item_adicionar);
         pop_menu.add(item_actualizar);
         pop_menu.add(item_eliminar);
 
+        
     }  
     
     private void config_pop_menu_extractos(){
@@ -2471,7 +2471,7 @@ public class Principal extends JFrame{
         item_exportar_todos = new JMenuItem("Exportar todos");
         item_actualizar_todos = new JMenuItem("Actualizar todos");
 
-        pop_menu = new JPopupMenu();
+        pop_menu = new CustomPopupMenu();
         
         pop_menu.add(item_adicionar);
         pop_menu.add(item_actualizar);
@@ -2480,5 +2480,29 @@ public class Principal extends JFrame{
         pop_menu.add(item_eliminar);
         pop_menu.add(item_exportar_todos);
         pop_menu.add(item_actualizar_todos);
+    }
+}
+
+class CustomPopupMenu extends JPopupMenu {
+
+    @Override
+    public void show(Component invoker, int x, int y) {
+        if (invoker != null) {
+            // Obtener el tamaño del componente invocador (por ejemplo, el panel o la tabla)
+            Dimension invokerSize = invoker.getParent().getSize();
+            Dimension popupSize = this.getPreferredSize();
+
+            
+            // Ajustar la posición si el popup se sale del componente invocador
+            if (x + popupSize.width > invokerSize.width) {
+                x = invokerSize.width - popupSize.width;
+            }
+            if (y + popupSize.height > invokerSize.height) {
+                y = invokerSize.height - popupSize.height;
+            }
+        }
+
+        // Llamar al método show original para mostrar el popup
+        super.show(invoker, x, y);
     }
 }
