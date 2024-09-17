@@ -2487,36 +2487,6 @@ public class Principal extends JFrame{
 
 class CustomPopupMenu extends JPopupMenu {
 
-    // @Override
-    // public void show(Component invoker, int x, int y) {
-    //     if (invoker != null) {
-    //         // Obtener el tamaño del componente invocador (por ejemplo, el panel o la tabla)
-    //         Dimension invokerSize = invoker.getSize();
-    //         Dimension popupSize = this.getPreferredSize();
-    //         System.out.println(invokerSize.height);
-    //         System.out.println(y);
-            
-    //         // Ajustar la posición si el popup se sale del componente invocador
-    //         if(x > invokerSize.width){
-    //             x = invokerSize.width;
-    //         }
-    //         if(y > invokerSize.height){
-    //             y = invokerSize.height-(y -invokerSize.height);
-    //         }
-    //         System.out.println(y);
-    //         System.out.println();
-    //         if (x + popupSize.width > invokerSize.width) {
-    //             x = invokerSize.width - popupSize.width;
-    //         }
-    //         if (y + popupSize.height > invokerSize.height) {
-    //             y = invokerSize.height - popupSize.height;
-    //         }
-    //     }
-
-    //     // Llamar al método show original para mostrar el popup
-    //     super.show(invoker, x, y);
-    // }
-
     @Override
     public void show(Component invoker, int x, int y) {
         if (invoker != null && invoker.getParent() instanceof JViewport) {
