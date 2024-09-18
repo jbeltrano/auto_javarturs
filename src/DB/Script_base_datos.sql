@@ -106,6 +106,18 @@ insert into ciudad (ciu_nombre,dep_id) values ('Mitú',31);
 insert into departamento(dep_nombre, dep_id) values ('Vichada',32);
 insert into ciudad (ciu_nombre,dep_id) values ('Puerto Carreño',32);
 
+-- Se utliza para establecer relaciones entre municipios
+create table ciudad_conect(
+    ciu_origen_id integer,
+    ciu_destino_id integer,
+    ciu_distancia integer,
+    
+    primary key (ciu_origen_id, ciu_destino_id),
+    foreign key (ciu_origen_id) references ciudad(ciu_id),
+    foreign key (ciu_destino_id) references ciudad(ciu_id)
+);
+
+
 
 create table persona(
     per_id text primary key,
