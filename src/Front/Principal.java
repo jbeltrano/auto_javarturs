@@ -21,6 +21,7 @@ import Base.Licencia;
 import Base.Persona;
 import Base.Vehiculo;
 import Base.Vehiculo_has_conductor;
+import Base.Ruta;
 import Front.Ciudades_departamentos.Actualizar_ciudad;
 import Front.Ciudades_departamentos.Insertar_ciudad;
 import Front.Extractos.Actualizar_contratante;
@@ -65,7 +66,6 @@ import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import com.formdev.flatlaf.FlatLightLaf;
-
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -114,6 +114,7 @@ public class Principal extends JFrame{
     private Base base;
     private JButton boton_ciudad;
     private JButton boton_Departamento;
+    private JButton boton_ruta;
     private JButton boton_extractos_ocasionales; 
     private JButton boton_extractos_mensuales;
     private JButton boton_contratos_mensuales;
@@ -449,6 +450,7 @@ public class Principal extends JFrame{
         JLabel label_principal = new JLabel("Configuracion Ciudades y Departamentos");
         boton_ciudad = new JButton("Ciudades");
         boton_Departamento = new JButton("Departamentos");
+        boton_ruta = new JButton("Rutas");
 
         // Configuracion componentes
         boton_ciudad.setBounds(10, 10, 120, 20);
@@ -459,7 +461,8 @@ public class Principal extends JFrame{
 
            // Agregacion al panel
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
-            
+            panel_principal2.revalidate();
+            panel_principal2.repaint();
             
         });
         boton_ciudad.doClick();
@@ -478,6 +481,20 @@ public class Principal extends JFrame{
 
         });
 
+        boton_ruta.setBounds(10, 70, 120, 20);
+        boton_ruta.addActionListener(accion ->{
+
+            panel_principal2.remove(panel_informacion);
+
+            panel_informacion = ver_ruta();
+
+           // Agregacion al panel
+            panel_principal2.add(panel_informacion,BorderLayout.CENTER);
+            panel_principal2.revalidate();
+            panel_principal2.repaint();
+
+        });
+
         label_principal.setFont(new Font("britannic bold", Font.BOLD, 20));
         label_principal.setHorizontalAlignment(JLabel.CENTER);
 
@@ -486,6 +503,7 @@ public class Principal extends JFrame{
         panel_izq.setBackground(new Color(52, 135, 25));
         panel_izq.add(boton_ciudad);
         panel_izq.add(boton_Departamento);
+        panel_izq.add(boton_ruta);
         
 
         // Agregacion a panel_principal2 y set panel_principal2
@@ -1498,6 +1516,133 @@ public class Principal extends JFrame{
 
     }
 
+    private JPanel ver_ruta(){
+
+        configuracion_panel_busqueda();
+        JPanel panel = new JPanel(new BorderLayout());
+        JScrollPane scroll = new JScrollPane();
+        String[][] datos = null;
+
+        config_pop_menu();
+        // Obteniendo datos de la base de datos
+        base = new Ruta(url);
+        try{
+            datos = ((Ruta)base).consultar_ruta("");
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+        }finally{
+            base.close();
+        }
+
+        // Configuracion de popupMenu
+        item_actualizar.addActionListener(accion->{
+            int select_row = tabla.getSelectedRow();
+
+            
+            //new Actualizar_ciudad(this, url, (String) tabla.getValueAt(select_row, 1), (String) tabla.getValueAt(select_row, 2), Integer.parseInt((String) tabla.getValueAt(select_row, 0))).setVisible(true);
+            // new Actualizar_ruta(this, 
+            //                     url, 
+            //                     Integer.parseInt((String) tabla.getValueAt(select_row, 0)), 
+            //                     Integer.parseInt((String) tabla.getValueAt(select_row, 1))
+            //                     ).setVisible(true);
+
+            base = new Ruta(url);
+            try{
+                
+                tabla = Modelo_tabla.set_tabla_ruta(((Ruta)base).consultar_ruta(text_busqueda.getText()));
+                tabla.setComponentPopupMenu(pop_menu);
+                scroll.setViewportView(tabla);
+        
+
+            }catch(SQLException ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }finally{
+                base.close();
+            }
+            
+
+        });
+        item_adicionar.addActionListener(accion ->{
+
+            //new Insertar_ruta(this, url).setVisible(true);
+            
+            base = new Ruta(url);
+            try{
+
+                tabla = Modelo_tabla.set_tabla_ruta(((Ruta)base).consultar_ruta(text_busqueda.getText()));
+                tabla.setComponentPopupMenu(pop_menu);
+                scroll.setViewportView(tabla);
+        
+
+            }catch(SQLException ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                
+            }finally{
+                base.close();
+            }
+
+        });
+        item_eliminar.addActionListener(accion ->{
+            
+            int number = tabla.getSelectedRow();
+            String origen = "" + tabla.getValueAt(number, 1);
+            String destino = (String) tabla.getValueAt(number, 3);
+            int id_origen = Integer.parseInt((String) tabla.getValueAt(number, 0));
+            int id_destino = Integer.parseInt((String) tabla.getValueAt(number, 2));
+
+            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar la ruta con \norigen: "+ origen + ", y destino: " + destino + ".", "eliminar", JOptionPane.OK_CANCEL_OPTION);
+            if(number == 0){
+                base = new Ruta(url);
+                try{
+                    ((Ruta)base).eliminar_ruta(id_origen, id_destino);
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
+                }
+                
+                JOptionPane.showMessageDialog(this, "Ruta eliminada correctamente eliminada correctamente");
+                boton_ruta.doClick();
+            }
+                  
+        });
+
+        // Configuracion de la visualizacion y opciones de la tabla
+        tabla = Modelo_tabla.set_tabla_ruta(datos);
+        tabla.setComponentPopupMenu(pop_menu);
+        scroll.setViewportView(tabla);
+        
+
+        JFrame padre = this;
+        
+        text_busqueda.addKeyListener(new Key_adapter() {
+            
+            @Override
+            public void accion(){
+                base = new Ruta(url);
+                try{
+                    tabla = Modelo_tabla.set_tabla_ruta(((Ruta)base).consultar_ruta(text_busqueda.getText()));
+                    tabla.setComponentPopupMenu(pop_menu);
+                    scroll.setViewportView(tabla );
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    base.close();
+                }
+            }
+
+            @Override
+            public void accion2(){}
+        });
+        
+
+        panel.add(panel_busqueda, BorderLayout.NORTH);
+        panel.add(scroll, BorderLayout.CENTER);
+
+        return panel;
+
+    }
+
     // Metodos relacionados con Personas y conductores
     
     private JPanel ver_personas(){
@@ -2461,7 +2606,7 @@ public class Principal extends JFrame{
         pop_menu.add(item_actualizar);
         pop_menu.add(item_eliminar);
 
-        
+         
     }  
     
     private void config_pop_menu_extractos(){

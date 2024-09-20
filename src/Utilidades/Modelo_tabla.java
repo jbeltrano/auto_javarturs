@@ -442,6 +442,34 @@ public class Modelo_tabla {
         return tab;
     }
 
+    public static JTable set_tabla_ruta(String [][] datos){
+
+        JTable tab = new JTable();
+        DefaultTableModel modelo; 
+        TableColumnModel clum_model;
+        
+        modelo = set_modelo_tablas(datos);
+        tab = new JTable(modelo);
+        tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
+        tab.setGridColor(new Color(66, 73, 73));
+        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tab.getTableHeader().setReorderingAllowed(false);
+        tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        add_mouse_listener(tab);
+        tab.setCellSelectionEnabled(true);
+        
+        // Configuarcion del tamaño de las columnas
+        clum_model = tab.getColumnModel();
+        clum_model.getColumn(0).setPreferredWidth(50);
+        clum_model.getColumn(1).setPreferredWidth(160);
+        clum_model.getColumn(2).setPreferredWidth(50);
+        clum_model.getColumn(3).setPreferredWidth(160);
+        clum_model.getColumn(4).setPreferredWidth(60);
+        
+
+        return tab;
+    }
+
     public static JTable set_tabla_ciudad(String [][] datos){
         
         JTable tab = new JTable();

@@ -107,17 +107,15 @@ insert into departamento(dep_nombre, dep_id) values ('Vichada',32);
 insert into ciudad (ciu_nombre,dep_id) values ('Puerto Carreño',32);
 
 -- Se utliza para establecer relaciones entre municipios
-create table ciudad_conect(
-    ciu_origen_id integer,
-    ciu_destino_id integer,
-    ciu_distancia integer,
+create table ruta(
+    rut_origen_id integer,
+    rut_destino_id integer,
+    rut_distancia integer,
     
-    primary key (ciu_origen_id, ciu_destino_id),
-    foreign key (ciu_origen_id) references ciudad(ciu_id),
-    foreign key (ciu_destino_id) references ciudad(ciu_id)
+    primary key (rut_origen_id, rut_destino_id),
+    foreign key (rut_origen_id) references ciudad(ciu_id),
+    foreign key (rut_destino_id) references ciudad(ciu_id)
 );
-
-
 
 create table persona(
     per_id text primary key,
@@ -542,3 +540,14 @@ select  veh_placa, doc_interno,
             from documento natural join vehiculo 
             join persona on (veh_propietario = per_id) 
             natural join tipo_id;
+
+                        
+create view vw_ruta as select
+    id as id_origen, 
+    nombre as origen,
+    ciu_id as id_destino,
+    ciu_nombre as destino, 
+    rut_distancia as distancia 
+        from ruta join 
+            (select ciu_id as id, ciu_nombre as nombre from ciudad) on (rut_origen_id = id) 
+        join ciudad on (rut_destino_id = ciu_id);
