@@ -39,17 +39,14 @@ public class Queue<T>{
     }
     
     public void enqueue(T dato){
-        
-        if(isEmpty()){
-            throw new IllegalStateException("La pila está vacia");
-        }
 
         Nodo<T> nuevo_nodo = new Nodo<T>(dato);
         if(tail == null){
-            tail = head = nuevo_nodo;
+            tail = nuevo_nodo;
+            head = nuevo_nodo;
         }else{
             tail.next = nuevo_nodo;
-            head = nuevo_nodo;
+            tail = tail.next;
         }
         size++;
     }
@@ -68,4 +65,16 @@ public class Queue<T>{
         size--;
         return data;
     }
+
+    // public String toString(){
+    //     String valor = "";
+    //     Nodo<T> dato = head;
+
+    //     while(dato != null){
+    //         valor += dato.dato.toString() + " ,";
+    //         dato = head.next;
+    //     }
+
+    //     return valor;
+    // }
 }

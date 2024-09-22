@@ -23,7 +23,9 @@ import Base.Vehiculo;
 import Base.Vehiculo_has_conductor;
 import Base.Ruta;
 import Front.Ciudades_departamentos.Actualizar_ciudad;
+import Front.Ciudades_departamentos.Actualizar_ruta;
 import Front.Ciudades_departamentos.Insertar_ciudad;
+import Front.Ciudades_departamentos.Insertar_ruta;
 import Front.Extractos.Actualizar_contratante;
 import Front.Extractos.Actualizar_contrato_ocasional;
 import Front.Extractos.Actualizar_extracto_mensual;
@@ -1538,13 +1540,12 @@ public class Principal extends JFrame{
         item_actualizar.addActionListener(accion->{
             int select_row = tabla.getSelectedRow();
 
-            
-            //new Actualizar_ciudad(this, url, (String) tabla.getValueAt(select_row, 1), (String) tabla.getValueAt(select_row, 2), Integer.parseInt((String) tabla.getValueAt(select_row, 0))).setVisible(true);
-            // new Actualizar_ruta(this, 
-            //                     url, 
-            //                     Integer.parseInt((String) tabla.getValueAt(select_row, 0)), 
-            //                     Integer.parseInt((String) tabla.getValueAt(select_row, 1))
-            //                     ).setVisible(true);
+            new Actualizar_ruta(this, 
+                                url, 
+                                Integer.parseInt((String) tabla.getValueAt(select_row, 0)), 
+                                Integer.parseInt((String) tabla.getValueAt(select_row, 2)),
+                                Integer.parseInt((String) tabla.getValueAt(select_row, 4))
+                                ).setVisible(true);
 
             base = new Ruta(url);
             try{
@@ -1564,8 +1565,7 @@ public class Principal extends JFrame{
         });
         item_adicionar.addActionListener(accion ->{
 
-            //new Insertar_ruta(this, url).setVisible(true);
-            
+            new Insertar_ruta(this, url).setVisible(true);
             base = new Ruta(url);
             try{
 

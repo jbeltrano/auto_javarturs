@@ -86,4 +86,58 @@ public class Ruta extends Base{
         }
     }
     
+    public void insertar_ruta(int id_origen, int id_destino, int distancia)throws SQLException{
+        insertar = "insert into ruta values(?,?,?)";
+
+        try{
+            pstate = coneccion.prepareStatement(insertar);
+
+            pstate.setInt(1, id_origen);
+            pstate.setInt(2, id_destino);
+            pstate.setInt(3, distancia);
+
+            pstate.executeUpdate();
+
+            pstate.setInt(1, id_destino);
+            pstate.setInt(2, id_origen);
+
+            pstate.executeUpdate();
+        }catch(SQLException ex){
+            throw ex;
+        }finally{
+            pstate.close();
+        }
+    }
+
+    public void actualizar_ruta(int id_origen, int id_destino, int id_origen_final, int id_destino_final, int distancia)throws SQLException{
+
+        actualizar = "update ruta set rut_origen_id = ?, rut_destino_id = ?, rut_distancia = ? where rut_origen_id = ? and rut_destino_id = ?";
+
+        try{
+            pstate = coneccion.prepareStatement(actualizar);
+
+            pstate.setInt(1, id_origen_final);
+            pstate.setInt(2, id_destino_final);
+            pstate.setInt(3, distancia);
+            pstate.setInt(4, id_origen);
+            pstate.setInt(5, id_destino);
+
+            pstate.executeUpdate();
+
+            
+            pstate.setInt(1, id_destino_final);
+            pstate.setInt(2, id_origen_final);
+            pstate.setInt(3, distancia);
+            pstate.setInt(4, id_destino);
+            pstate.setInt(5, id_origen);
+            
+
+            pstate.executeUpdate();
+
+        }catch(SQLException ex){
+            throw ex;
+        }finally{
+            pstate.close();
+        }
+    }
 }

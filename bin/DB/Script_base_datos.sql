@@ -113,6 +113,7 @@ create table ruta(
     rut_distancia integer,
     
     primary key (rut_origen_id, rut_destino_id),
+    unique(rut_origen_id, rut_destino_id),
     foreign key (rut_origen_id) references ciudad(ciu_id),
     foreign key (rut_destino_id) references ciudad(ciu_id)
 );
