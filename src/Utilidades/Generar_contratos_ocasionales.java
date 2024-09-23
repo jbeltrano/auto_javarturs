@@ -11,6 +11,7 @@ import Base.Contratante;
 import Base.Vehiculo;
 import Base.BContrato_ocasional;
 
+
 public class Generar_contratos_ocasionales {
 
     public static String generar_contrato_ocasional(String[] placas,String contrato, String url)throws IOException, SQLException{
@@ -28,6 +29,7 @@ public class Generar_contratos_ocasionales {
         LocalDate fecha_final;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
         int cantidad_pasajeros = 0;
+        
 
         base = new Base(url);
         Ciudad base_ciudad = new Ciudad(url);
