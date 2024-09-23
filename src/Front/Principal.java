@@ -2607,7 +2607,7 @@ public class Principal extends JFrame{
         pop_menu.add(item_eliminar);
 
          
-    }  
+    }
     
     private void config_pop_menu_extractos(){
         item_actualizar = new JMenuItem("Modificar");

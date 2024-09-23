@@ -1,6 +1,7 @@
 package Base;
 
 import java.sql.SQLException;
+import Estructuras_datos.Graph;
 
 public class Ruta extends Base{
     
@@ -138,6 +139,31 @@ public class Ruta extends Base{
             throw ex;
         }finally{
             pstate.close();
+        }
+    }
+
+    public void cargarRutasGrafo(Graph grafo) throws SQLException{
+        consultar = "SELECT rut_origen_id, rut_destino_id, rut_distancia FROM ruta";
+
+        try {
+
+            state = coneccion.createStatement();
+            resultado = state.executeQuery(consultar);
+
+            while (resultado.next()) {
+                int origen = resultado.getInt("rut_origen_id");
+                int destino = resultado.getInt("rut_destino_id");
+                int distancia = resultado.getInt("rut_distancia");
+
+                // Agregamos la ruta de origen a destino
+                grafo.setNodo(origen, destino, distancia);
+                
+            }
+        } catch (SQLException e) {
+            throw e;
+        }finally{
+            resultado.close();
+            state.close();
         }
     }
 }

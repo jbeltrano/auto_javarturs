@@ -1,81 +1,78 @@
-package Estructuras_datos;
+package Estructuras_datos; 
 
 import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Comparator;
+import java.util.List;
+import java.util.ArrayList;
 
-class Node {
-    int id;
-    List<Edge> edges;
+public class Graph {
+    // Clase para representar un nodo (municipio) en el grafo
+    private static class Nodo implements Comparable<Nodo> {
+        int id;
+        int distancia;
 
-    public Node(int id) {
-        this.id = id;
-        this.edges = new ArrayList<>();
+        public Nodo(int id, int distancia) {
+            this.id = id;
+            this.distancia = distancia;
+        }
+
+        @Override
+        public int compareTo(Nodo other) {
+            return Integer.compare(this.distancia, other.distancia);
+        }
     }
-}
 
-class Edge {
-    Node target;
-    int weight;
-
-    public Edge(Node target, int weight) {
-        this.target = target;
-        this.weight = weight;
-    }
-}
-
-class Graph {
-    Map<Integer, Node> nodes;
+    private Map<Integer, List<Nodo>> grafo;
 
     public Graph() {
-        this.nodes = new HashMap<>();
+        grafo = new HashMap<>();
     }
 
-    public void addNode(int id) {
-        nodes.putIfAbsent(id, new Node(id));
+    public void setNodo(int origen, int destino, int distancia){
+        grafo.putIfAbsent(origen, new ArrayList<>());
+        grafo.get(origen).add(new Nodo(destino, distancia));
     }
 
-    public void addEdge(int sourceId, int targetId, int weight) {
-        Node source = nodes.get(sourceId);
-        Node target = nodes.get(targetId);
-        if (source != null && target != null) {
-            source.edges.add(new Edge(target, weight));
-        }
-    }
+    public Stack<Integer> dijkstra(int origen, int destino) {
+        Map<Integer, Integer> distancias = new HashMap<>();
+        Map<Integer, Integer> predecesores = new HashMap<>();
+        PriorityQueue<Nodo> cola = new PriorityQueue<>(Nodo.class);
+        cola.insert(new Nodo(origen, 0));
+        distancias.put(origen, 0);
 
-    public static Map<Node, Integer> shortestPath(Graph graph, Node source) {
-        Map<Node, Integer> distances = new HashMap<>();
-        PriorityQueue<Node> pq = new PriorityQueue<>(Comparator.comparingInt(distances::get));
-        Set<Node> visited = new HashSet<>();
+        while (!cola.isEmpty()) {
+            Nodo actual = cola.deleteMin();
+            int nodoActual = actual.id;
 
-        for (Node node : graph.nodes.values()) {
-            distances.put(node, Integer.MAX_VALUE);
-        }
-        distances.put(source, 0);
-        pq.add(source);
-
-        while (!pq.isEmpty()) {
-            Node current = pq.poll();
-            if (visited.contains(current)) {
-                continue;
+            if (nodoActual == destino) {
+                break;
             }
-            visited.add(current);
 
-            for (Edge edge : current.edges) {
-                Node neighbor = edge.target;
-                int newDist = distances.get(current) + edge.weight;
-                if (newDist < distances.get(neighbor)) {
-                    distances.put(neighbor, newDist);
-                    pq.add(neighbor);
+            if (!grafo.containsKey(nodoActual)) continue;
+
+            for (Nodo vecino : grafo.get(nodoActual)) {
+                int nuevaDistancia = distancias.get(nodoActual) + vecino.distancia;
+
+                if (nuevaDistancia < distancias.getOrDefault(vecino.id, Integer.MAX_VALUE)) {
+                    distancias.put(vecino.id, nuevaDistancia);
+                    predecesores.put(vecino.id, nodoActual);
+                    cola.insert(new Nodo(vecino.id, nuevaDistancia));
                 }
             }
         }
-        return distances;
+
+        Stack<Integer> camino = new Stack<>();
+        Integer paso = destino;
+
+        while (paso != null) {
+            camino.push(paso);
+            paso = predecesores.get(paso);
+        }
+
+        if (camino.peek() != origen){
+            return new Stack<>();
+        }
+
+        return camino;
     }
 }
-
