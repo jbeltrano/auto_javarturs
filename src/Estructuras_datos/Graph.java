@@ -1,7 +1,6 @@
 package Estructuras_datos; 
 
-import java.util.HashMap;
-import java.util.Map;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -22,20 +21,24 @@ public class Graph {
         }
     }
 
-    private Map<Integer, List<Nodo>> grafo;
+    private HashTable<Integer, List<Nodo>> grafo;
 
     public Graph() {
-        grafo = new HashMap<>();
+        //grafo = new HashMap<>();
+        grafo = new HashTable<>();
     }
 
     public void setNodo(int origen, int destino, int distancia){
         grafo.putIfAbsent(origen, new ArrayList<>());
         grafo.get(origen).add(new Nodo(destino, distancia));
+
+        grafo.putIfAbsent(destino, new ArrayList<>());
+        grafo.get(destino).add(new Nodo(origen, distancia));
     }
 
     public Stack<Integer> dijkstra(int origen, int destino) {
-        Map<Integer, Integer> distancias = new HashMap<>();
-        Map<Integer, Integer> predecesores = new HashMap<>();
+        HashTable<Integer, Integer> distancias = new HashTable<>();
+        HashTable<Integer, Integer> predecesores = new HashTable<>();
         PriorityQueue<Nodo> cola = new PriorityQueue<>(Nodo.class);
         cola.insert(new Nodo(origen, 0));
         distancias.put(origen, 0);

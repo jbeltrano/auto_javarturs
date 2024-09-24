@@ -2,16 +2,16 @@ package Estructuras_datos;
 
 import java.util.LinkedList;
 
-class HashTable<K, V> {
+public class HashTable<K, V> {
     private static final int INITIAL_CAPACITY = 16; // Tamaño inicial
-    private LinkedList<Entry<K, V>>[] buckets;
+    private LinkedList<Entrada<K, V>>[] listas;
 
-    // Clase Entry para almacenar pares clave-valor
-    static class Entry<K, V> {
+    // Clase Entrada para almacenar pares clave-valor
+    static class Entrada<K, V> {
         K key;
         V value;
 
-        Entry(K key, V value) {
+        Entrada(K key, V value) {
             this.key = key;
             this.value = value;
         }
@@ -19,9 +19,9 @@ class HashTable<K, V> {
 
     @SuppressWarnings("unchecked")
     public HashTable() {
-        buckets = new LinkedList[INITIAL_CAPACITY]; // Inicializar las listas enlazadas
+        listas = new LinkedList[INITIAL_CAPACITY]; // Inicializar las listass enlazadas
         for (int i = 0; i < INITIAL_CAPACITY; i++) {
-            buckets[i] = new LinkedList<>();
+            listas[i] = new LinkedList<>();
         }
     }
 
@@ -32,28 +32,28 @@ class HashTable<K, V> {
 
     // Insertar un nuevo elemento en la tabla
     public void put(K key, V value) {
-        int bucketIndex = hash(key);
-        LinkedList<Entry<K, V>> bucket = buckets[bucketIndex];
+        int listIndex = hash(key);
+        LinkedList<Entrada<K, V>> lista = listas[listIndex];
 
-        for (Entry<K, V> entry : bucket) {
-            if (entry.key.equals(key)) {
-                entry.value = value; // Si la clave ya existe, actualiza el valor
+        for (Entrada<K, V> Entrada : lista) {
+            if (Entrada.key.equals(key)) {
+                Entrada.value = value; // Si la clave ya existe, actualiza el valor
                 return;
             }
         }
 
-        // Si no existe, añade un nuevo Entry a la lista
-        bucket.add(new Entry<>(key, value));
+        // Si no existe, añade un nuevo Entrada a la listas
+        lista.add(new Entrada<>(key, value));
     }
 
     // Obtener un valor a partir de la clave
     public V get(K key) {
-        int bucketIndex = hash(key);
-        LinkedList<Entry<K, V>> bucket = buckets[bucketIndex];
+        int listIndex = hash(key);
+        LinkedList<Entrada<K, V>> lista = listas[listIndex];
 
-        for (Entry<K, V> entry : bucket) {
-            if (entry.key.equals(key)) {
-                return entry.value; // Retorna el valor si encuentra la clave
+        for (Entrada<K, V> Entrada : lista) {
+            if (Entrada.key.equals(key)) {
+                return Entrada.value; // Retorna el valor si encuentra la clave
             }
         }
 
@@ -62,9 +62,50 @@ class HashTable<K, V> {
 
     // Eliminar un elemento por su clave
     public void remove(K key) {
-        int bucketIndex = hash(key);
-        LinkedList<Entry<K, V>> bucket = buckets[bucketIndex];
+        int listIndex = hash(key);
+        LinkedList<Entrada<K, V>> lista = listas[listIndex];
 
-        bucket.removeIf(entry -> entry.key.equals(key)); // Elimina si coincide la clave
+        lista.removeIf(Entrada -> Entrada.key.equals(key)); // Elimina si coincide la clave
+    }
+
+    public V putIfAbsent(K key, V value) {
+        int listIndex = hash(key);
+        LinkedList<Entrada<K, V>> lista = listas[listIndex];
+    
+        for (Entrada<K, V> Entrada : lista) {
+            if (Entrada.key.equals(key)) {
+                return Entrada.value; // Retorna el valor existente si la clave ya está presente
+            }
+        }
+    
+        // Si no existe, añade un nuevo Entrada a la listas
+        lista.add(new Entrada<>(key, value));
+        return null; // Retorna null indicando que no existía antes
+    }
+
+    public V getOrDefault(K key, V defaultValue) {
+        int listIndex = hash(key);
+        LinkedList<Entrada<K, V>> lista = listas[listIndex];
+
+        for (Entrada<K, V> Entrada : lista) {
+            if (Entrada.key.equals(key)) {
+                return Entrada.value; // Retorna el valor si encuentra la clave
+            }
+        }
+
+        return defaultValue; // Retorna el valor por defecto si no se encuentra la clave
+    }
+
+    // Verificar si la clave existe en la tabla
+    public boolean containsKey(K key) {
+        int listIndex = hash(key);
+        LinkedList<Entrada<K, V>> lista = listas[listIndex];
+
+        for (Entrada<K, V> Entrada : lista) {
+            if (Entrada.key.equals(key)) {
+                return true; // Retorna true si encuentra la clave
+            }
+        }
+        return false; // Retorna false si no se encuentra la clave
     }
 }

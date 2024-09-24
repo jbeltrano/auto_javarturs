@@ -4,12 +4,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+
+import Estructuras_datos.HashTable;
+import Estructuras_datos.Queue;
 
 public class Contrato_ocasional{
     
@@ -218,6 +222,39 @@ public class Contrato_ocasional{
         // localizando y remplazando el destino
         run = parrafo.getRuns().get(16);
         run.setText( destino , 0);
+
+    }
+
+    public void set_origen_destino(Queue<Integer> queue, HashTable<Integer, String> tabla_hash){
+
+        XWPFParagraph parrafo;
+        XWPFRun run; 
+        
+        String origen = tabla_hash.get(queue.dequeue());
+        String destino = "";
+        String ruta = "";
+        String ruta_completa;
+
+        while (queue.size() > 1) {
+            ruta += tabla_hash.get(queue.dequeue());
+            if(queue.size() > 1){
+                ruta += " - ";
+            }
+        }
+
+        destino = tabla_hash.get(queue.dequeue());
+
+        ruta_completa = destino + " Pasando por: " + ruta;
+        // Definiendo el parrafo a modificar
+        parrafo = documento.getParagraphs().get(7);
+
+        // localizando y remplazando el origen
+        run = parrafo.getRuns().get(13);
+        run.setText( " "+origen, 0);
+
+        // localizando y remplazando el destino
+        run = parrafo.getRuns().get(16);
+        run.setText( ruta_completa , 0);
 
     }
 

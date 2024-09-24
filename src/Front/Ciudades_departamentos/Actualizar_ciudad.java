@@ -3,6 +3,7 @@ package Front.Ciudades_departamentos;
 import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
 import Base.Ciudad;
 
 public class Actualizar_ciudad extends Insertar_ciudad{
@@ -25,7 +26,7 @@ public class Actualizar_ciudad extends Insertar_ciudad{
     private void reconfigurar(){
 
         combo_departamento.setSelectedItem(departamento);
-        combo_departamento.setEnabled(false);
+        //combo_departamento.setEnabled(false);
 
         text_ciudad.setText(ciudad);
 
@@ -44,6 +45,7 @@ public class Actualizar_ciudad extends Insertar_ciudad{
                 try{
 
                     ((Ciudad)base).actualizar_ciudad(id_ciudad, text_ciudad.getText());
+                    ((Ciudad)base).actualizar_ciudad(id_ciudad, text_ciudad.getText(), (String) combo_departamento.getSelectedItem());
                     base.close();
                     JOptionPane.showMessageDialog(this, "Ciudad actualizada con exito");
                     setVisible(false);

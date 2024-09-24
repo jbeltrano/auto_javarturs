@@ -5,12 +5,15 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import Base.Base;
+import Base.Ruta;
 import Base.Ciudad;
 import Base.Contratante;
 import Base.Vehiculo;
 import Base.BContrato_ocasional;
-
+import Estructuras_datos.Graph;
+import Estructuras_datos.HashTable;
+import Estructuras_datos.Queue;
+import Estructuras_datos.Stack;
 
 public class Generar_contratos_ocasionales {
 
@@ -20,7 +23,6 @@ public class Generar_contratos_ocasionales {
         //String url_destino = System.getProperty("user.home") + "\\Desktop\\Extractos\\Contratos Ocasionales\\";
         String url_destino = "H:\\.shortcut-targets-by-id\\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\\0. EXTRACTOS Y CONTRATOS\\CONTRATOS DE SERVICIOS OCASIONALES\\";
         String url_destino2 = System.getProperty("user.home") + "\\Desktop\\Extractos\\Contratos Ocasionales\\";
-        Base base;
         String contratante[];
         String contrato_ocasional[];
         String origen[];
@@ -29,9 +31,13 @@ public class Generar_contratos_ocasionales {
         LocalDate fecha_final;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
         int cantidad_pasajeros = 0;
+        HashTable<Integer, String> tabla_hash = new HashTable<>();
+        Graph grafo = new Graph();
+        Stack<Integer> stack = new Stack<>();
+        Queue<Integer> queue = new Queue<>();
         
 
-        base = new Base(url);
+        Ruta base_ruta = new Ruta(url);
         Ciudad base_ciudad = new Ciudad(url);
         Vehiculo base_Vehiculo = new Vehiculo(url);
         BContrato_ocasional base_contrato_ocasional = new BContrato_ocasional(url);
@@ -45,6 +51,25 @@ public class Generar_contratos_ocasionales {
             fecha_inicial = LocalDate.parse(contrato_ocasional[2], formatter);
             fecha_final = LocalDate.parse(contrato_ocasional[3], formatter);
             doc_contrato = new Contrato_ocasional("src\\Formatos\\Documento.docx"); // Inicializa el documento
+
+            // Ahora para cargar el grafo y la tabla has se hace de la siguiente manera
+            base_ruta.cargarRutasGrafo(grafo);
+            stack = grafo.dijkstra(Integer.parseInt(origen[0]), Integer.parseInt(destino[0])); 
+
+            while(!stack.isEmpty()){
+                queue.enqueue(stack.peek());
+                String datos[] = base_ciudad.consultar_uno_ciudades("" + stack.peek());
+                int id = stack.pop();
+                String formato = datos[1] + " (" + datos[2] + ")";
+                tabla_hash.put(id, formato);
+            }
+
+            
+            // for(int i = 0; i < datos_HT.length; i++){
+            //     int id = Integer.parseInt(datos_HT[i][0]);
+            //     String formato = datos_HT[i][1] + " (" + datos_HT[i][2] + ")";
+
+            // }
 
             // Consulta la capacidad maxima entre los dos set_cantidad_vehiculos
             for(int i = 0; i < placas.length; i++){
@@ -83,8 +108,13 @@ public class Generar_contratos_ocasionales {
             doc_contrato.set_cantidad_pasajeros(cantidad_pasajeros);
 
             // Hace un set al origen y destino
-            doc_contrato.set_origen_destino(origen[1] + " (" + origen[2] + ")",      // Origen en formato municipio (departamento) 
-                                            destino[1] + " (" + destino[2] + ")");   // Destino en formato municipio (departamento)
+            if(queue.size() <= 2){
+                doc_contrato.set_origen_destino(origen[1] + " (" + origen[2] + ")",      // Origen en formato municipio (departamento) 
+                                                destino[1] + " (" + destino[2] + ")");   // Destino en formato municipio (departamento)
+            }else{
+                doc_contrato.set_origen_destino(queue, tabla_hash);   // Destino en formato municipio (departamento)
+            }
+            
             // Hace un set al precio
             doc_contrato.set_valor_contrato(Integer.parseInt(contrato_ocasional[6]));
             
@@ -101,11 +131,11 @@ public class Generar_contratos_ocasionales {
             doc_contrato.guardar(url_destino, placas);
             doc_contrato.guardar(url_destino2,placas);
         }finally{
-            base.close();
             base_Vehiculo.close();
             doc_contrato.close();
             base_contrato_ocasional.close();
             base_contratante.close();
+            base_ruta.close();
         }
         return url_destino;
 

@@ -66,20 +66,18 @@ public class Ruta extends Base{
 
     public void eliminar_ruta(int id_origen, int id_destino)throws SQLException{
 
-        borrar = "delete from ruta where rut_origen_id = ? and rut_destino_id = ?";
+        borrar = "delete from ruta where rut_origen_id = ? and rut_destino_id = ? or rut_origen_id = ? and rut_destino_id = ?";
 
         try{
             pstate = coneccion.prepareStatement(borrar);
             
             pstate.setInt(1, id_origen);
             pstate.setInt(2, id_destino);
+            pstate.setInt(3, id_destino);
+            pstate.setInt(4, id_origen);
 
             pstate.executeUpdate();
 
-            pstate.setInt(1, id_destino);
-            pstate.setInt(2, id_origen);
-
-            pstate.executeUpdate();
         }catch(SQLException ex){
             throw ex;
         }finally{
@@ -98,11 +96,7 @@ public class Ruta extends Base{
             pstate.setInt(3, distancia);
 
             pstate.executeUpdate();
-
-            pstate.setInt(1, id_destino);
-            pstate.setInt(2, id_origen);
-
-            pstate.executeUpdate();
+            
         }catch(SQLException ex){
             throw ex;
         }finally{

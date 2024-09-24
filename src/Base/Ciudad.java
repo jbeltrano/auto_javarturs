@@ -92,6 +92,28 @@ public class Ciudad extends Base{
         }
     }
 
+    public void actualizar_ciudad(int ciu_id, String ciu_nombre, String dep_nombre)throws SQLException{
+
+        actualizar = "update ciudad set ciu_nombre = ?, dep_id = (select dep_id from departamento where dep_nombre = ?) where ciu_id = ?";
+        String nombre = Capitalizar_Strings.capitalizarNombre(ciu_nombre);
+        
+
+        try{
+            pstate = coneccion.prepareStatement(actualizar);
+
+            pstate.setString(1, nombre);
+            pstate.setString(2, dep_nombre);
+            pstate.setInt(3, ciu_id);
+
+            pstate.executeUpdate();
+
+        }catch(SQLException ex){
+            throw ex;
+        }finally{
+            pstate.close();
+        }
+    }
+
     /**
      * Retorna todos los registros de
      * ciudades que se encuentren en la
