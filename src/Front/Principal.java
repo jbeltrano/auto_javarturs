@@ -2220,29 +2220,42 @@ public class Principal extends JFrame{
 
             int row = tabla.getSelectedRow();
             int num_contrato = Integer.parseInt((String)tabla.getValueAt(row, 0));
+            String[] opciones = {"Sí", "No"};
+            int band = JOptionPane.showOptionDialog(null, 
+                                                "¿Deceas que el contrato muestre la ruta\nmás corta entre el origen y el destnio?", 
+                                                "Confirmación", 
+                                                JOptionPane.YES_NO_OPTION, 
+                                                JOptionPane.QUESTION_MESSAGE, 
+                                                null, 
+                                                opciones, 
+                                                opciones[0]);
             
-            
-            try{
-                String ruta = Generar_extractos.generar_extracto_ocasional(num_contrato, url);
-                JOptionPane.showMessageDialog(this, "Exportando el contrato N° " + num_contrato + ", Junto \na sus extractos correspondientes. \n\nPor favor espere...");
-                
-                comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
-                runtime.exec(comando);
-                
-                int proceso = runtime.exec(comando).waitFor();
-
-                if(proceso == 0){
-                    JOptionPane.showMessageDialog(this, "Proceso finalizado con exito.\nRuta de los documentos: "+ ruta);
-                }else{
-                    JOptionPane.showMessageDialog(this, "El proceso no pudo ser finalizado con exito. Error code: " + proceso);
+            if(band >= 0){
+                boolean flag = (band == 0)?true:false;
+                try{
+                    String ruta = Generar_extractos.generar_extracto_ocasional(num_contrato, url, flag);
+                    JOptionPane.showMessageDialog(this, "Exportando el contrato N° " + num_contrato + ", Junto \na sus extractos correspondientes. \n\nPor favor espere...");
+                    
+                    comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
+                    runtime.exec(comando);
+                    
+                    int proceso = runtime.exec(comando).waitFor();
+    
+                    if(proceso == 0){
+                        JOptionPane.showMessageDialog(this, "Proceso finalizado con exito.\nRuta de los documentos: "+ ruta);
+                    }else{
+                        JOptionPane.showMessageDialog(this, "El proceso no pudo ser finalizado con exito. Error code: " + proceso);
+                    }
+                    
+    
+                }catch(Exception ex){
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
                 }
-                
-
-            }catch(Exception ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }finally{
-                comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
             }
+            
+            
             
         });
         item_plantilla.addActionListener(accion ->{
@@ -2404,23 +2417,37 @@ public class Principal extends JFrame{
             }
         });
         item_exportar.addActionListener(accion ->{
-            int select_row = tabla.getSelectedRow();
-            try{
-                String ruta;
-                comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
-                ruta = Generar_extractos.generar_extracto_ocasional(Integer.parseInt((String) tabla.getValueAt(select_row, 2)), url);
-                
-                runtime.exec(comando);
-                
-                JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
-            }catch(Exception ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }finally{
-
-                comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
-                
+            String[] opciones = {"Sí", "No"};
+            int band = JOptionPane.showOptionDialog(null, 
+                                                "¿Deceas que el contrato muestre la ruta\nmás corta entre el origen y el destnio?", 
+                                                "Confirmación", 
+                                                JOptionPane.YES_NO_OPTION, 
+                                                JOptionPane.QUESTION_MESSAGE, 
+                                                null, 
+                                                opciones, 
+                                                opciones[0]);
+            
+            
+            if(band >= 0){
+                boolean flag = (band == 0)?true:false;
+                int select_row = tabla.getSelectedRow();
+                try{
+                    String ruta;
+                    comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
+                    ruta = Generar_extractos.generar_extracto_ocasional(Integer.parseInt((String) tabla.getValueAt(select_row, 2)), url, flag);
+                    
+                    runtime.exec(comando);
+                    
+                    JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
+                }catch(Exception ex){
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+    
+                    comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
+                    
+                }    
             }
-
+            
         });
         item_eliminar.addActionListener(accion ->{
             

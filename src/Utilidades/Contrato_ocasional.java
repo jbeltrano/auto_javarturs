@@ -87,6 +87,46 @@ public class Contrato_ocasional{
      */
     public void set_contratante(String nombre_empresa, String tipo_documento_empresa, String numero_documento_empresa,String nombre, String tipo_documento, String numero_documento, String telefono, String direccion, String ciudad){
         
+        nombre = nombre.toUpperCase();
+        nombre_empresa = nombre_empresa.toUpperCase();
+        numero_documento = Digito.convertir_formato(numero_documento);
+        numero_documento_empresa = Digito.convertir_formato(numero_documento_empresa) + "-" + Digito.get_digito_nit(numero_documento_empresa);
+        tipo_documento_empresa = tipo_documento_empresa.toUpperCase();
+        String texto;
+        XWPFParagraph parrafo;
+        XWPFRun run;
+        XWPFTable tabla;
+        XWPFTableRow row; 
+        XWPFTableCell cell;
+
+        
+        // Modificacion del primer parrafo que tiene que ver con el contratante
+        parrafo = documento.getParagraphs().get(6);
+
+        // Modificacion del nombre del contratante
+        run = parrafo.getRuns().get(15);
+        run.setText(nombre_empresa,0);
+
+        // Modificacion de los demas datos del contratante
+        texto = " "+tipo_documento_empresa.toUpperCase() + ": " + numero_documento_empresa + ", representada legalmente por: " + nombre + 
+                ", identificado(a) con " + tipo_documento + ": " + numero_documento + ", teléfono: " + telefono + ", dirección: " + direccion + " " + ciudad;
+        run = parrafo.getRuns().get(19);
+        run.setText(texto,0);
+
+
+        // Modificacion del parrafo o tabla donde esta otra parte de al inforamcion del contratante
+        tabla = documento.getTables().get(0);
+
+        // Modificando el nombre del contratante
+        row = tabla.getRow(0);
+        cell = row.getCell(1);
+        cell.getParagraphs().get(0).getRuns().get(0).setText(nombre, 0);
+
+        // Modificando el documento del contratante
+        row = tabla.getRow(1);
+        cell = row.getCell(1);
+        cell.getParagraphs().get(0).getRuns().get(0).setText(tipo_documento.toUpperCase() + ": " + numero_documento,0);
+
     }
     /**
      * Este metodo se encargar de modificar el parrafo
@@ -237,14 +277,17 @@ public class Contrato_ocasional{
 
         while (queue.size() > 1) {
             ruta += tabla_hash.get(queue.dequeue());
-            if(queue.size() > 1){
-                ruta += " - ";
+            if(queue.size() > 2){
+                ruta += ", ";
+            }
+            if(queue.size() == 2){
+                ruta += " y ";
             }
         }
 
         destino = tabla_hash.get(queue.dequeue());
 
-        ruta_completa = destino + " Pasando por: " + ruta;
+        ruta_completa = destino + ", pasando por: " + ruta;
         // Definiendo el parrafo a modificar
         parrafo = documento.getParagraphs().get(7);
 

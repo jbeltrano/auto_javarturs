@@ -152,12 +152,13 @@ public class Generar_extractos {
      * @param consecutivo
      * @param contrato
      * @param url
+     * @param band  // Define si se muestra la ruta entre origen y destino
      * @return
      * @throws SQLException
      * @throws IOException
      * @throws NullPointerException
      */
-    public static String generar_extracto_ocasional(String placa, int consecutivo,int contrato, String url)throws SQLException, IOException, NullPointerException{
+    public static String generar_extracto_ocasional(String placa, int consecutivo,int contrato, String url, boolean band)throws SQLException, IOException, NullPointerException{
         Extracto extracto;
         Base base = new Base(url);
         Vehiculo base_vehiculo = new Vehiculo(url);
@@ -294,7 +295,7 @@ public class Generar_extractos {
             // Guarda el extracto en la direccion indicada por el path, o el archivo de configuracion
             extracto.guardar(localizacion_fichero, sub_ocasional+" (" + consecutivo + ")");
             extracto.guardar(localizacion2_fichero);
-            localizacion_contrato = Generar_contratos_ocasionales.generar_contrato_ocasional(placas_contrato,""+contrato, url);
+            localizacion_contrato = Generar_contratos_ocasionales.generar_contrato_ocasional(placas_contrato,""+contrato, url, band);
 
         // Retorna la direccion de guardado
         }finally{
@@ -314,7 +315,7 @@ public class Generar_extractos {
     // La idea es que este se encarga de exportar los extractos por el contrato
     // de tal forma que exporta los extractos a los vehiculos que tienen este contrato
     // Y posteriormente genera el extracto mensual
-    public static String generar_extracto_ocasional(int contrato, String url)throws IOException, SQLException, NullPointerException{
+    public static String generar_extracto_ocasional(int contrato, String url, boolean band)throws IOException, SQLException, NullPointerException{
         
         Extracto extracto = null;
         Base base = new Base(url);
@@ -478,7 +479,7 @@ public class Generar_extractos {
 
             }
             
-            localizacion_contrato = Generar_contratos_ocasionales.generar_contrato_ocasional(placas_contrato,""+contrato, url);
+            localizacion_contrato = Generar_contratos_ocasionales.generar_contrato_ocasional(placas_contrato,""+contrato, url, band);
 
         }finally{
             base.close();

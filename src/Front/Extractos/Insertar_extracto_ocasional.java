@@ -202,6 +202,18 @@ public class Insertar_extracto_ocasional extends Modal_documento{
         boton_guardar_exportar.setBounds(boton_guardar.getX() + boton_guardar.getWidth() + 20, boton_guardar.getY(), 150, HEIGHT);
         boton_guardar_exportar.addActionListener(accion ->{
 
+            String[] opciones = {"Sí", "No"};
+            int band = JOptionPane.showOptionDialog(null, 
+                                                "¿Deceas que el contrato muestre la ruta\nmás corta entre el origen y el destnio?", 
+                                                "Confirmación", 
+                                                JOptionPane.YES_NO_OPTION, 
+                                                JOptionPane.QUESTION_MESSAGE, 
+                                                null, 
+                                                opciones, 
+                                                opciones[0]);
+            
+            boolean band2 = (band == 0)?true:false;
+
             boolean flag = guardar_extracto_ocasional();
             if(flag){
                 try{
@@ -211,7 +223,7 @@ public class Insertar_extracto_ocasional extends Modal_documento{
                                         System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales"};
                     Runtime runtieme = Runtime.getRuntime();
 
-                    ruta = Generar_extractos.generar_extracto_ocasional(text_placa.getText(), Integer.parseInt(text_consecutivo.getText()),Integer.parseInt(text_contrato.getText()), url);
+                    ruta = Generar_extractos.generar_extracto_ocasional(text_placa.getText(), Integer.parseInt(text_consecutivo.getText()),Integer.parseInt(text_contrato.getText()), url, band2);
                     runtieme.exec(comando);
                     JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta + "\nEl contrato lo encontraras en la carpeta de contratos ocasionales", "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
                     setVisible(false);

@@ -17,7 +17,7 @@ import Estructuras_datos.Stack;
 
 public class Generar_contratos_ocasionales {
 
-    public static String generar_contrato_ocasional(String[] placas,String contrato, String url)throws IOException, SQLException{
+    public static String generar_contrato_ocasional(String[] placas,String contrato, String url, boolean band)throws IOException, SQLException{
 
         Contrato_ocasional doc_contrato = null;
         //String url_destino = System.getProperty("user.home") + "\\Desktop\\Extractos\\Contratos Ocasionales\\";
@@ -87,9 +87,9 @@ public class Generar_contratos_ocasionales {
                                             contratante[0],    // Nit de la empresa
                                             contratante[4],    // Nompre representante
                                             "C.C.",    // Tipo documento representante
-                                            contratante[3],          // Documento representante
+                                            contratante[3],       // Documento representante
                                             contratante[5],       // Telefono representante
-                                            contratante[6],            // Direccion representante
+                                            contratante[6],       // Direccion representante
                                             contratante[7] + " ("+contratante[8] + ")");   // Ciudad Representante
 
             }else{
@@ -108,7 +108,7 @@ public class Generar_contratos_ocasionales {
             doc_contrato.set_cantidad_pasajeros(cantidad_pasajeros);
 
             // Hace un set al origen y destino
-            if(queue.size() <= 2){
+            if(!band || queue.size() <= 2){
                 doc_contrato.set_origen_destino(origen[1] + " (" + origen[2] + ")",      // Origen en formato municipio (departamento) 
                                                 destino[1] + " (" + destino[2] + ")");   // Destino en formato municipio (departamento)
             }else{

@@ -13,6 +13,7 @@ import Front.Principal;
 public class Main {
     
     public static void main(String[] args) {
+        
         Base base = null;
         try{
             base = new Documentos("src\\DB\\base.db");
