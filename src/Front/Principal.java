@@ -123,12 +123,12 @@ public class Principal extends JFrame{
     private JButton boton_contratos_ocasionales;
     private JButton boton_contratante;
     private static final Runtime runtime = Runtime.getRuntime();
-    private static final String comando[] = {System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe",
-                                            System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf.ps1",
-                                            System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales"};
-    // private static final String comando2[] = {System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe",
-    //                                         System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf2.ps1",
-    //                                          System.getProperty("user.home") + "\\Desktop\\Extractos\\Contratos Ocasionales"};
+    // private static final String comando[] = {System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe",
+    //                                         System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf.ps1",
+    //                                         System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales"};
+    private static final String UBICACION_PS_CONVERTIRPDF = System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf.ps1";
+    private static final String UBICACION_PS_EXTRACTOS_MENSUALES = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
+    private static final String UBICACION_PS_EXTRACTOS_OCASIONALES = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
     
     /** 
      * Este es el constructor general para la clase Principal
@@ -1843,6 +1843,7 @@ public class Principal extends JFrame{
 
     // Metodos relacionados a extractos
     
+    @SuppressWarnings("deprecation")
     private JPanel ver_extractos_mensuales(){
         
         configuracion_panel_busqueda();
@@ -1928,8 +1929,9 @@ public class Principal extends JFrame{
             try{
                 String ruta;
                 ruta = Generar_extractos.generar_extracto_mensual_excel((String) tabla.getValueAt(select_row, 0),Integer.parseInt((String) tabla.getValueAt(select_row, 1)), url);
-                
-                Process proceso = runtime.exec(comando);
+                String comando_auxiliar = "powershell -ExecutionPolicy ByPass -File \"" + UBICACION_PS_CONVERTIRPDF + "\"" + " -parametro \""+ UBICACION_PS_EXTRACTOS_MENSUALES + "\"";
+                    
+                Process proceso = runtime.exec(comando_auxiliar);
                 // implementar funcion que muestre que esperar por favor mientras carga la barra de proceso<
                 JOptionPane.showMessageDialog(null, "Iniciando la exportacion\nPor favor espere...");
                 proceso.waitFor();
@@ -1986,8 +1988,8 @@ public class Principal extends JFrame{
                     consecutivo = (String) tabla.getValueAt(i, 1);
                     Generar_extractos.generar_extracto_mensual_excel(placa, Integer.parseInt(consecutivo), url);
                 }
-
-                runtime.exec(comando);
+                String comando_auxiliar = "powershell -ExecutionPolicy ByPass -File \"" + UBICACION_PS_CONVERTIRPDF + "\"" + " -parametro \""+ UBICACION_PS_EXTRACTOS_MENSUALES + "\"";
+                runtime.exec(comando_auxiliar);
                 
                 JOptionPane.showMessageDialog(this, "Extractos guardados con exito.", "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
             }catch(Exception ex){
@@ -2236,10 +2238,10 @@ public class Principal extends JFrame{
                     String ruta = Generar_extractos.generar_extracto_ocasional(num_contrato, url, flag);
                     JOptionPane.showMessageDialog(this, "Exportando el contrato N° " + num_contrato + ", Junto \na sus extractos correspondientes. \n\nPor favor espere...");
                     
-                    comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
-                    runtime.exec(comando);
+                    String comando_auxiliar = "powershell -ExecutionPolicy ByPass -File \"" + UBICACION_PS_CONVERTIRPDF + "\"" + " -parametro \""+ UBICACION_PS_EXTRACTOS_OCASIONALES + "\"";
                     
-                    int proceso = runtime.exec(comando).waitFor();
+                    @SuppressWarnings("deprecation")
+                    int proceso = runtime.exec(comando_auxiliar).waitFor();
     
                     if(proceso == 0){
                         JOptionPane.showMessageDialog(this, "Proceso finalizado con exito.\nRuta de los documentos: "+ ruta);
@@ -2250,8 +2252,6 @@ public class Principal extends JFrame{
     
                 }catch(Exception ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
                 }
             }
             
@@ -2330,6 +2330,7 @@ public class Principal extends JFrame{
     }
 
     // Metodo para ver los extractos ocasionales
+    @SuppressWarnings("deprecation")
     private JPanel ver_extractos_ocasionales(){
         
         configuracion_panel_busqueda();
@@ -2433,19 +2434,15 @@ public class Principal extends JFrame{
                 int select_row = tabla.getSelectedRow();
                 try{
                     String ruta;
-                    comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
+                    String comando_auxiliar = "powershell -ExecutionPolicy ByPass -File \"" + UBICACION_PS_CONVERTIRPDF + "\"" + " -parametro \""+ UBICACION_PS_EXTRACTOS_OCASIONALES + "\"";
                     ruta = Generar_extractos.generar_extracto_ocasional(Integer.parseInt((String) tabla.getValueAt(select_row, 2)), url, flag);
                     
-                    runtime.exec(comando);
+                    runtime.exec(comando_auxiliar);
                     
                     JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
                 }catch(Exception ex){
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-    
-                    comando[2] = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
-                    
-                }    
+                }   
             }
             
         });
