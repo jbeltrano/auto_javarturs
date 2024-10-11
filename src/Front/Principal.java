@@ -139,11 +139,16 @@ public class Principal extends JFrame{
         super("Javarturs");
         this.url = url;
 
-        try{
-            UIManager.setLookAndFeel(new FlatLightLaf());
-        }catch(Exception ex){
-            System.out.println(ex);
-        }
+
+        FlatLightLaf.setup();
+        // try{
+        //    UIManager.setLookAndFeel(new FlatLightLaf());
+        //    //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+
+
+        // }catch(Exception ex){
+        //    System.out.println(ex);
+        // }
 
         setPreferredSize(new Dimension(1200,700));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
