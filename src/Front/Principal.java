@@ -36,6 +36,7 @@ import Front.Extractos.Insertar_contrato_mensual;
 import Front.Extractos.Insertar_contrato_ocasional;
 import Front.Extractos.Insertar_extracto_mensual;
 import Front.Extractos.Insertar_extracto_ocasional;
+import Front.Panel.Panel_documentos_vehiculos;
 import Front.Personas.Actualizar_conductor;
 import Front.Personas.Actualizar_peronas;
 import Front.Personas.Insertar_conductor;
@@ -207,8 +208,6 @@ public class Principal extends JFrame{
         add(panel_principal);
 
     }
-
-    
 
     /**
      * Configura por defecto los diferentes botones
@@ -618,7 +617,8 @@ public class Principal extends JFrame{
         documentos_vehiculos.addActionListener(accion ->{
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
-            panel_informacion = ver_documentos_vehiculos();
+            //panel_informacion = ver_documentos_vehiculos();
+            panel_informacion = new Panel_documentos_vehiculos(url);
 
             if(tabla.getRowCount() == 0 ){
                 JButton boton_auxiliar = new JButton("Agregar");
@@ -969,98 +969,6 @@ public class Principal extends JFrame{
     // encuentren en la interfaz principal sino que cada panel sea una
     // clase toalmente independiente a la clase principal.
     // Metodos relacionados con los vehiculos
-    
-    private JPanel ver_documentos_vehiculos(){
-
-        JPanel panel = new JPanel(new BorderLayout());
-        JScrollPane scroll = new JScrollPane();
-        String[][] datos = null;
-
-        configuracion_panel_busqueda();
-        config_pop_menu();
-
-        base = new Documentos(url);
-        try{
-            datos = ((Documentos)base).consultar_documentos("");
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            this.dispose();
-        }finally{
-            base.close();
-        }
-
-        // Implementacion para que la tabla cambie de colores dependiendo el valor que tiene la celda
-        tabla = Modelo_tabla.set_tabla_documentos_vehiculos(datos);
-        tabla.setComponentPopupMenu(pop_menu);
-        scroll.setViewportView(tabla);
-        
-        
-
-        item_adicionar.addActionListener(accion ->{
-            Insertar_documento_vehiculo doc_vehiculo = new Insertar_documento_vehiculo(this, url, "");
-            doc_vehiculo.setVisible(true);
-
-            documentos_vehiculos.doClick();
-        });
-        
-        item_actualizar.addActionListener(accion ->{
-            int number = tabla.getSelectedRow();
-            String placa_vehiculo = "" + tabla.getValueAt(number, 0);
-            Actualizar_documento_vehiculo doc_vehiculo = new Actualizar_documento_vehiculo(this, url, placa_vehiculo);
-            doc_vehiculo.setVisible(true);
-
-            documentos_vehiculos.doClick();
-        });
-        item_eliminar.addActionListener(accion ->{
-            
-            int number = tabla.getSelectedRow();
-            String placa_vehiculo = "" + tabla.getValueAt(number, 0);
-
-
-            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el registro\n"+ placa_vehiculo +"|"+tabla.getValueAt(number, 3), "eliminar", JOptionPane.OK_CANCEL_OPTION);
-            if(number == 0){
-                base = new Documentos(url);
-                try{
-                    ((Documentos)base).eliminar_documento(placa_vehiculo);
-                    JOptionPane.showMessageDialog(this, "Registro eliminado correctamente");
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-
-                documentos_vehiculos.doClick();
-            }
-                  
-        });
-
-        Component padre = this;
-        text_busqueda.addKeyListener(new Key_adapter() {
-           
-            @Override
-            public void accion(){
-                base = new Documentos(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_documentos_vehiculos(((Documentos)base).consultar_documentos(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla);
-        
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-            }
-
-            @Override
-            public void accion2(){}
-        });
-        
-
-        panel.add(panel_busqueda, BorderLayout.NORTH);
-        panel.add(scroll,BorderLayout.CENTER);
-        return panel;
-    }
     
     
     private JPanel ver_vehiculo_has_conductor(){
