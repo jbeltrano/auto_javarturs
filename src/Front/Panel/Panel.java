@@ -159,4 +159,21 @@ class CustomPopupMenu extends JPopupMenu {
         // Llamar al método original para mostrar el popup
         super.show(invoker, x, y);
     }
+
+    // En este caso, la idea es implementar el siguiente metodo
+    // Si no hay informacion para mostrar
+    // if(tabla.getRowCount() == 0 ){
+    //     JButton boton_auxiliar = new JButton("Agregar");
+    //     pan = new JPanel(null);
+    //     boton_auxiliar.setBounds(10,10,100,20);
+    //     boton_auxiliar.addActionListener(ac ->{
+            
+    //         new Insertar_vehiculos(this, url, "").setVisible(true);
+    //         panel_principal2.remove(pan);
+    //         vehiculos.doClick();
+    //     });
+    //     pan.add(boton_auxiliar);
+    //     pan.setPreferredSize(new Dimension(120,40));
+    //     panel_principal2.add(pan,BorderLayout.EAST);
+    // }
 }

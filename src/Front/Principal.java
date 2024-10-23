@@ -9,23 +9,12 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
 import Base.Base;
-import Base.Ciudad;
-import Base.Clase_vehiculo;
 import Base.Contratante;
 import Base.Contrato_mensual;
 import Base.BContrato_ocasional;
-import Base.Departamento;
-import Base.Documentos;
 import Base.Extractos;
 import Base.Licencia;
 import Base.Persona;
-import Base.Vehiculo;
-import Base.Vehiculo_has_conductor;
-import Base.Ruta;
-import Front.Ciudades_departamentos.Actualizar_ciudad;
-import Front.Ciudades_departamentos.Actualizar_ruta;
-import Front.Ciudades_departamentos.Insertar_ciudad;
-import Front.Ciudades_departamentos.Insertar_ruta;
 import Front.Extractos.Actualizar_contratante;
 import Front.Extractos.Actualizar_contrato_ocasional;
 import Front.Extractos.Actualizar_extracto_mensual;
@@ -36,18 +25,17 @@ import Front.Extractos.Insertar_contrato_mensual;
 import Front.Extractos.Insertar_contrato_ocasional;
 import Front.Extractos.Insertar_extracto_mensual;
 import Front.Extractos.Insertar_extracto_ocasional;
-import Front.Panel.Panel_documentos_vehiculos;
+import Front.Panel.Ciudades.Panel_ciudad;
+import Front.Panel.Ciudades.Panel_departamento;
+import Front.Panel.Ciudades.Panel_ruta;
+import Front.Panel.vehiculos.Panel_clase_vehiculo;
+import Front.Panel.vehiculos.Panel_documentos_vehiculos;
+import Front.Panel.vehiculos.Panel_vehiculo_has_conductor;
+import Front.Panel.vehiculos.Panel_vehiculos;
 import Front.Personas.Actualizar_conductor;
 import Front.Personas.Actualizar_peronas;
 import Front.Personas.Insertar_conductor;
 import Front.Personas.Insertar_persona;
-import Front.Vehiculos.Actualizar_documento_vehiculo;
-import Front.Vehiculos.Actualizar_tipo_vehiculo;
-import Front.Vehiculos.Actualizar_vehiculos;
-import Front.Vehiculos.Insertar_documento_vehiculo;
-import Front.Vehiculos.Insertar_tipo_vehiculo;
-import Front.Vehiculos.Insertar_vehiculo_conductor;
-import Front.Vehiculos.Insertar_vehiculos;
 import Utilidades.Generar_extractos;
 import Utilidades.Key_adapter;
 import Utilidades.Leer_link;
@@ -65,9 +53,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -124,9 +109,6 @@ public class Principal extends JFrame{
     private JButton boton_contratos_ocasionales;
     private JButton boton_contratante;
     private static final Runtime runtime = Runtime.getRuntime();
-    // private static final String comando[] = {System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\a.exe",
-    //                                         System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf.ps1",
-    //                                         System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales"};
     private static final String UBICACION_PS_CONVERTIRPDF = System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf.ps1";
     private static final String UBICACION_PS_EXTRACTOS_MENSUALES = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
     private static final String UBICACION_PS_EXTRACTOS_OCASIONALES = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
@@ -463,7 +445,7 @@ public class Principal extends JFrame{
         boton_ciudad.addActionListener(accion ->{
             panel_principal2.remove(panel_informacion);
 
-            panel_informacion = ver_ciudad();
+            panel_informacion = new Panel_ciudad(url);
 
            // Agregacion al panel
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
@@ -478,7 +460,7 @@ public class Principal extends JFrame{
 
             panel_principal2.remove(panel_informacion);
 
-            panel_informacion = ver_departamento();
+            panel_informacion = new Panel_departamento(url);
 
            // Agregacion al panel
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
@@ -492,7 +474,7 @@ public class Principal extends JFrame{
 
             panel_principal2.remove(panel_informacion);
 
-            panel_informacion = ver_ruta();
+            panel_informacion = new Panel_ruta(url);
 
            // Agregacion al panel
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
@@ -547,7 +529,7 @@ public class Principal extends JFrame{
             
             panel_principal2.remove(panel_informacion);
 
-            panel_informacion = ver_clase_vehiculo();
+            panel_informacion = new Panel_clase_vehiculo(url);
 
            // Agregacion al panel
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
@@ -561,23 +543,7 @@ public class Principal extends JFrame{
         vehiculos.addActionListener(accoin->{
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
-            panel_informacion = ver_vehiculo();
-            
-
-            if(tabla.getRowCount() == 0 ){
-                JButton boton_auxiliar = new JButton("Agregar");
-                pan = new JPanel(null);
-                boton_auxiliar.setBounds(10,10,100,20);
-                boton_auxiliar.addActionListener(ac ->{
-                    
-                    new Insertar_vehiculos(this, url, "").setVisible(true);
-                    panel_principal2.remove(pan);
-                    vehiculos.doClick();
-                });
-                pan.add(boton_auxiliar);
-                pan.setPreferredSize(new Dimension(120,40));
-                panel_principal2.add(pan,BorderLayout.EAST);
-            }
+            panel_informacion = new Panel_vehiculos(url);
 
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -589,24 +555,7 @@ public class Principal extends JFrame{
         conductores.addActionListener(accion ->{
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
-            panel_informacion = ver_vehiculo_has_conductor();
-            
-
-            if(tabla.getRowCount() == 0 ){
-                JButton boton_auxiliar = new JButton("Agregar");
-                pan = new JPanel(null);
-                boton_auxiliar.setBounds(10,10,100,20);
-                boton_auxiliar.addActionListener(ac ->{
-
-                    new Insertar_vehiculo_conductor(this, url, "");
-                    panel_principal2.remove(pan);
-                    conductores.doClick();
-
-                });
-                pan.add(boton_auxiliar);
-                pan.setPreferredSize(new Dimension(120,40));
-                panel_principal2.add(pan,BorderLayout.EAST);
-            }
+            panel_informacion = new Panel_vehiculo_has_conductor(url);
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -617,24 +566,7 @@ public class Principal extends JFrame{
         documentos_vehiculos.addActionListener(accion ->{
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
-            //panel_informacion = ver_documentos_vehiculos();
             panel_informacion = new Panel_documentos_vehiculos(url);
-
-            if(tabla.getRowCount() == 0 ){
-                JButton boton_auxiliar = new JButton("Agregar");
-                pan = new JPanel(null);
-                boton_auxiliar.setBounds(10,10,100,20);
-                boton_auxiliar.addActionListener(ac ->{
-
-                    new Insertar_documento_vehiculo(this, url, "");
-                    panel_principal2.remove(pan);
-                    conductores.doClick();
-
-                });
-                pan.add(boton_auxiliar);
-                pan.setPreferredSize(new Dimension(120,40));
-                panel_principal2.add(pan,BorderLayout.EAST);
-            }
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -647,22 +579,6 @@ public class Principal extends JFrame{
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
             //panel_informacion = ver_vehiculos_externos();
-
-            if(tabla.getRowCount() == 0 ){
-                JButton boton_auxiliar = new JButton("Agregar");
-                pan = new JPanel(null);
-                boton_auxiliar.setBounds(10,10,100,20);
-                boton_auxiliar.addActionListener(ac ->{
-
-                    //new Insertar_vehiculo_externo(this, url, "");
-                    panel_principal2.remove(pan);
-                    conductores.doClick();
-
-                });
-                pan.add(boton_auxiliar);
-                pan.setPreferredSize(new Dimension(120,40));
-                panel_principal2.add(pan,BorderLayout.EAST);
-            }
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -969,592 +885,7 @@ public class Principal extends JFrame{
     // encuentren en la interfaz principal sino que cada panel sea una
     // clase toalmente independiente a la clase principal.
     // Metodos relacionados con los vehiculos
-    
-    
-    private JPanel ver_vehiculo_has_conductor(){
 
-        configuracion_panel_busqueda();
-        JPanel panel = new JPanel(new BorderLayout());
-        JScrollPane scroll = new JScrollPane();
-        String[][] datos = null;
-
-        config_pop_menu();
-        pop_menu.remove(1);
-        base = new Vehiculo_has_conductor(url);
-        try{
-            datos = ((Vehiculo_has_conductor)base).consultar_conductor_has_vehiculo();
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-        }finally{
-            base.close();
-        }
-        
-        tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(datos);
-        tabla.setComponentPopupMenu(pop_menu);
-        scroll.setViewportView(tabla);
-        
-
-        item_adicionar.addActionListener(accion ->{
-            new Insertar_vehiculo_conductor(this, url, "");
-            
-            base = new Vehiculo_has_conductor(url);
-            try{
-
-                tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(((Vehiculo_has_conductor)base).consultar_conductor_has_vehiculo(text_busqueda.getText()));
-                tabla.setComponentPopupMenu(pop_menu);
-                scroll.setViewportView(tabla);
-        
-
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
-            }finally{
-                base.close();
-            }
-        });
-        
-        item_eliminar.addActionListener(accion ->{
-            
-            int number = tabla.getSelectedRow();
-            String conductor_id = "" + tabla.getValueAt(number, 2);
-            String placa_vehiculo = "" + tabla.getValueAt(number, 0);
-
-
-            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el registro\n"+ placa_vehiculo +"|"+tabla.getValueAt(number, 3), "eliminar", JOptionPane.OK_CANCEL_OPTION);
-            if(number == 0){
-                base = new Vehiculo_has_conductor(url);
-                try{
-                    ((Vehiculo_has_conductor)base).eliminar_vehiculo_has_conductor(conductor_id,placa_vehiculo);
-                    JOptionPane.showMessageDialog(this, "Registro eliminado correctamente");
-
-                    tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(((Vehiculo_has_conductor)base).consultar_conductor_has_vehiculo(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla);
-        
-
-
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-
-            }
-                  
-        });
-
-        JFrame padre = this;
-        
-        text_busqueda.addKeyListener(new Key_adapter() {
-            @Override
-            public void accion(){
-                base = new Vehiculo_has_conductor(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(((Vehiculo_has_conductor)base).consultar_conductor_has_vehiculo(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla);
-        
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-            }
-
-            @Override
-            public void accion2(){}
-        });
-        
-
-        panel.add(panel_busqueda, BorderLayout.NORTH);
-        panel.add(scroll,BorderLayout.CENTER);
-        return panel;
-    }
-    
-    private JPanel ver_clase_vehiculo(){
-
-        JPanel panel = new JPanel(new BorderLayout());
-        JScrollPane scroll = new JScrollPane();
-        DefaultTableModel modelo;
-        String[][] datos = null;
-        TableColumnModel cl_model;
-        
-        config_pop_menu();
-
-        base = new Clase_vehiculo(url);
-        try{
-            datos = ((Clase_vehiculo)base).consultar_clase_vehiculo();
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-        }finally{
-            base.close();
-        }
-
-
-        modelo = Modelo_tabla.set_modelo_tablas(datos);
-        tabla = new JTable(modelo);
-        tabla.setComponentPopupMenu(pop_menu);
-        tabla.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        tabla.setComponentPopupMenu(pop_menu);
-        tabla.getTableHeader().setReorderingAllowed(false); 
-        tabla.setCellSelectionEnabled(true);
-        Modelo_tabla.add_mouse_listener(tabla);
-        
-        
-        cl_model = tabla.getColumnModel();
-        cl_model.getColumn(0).setPreferredWidth(35);
-        cl_model.getColumn(1).setPreferredWidth(200);
-
-        item_actualizar.addActionListener(accion->{
-            
-            int numero = tabla.getSelectedRow();
-            new Actualizar_tipo_vehiculo(this, url, ""+tabla.getValueAt(numero, 0));
-
-
-            tipo_vehiculo.doClick();
-
-        });
-        item_adicionar.addActionListener(accion ->{
-            new Insertar_tipo_vehiculo(this, url, "");
-            
-
-            tipo_vehiculo.doClick();
-
-        });
-        item_eliminar.addActionListener(accion ->{
-            
-            int number = tabla.getSelectedRow();
-            String valor = "" + tabla.getValueAt(number, 0);
-
-            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el item\n"+ valor, "eliminar", JOptionPane.OK_CANCEL_OPTION);
-            if(number == 0){
-                base = new Base(url);
-                try{
-                    ((Clase_vehiculo)base).eliminar_clase_vehiculo(Integer.parseInt(valor));
-                    JOptionPane.showMessageDialog(this, "Item eliminado correctamente");
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-                tipo_vehiculo.doClick();
-            }
-                  
-        });
-
-        scroll.setViewportView(tabla);
-        
-        panel.add(scroll,BorderLayout.CENTER);
-        
-        return panel;
-    }
-    
-    
-    private JPanel ver_vehiculo(){
-        // inicializacion de componentes
-        configuracion_panel_busqueda();
-        JPanel panel = new JPanel(new BorderLayout());
-        JScrollPane scroll = new JScrollPane();
-        String[][] datos = null;
-        
-        // Inicializaicon pop_menu
-        config_pop_menu();
-
-        // Obteniendo datos de la base de datos
-        base = new Vehiculo(url);
-        try{
-            datos = ((Vehiculo)base).consultar_vehiculo(true);
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-        }finally{
-            base.close();
-        }
-        
-
-        // Configuracion de la visualizacion y opciones de la tabla
-
-        tabla = Modelo_tabla.set_tabla_vehiculo(datos);
-        tabla.setComponentPopupMenu(pop_menu);
-        scroll.setViewportView(tabla);
-        
-        // Configuracion de los item 
-        item_actualizar.addActionListener(accion->{
-            int select_row = tabla.getSelectedRow();
-
-            new Actualizar_vehiculos(this, url, (String)tabla.getValueAt(select_row, 0));
-            vehiculos.doClick();
-
-        });
-        item_adicionar.addActionListener(accion ->{
-
-            new Insertar_vehiculos(this, url, "").setVisible(true);
-            vehiculos.doClick();
-
-        });
-
-        item_eliminar.addActionListener(accion ->{
-            
-            int number = tabla.getSelectedRow();
-            String valor = "" + tabla.getValueAt(number, 0);
-
-            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el vehiculo:\n"+ valor, "eliminar", JOptionPane.OK_CANCEL_OPTION);
-            if(number == 0){
-                base = new Vehiculo(url);
-                try{
-                    ((Vehiculo)base).eliminar_vehiculo(valor);
-                    JOptionPane.showMessageDialog(this, "Vehiculo eliminado correctamente");
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-                
-            }
-                  
-        });
-
-        JFrame padre = this;
-
-        text_busqueda.addKeyListener(new Key_adapter() {
-            @Override
-            public void accion(){
-                base = new Vehiculo(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_vehiculo(((Vehiculo)base).consultar_vehiculo(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-            }
-
-            @Override
-            public void accion2(){}
-        });
-        
-
-        panel.add(panel_busqueda, BorderLayout.NORTH);
-        panel.add(scroll, BorderLayout.CENTER);
-
-        
-        return panel;
-    }
-    
-
-    /**
-     * Esta funcion se encarga de retornar un JPanel
-     * con el panel configurado correctamente para mostrar
-     * la tabla ciudad y realizar actualizacion y insercion
-     * dentro de la misma, adicionalmente configura la barra
-     * de busqueda para el propocito de busqueda que requiera
-     * @see JPanel
-     * @return JPanel
-     */
-    private JPanel ver_ciudad(){
-
-        configuracion_panel_busqueda();
-        JPanel panel = new JPanel(new BorderLayout());
-        JScrollPane scroll = new JScrollPane();
-        String[][] datos = null;
-        
-
-        // Inicializaicon pop_menu
-        config_pop_menu();
-        pop_menu.remove(2); // La idea es que el usuario no pueda remover la ciudad
-
-        // Obteniendo datos de la base de datos
-        base = new Ciudad(url);
-        try{
-            datos = ((Ciudad)base).consultar_ciudad();
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-        }finally{
-            base.close();
-        }
-
-        // Configuracion de la visualizacion y opciones de la tabla
-
-        tabla = Modelo_tabla.set_tabla_ciudad(datos);
-        tabla.setComponentPopupMenu(pop_menu);
-        scroll.setViewportView(tabla);
-        
-
-        // Configuracion de los item 
-        item_actualizar.addActionListener(accion->{
-            int select_row = tabla.getSelectedRow();
-
-            
-            new Actualizar_ciudad(this, url, (String) tabla.getValueAt(select_row, 1), (String) tabla.getValueAt(select_row, 2), Integer.parseInt((String) tabla.getValueAt(select_row, 0))).setVisible(true);
-            base = new Ciudad(url);
-            try{
-                
-                tabla = Modelo_tabla.set_tabla_ciudad(((Ciudad)base).consultar_ciudades(text_busqueda.getText()));
-                tabla.setComponentPopupMenu(pop_menu);
-                scroll.setViewportView(tabla);
-        
-
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }finally{
-                base.close();
-            }
-            
-
-        });
-        item_adicionar.addActionListener(accion ->{
-
-            new Insertar_ciudad(this, url).setVisible(true);
-            
-            base = new Ciudad(url);
-            try{
-
-                tabla = Modelo_tabla.set_tabla_ciudad(((Ciudad)base).consultar_ciudades(text_busqueda.getText()));
-                tabla.setComponentPopupMenu(pop_menu);
-                scroll.setViewportView(tabla);
-        
-
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                
-            }finally{
-                base.close();
-            }
-
-        });
-
-        item_eliminar.addActionListener(accion ->{
-            
-            int number = tabla.getSelectedRow();
-            String valor = "" + tabla.getValueAt(number, 0);
-
-            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar la ciudad:\n"+ valor, "eliminar", JOptionPane.OK_CANCEL_OPTION);
-            if(number == 0){
-                base = new Ciudad(url);
-                try{
-                    ((Ciudad)base).eliminar_ciudad(valor);
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-                
-                JOptionPane.showMessageDialog(this, "Ciudad eliminada correctamente");
-                boton_ciudad.doClick();
-            }
-                  
-        });
-
-        JFrame padre = this;
-        
-        text_busqueda.addKeyListener(new Key_adapter() {
-        
-            @Override
-            public void accion(){
-                base = new Ciudad(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_ciudad(((Ciudad)base).consultar_ciudades(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-            }
-
-            @Override
-            public void accion2(){}
-
-        });
-        
-
-        panel.add(panel_busqueda, BorderLayout.NORTH);
-        panel.add(scroll, BorderLayout.CENTER);
-
-        return panel;
-
-    }
-
-    
-    private JPanel ver_departamento(){
-
-        configuracion_panel_busqueda();
-        JPanel panel = new JPanel(new BorderLayout());
-        JScrollPane scroll = new JScrollPane();
-        String[][] datos = null;
-
-        // Obteniendo datos de la base de datos
-        base = new Departamento(url);
-        try{
-            datos = ((Departamento)base).consultar_departamentos();
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-        }finally{
-            base.close();
-        }
-
-        // Configuracion de la visualizacion y opciones de la tabla
-
-        tabla = Modelo_tabla.set_tabla_departamento(datos);
-        scroll.setViewportView(tabla);
-        
-
-        JFrame padre = this;
-        
-        text_busqueda.addKeyListener(new Key_adapter() {
-            
-            @Override
-            public void accion(){
-                base = new Departamento(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_departamento(((Departamento)base).consultar_departamentos(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-            }
-
-            @Override
-            public void accion2(){}
-        });
-        
-
-        panel.add(panel_busqueda, BorderLayout.NORTH);
-        panel.add(scroll, BorderLayout.CENTER);
-
-        return panel;
-
-    }
-
-    private JPanel ver_ruta(){
-
-        configuracion_panel_busqueda();
-        JPanel panel = new JPanel(new BorderLayout());
-        JScrollPane scroll = new JScrollPane();
-        String[][] datos = null;
-
-        config_pop_menu();
-        // Obteniendo datos de la base de datos
-        base = new Ruta(url);
-        try{
-            datos = ((Ruta)base).consultar_ruta("");
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-        }finally{
-            base.close();
-        }
-
-        // Configuracion de popupMenu
-        item_actualizar.addActionListener(accion->{
-            int select_row = tabla.getSelectedRow();
-
-            new Actualizar_ruta(this, 
-                                url, 
-                                Integer.parseInt((String) tabla.getValueAt(select_row, 0)), 
-                                Integer.parseInt((String) tabla.getValueAt(select_row, 2)),
-                                Integer.parseInt((String) tabla.getValueAt(select_row, 4))
-                                ).setVisible(true);
-
-            base = new Ruta(url);
-            try{
-                
-                tabla = Modelo_tabla.set_tabla_ruta(((Ruta)base).consultar_ruta(text_busqueda.getText()));
-                tabla.setComponentPopupMenu(pop_menu);
-                scroll.setViewportView(tabla);
-        
-
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }finally{
-                base.close();
-            }
-            
-
-        });
-        item_adicionar.addActionListener(accion ->{
-
-            new Insertar_ruta(this, url).setVisible(true);
-            base = new Ruta(url);
-            try{
-
-                tabla = Modelo_tabla.set_tabla_ruta(((Ruta)base).consultar_ruta(text_busqueda.getText()));
-                tabla.setComponentPopupMenu(pop_menu);
-                scroll.setViewportView(tabla);
-        
-
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                
-            }finally{
-                base.close();
-            }
-
-        });
-        item_eliminar.addActionListener(accion ->{
-            
-            int number = tabla.getSelectedRow();
-            String origen = "" + tabla.getValueAt(number, 1);
-            String destino = (String) tabla.getValueAt(number, 3);
-            int id_origen = Integer.parseInt((String) tabla.getValueAt(number, 0));
-            int id_destino = Integer.parseInt((String) tabla.getValueAt(number, 2));
-
-            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar la ruta con \norigen: "+ origen + ", y destino: " + destino + ".", "eliminar", JOptionPane.OK_CANCEL_OPTION);
-            if(number == 0){
-                base = new Ruta(url);
-                try{
-                    ((Ruta)base).eliminar_ruta(id_origen, id_destino);
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-                
-                JOptionPane.showMessageDialog(this, "Ruta eliminada correctamente eliminada correctamente");
-                boton_ruta.doClick();
-            }
-                  
-        });
-
-        // Configuracion de la visualizacion y opciones de la tabla
-        tabla = Modelo_tabla.set_tabla_ruta(datos);
-        tabla.setComponentPopupMenu(pop_menu);
-        scroll.setViewportView(tabla);
-        
-
-        JFrame padre = this;
-        
-        text_busqueda.addKeyListener(new Key_adapter() {
-            
-            @Override
-            public void accion(){
-                base = new Ruta(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_ruta(((Ruta)base).consultar_ruta(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-            }
-
-            @Override
-            public void accion2(){}
-        });
-        
-
-        panel.add(panel_busqueda, BorderLayout.NORTH);
-        panel.add(scroll, BorderLayout.CENTER);
-
-        return panel;
-
-    }
 
     // Metodos relacionados con Personas y conductores
     

@@ -1,4 +1,4 @@
-package Front.Panel;
+package Front.Panel.vehiculos;
 
 import java.sql.SQLException;
 import javax.swing.JFrame;
@@ -7,6 +7,7 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import java.awt.event.WindowEvent;
 import Base.Documentos;
+import Front.Panel.Panel;
 import Front.Vehiculos.Actualizar_documento_vehiculo;
 import Front.Vehiculos.Insertar_documento_vehiculo;
 import Utilidades.Modelo_tabla;
@@ -23,8 +24,7 @@ public class Panel_documentos_vehiculos extends Panel{
     protected void cargar_datos_tabla() {
         base_documento = new Documentos(url);   // Hace una coneccion a la base de datos
         try{
-            tabla = Modelo_tabla.set_tabla_documentos_vehiculos // Pone un formato para la tabla
-            (
+            tabla = Modelo_tabla.set_tabla_documentos_vehiculos( // Pone un formato para la tabla
                 base_documento.consultar_documentos("") // Pasa los datos que va a tener la tabla
             );
 
@@ -47,8 +47,7 @@ public class Panel_documentos_vehiculos extends Panel{
         base_documento = new Documentos(url);
         try{
             // Obtiene los datos y crea una tabla auxiliar con los datos proporcionados por el text Field
-            JTable tabla_aux = Modelo_tabla.set_tabla_documentos_vehiculos
-            (
+            JTable tabla_aux = Modelo_tabla.set_tabla_documentos_vehiculos(
                 base_documento.consultar_documentos(text_busqueda.getText())
             );
 
