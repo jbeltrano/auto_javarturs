@@ -2,17 +2,13 @@ package Front.Panel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Point;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import java.awt.Window;
 import Utilidades.Key_adapter;
@@ -123,44 +119,9 @@ public abstract class Panel extends JPanel{
     protected abstract void config_listener_pop_menu();
 }
 
-/*
- * Esta clase se encarga de personalizar un popup menu,
- * para no tener errores con las ventanas en cualquier
- * entorno, puesto que al parecer al salirce de las ventanas
- * el programa presenta bugs graficos.
- */
-class CustomPopupMenu extends JPopupMenu {
 
-    @Override
-    public void show(Component invoker, int x, int y) {
-        if (invoker != null && invoker.getParent() instanceof JViewport) {
-            JViewport viewport = (JViewport) invoker.getParent();
-            Dimension viewportSize = viewport.getSize();
-            Point viewportPosition = viewport.getViewPosition();
-            Dimension popupSize = this.getPreferredSize();
 
-            // Ajustar la posición para que el menú emergente esté dentro del viewport
-            if (x + popupSize.width > viewportPosition.x + viewportSize.width) {
-                x = (viewportPosition.x + viewportSize.width) - popupSize.width;
-            }
-            if (y + popupSize.height > viewportPosition.y + viewportSize.height) {
-                y = (viewportPosition.y + viewportSize.height) - popupSize.height;
-            }
-
-            // Ajustar la posición para no mostrar el popup fuera del JScrollPane
-            if (x < viewportPosition.x) {
-                x = viewportPosition.x;
-            }
-            if (y < viewportPosition.y) {
-                y = viewportPosition.y;
-            }
-        }
-
-        // Llamar al método original para mostrar el popup
-        super.show(invoker, x, y);
-    }
-
-    // En este caso, la idea es implementar el siguiente metodo
+// En este caso, la idea es implementar el siguiente metodo
     // Si no hay informacion para mostrar
     // if(tabla.getRowCount() == 0 ){
     //     JButton boton_auxiliar = new JButton("Agregar");
@@ -176,4 +137,3 @@ class CustomPopupMenu extends JPopupMenu {
     //     pan.setPreferredSize(new Dimension(120,40));
     //     panel_principal2.add(pan,BorderLayout.EAST);
     // }
-}

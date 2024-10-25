@@ -1,45 +1,25 @@
 package Front;
 
-import java.awt.Point;
-import javax.swing.JViewport;
 import java.awt.Desktop;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
-import Base.Base;
-import Base.Contratante;
-import Base.Contrato_mensual;
-import Base.BContrato_ocasional;
-import Base.Extractos;
-import Base.Licencia;
-import Base.Persona;
-import Front.Extractos.Actualizar_contratante;
-import Front.Extractos.Actualizar_contrato_ocasional;
-import Front.Extractos.Actualizar_extracto_mensual;
-import Front.Extractos.Actualizar_extracto_ocasional;
-import Front.Extractos.Actualizar_todo_ext_mensual;
-import Front.Extractos.Insertar_contratante;
-import Front.Extractos.Insertar_contrato_mensual;
-import Front.Extractos.Insertar_contrato_ocasional;
-import Front.Extractos.Insertar_extracto_mensual;
-import Front.Extractos.Insertar_extracto_ocasional;
 import Front.Panel.Ciudades.Panel_ciudad;
 import Front.Panel.Ciudades.Panel_departamento;
 import Front.Panel.Ciudades.Panel_ruta;
+import Front.Panel.Extractos.Panel_contratante;
+import Front.Panel.Extractos.Panel_contratos_mensuales;
+import Front.Panel.Extractos.Panel_contratos_ocasionales;
+import Front.Panel.Extractos.Panel_extractos_mensuales;
+import Front.Panel.Extractos.Panel_extractos_ocasionales;
+import Front.Panel.Personas.Panel_conductores;
+import Front.Panel.Personas.Panel_persona;
 import Front.Panel.vehiculos.Panel_clase_vehiculo;
 import Front.Panel.vehiculos.Panel_documentos_vehiculos;
 import Front.Panel.vehiculos.Panel_vehiculo_has_conductor;
 import Front.Panel.vehiculos.Panel_vehiculos;
-import Front.Personas.Actualizar_conductor;
-import Front.Personas.Actualizar_peronas;
-import Front.Personas.Insertar_conductor;
-import Front.Personas.Insertar_persona;
-import Utilidades.Generar_extractos;
-import Utilidades.Key_adapter;
 import Utilidades.Leer_link;
-import Utilidades.Modelo_tabla;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -49,16 +29,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.LinkedList;
 
 public class Principal extends JFrame{
@@ -68,10 +43,7 @@ public class Principal extends JFrame{
     private JPanel panel_secundario;
     private JPanel panel_principal2;
     private JPanel panel_informacion;
-    private JPanel panel_busqueda;
-    private JLabel label_busqueda;
     private JPanel pan;
-    private JTextField text_busqueda;
     private JMenu menu_1;
     private JMenu menu_2;
     private JMenu menu_3;
@@ -81,15 +53,6 @@ public class Principal extends JFrame{
     private ImageIcon imagen1;
     private ImageIcon icono;
     private JLabel limagen1;
-    private JTable tabla;
-    private CustomPopupMenu pop_menu;
-    private JMenuItem item_adicionar;
-    private JMenuItem item_actualizar;
-    private JMenuItem item_plantilla;
-    private JMenuItem item_exportar;
-    private JMenuItem item_eliminar;
-    private JMenuItem item_actualizar_todos;
-    private JMenuItem item_exportar_todos;
     private JButton base_vehiculos;
     private JButton base_empleados;
     private JButton tipo_vehiculo;
@@ -99,7 +62,6 @@ public class Principal extends JFrame{
     private JButton vehiculos_externos;
     private JButton boton_conductores;
     private JButton boton_personas;
-    private Base base;
     private JButton boton_ciudad;
     private JButton boton_Departamento;
     private JButton boton_ruta;
@@ -108,11 +70,6 @@ public class Principal extends JFrame{
     private JButton boton_contratos_mensuales;
     private JButton boton_contratos_ocasionales;
     private JButton boton_contratante;
-    private static final Runtime runtime = Runtime.getRuntime();
-    private static final String UBICACION_PS_CONVERTIRPDF = System.getProperty("user.dir") +"\\src\\Utilidades\\PDF\\ConvertirPdf.ps1";
-    private static final String UBICACION_PS_EXTRACTOS_MENSUALES = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
-    private static final String UBICACION_PS_EXTRACTOS_OCASIONALES = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
-    
     /** 
      * Este es el constructor general para la clase Principal
      * se encarga de iniciar la gran mayoria de componentes y el JFrame como tal
@@ -339,20 +296,6 @@ public class Principal extends JFrame{
         barra_menu.add(menu_3);
         barra_menu.add(menu_4);
         barra_menu.add(menu_5);
-    }
-
-    private void configuracion_panel_busqueda(){
-        panel_busqueda = new JPanel(null);
-        label_busqueda = new JLabel("Buscar:");
-        text_busqueda = new JTextField();
-
-        // Configuracion panel busqueda
-        label_busqueda.setBounds(10,2,50,20);
-        text_busqueda.setBounds(label_busqueda.getX() + label_busqueda.getWidth() + 2 ,2,300,20);
-        panel_busqueda.add(label_busqueda);
-        panel_busqueda.add(text_busqueda);
-        panel_busqueda.setPreferredSize(new Dimension(700,24));
-        panel_busqueda.setBackground(new Color(52, 135, 25));
     }
 
     private void configuracion_panel_secundario(){
@@ -633,7 +576,7 @@ public class Principal extends JFrame{
             
             panel_principal2.remove(panel_informacion);
 
-            panel_informacion = ver_personas();
+            panel_informacion = new Panel_persona(url);
 
            // Agregacion al panel
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
@@ -648,21 +591,7 @@ public class Principal extends JFrame{
         boton_conductores.addActionListener(accoin->{
             panel_principal2.remove(panel_informacion);
             
-            panel_informacion = ver_conductores();
-            
-            if(tabla.getRowCount() == 0 ){
-                JButton boton_auxiliar = new JButton("Agregar");
-                JPanel pan = new JPanel(null);
-                boton_auxiliar.setBounds(10,10,100,20);
-                boton_auxiliar.addActionListener(ac ->{
-                    
-                    new Insertar_conductor(this, url).setVisible(true);
-                    boton_conductores.doClick();
-                });
-                pan.add(boton_auxiliar);
-                pan.setPreferredSize(new Dimension(120,40));
-                panel_principal2.add(pan,BorderLayout.EAST);
-            }
+            panel_informacion = new Panel_conductores(url);
 
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -714,22 +643,8 @@ public class Principal extends JFrame{
                 panel_principal2.remove(pan);
             }
             
-            panel_informacion = ver_extractos_mensuales();
+            panel_informacion = new Panel_extractos_mensuales(url);
             
-            if(tabla.getRowCount() == 0 ){
-                JButton boton_auxiliar = new JButton("Agregar");
-                pan = new JPanel(null);
-                boton_auxiliar.setBounds(10,10,100,20);
-                boton_auxiliar.addActionListener(ac ->{
-
-                    new Insertar_extracto_mensual(this, url).setVisible(true);
-                    panel_principal2.remove(pan);
-                    boton_extractos_mensuales.doClick();
-                });
-                pan.add(boton_auxiliar);
-                pan.setPreferredSize(new Dimension(120,40));
-                panel_principal2.add(pan,BorderLayout.EAST);
-            }
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();
             panel_principal2.repaint();
@@ -745,22 +660,7 @@ public class Principal extends JFrame{
                 panel_principal2.remove(pan);
             }
             
-            panel_informacion = ver_extractos_ocasionales();
-
-            if(tabla.getRowCount() == 0 ){
-                JButton boton_auxiliar = new JButton("Agregar");
-                pan = new JPanel(null);
-                boton_auxiliar.setBounds(10,10,100,20);
-                boton_auxiliar.addActionListener(ac ->{
-
-                    new Insertar_extracto_ocasional(this, url).setVisible(true);
-                    panel_principal2.remove(pan);
-                    boton_extractos_ocasionales.doClick();
-                });
-                pan.add(boton_auxiliar);
-                pan.setPreferredSize(new Dimension(120,40));
-                panel_principal2.add(pan,BorderLayout.EAST);
-            }
+            panel_informacion = new Panel_extractos_ocasionales(url);
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -775,22 +675,7 @@ public class Principal extends JFrame{
             }
             
             // cambiar para ver extractos mensuales
-            panel_informacion = ver_contratos_mensuales();
-
-            if(tabla.getRowCount() == 0 ){
-                JButton boton_auxiliar = new JButton("Agregar");
-                pan = new JPanel(null);
-                boton_auxiliar.setBounds(10,10,100,20);
-                boton_auxiliar.addActionListener(ac ->{
-                    
-                    new Insertar_contrato_mensual(this, url).setVisible(true);
-                    panel_principal2.remove(pan);
-                    boton_contratos_mensuales.doClick();
-                });
-                pan.add(boton_auxiliar);
-                pan.setPreferredSize(new Dimension(120,40));
-                panel_principal2.add(pan,BorderLayout.EAST);
-            }
+            panel_informacion = new Panel_contratos_mensuales(url);
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -804,22 +689,7 @@ public class Principal extends JFrame{
                 panel_principal2.remove(pan);
             }
             // cambiar para ver extractos ocasionales
-            panel_informacion = ver_contratos_ocasionales();
-
-            if(tabla.getRowCount() == 0 ){
-                JButton boton_auxiliar = new JButton("Agregar");
-                pan = new JPanel(null);
-                boton_auxiliar.setBounds(10,10,100,20);
-                boton_auxiliar.addActionListener(ac ->{
-                    
-                    new Insertar_contrato_ocasional(this, url).setVisible(true);
-                    panel_principal2.remove(pan);
-                    boton_contratos_ocasionales.doClick();
-                });
-                pan.add(boton_auxiliar);
-                pan.setPreferredSize(new Dimension(120,40));
-                panel_principal2.add(pan,BorderLayout.EAST);
-            }
+            panel_informacion = new Panel_contratos_ocasionales(url);
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -836,22 +706,7 @@ public class Principal extends JFrame{
             
             
             // cambiar para ver ver contratatnes
-            panel_informacion = ver_contratante();
-
-            if(tabla.getRowCount() == 0 ){
-                JButton boton_auxiliar = new JButton("Agregar");
-                pan = new JPanel(null);
-                boton_auxiliar.setBounds(10,10,100,20);
-                boton_auxiliar.addActionListener(ac ->{
-                    
-                    new Insertar_contratante(this, url).setVisible(true);
-                    panel_principal2.remove(pan);
-                    boton_contratante.doClick();
-                });
-                pan.add(boton_auxiliar);
-                pan.setPreferredSize(new Dimension(120,40));
-                panel_principal2.add(pan,BorderLayout.EAST);
-            }
+            panel_informacion = new Panel_contratante(url);
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -880,1052 +735,5 @@ public class Principal extends JFrame{
 
     }
 
-
-    // La idea es que apartir de aqui todos estos metodos ya no se
-    // encuentren en la interfaz principal sino que cada panel sea una
-    // clase toalmente independiente a la clase principal.
-    // Metodos relacionados con los vehiculos
-
-
-    // Metodos relacionados con Personas y conductores
-    
-    private JPanel ver_personas(){
-
-        configuracion_panel_busqueda();
-        JPanel panel = new JPanel(new BorderLayout());
-        JScrollPane scroll = new JScrollPane();
-        String[][] datos = null;
-        tabla = null;
-        
-        // Inicializaicon pop_menu
-        config_pop_menu();
-
-        // Obteniendo datos de la base de datos
-        base = new Persona(url);
-        try{
-            datos = ((Persona)base).consultar_persona();
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-        }finally{
-            base.close();
-        }
-        
-
-        // Configuracion de la visualizacion y opciones de la tabla
-
-        tabla = Modelo_tabla.set_tabla_personas(datos);
-        tabla.setComponentPopupMenu(pop_menu);
-        scroll.setViewportView(tabla);
-        
-
-        // Configuracion de los item 
-        item_actualizar.addActionListener(accion->{
-            int select_row = tabla.getSelectedRow();
-
-            
-            new Actualizar_peronas(this, url, "" + tabla.getValueAt(select_row, 0)).setVisible(true);
-            boton_personas.doClick();
-            
-
-        });
-        item_adicionar.addActionListener(accion ->{
-
-            new Insertar_persona(this, url).setVisible(true);
-            boton_personas.doClick();
-
-        });
-
-        item_eliminar.addActionListener(accion ->{
-            
-            int number = tabla.getSelectedRow();
-            String valor = "" + tabla.getValueAt(number, 0);
-
-            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar la persona:\n"+ valor, "eliminar", JOptionPane.OK_CANCEL_OPTION);
-            if(number == 0){
-                base = new Persona(url);
-                try{
-                    ((Persona)base).eliminar_persona(valor);
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-
-                JOptionPane.showMessageDialog(this, "Persona eliminada correctamente");
-                boton_personas.doClick();
-            }
-                  
-        });
-
-        JFrame padre = this;
-        text_busqueda.addKeyListener(new Key_adapter() {
-            @Override
-            public void accion(){
-                base = new Persona(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_personas(((Persona)base).consultar_persona(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-            }
-
-            @Override
-            public void accion2(){}
-        });
-        
-
-        panel.add(panel_busqueda, BorderLayout.NORTH);
-        panel.add(scroll, BorderLayout.CENTER);
-
-        return panel;
-
-    }
-
-    
-    // metodos para conductores
-    private JPanel ver_conductores(){
-
-        configuracion_panel_busqueda();
-        JPanel panel = new JPanel(new BorderLayout());
-        JScrollPane scroll = new JScrollPane();
-        String[][] datos = null;
-        
-        // Inicializaicon pop_menu
-        config_pop_menu();
-
-        // Obteniendo datos de la base de datos
-        base = new Licencia(url);
-        try{
-            datos = ((Licencia)base).consultar_licencia();
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-        }finally{
-            base.close();
-        }
-        
-
-        // Configuracion de la visualizacion y opciones de la tabla
-
-        tabla = Modelo_tabla.set_tabla_conductores(datos);
-        tabla.setComponentPopupMenu(pop_menu);
-        scroll.setViewportView(tabla);
-        
-
-        // Configuracion de los item 
-        item_actualizar.addActionListener(accion->{
-            int select_row = tabla.getSelectedRow();
-
-            
-            new Actualizar_conductor(this, url, tabla.getValueAt(select_row, 0) + "");
-            boton_conductores.doClick();
-            
-
-        });
-        item_adicionar.addActionListener(accion ->{
-
-            new Insertar_conductor(this, url).setVisible(true);
-            boton_conductores.doClick();
-
-        });
-
-        item_eliminar.addActionListener(accion ->{
-            
-            int number = tabla.getSelectedRow();
-            String id = "" + tabla.getValueAt(number, 0);
-            String cat = "" + tabla.getValueAt(number, 2);
-            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar al conductor:\n"+ id, "eliminar", JOptionPane.OK_CANCEL_OPTION);
-            if(number == 0){
-                base = new Licencia(url);
-                try{
-                    number = Integer.parseInt(((Licencia)base).consultar_uno_categoria(cat) [0]);
-                    ((Licencia)base).eliminar_licencia(id, number);
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-                
-                JOptionPane.showMessageDialog(this, "Conductor eliminada correctamente");
-                boton_conductores.doClick();
-            }
-                  
-        });
-
-        JFrame padre = this;
-        text_busqueda.addKeyListener(new Key_adapter(){
-            @Override
-            public void accion(){
-
-                base = new Licencia(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_conductores(((Licencia)base).consultar_licencia(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-
-            }
-
-            @Override
-            public void accion2(){}
-        });
-       
-
-        panel.add(panel_busqueda, BorderLayout.NORTH);
-        panel.add(scroll, BorderLayout.CENTER);
-
-        return panel;
-
-    }
-
-    // Metodos relacionados a extractos
-    
-    @SuppressWarnings("deprecation")
-    private JPanel ver_extractos_mensuales(){
-        
-        configuracion_panel_busqueda();
-        JPanel panel = new JPanel(new BorderLayout());
-        JScrollPane scroll = new JScrollPane();
-        String[][] datos = null;
-        
-        // Inicializaicon pop_menu
-        config_pop_menu_extractos();
-
-        // Obteniendo datos de la base de datos
-        base = new Extractos(url);
-        try{
-            datos = ((Extractos)base).consultar_vw_extracto_mensual("");
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-        }finally{
-            base.close();
-        }
-        
-
-        // Configuracion de la visualizacion y opciones de la tabla
-
-        tabla = Modelo_tabla.set_tabla_extractos_mensuales(datos);
-        tabla.setComponentPopupMenu(pop_menu);
-        scroll.setViewportView(tabla);
-        
-
-        // Configuracion de los item 
-        item_actualizar.addActionListener(accion->{
-            int row = tabla.getSelectedRow();
-            // actualizar_extracto
-            new Actualizar_extracto_mensual(this, url,(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1)),false).setVisible(true);
-            base = new Extractos(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_extractos_mensuales(((Extractos)base).consultar_vw_extracto_mensual(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-            
-
-        });
-        item_plantilla.addActionListener(accion ->{
-
-            int row = tabla.getSelectedRow();
-            // actualizar_extracto
-            new Actualizar_extracto_mensual(this, url,(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1)),true).setVisible(true);
-            base = new Extractos(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_extractos_mensuales(((Extractos)base).consultar_vw_extracto_mensual(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-
-        });
-        item_adicionar.addActionListener(accion ->{
-
-            new Insertar_extracto_mensual(this, url).setVisible(true);
-            base = new Extractos(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_extractos_mensuales(((Extractos)base).consultar_vw_extracto_mensual(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                    
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-        });
-
-        item_exportar.addActionListener(accion ->{
-            int select_row = tabla.getSelectedRow();
-
-            try{
-                String ruta;
-                ruta = Generar_extractos.generar_extracto_mensual_excel((String) tabla.getValueAt(select_row, 0),Integer.parseInt((String) tabla.getValueAt(select_row, 1)), url);
-                String comando_auxiliar = "powershell -ExecutionPolicy ByPass -File \"" + UBICACION_PS_CONVERTIRPDF + "\"" + " -parametro \""+ UBICACION_PS_EXTRACTOS_MENSUALES + "\"";
-                    
-                Process proceso = runtime.exec(comando_auxiliar);
-                // implementar funcion que muestre que esperar por favor mientras carga la barra de proceso<
-                JOptionPane.showMessageDialog(null, "Iniciando la exportacion\nPor favor espere...");
-                proceso.waitFor();
-                JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
-            }catch(Exception ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            
-            base = new Extractos(url);
-            try{
-                tabla = Modelo_tabla.set_tabla_extractos_mensuales(((Extractos)base).consultar_vw_extracto_mensual(text_busqueda.getText()));
-                tabla.setComponentPopupMenu(pop_menu);
-                scroll.setViewportView(tabla );
-                
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }finally{
-                base.close();
-            }
-
-
-        });
-        item_eliminar.addActionListener(accion ->{
-            
-            int number = tabla.getSelectedRow();
-            String placa = "" + tabla.getValueAt(number, 0);
-            String consecutivo = "" + tabla.getValueAt(number, 1);
-            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el extracto " + consecutivo + "\ndel vehiculo "+placa,  "eliminar", JOptionPane.OK_CANCEL_OPTION);
-            if(number == 0){
-                base = new Extractos(url);
-                try{
-                    // realizando la eliminacion del registro
-                    ((Extractos)base).eliminar_extracto_mensual(placa, Integer.parseInt(consecutivo));
-
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-                
-                JOptionPane.showMessageDialog(this, "Extracto eliminado correctamente");
-                boton_extractos_mensuales.doClick();
-            }
-                  
-        });
-
-        item_exportar_todos.addActionListener(accion ->{
-            String placa;
-            String consecutivo;
-            try{
-
-                for(int i = 0; i < tabla.getRowCount(); i++){
-                    placa = (String) tabla.getValueAt(i, 0);
-                    consecutivo = (String) tabla.getValueAt(i, 1);
-                    Generar_extractos.generar_extracto_mensual_excel(placa, Integer.parseInt(consecutivo), url);
-                }
-                String comando_auxiliar = "powershell -ExecutionPolicy ByPass -File \"" + UBICACION_PS_CONVERTIRPDF + "\"" + " -parametro \""+ UBICACION_PS_EXTRACTOS_MENSUALES + "\"";
-                runtime.exec(comando_auxiliar);
-                
-                JOptionPane.showMessageDialog(this, "Extractos guardados con exito.", "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
-            }catch(Exception ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            
-        });
-
-        item_actualizar_todos.addActionListener(accion -> {
-
-            new Actualizar_todo_ext_mensual(this, url).setVisible(true);
-
-            base = new Extractos(url);
-            try{
-                tabla = Modelo_tabla.set_tabla_extractos_mensuales(((Extractos)base).consultar_vw_extracto_mensual(text_busqueda.getText()));
-                tabla.setComponentPopupMenu(pop_menu);
-                scroll.setViewportView(tabla );
-                
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }finally{
-                base.close();
-            }
-
-        });
-        JFrame padre = this;
-        
-        text_busqueda.addKeyListener(new Key_adapter() {
-            
-            @Override
-            public void accion(){
-
-                base = new Extractos(url);
-                    try {
-                        tabla = Modelo_tabla.set_tabla_extractos_mensuales(((Extractos)base).consultar_vw_extracto_mensual(text_busqueda.getText()));
-                        tabla.setComponentPopupMenu(pop_menu);
-                        scroll.setViewportView(tabla);
-        
-                    } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    }finally{
-                        base.close();
-                    }
-
-            }
-
-            @Override
-            public void accion2(){}
-        });
-        
-
-        panel.add(panel_busqueda, BorderLayout.NORTH);
-        panel.add(scroll, BorderLayout.CENTER);
-
-        return panel;
-
-    }
-
-    
-    private JPanel ver_contratos_mensuales(){
-        
-        configuracion_panel_busqueda();
-        JPanel panel = new JPanel(new BorderLayout());
-        JScrollPane scroll = new JScrollPane();
-        String[][] datos = null;
-        
-        // Inicializaicon pop_menu
-        config_pop_menu();
-        pop_menu.remove(1);
-
-        // Obteniendo datos de la base de datos
-        base = new Contrato_mensual(url);
-        try{
-            datos = ((Contrato_mensual)base).consultar_contratos_mensuales("");
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-        }finally{
-            base.close();
-        }
-        
-
-        // Configuracion de la visualizacion y opciones de la tabla
-
-        tabla = Modelo_tabla.set_tabla_contratos_mensuales(datos);
-        tabla.setComponentPopupMenu(pop_menu);
-        scroll.setViewportView(tabla);
-        
-
-        
-        item_adicionar.addActionListener(accion ->{
-
-            new Insertar_contrato_mensual(this, url).setVisible(true);
-
-            base = new Contrato_mensual(url);
-            try{
-                tabla = Modelo_tabla.set_tabla_contratos_mensuales(((Contrato_mensual)base).consultar_contratos_mensuales(text_busqueda.getText()));
-                tabla.setComponentPopupMenu(pop_menu);
-                scroll.setViewportView(tabla );
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }finally{
-                base.close();
-            }
-
-        });
-
-        item_eliminar.addActionListener(accion ->{
-            
-            int number = tabla.getSelectedRow();
-            String id = "" + tabla.getValueAt(number, 0);
-            String nombre = "" + tabla.getValueAt(number, 2);
-            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el contrato:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
-            if(number == 0){
-                base = new Contrato_mensual(url);
-                try{
-                    ((Contrato_mensual)base).eliminar_contrato_mensual(Integer.parseInt(id));
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-                
-                JOptionPane.showMessageDialog(this, "Contrato eliminado correctamente");
-                boton_contratos_mensuales.doClick();
-            }
-                  
-        });
-
-        JFrame padre = this;
-        text_busqueda.addKeyListener(new Key_adapter(){
-            @Override
-            public void accion(){
-
-                base = new Contrato_mensual(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_contratos_mensuales(((Contrato_mensual)base).consultar_contratos_mensuales(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-
-            }
-
-            @Override
-            public void accion2(){}
-        });
-       
-
-        panel.add(panel_busqueda, BorderLayout.NORTH);
-        panel.add(scroll, BorderLayout.CENTER);
-
-        return panel;
-
-    }
-
-    private JPanel ver_contratos_ocasionales(){
-        
-        configuracion_panel_busqueda();
-        JPanel panel = new JPanel(new BorderLayout());
-        JScrollPane scroll = new JScrollPane();
-        String[][] datos = null;
-        
-        // Inicializaicon pop_menu
-        config_pop_menu_extractos();
-
-        
-        pop_menu.remove(item_exportar_todos);
-        pop_menu.remove(item_actualizar_todos);
-
-
-        // Obteniendo datos de la base de datos
-        base = new BContrato_ocasional(url);
-        try{
-            datos = ((BContrato_ocasional)base).consultar_contrato_ocasional("");
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-        }finally{
-            base.close();
-        }
-        
-
-        // Configuracion de la visualizacion y opciones de la tabla
-
-        tabla = Modelo_tabla.set_tabla_contratos_ocasionales(datos);
-        tabla.setComponentPopupMenu(pop_menu);
-        scroll.setViewportView(tabla);
-        
-
-        
-        item_adicionar.addActionListener(accion ->{
-
-            new Insertar_contrato_ocasional(this, url).setVisible(true);
-
-            base = new BContrato_ocasional(url);
-            try{
-                tabla = Modelo_tabla.set_tabla_contratos_ocasionales(((BContrato_ocasional)base).consultar_contrato_ocasional(text_busqueda.getText()));
-                tabla.setComponentPopupMenu(pop_menu);
-                scroll.setViewportView(tabla );
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }finally{
-                base.close();
-            }
-
-        });
-
-        item_actualizar.addActionListener(accion ->{
-            int number = tabla.getSelectedRow();
-            int id = Integer.parseInt((String)tabla.getValueAt(number, 0));
-
-            new Actualizar_contrato_ocasional(this, url, id, false).setVisible(true);
-
-            base = new BContrato_ocasional(url);
-            try{
-                tabla = Modelo_tabla.set_tabla_contratos_ocasionales(((BContrato_ocasional)base).consultar_contrato_ocasional(text_busqueda.getText()));
-                tabla.setComponentPopupMenu(pop_menu);
-                scroll.setViewportView(tabla );
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }finally{
-                base.close();
-            }
-
-        });
-
-        item_exportar.addActionListener(accion ->{
-
-            int row = tabla.getSelectedRow();
-            int num_contrato = Integer.parseInt((String)tabla.getValueAt(row, 0));
-            String[] opciones = {"Sí", "No"};
-            int band = JOptionPane.showOptionDialog(null, 
-                                                "¿Deceas que el contrato muestre la ruta\nmás corta entre el origen y el destnio?", 
-                                                "Confirmación", 
-                                                JOptionPane.YES_NO_OPTION, 
-                                                JOptionPane.QUESTION_MESSAGE, 
-                                                null, 
-                                                opciones, 
-                                                opciones[0]);
-            
-            if(band >= 0){
-                boolean flag = (band == 0)?true:false;
-                try{
-                    String ruta = Generar_extractos.generar_extracto_ocasional(num_contrato, url, flag);
-                    JOptionPane.showMessageDialog(this, "Exportando el contrato N° " + num_contrato + ", Junto \na sus extractos correspondientes. \n\nPor favor espere...");
-                    
-                    String comando_auxiliar = "powershell -ExecutionPolicy ByPass -File \"" + UBICACION_PS_CONVERTIRPDF + "\"" + " -parametro \""+ UBICACION_PS_EXTRACTOS_OCASIONALES + "\"";
-                    
-                    @SuppressWarnings("deprecation")
-                    int proceso = runtime.exec(comando_auxiliar).waitFor();
-    
-                    if(proceso == 0){
-                        JOptionPane.showMessageDialog(this, "Proceso finalizado con exito.\nRuta de los documentos: "+ ruta);
-                    }else{
-                        JOptionPane.showMessageDialog(this, "El proceso no pudo ser finalizado con exito. Error code: " + proceso);
-                    }
-                    
-    
-                }catch(Exception ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-            
-            
-            
-        });
-        item_plantilla.addActionListener(accion ->{
-
-            int number = tabla.getSelectedRow();
-            int id = Integer.parseInt((String)tabla.getValueAt(number, 0));
-
-            new Actualizar_contrato_ocasional(this, url, id, true).setVisible(true);
-
-            base = new BContrato_ocasional(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_contratos_ocasionales(((BContrato_ocasional)base).consultar_contrato_ocasional(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-        });
-
-        item_eliminar.addActionListener(accion ->{
-            
-            int number = tabla.getSelectedRow();
-            String id = "" + tabla.getValueAt(number, 0);
-            String nombre = "" + tabla.getValueAt(number, 2);
-            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el contrato:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
-            if(number == 0){
-                base = new BContrato_ocasional(url);
-                try{
-                    ((BContrato_ocasional)base).eliminar_contrato_ocasional(Integer.parseInt(id));
-                    JOptionPane.showMessageDialog(this, "Contrato eliminado correctamente");
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                    boton_contratos_ocasionales.doClick();
-                }
-                
-            }
-                  
-        });
-
-        JFrame padre = this;
-        text_busqueda.addKeyListener(new Key_adapter(){
-            @Override
-            public void accion(){
-
-                base = new BContrato_ocasional(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_contratos_ocasionales(((BContrato_ocasional)base).consultar_contrato_ocasional(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-
-            }
-
-            @Override
-            public void accion2(){}
-        });
-       
-
-        panel.add(panel_busqueda, BorderLayout.NORTH);
-        panel.add(scroll, BorderLayout.CENTER);
-
-        return panel;
-
-    }
-
-    // Metodo para ver los extractos ocasionales
-    @SuppressWarnings("deprecation")
-    private JPanel ver_extractos_ocasionales(){
-        
-        configuracion_panel_busqueda();
-        JPanel panel = new JPanel(new BorderLayout());
-        JScrollPane scroll = new JScrollPane();
-        String[][] datos = null;
-        
-        // Inicializaicon pop_menu
-        config_pop_menu_extractos();
-        pop_menu.remove(item_actualizar_todos);
-        pop_menu.remove(item_exportar_todos);
-
-        // Obteniendo datos de la base de datos
-        base = new Extractos(url);
-        try{
-            datos = ((Extractos)base).consultar_vw_extracto_ocasional("");
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-        }finally{
-            base.close();
-        }
-        
-
-        // Configuracion de la visualizacion y opciones de la tabla
-
-        tabla = Modelo_tabla.set_tabla_extractos_ocasionales(datos);
-        tabla.setComponentPopupMenu(pop_menu);
-        scroll.setViewportView(tabla);
-        
-
-        // Configuracion de los item 
-        item_actualizar.addActionListener(accion->{
-            int row = tabla.getSelectedRow();
-            String placa = (String) tabla.getValueAt(row, 0);
-            String consecutivo = (String) tabla.getValueAt(row, 1);
-            String contrato = (String) tabla.getValueAt(row, 2);
-            // actualizar_extracto
-            new Actualizar_extracto_ocasional(this, url, placa, consecutivo, contrato, false).setVisible(true);
-            base = new Extractos(url);
-                try{
-                    JTable aux_tabla = Modelo_tabla.set_tabla_extractos_ocasionales(((Extractos)base).consultar_vw_extracto_ocasional(text_busqueda.getText()));
-                    
-                    tabla.setModel(aux_tabla.getModel());
-                    tabla.setColumnModel(aux_tabla.getColumnModel());
-
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-            
-
-        });
-        item_adicionar.addActionListener(accion ->{
-
-            new Insertar_extracto_ocasional(this, url).setVisible(true);
-            base = new Extractos(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_extractos_ocasionales(((Extractos)base).consultar_vw_extracto_ocasional(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-        });
-        item_plantilla.addActionListener(accion ->{
-            int row = tabla.getSelectedRow();
-            String placa = (String) tabla.getValueAt(row, 0);
-            String consecutivo = (String) tabla.getValueAt(row, 1);
-            String contrato = (String) tabla.getValueAt(row, 2);
-
-            new Actualizar_extracto_ocasional(this, url, placa, consecutivo, contrato, true).setVisible(true);
-
-            base = new Extractos(url);
-            try{
-                JTable tab_aux = Modelo_tabla.set_tabla_extractos_ocasionales(((Extractos)base).consultar_vw_extracto_ocasional(text_busqueda.getText()));
-                tabla.setModel(tab_aux.getModel());
-                tabla.setColumnModel(tab_aux.getColumnModel());
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-            }finally{
-                base.close();
-            }
-        });
-        item_exportar.addActionListener(accion ->{
-            String[] opciones = {"Sí", "No"};
-            int band = JOptionPane.showOptionDialog(null, 
-                                                "¿Deceas que el contrato muestre la ruta\nmás corta entre el origen y el destnio?", 
-                                                "Confirmación", 
-                                                JOptionPane.YES_NO_OPTION, 
-                                                JOptionPane.QUESTION_MESSAGE, 
-                                                null, 
-                                                opciones, 
-                                                opciones[0]);
-            
-            
-            if(band >= 0){
-                boolean flag = (band == 0)?true:false;
-                int select_row = tabla.getSelectedRow();
-                try{
-                    String ruta;
-                    String comando_auxiliar = "powershell -ExecutionPolicy ByPass -File \"" + UBICACION_PS_CONVERTIRPDF + "\"" + " -parametro \""+ UBICACION_PS_EXTRACTOS_OCASIONALES + "\"";
-                    ruta = Generar_extractos.generar_extracto_ocasional(Integer.parseInt((String) tabla.getValueAt(select_row, 2)), url, flag);
-                    
-                    runtime.exec(comando_auxiliar);
-                    
-                    JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
-                }catch(Exception ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }   
-            }
-            
-        });
-        item_eliminar.addActionListener(accion ->{
-            
-            int number = tabla.getSelectedRow();
-            String placa = "" + tabla.getValueAt(number, 0);
-            String consecutivo = "" + tabla.getValueAt(number, 1);
-            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el extracto " + consecutivo + "\ndel vehiculo "+placa,  "eliminar", JOptionPane.OK_CANCEL_OPTION);
-            if(number == 0){
-                base = new Extractos(url);
-                try{
-                    // realizando la eliminacion del registro
-                    ((Extractos)base).eliminar_extracto_ocasional(placa, Integer.parseInt(consecutivo));
-
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-                
-                JOptionPane.showMessageDialog(this, "Extracto eliminado correctamente");
-                boton_extractos_ocasionales.doClick();
-            }
-                  
-        });
-        
-        JFrame padre = this;
-        
-        text_busqueda.addKeyListener(new Key_adapter() {
-            
-            @Override
-            public void accion(){
-
-                base = new Extractos(url);
-                    try {
-                        JTable tab_aux = Modelo_tabla.set_tabla_extractos_ocasionales(((Extractos)base).consultar_vw_extracto_ocasional(text_busqueda.getText()));
-                        tabla.setModel(tab_aux.getModel());
-                        tabla.setColumnModel(tab_aux.getColumnModel());
-                    } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    }finally{
-                        base.close();
-                    }
-
-            }
-
-            @Override
-            public void accion2(){}
-        });
-        
-
-        panel.add(panel_busqueda, BorderLayout.NORTH);
-        panel.add(scroll, BorderLayout.CENTER);
-
-        return panel;
-
-    }
-
-    // Metodos relacionados con contratante
-
-    private JPanel ver_contratante(){
-        
-        configuracion_panel_busqueda();
-        JPanel panel = new JPanel(new BorderLayout());
-        JScrollPane scroll = new JScrollPane();
-        String[][] datos = null;
-        
-        // Inicializaicon pop_menu
-        config_pop_menu();
-
-        // Obteniendo datos de la base de datos
-        base = new Contratante(url);
-        try{
-            datos = ((Contratante)base).consultar_contratante("");
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-        }finally{
-            base.close();
-        }
-
-        // Configuracion de la visualizacion y opciones de la tabla
-
-        tabla = Modelo_tabla.set_tabla_contratante(datos);
-        tabla.setComponentPopupMenu(pop_menu);
-        scroll.setViewportView(tabla);
-        
-        // Configuracion de los item 
-        item_actualizar.addActionListener(accion->{
-            int select_row = tabla.getSelectedRow();
-
-            
-            new Actualizar_contratante(this, url,(String) tabla.getValueAt(select_row, 0)).setVisible(true);
-            base = new Contratante(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_contratante(((Contratante)base).consultar_contratante(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-
-        });
-        item_adicionar.addActionListener(accion ->{
-
-            new Insertar_contratante(this, url).setVisible(true);
-
-            base = new Contratante(url);
-                try{
-                    JTable tb = Modelo_tabla.set_tabla_contratante(((Contratante)base).consultar_contratante(text_busqueda.getText()));
-                    tabla.setModel(tb.getModel());
-                    tabla.setColumnModel(tb.getColumnModel());
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-
-        });
-
-        item_eliminar.addActionListener(accion ->{
-            
-            int number = tabla.getSelectedRow();
-            String id = "" + tabla.getValueAt(number, 0);
-            String nombre = "" + tabla.getValueAt(number, 2);
-            number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar al contratante:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
-            if(number == 0){
-                base = new Contratante(url);
-                try{
-                    ((Contratante)base).eliminar_contratante(id);
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-                
-                JOptionPane.showMessageDialog(this, "Contratante eliminado correctamente");
-                boton_contratante.doClick();
-            }
-                  
-        });
-
-        JFrame padre = this;
-        text_busqueda.addKeyListener(new Key_adapter(){
-            @Override
-            public void accion(){
-
-                base = new Contratante(url);
-                try{
-                    tabla = Modelo_tabla.set_tabla_contratante(((Contratante)base).consultar_contratante(text_busqueda.getText()));
-                    tabla.setComponentPopupMenu(pop_menu);
-                    scroll.setViewportView(tabla );
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }finally{
-                    base.close();
-                }
-
-            }
-
-            @Override
-            public void accion2(){}
-        });
-       
-
-        panel.add(panel_busqueda, BorderLayout.NORTH);
-        panel.add(scroll, BorderLayout.CENTER);
-
-        return panel;
-
-    }
-
-    // Metodos Auxiliares
-    private void config_pop_menu(){
-        pop_menu = null;
-        pop_menu = new CustomPopupMenu();
-
-        item_actualizar = new JMenuItem("Modificar");
-        item_adicionar = new JMenuItem("Adicionar");
-        item_eliminar = new JMenuItem("Eliminar");
-
-        pop_menu.add(item_adicionar);
-        pop_menu.add(item_actualizar);
-        pop_menu.add(item_eliminar);
-
-         
-    }
-    
-    private void config_pop_menu_extractos(){
-        item_actualizar = new JMenuItem("Modificar");
-        item_adicionar = new JMenuItem("Adicionar");
-        item_plantilla = new JMenuItem("Plantilla");
-        item_exportar = new JMenuItem("Exportar");
-        item_eliminar = new JMenuItem("Eliminar");
-        item_exportar_todos = new JMenuItem("Exportar todos");
-        item_actualizar_todos = new JMenuItem("Actualizar todos");
-
-        pop_menu = new CustomPopupMenu();
-        
-        pop_menu.add(item_adicionar);
-        pop_menu.add(item_actualizar);
-        pop_menu.add(item_plantilla);
-        pop_menu.add(item_exportar);
-        pop_menu.add(item_eliminar);
-        pop_menu.add(item_exportar_todos);
-        pop_menu.add(item_actualizar_todos);
-    }
 }
 
-class CustomPopupMenu extends JPopupMenu {
-
-    @Override
-    public void show(Component invoker, int x, int y) {
-        if (invoker != null && invoker.getParent() instanceof JViewport) {
-            JViewport viewport = (JViewport) invoker.getParent();
-            Dimension viewportSize = viewport.getSize();
-            Point viewportPosition = viewport.getViewPosition();
-            Dimension popupSize = this.getPreferredSize();
-
-            // Ajustar la posición para que el menú emergente esté dentro del viewport
-            if (x + popupSize.width > viewportPosition.x + viewportSize.width) {
-                x = (viewportPosition.x + viewportSize.width) - popupSize.width;
-            }
-            if (y + popupSize.height > viewportPosition.y + viewportSize.height) {
-                y = (viewportPosition.y + viewportSize.height) - popupSize.height;
-            }
-
-            // Ajustar la posición para no mostrar el popup fuera del JScrollPane
-            if (x < viewportPosition.x) {
-                x = viewportPosition.x;
-            }
-            if (y < viewportPosition.y) {
-                y = viewportPosition.y;
-            }
-        }
-
-        // Llamar al método original para mostrar el popup
-        super.show(invoker, x, y);
-    }
-}
