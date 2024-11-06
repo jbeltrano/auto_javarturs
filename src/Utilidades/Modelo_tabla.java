@@ -514,7 +514,7 @@ public class Modelo_tabla {
         
         // Configuarcion del tamaño de las columnas
         clum_model = tab.getColumnModel();
-        clum_model.getColumn(0).setPreferredWidth(50);
+        clum_model.getColumn(0).setPreferredWidth(70);
         clum_model.getColumn(1).setPreferredWidth(70);
         clum_model.getColumn(2).setPreferredWidth(70);
         clum_model.getColumn(3).setPreferredWidth(110);
