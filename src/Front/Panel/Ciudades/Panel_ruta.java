@@ -64,7 +64,7 @@ public class Panel_ruta extends Panel{
     @Override
     protected void config_listener_pop_menu() {
 
-        item_actualizar.addActionListener(accion->{
+        item_actualizar.addActionListener(_->{
             int select_row = tabla.getSelectedRow();
 
             new Actualizar_ruta((JFrame)window, 
@@ -77,13 +77,13 @@ public class Panel_ruta extends Panel{
             accion_text_busqueda();
 
         });
-        item_adicionar.addActionListener(accion ->{
+        item_adicionar.addActionListener(_ ->{
 
             new Insertar_ruta((JFrame)window, url).setVisible(true);
             accion_text_busqueda();
 
         });
-        item_eliminar.addActionListener(accion ->{
+        item_eliminar.addActionListener(_ ->{
             
             int number = tabla.getSelectedRow();
             String origen = "" + tabla.getValueAt(number, 1);

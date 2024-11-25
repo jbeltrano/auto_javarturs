@@ -42,7 +42,7 @@ public class Panel_departamento extends Panel{
         base_Departamento = new Departamento(url);
         try{
             // Obtiene los datos y crea una tabla auxiliar con los datos proporcionados por el text Field
-            JTable tabla_aux = Modelo_tabla.set_tabla_ciudad(
+            JTable tabla_aux = Modelo_tabla.set_tabla_departamento(
                 base_Departamento.consultar_departamentos(text_busqueda.getText())
             );
 

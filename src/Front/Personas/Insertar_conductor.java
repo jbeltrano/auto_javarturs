@@ -182,7 +182,7 @@ public class Insertar_conductor extends Modales_personas{
         boton_guardar.setText("Guardar");
         jPanel1.add(boton_guardar);
         boton_guardar.setBounds(10, 230, 90, 23);
-        boton_guardar.addActionListener(accion ->{
+        boton_guardar.addActionListener(_ ->{
             
             guardar();
             

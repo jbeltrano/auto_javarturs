@@ -131,7 +131,7 @@ public class Insertar_persona extends Modales_personas{
         jPanel1.add(jLabel5);
         jLabel5.setBounds(292, 68, 90, 16);
 
-        combo_departamento.addActionListener(accion ->{
+        combo_departamento.addActionListener(_ ->{
             base = new Ciudad(url);
             try{
                 String dato[] = ((Ciudad)base).consultar_ciudad((String)combo_departamento.getSelectedItem(), 1);
@@ -154,11 +154,10 @@ public class Insertar_persona extends Modales_personas{
         jLabel6.setText("Municipio");
         jPanel1.add(jLabel6);
         jLabel6.setBounds(17, 124, 54, 16);
-
         combo_municipio.setMaximumRowCount(5);
         combo_municipio.setSelectedItem("Acacias");
-        combo_municipio.setPrototypeDisplayValue("Placeholder");    // Se utiliza para que el tamaño no cambie
-
+        //combo_municipio.setPrototypeDisplayValue("Ejemplo ");    // Se utiliza para que el tamaño no cambie
+        
         jPanel1.add(combo_municipio);
         combo_municipio.setBounds(17, 146, 124, 22);
 
@@ -190,7 +189,7 @@ public class Insertar_persona extends Modales_personas{
         boton_guardar.setText("Guardar");
         jPanel1.add(boton_guardar);
         boton_guardar.setBounds(17, 250, 100, 23);
-        boton_guardar.addActionListener(accion ->{
+        boton_guardar.addActionListener(_ ->{
             guardar();
         });
 

@@ -204,7 +204,7 @@ public class Insertar_ruta extends Modal_ruta{
                                 100,
                                 20);
 
-        boton_guardar.addActionListener(accion ->{
+        boton_guardar.addActionListener(_ ->{
             if(tabla_origen.getSelectedRow() < 0){
                 error.enqueue("No hay un valor seleccionado en Origen");
             }

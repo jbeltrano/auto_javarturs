@@ -50,7 +50,7 @@ public class Actualizar_tipo_vehiculo extends Modales_vehiculos{
 
         boton_actualizacion = new JButton("Guardar");
         boton_actualizacion.setBounds(25,530,100,20);
-        boton_actualizacion.addActionListener(acccion ->{
+        boton_actualizacion.addActionListener(_ ->{
             
             base = new Base(url);
 

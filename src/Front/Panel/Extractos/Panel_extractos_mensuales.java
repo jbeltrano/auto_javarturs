@@ -68,14 +68,14 @@ public class Panel_extractos_mensuales extends Panel_extractos{
     @Override
     protected void config_listener_pop_menu() {
         
-        item_actualizar.addActionListener(accion->{
+        item_actualizar.addActionListener(_->{
             int row = tabla.getSelectedRow();
             // actualizar_extracto
             new Actualizar_extracto_mensual((JFrame)window, url,(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1)),false).setVisible(true);
             accion_text_busqueda();
 
         });
-        item_plantilla.addActionListener(accion ->{
+        item_plantilla.addActionListener(_ ->{
 
             int row = tabla.getSelectedRow();
             // actualizar_extracto
@@ -83,13 +83,13 @@ public class Panel_extractos_mensuales extends Panel_extractos{
             accion_text_busqueda();
 
         });
-        item_adicionar.addActionListener(accion ->{
+        item_adicionar.addActionListener(_ ->{
 
             new Insertar_extracto_mensual((JFrame)window, url).setVisible(true);
             accion_text_busqueda();
         });
 
-        item_exportar.addActionListener(accion ->{
+        item_exportar.addActionListener(_ ->{
             int select_row = tabla.getSelectedRow();
 
             try{
@@ -107,7 +107,7 @@ public class Panel_extractos_mensuales extends Panel_extractos{
             }
         });
 
-        item_eliminar.addActionListener(accion ->{
+        item_eliminar.addActionListener(_ ->{
             
             int number = tabla.getSelectedRow();
             String placa = "" + tabla.getValueAt(number, 0);
@@ -131,7 +131,7 @@ public class Panel_extractos_mensuales extends Panel_extractos{
                   
         });
 
-        item_exportar_todos.addActionListener(accion ->{
+        item_exportar_todos.addActionListener(_ ->{
             String placa;
             String consecutivo;
             try{
@@ -151,7 +151,7 @@ public class Panel_extractos_mensuales extends Panel_extractos{
             
         });
 
-        item_actualizar_todos.addActionListener(accion -> {
+        item_actualizar_todos.addActionListener(_ -> {
 
             new Actualizar_todo_ext_mensual((JFrame)window, url).setVisible(true);
 

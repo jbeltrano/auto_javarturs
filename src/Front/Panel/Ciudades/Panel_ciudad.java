@@ -65,7 +65,7 @@ public class Panel_ciudad extends Panel{
     @Override
     protected void config_listener_pop_menu() {
         
-        item_actualizar.addActionListener(accion->{
+        item_actualizar.addActionListener(_->{
             int select_row = tabla.getSelectedRow();
 
             
@@ -74,7 +74,7 @@ public class Panel_ciudad extends Panel{
             
 
         });
-        item_adicionar.addActionListener(accion ->{
+        item_adicionar.addActionListener(_ ->{
 
             new Insertar_ciudad((JFrame)window, url).setVisible(true);
             
@@ -82,7 +82,7 @@ public class Panel_ciudad extends Panel{
 
         });
 
-        item_eliminar.addActionListener(accion ->{
+        item_eliminar.addActionListener(_ ->{
             
             int number = tabla.getSelectedRow();
             String valor = "" + tabla.getValueAt(number, 0);

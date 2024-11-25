@@ -317,7 +317,7 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         jPanel1.add(boton_guardar);
         boton_guardar.setBounds(10, scroll_tabla.getY() + scroll_tabla.getHeight() + 10, 100, 23);
 
-        boton_guardar.addActionListener(accion ->{
+        boton_guardar.addActionListener(_ ->{
 
             guardar();
 

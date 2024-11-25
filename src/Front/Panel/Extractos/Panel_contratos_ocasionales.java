@@ -66,7 +66,7 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
     @Override
     protected void config_listener_pop_menu() {
         
-        item_adicionar.addActionListener(accion ->{
+        item_adicionar.addActionListener(_ ->{
 
             new Insertar_contrato_ocasional((JFrame)window, url).setVisible(true);
 
@@ -74,7 +74,7 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
 
         });
 
-        item_actualizar.addActionListener(accion ->{
+        item_actualizar.addActionListener(_ ->{
             int number = tabla.getSelectedRow();
             int id = Integer.parseInt((String)tabla.getValueAt(number, 0));
 
@@ -84,7 +84,7 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
 
         });
 
-        item_exportar.addActionListener(accion ->{
+        item_exportar.addActionListener(_ ->{
 
             int row = tabla.getSelectedRow();
             int num_contrato = Integer.parseInt((String)tabla.getValueAt(row, 0));
@@ -123,7 +123,7 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
             
             
         });
-        item_plantilla.addActionListener(accion ->{
+        item_plantilla.addActionListener(_ ->{
 
             int number = tabla.getSelectedRow();
             int id = Integer.parseInt((String)tabla.getValueAt(number, 0));
@@ -133,7 +133,7 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
             accion_text_busqueda();
         });
 
-        item_eliminar.addActionListener(accion ->{
+        item_eliminar.addActionListener(_ ->{
             
             int number = tabla.getSelectedRow();
             String id = "" + tabla.getValueAt(number, 0);

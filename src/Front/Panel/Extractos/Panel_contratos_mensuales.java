@@ -64,7 +64,7 @@ public class Panel_contratos_mensuales extends Panel{
     @Override
     protected void config_listener_pop_menu() {
         
-        item_adicionar.addActionListener(accion ->{
+        item_adicionar.addActionListener(_ ->{
 
             new Insertar_contrato_mensual((JFrame)window, url).setVisible(true);
 
@@ -72,7 +72,7 @@ public class Panel_contratos_mensuales extends Panel{
 
         });
 
-        item_eliminar.addActionListener(accion ->{
+        item_eliminar.addActionListener(_ ->{
             
             int number = tabla.getSelectedRow();
             String id = "" + tabla.getValueAt(number, 0);

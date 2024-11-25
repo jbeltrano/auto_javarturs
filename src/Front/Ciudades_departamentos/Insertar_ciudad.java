@@ -100,7 +100,7 @@ public class Insertar_ciudad extends Modal_ciudades_departamentos{
     }                 
                  
     protected void add_listener_boton_guardar(){
-        boton_guardar.addActionListener(accion ->{
+        boton_guardar.addActionListener(_ ->{
             if(text_ciudad.getText().compareTo("") == 0){
                 JOptionPane.showMessageDialog(this, "Por favor diligenciar el campo Ciudad");
             }else{

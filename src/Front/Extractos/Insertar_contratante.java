@@ -160,7 +160,7 @@ public class Insertar_contratante extends Modal_extracto{
 
         boton_guardar.setText("Guardar");
         boton_guardar.setBounds(POS_X, 250, 100, 23);
-        boton_guardar.addActionListener(accion ->{
+        boton_guardar.addActionListener(_ ->{
             String errores = "Los datos:\n";
             boolean band = true;
             if(text_contratante.getText().equals("")){

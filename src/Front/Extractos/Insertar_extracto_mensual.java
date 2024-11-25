@@ -321,7 +321,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
 
         boton_exportar.setText("Guardar y Exportar");
         boton_exportar.setBounds(150, 450, 140, 23);
-        boton_exportar.addActionListener(accion ->{
+        boton_exportar.addActionListener(_ ->{
             boolean band = guardar_extracto_mensual();
             Runtime runtime = Runtime.getRuntime();
             String comando[] = new String[3];
@@ -347,7 +347,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
 
         boton_guardar.setText("Guardar");
         boton_guardar.setBounds(20, 450, 100, 23);
-        boton_guardar.addActionListener(accion ->{
+        boton_guardar.addActionListener(_ ->{
             boolean band = guardar_extracto_mensual();
             if(band) 
                 setVisible(false);

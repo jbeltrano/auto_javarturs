@@ -62,7 +62,7 @@ public class Actualizar_todo_ext_mensual extends Modal_extracto{
         // Configuracion de jbutton boton_guardar
         boton_guardar.setText("Guardar");
         boton_guardar.setBounds(10, 250, 100, 20);
-        boton_guardar.addActionListener(accion ->{
+        boton_guardar.addActionListener(_ ->{
             actualizar();
         });
         panel.add(boton_guardar);

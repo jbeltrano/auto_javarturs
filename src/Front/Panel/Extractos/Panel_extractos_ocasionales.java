@@ -68,7 +68,7 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
     @Override
     protected void config_listener_pop_menu() {
         
-        item_actualizar.addActionListener(accion->{
+        item_actualizar.addActionListener(_->{
             int row = tabla.getSelectedRow();
             String placa = (String) tabla.getValueAt(row, 0);
             String consecutivo = (String) tabla.getValueAt(row, 1);
@@ -79,12 +79,12 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
             
 
         });
-        item_adicionar.addActionListener(accion ->{
+        item_adicionar.addActionListener(_ ->{
 
             new Insertar_extracto_ocasional((JFrame)window, url).setVisible(true);
             accion_text_busqueda();
         });
-        item_plantilla.addActionListener(accion ->{
+        item_plantilla.addActionListener(_ ->{
             int row = tabla.getSelectedRow();
             String placa = (String) tabla.getValueAt(row, 0);
             String consecutivo = (String) tabla.getValueAt(row, 1);
@@ -94,7 +94,7 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
 
             accion_text_busqueda();
         });
-        item_exportar.addActionListener(accion ->{
+        item_exportar.addActionListener(_ ->{
             String[] opciones = {"Sí", "No"};
             int band = JOptionPane.showOptionDialog(null, 
                                                 "¿Deceas que el contrato muestre la ruta\nmás corta entre el origen y el destnio?", 
@@ -123,7 +123,7 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
             }
             
         });
-        item_eliminar.addActionListener(accion ->{
+        item_eliminar.addActionListener(_ ->{
             
             int number = tabla.getSelectedRow();
             String placa = "" + tabla.getValueAt(number, 0);

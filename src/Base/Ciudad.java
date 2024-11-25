@@ -126,7 +126,7 @@ public class Ciudad extends Base{
         int cantidad = 0;
         int i = 1;
 
-        consultar = "select ciu_id, ciu_nombre, dep_nombre from ciudad natural join departamento";
+        consultar = "select ciu_id, ciu_nombre, dep_nombre from ciudad natural join departamento order by(ciu_nombre)";
 
         try{
             state = coneccion.createStatement();
@@ -182,7 +182,7 @@ public class Ciudad extends Base{
         int cantidad = 0;
         int i = 1;
 
-        consultar = "select ciu_id, ciu_nombre, dep_nombre from ciudad natural join departamento where dep_nombre like \'%"+buscar+"%\'";
+        consultar = "select ciu_id, ciu_nombre, dep_nombre from ciudad natural join departamento where dep_nombre like \'%"+buscar+"%\' order by(ciu_nombre)";
 
         try{
             state = coneccion.createStatement();
@@ -264,7 +264,7 @@ public class Ciudad extends Base{
         int cantidad = 0;
         int i = 1;
 
-        consultar = "select ciu_id, ciu_nombre, dep_nombre from ciudad natural join departamento where ciu_id like \'" + buscar + "\' or ciu_nombre like \'%"+buscar+"%\' or dep_nombre like \'"+buscar+"%\'";
+        consultar = "select ciu_id, ciu_nombre, dep_nombre from ciudad natural join departamento where ciu_id like \'" + buscar + "\' or ciu_nombre like \'%"+buscar+"%\' or dep_nombre like \'"+buscar+"%\' order by (ciu_nombre)";
 
         try{
             

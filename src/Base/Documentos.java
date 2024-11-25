@@ -1,5 +1,6 @@
 package Base;
 
+import java.net.URL;
 import java.sql.SQLException;
 
 public class Documentos extends Base{
@@ -191,6 +192,31 @@ public class Documentos extends Base{
             pstate.setString(1, fehca_soat);
             pstate.setString(2, fecha_rtm);
             pstate.setString(3, placa);
+
+            pstate.executeUpdate();
+
+        }catch(SQLException ex){
+            throw ex;
+        }finally{
+            pstate.close();
+        }
+    }
+
+    /**
+     * Este metodo se encarga de actualiar todas las fechas
+     * de las polizas de los vehiculos del parque automotor.
+     * @param fecha_rcc_rce
+     * @throws SQLException
+     */
+    public void actualizar_polisas_parque(String fecha_rcc_rce)throws SQLException{
+
+        actualizar = "update documento set doc_fecha_rcc = ?, doc_fecha_rce = ? where veh_placa in (select veh_placa from vehiculo where veh_parque_automotor = 1)";
+
+        try{
+            pstate = coneccion.prepareStatement(actualizar);
+
+            pstate.setString(1, fecha_rcc_rce);
+            pstate.setString(2, fecha_rcc_rce);
 
             pstate.executeUpdate();
 
@@ -578,37 +604,127 @@ public class Documentos extends Base{
 
     }
 
-    public void insertar_documento2(String placa, String nombre, byte[] datos)throws SQLException{
-        
-        insertar = "insert into documento2 values (?,?,?)";
+    @SuppressWarnings("deprecation")
+    public void insertar_documento_link(String placa, String str_url)throws SQLException{
 
-        pstate = coneccion.prepareStatement(insertar);
-
-        pstate.setString(1, placa);
-        pstate.setString(2, nombre);
-        pstate.setBytes(3, datos);
-
-        pstate.executeUpdate();
-
-        pstate.close();
-    }
-
-    public byte[] consultar_documento2(String placa)throws SQLException{
-
-        byte[] baytes = null;
-        consultar = "select * from documento2 where veh_placa = ?";
-
-        pstate = coneccion.prepareStatement(consultar);
-
-        pstate.setString(1, placa);
-
-        resultado = pstate.executeQuery();
-
-        if(resultado.next()){
-            baytes = resultado.getBytes(3);
+        try {
+            new URL(str_url); // Intenta crear una instancia de URL
+        } catch (Exception e) {
+            throw new SQLException("La URL ingresada no es una URL valida");
         }
 
-        return baytes;
+        insertar = "insert into documentos_vehiculo values (?,?)";
+
+        try{
+            pstate = coneccion.prepareStatement(insertar);
+
+            pstate.setString(1, placa);
+            pstate.setString(2,str_url);
+
+            pstate.executeUpdate();
+
+        }catch(SQLException ex){
+            throw ex;
+        }finally{
+            pstate.close();
+            state.close();
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    public void actualizar_documento_link(String placa, String str_url)throws SQLException{
+
+        try {
+            new URL(str_url); // Intenta crear una instancia de URL
+        } catch (Exception e) {
+            throw new SQLException("La URL ingresada no es una URL valida");
+        }
+
+        actualizar = "update documentos_vehiculo set doc_link = ? where veh_placa = ?";
+
+        try{
+            pstate = coneccion.prepareStatement(insertar);
+
+            pstate.setString(1, str_url);
+            pstate.setString(2, placa);
+
+            pstate.executeUpdate();
+
+        }catch(SQLException ex){
+            throw ex;
+        }finally{
+            pstate.close();
+            state.close();
+        }
+    }
+
+    public void eliminar_documento_link(String placa)throws SQLException{
+
+        borrar = "delete from documentos_vehiculo where veh_placa = ?";
+
+        try{
+            pstate = coneccion.prepareStatement(borrar);
+
+            pstate.setString(1, placa);
+
+            pstate.executeUpdate();
+
+        }catch(SQLException ex){
+            throw ex;
+        }finally{
+            pstate.close();
+        }
+
+    }
+
+    public String[][] consultar_documento_link(String placa)throws SQLException{
+
+        datos = new String[1][2];
+        int cantidad = 0;
+        int i = 1;
+
+        consultar = "select * from documentos_vehiculo where veh_placa like\'%"+placa+"%\'";
+
+        try{
+            state = coneccion.createStatement();
+
+            // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
+            resultado = state.executeQuery("select count() as total from documentos_vehiculo where veh_placa like\'%"+placa+"%\'");
+            
+            if(resultado.next()){
+                cantidad = resultado.getInt("total");
+            }
+
+            resultado.close();
+
+            datos[0][0] = "PLACA";
+            datos[0][1] = "URL";
+
+            datos = new String[cantidad+1][16];
+
+            if(cantidad == 0){
+                return datos;
+            }            
+
+            resultado = state.executeQuery(consultar);
+
+            while(resultado.next()){
+
+                datos[i][0] = resultado.getString("veh_placa");
+                datos[i][1] = resultado.getString("doc_link");
+
+                i++;
+            }
+            
+        }catch(SQLException ex){
+            throw ex;
+        }finally{
+            resultado.close();
+            state.close();
+        }
+
+        return datos;
+
     }
     
 }

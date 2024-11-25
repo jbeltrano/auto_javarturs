@@ -57,7 +57,7 @@ public class Actualizar_peronas extends Insertar_persona{
         boton_guardar.setText("Guardar");
         jPanel1.add(boton_guardar);
         boton_guardar.setBounds(17, 250, 100, 23);
-        boton_guardar.addActionListener(accion ->{
+        boton_guardar.addActionListener(_ ->{
             boolean band = true;
             String mostrar = "Los campos:\n";
             int tipo_documento,ciudad;

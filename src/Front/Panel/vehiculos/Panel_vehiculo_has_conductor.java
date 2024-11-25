@@ -65,7 +65,7 @@ public class Panel_vehiculo_has_conductor extends Panel{
     @Override
     protected void config_listener_pop_menu() {
         
-        item_adicionar.addActionListener(accion ->{
+        item_adicionar.addActionListener(_ ->{
             // Cuando se adicione un valor, simplemente se llama al metodo que se encarga de la insercion
             new Insertar_vehiculo_conductor((JFrame)window, url, "");
             
@@ -73,7 +73,7 @@ public class Panel_vehiculo_has_conductor extends Panel{
             accion_text_busqueda();
         });
         
-        item_eliminar.addActionListener(accion ->{
+        item_eliminar.addActionListener(_ ->{
             
             /**
              * Cuando se vaya a eliminar, simplemente se selecciona la fila a aliminar

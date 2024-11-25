@@ -194,7 +194,7 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
         boton_guardar.setText("Guardar");
         jPanel1.add(boton_guardar);
         boton_guardar.setBounds(20, 230, 100, 23);
-        boton_guardar.addActionListener(accion ->{
+        boton_guardar.addActionListener(_ ->{
             boolean band = true;
             String enunciado = "Los campos:\n\n";
             if(text_placa.getText().compareTo("") == 0){

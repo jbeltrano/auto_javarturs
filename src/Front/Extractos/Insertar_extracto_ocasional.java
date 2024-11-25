@@ -190,7 +190,7 @@ public class Insertar_extracto_ocasional extends Modal_documento{
         panel.add(scroll_contrato);
 
         boton_guardar.setBounds(POS_X, scroll_vehiculo.getHeight() + scroll_vehiculo.getY() + 40, 100, HEIGHT);
-        boton_guardar.addActionListener(accion ->{
+        boton_guardar.addActionListener(_ ->{
 
             if(guardar_extracto_ocasional()){
                 setVisible(false);
@@ -200,7 +200,7 @@ public class Insertar_extracto_ocasional extends Modal_documento{
         panel.add(boton_guardar);
 
         boton_guardar_exportar.setBounds(boton_guardar.getX() + boton_guardar.getWidth() + 20, boton_guardar.getY(), 150, HEIGHT);
-        boton_guardar_exportar.addActionListener(accion ->{
+        boton_guardar_exportar.addActionListener(_ ->{
 
             String[] opciones = {"Sí", "No"};
             int band = JOptionPane.showOptionDialog(null, 

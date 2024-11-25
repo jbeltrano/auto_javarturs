@@ -65,14 +65,14 @@ public class Panel_documentos_vehiculos extends Panel{
     @Override
     protected void config_listener_pop_menu() {
         
-        item_adicionar.addActionListener(accion ->{
+        item_adicionar.addActionListener(_ ->{
             Insertar_documento_vehiculo doc_vehiculo = new Insertar_documento_vehiculo((JFrame)window, url, "");
             doc_vehiculo.setVisible(true);
 
             accion_text_busqueda();
         });
         
-        item_actualizar.addActionListener(accion ->{
+        item_actualizar.addActionListener(_ ->{
             int number = tabla.getSelectedRow();
             String placa_vehiculo = "" + tabla.getValueAt(number, 0);
             Actualizar_documento_vehiculo doc_vehiculo = new Actualizar_documento_vehiculo((JFrame)window, url, placa_vehiculo);
@@ -80,7 +80,7 @@ public class Panel_documentos_vehiculos extends Panel{
 
             accion_text_busqueda();
         });
-        item_eliminar.addActionListener(accion ->{
+        item_eliminar.addActionListener(_ ->{
             
             int number = tabla.getSelectedRow();
             String placa_vehiculo = "" + tabla.getValueAt(number, 0);

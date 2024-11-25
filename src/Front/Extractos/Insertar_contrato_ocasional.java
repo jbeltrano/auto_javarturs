@@ -314,7 +314,7 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         boton_guardar.setText("Guardar");
         jPanel1.add(boton_guardar);
         boton_guardar.setBounds(20, 450, 100, 23);
-        boton_guardar.addActionListener(accion ->{
+        boton_guardar.addActionListener(_ ->{
             guardar();
 
         });

@@ -29,6 +29,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -38,39 +40,16 @@ import java.util.LinkedList;
 
 public class Principal extends JFrame{
     
-    private String url;
-    private JPanel panel_principal;
+    private final String url;
     private JPanel panel_secundario;
     private JPanel panel_principal2;
     private JPanel panel_informacion;
     private JPanel pan;
-    private JMenu menu_1;
-    private JMenu menu_2;
-    private JMenu menu_3;
-    private JMenu menu_4;
-    private JMenu menu_5;
     private JMenuBar barra_menu;
-    private ImageIcon imagen1;
-    private ImageIcon icono;
-    private JLabel limagen1;
-    private JButton base_vehiculos;
-    private JButton base_empleados;
-    private JButton tipo_vehiculo;
-    private JButton vehiculos;
-    private JButton conductores;
-    private JButton documentos_vehiculos;
-    private JButton vehiculos_externos;
-    private JButton boton_conductores;
-    private JButton boton_personas;
-    private JButton boton_ciudad;
-    private JButton boton_Departamento;
-    private JButton boton_ruta;
-    private JButton boton_extractos_ocasionales; 
+    private JLabel label_imagen;
     private JButton boton_extractos_mensuales;
-    private JButton boton_contratos_mensuales;
-    private JButton boton_contratos_ocasionales;
-    private JButton boton_contratante;
-    /** 
+
+    /**
      * Este es el constructor general para la clase Principal
      * se encarga de iniciar la gran mayoria de componentes y el JFrame como tal
      * @see JFrame
@@ -80,15 +59,15 @@ public class Principal extends JFrame{
         this.url = url;
 
 
-        FlatLightLaf.setup();
-        // try{
-        //    UIManager.setLookAndFeel(new FlatLightLaf());
-        //    //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        //FlatLightLaf.setup();
+        try{
+           UIManager.setLookAndFeel(new FlatLightLaf());
+           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 
 
-        // }catch(Exception ex){
-        //    System.out.println(ex);
-        // }
+        }catch(Exception ex){
+           System.out.println(ex);
+        }
 
         setPreferredSize(new Dimension(1200,700));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -114,14 +93,14 @@ public class Principal extends JFrame{
         // Carga los comandos necesarios
 
         // Carga de icono
-        icono = new ImageIcon("src\\Front\\Recursos\\Logo javarturs.jpg");
+        ImageIcon icono = new ImageIcon("src\\Front\\Recursos\\Logo javarturs.jpg");
         this.setIconImage(icono.getImage());
         // Carga de imagen principal
-        imagen1 = new ImageIcon("src\\Front\\Recursos\\imagen_principal.png");
-        limagen1 = new JLabel(imagen1);
+        ImageIcon imagen1 = new ImageIcon("src\\Front\\Recursos\\imagen_principal.png");
+        label_imagen = new JLabel(imagen1);
 
         // Inicializacion de los componentes a utilizar
-        panel_principal = new JPanel(new BorderLayout());
+        JPanel panel_principal = new JPanel(new BorderLayout());
         barra_menu = new JMenuBar();
         panel_secundario = new JPanel(null);
         panel_principal2 = new JPanel();
@@ -171,11 +150,11 @@ public class Principal extends JFrame{
         String link_ssocial_aportes_en_linea = cola.poll();
 
         // Configuracion de los diferentes componentes
-        menu_1 = new JMenu("Ayuda");
-        menu_2 = new JMenu("Inicio");
-        menu_3 = new JMenu("Runt");
-        menu_4 = new JMenu("Portafoleo");
-        menu_5 = new JMenu("Seg. Social");
+        JMenu menu_1 = new JMenu("Ayuda");
+        JMenu menu_2 = new JMenu("Inicio");
+        JMenu menu_3 = new JMenu("Runt");
+        JMenu menu_4 = new JMenu("Portafoleo");
+        JMenu menu_5 = new JMenu("Seg. Social");
 
         // Creacion de variables necesarias para el menu
         // Para ayuda
@@ -184,7 +163,7 @@ public class Principal extends JFrame{
 
         // Para inicio
         JMenuItem inicio = new JMenuItem("Inicio");
-        inicio.addActionListener(accion ->{
+        inicio.addActionListener(_ ->{
             configuracion_panel_pricipal2();
         });
 
@@ -194,9 +173,10 @@ public class Principal extends JFrame{
          */
 
         JMenuItem pag_principal = new JMenuItem("Pagina principal");
-        pag_principal.addActionListener(accion ->{
+        pag_principal.addActionListener(_ ->{
             try{
-                
+
+                assert link_runt_principal != null;
                 Desktop.getDesktop().browse(new URI(link_runt_principal));
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
@@ -204,8 +184,9 @@ public class Principal extends JFrame{
             
         });
         JMenuItem pag_vehiculos = new JMenuItem("Vehiculos");
-        pag_vehiculos.addActionListener(accion ->{
+        pag_vehiculos.addActionListener(_ ->{
             try{
+                assert link_runt_vehiculo != null;
                 Desktop.getDesktop().browse(new URI(link_runt_vehiculo));
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
@@ -213,8 +194,9 @@ public class Principal extends JFrame{
             
         });
         JMenuItem pag_personas = new JMenuItem("Personas");
-        pag_personas.addActionListener(accon ->{
+        pag_personas.addActionListener(_ ->{
             try{
+                assert link_runt_persona != null;
                 Desktop.getDesktop().browse(new URI(link_runt_persona));
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
@@ -222,9 +204,10 @@ public class Principal extends JFrame{
         });
 
         JMenuItem pag_pagos = new JMenuItem("Pagos CUPL");
-        pag_pagos.addActionListener(accion ->{
+        pag_pagos.addActionListener(_ ->{
             try{
 
+                assert link_runt_pagos != null;
                 Desktop.getDesktop().browse(new URI(link_runt_pagos));
 
             }catch(Exception e){
@@ -233,9 +216,10 @@ public class Principal extends JFrame{
         });
 
         JMenuItem pag_liquidacion_web = new JMenuItem("LIQ. Web");
-        pag_liquidacion_web.addActionListener(accion ->{
+        pag_liquidacion_web.addActionListener(_ ->{
             try{
 
+                assert link_runt_liquidacion != null;
                 Desktop.getDesktop().browse(new URI(link_runt_liquidacion));
 
             }catch(Exception e){
@@ -245,7 +229,7 @@ public class Principal extends JFrame{
         
         // Para portafoleo
         JMenuItem pag_portafoleo = new JMenuItem("Portafoleo");
-        pag_portafoleo.addActionListener(accion ->{
+        pag_portafoleo.addActionListener(_ ->{
             try{
                 Desktop.getDesktop().browse(new URI(link_porta));
             }catch(Exception e){
@@ -254,8 +238,9 @@ public class Principal extends JFrame{
         });
         
         JMenuItem fosyga = new JMenuItem("Fosyga");
-        fosyga.addActionListener(accion ->{
+        fosyga.addActionListener(_ ->{
             try{
+                assert link_ssocial_fosyga != null;
                 Desktop.getDesktop().browse(new URI(link_ssocial_fosyga));
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
@@ -263,9 +248,10 @@ public class Principal extends JFrame{
         });
 
         JMenuItem aportes_en_linea = new JMenuItem("Apt. en linea");
-        aportes_en_linea.addActionListener(accion ->{
+        aportes_en_linea.addActionListener(_ ->{
 
             try{
+                assert link_ssocial_aportes_en_linea != null;
                 Desktop.getDesktop().browse(new URI(link_ssocial_aportes_en_linea));
             }catch(Exception e){
                 JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
@@ -307,38 +293,38 @@ public class Principal extends JFrame{
         panel_secundario.setBackground(new Color(28, 96, 6));
         panel_secundario.setPreferredSize(new Dimension(120,this.getHeight()));
 
-        // Creaccion de componentes y configuracion de los mismos
+        // Cre_ de componentes y configuracion de los mismos
         base_ciudad.setText("Ciudades");
         base_ciudad.setBounds(10,10,100,20);
-        base_ciudad.addActionListener(accion ->{
+        base_ciudad.addActionListener(_ ->{
             configuracion_ciudad();
         });
 
-        base_vehiculos = new JButton("Vehiculos");
+        JButton base_vehiculos = new JButton("Vehiculos");
         base_vehiculos.setBounds(10,40,100,20);
         
-        base_vehiculos.addActionListener(accion ->{
+        base_vehiculos.addActionListener(_ ->{
             configuracion_vehiculos();
         });
 
-        base_empleados = new JButton("Empleados");
+        JButton base_empleados = new JButton("Empleados");
         base_empleados.setBounds(10,70,100,20);
 
-        base_empleados.addActionListener(accion ->{
+        base_empleados.addActionListener(_ ->{
             configuracion_empleados();
         });
 
         base_personas.setText("Personas");
         base_personas.setBounds(10,100,100,20);
 
-        base_personas.addActionListener(accion ->{
+        base_personas.addActionListener(_ ->{
             configuracion_personas();
         });
 
         extractos.setText("Extractos");
         extractos.setBounds(10,130,100,20);
 
-        extractos.addActionListener(accion ->{
+        extractos.addActionListener(_ ->{
             configuracion_extractos();
             boton_extractos_mensuales.doClick();
         });
@@ -361,7 +347,7 @@ public class Principal extends JFrame{
         // configuracion del panel central
         panel_principal2.setLayout(new BorderLayout());
         panel_principal2.removeAll();
-        panel_principal2.add(limagen1,BorderLayout.CENTER);
+        panel_principal2.add(label_imagen,BorderLayout.CENTER);
         panel_principal2.revalidate();
         panel_principal2.repaint();
 
@@ -379,13 +365,13 @@ public class Principal extends JFrame{
         // Creacion de componentes auxiliares
         JPanel panel_izq = new JPanel(null); 
         JLabel label_principal = new JLabel("Configuracion Ciudades y Departamentos");
-        boton_ciudad = new JButton("Ciudades");
-        boton_Departamento = new JButton("Departamentos");
-        boton_ruta = new JButton("Rutas");
+        JButton boton_ciudad = new JButton("Ciudades");
+        JButton boton_Departamento = new JButton("Departamentos");
+        JButton boton_ruta = new JButton("Rutas");
 
         // Configuracion componentes
         boton_ciudad.setBounds(10, 10, 120, 20);
-        boton_ciudad.addActionListener(accion ->{
+        boton_ciudad.addActionListener(_ ->{
             panel_principal2.remove(panel_informacion);
 
             panel_informacion = new Panel_ciudad(url);
@@ -399,7 +385,7 @@ public class Principal extends JFrame{
         boton_ciudad.doClick();
 
         boton_Departamento.setBounds(10, 40, 120, 20);
-        boton_Departamento.addActionListener(accion ->{
+        boton_Departamento.addActionListener(_ ->{
 
             panel_principal2.remove(panel_informacion);
 
@@ -413,7 +399,7 @@ public class Principal extends JFrame{
         });
 
         boton_ruta.setBounds(10, 70, 120, 20);
-        boton_ruta.addActionListener(accion ->{
+        boton_ruta.addActionListener(_ ->{
 
             panel_principal2.remove(panel_informacion);
 
@@ -459,16 +445,16 @@ public class Principal extends JFrame{
         panel_principal2.add(panel_izq,BorderLayout.WEST);
         panel_principal2.add(panel_informacion, BorderLayout.CENTER);
         panel_principal2.add(pan,BorderLayout.EAST);
-        
-        tipo_vehiculo = new JButton("Tipo Vehiculo");
-        vehiculos = new JButton("Vehiculos");
-        conductores = new JButton("Cond Vehiculos");
-        documentos_vehiculos = new JButton("Doc Vehiculos");
-        vehiculos_externos = new JButton("Veh Externos");
+
+        JButton tipo_vehiculo = new JButton("Tipo Vehiculo");
+        JButton vehiculos = new JButton("Vehiculos");
+        JButton conductores = new JButton("Cond Vehiculos");
+        JButton documentos_vehiculos = new JButton("Doc Vehiculos");
+        JButton vehiculos_externos = new JButton("Veh Externos");
 
         // configuracion de botones panel izquierdo
         tipo_vehiculo.setBounds(10, 10, 120, 20);
-        tipo_vehiculo.addActionListener(accion ->{
+        tipo_vehiculo.addActionListener(_ ->{
             
             panel_principal2.remove(panel_informacion);
 
@@ -483,7 +469,7 @@ public class Principal extends JFrame{
 
         // Configuracion botones
         vehiculos.setBounds(10,40,120,20);
-        vehiculos.addActionListener(accoin->{
+        vehiculos.addActionListener(_->{
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
             panel_informacion = new Panel_vehiculos(url);
@@ -495,7 +481,7 @@ public class Principal extends JFrame{
         });
         vehiculos.doClick();
         conductores.setBounds(10,70,120,20);
-        conductores.addActionListener(accion ->{
+        conductores.addActionListener(_ ->{
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
             panel_informacion = new Panel_vehiculo_has_conductor(url);
@@ -506,7 +492,7 @@ public class Principal extends JFrame{
         });
 
         documentos_vehiculos.setBounds(10,100, 120, 20);
-        documentos_vehiculos.addActionListener(accion ->{
+        documentos_vehiculos.addActionListener(_ ->{
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
             panel_informacion = new Panel_documentos_vehiculos(url);
@@ -518,7 +504,7 @@ public class Principal extends JFrame{
         });
 
         vehiculos_externos.setBounds(10,130, 120, 20);
-        vehiculos_externos.addActionListener(accion ->{
+        vehiculos_externos.addActionListener(_ ->{
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
             //panel_informacion = ver_vehiculos_externos();
@@ -566,13 +552,13 @@ public class Principal extends JFrame{
         // Cracion de componentes
         JLabel label_principal = new JLabel("Configuracion Personas");
         JPanel panel_izq = new JPanel(null);
-        
-        boton_personas = new JButton("Personas");
-        boton_conductores = new JButton("Conductores");
+
+        JButton boton_personas = new JButton("Personas");
+        JButton boton_conductores = new JButton("Conductores");
 
         // configuracion de botones panel izquierdo
         boton_personas.setBounds(10, 10, 120, 20);
-        boton_personas.addActionListener(accion ->{
+        boton_personas.addActionListener(_ ->{
             
             panel_principal2.remove(panel_informacion);
 
@@ -588,7 +574,7 @@ public class Principal extends JFrame{
 
         // Configuracion botones
         boton_conductores.setBounds(10,40,120,20);
-        boton_conductores.addActionListener(accoin->{
+        boton_conductores.addActionListener(_->{
             panel_principal2.remove(panel_informacion);
             
             panel_informacion = new Panel_conductores(url);
@@ -629,14 +615,14 @@ public class Principal extends JFrame{
         JPanel panel_izq = new JPanel(null); 
         JLabel label_principal = new JLabel("Configuración Extractos");
         boton_extractos_mensuales = new JButton("Mensuales");
-        boton_extractos_ocasionales = new JButton("Ocasionales");
-        boton_contratos_mensuales = new JButton("C. Mensuales");
-        boton_contratos_ocasionales = new JButton("C. Ocasionales");
-        boton_contratante = new JButton("Contratante");
+        JButton boton_extractos_ocasionales = new JButton("Ocasionales");
+        JButton boton_contratos_mensuales = new JButton("C. Mensuales");
+        JButton boton_contratos_ocasionales = new JButton("C. Ocasionales");
+        JButton boton_contratante = new JButton("Contratante");
 
         // Configuracion componentes
         boton_extractos_mensuales.setBounds(10,10,120,20);
-        boton_extractos_mensuales.addActionListener(accion ->{
+        boton_extractos_mensuales.addActionListener(_ ->{
 
             panel_principal2.remove(panel_informacion);
             if(panel_principal2.getComponentCount() > 2){
@@ -653,7 +639,7 @@ public class Principal extends JFrame{
         
 
         boton_extractos_ocasionales.setBounds(10,40,120,20);
-        boton_extractos_ocasionales.addActionListener(accion ->{
+        boton_extractos_ocasionales.addActionListener(_ ->{
 
             panel_principal2.remove(panel_informacion);
             if(panel_principal2.getComponentCount() > 2){
@@ -668,7 +654,7 @@ public class Principal extends JFrame{
         });
 
         boton_contratos_mensuales.setBounds(10, boton_extractos_ocasionales.getY() + boton_extractos_ocasionales.getHeight() + 10, 120, 20);
-        boton_contratos_mensuales.addActionListener(accion ->{
+        boton_contratos_mensuales.addActionListener(_ ->{
             panel_principal2.remove(panel_informacion);
             if(panel_principal2.getComponentCount() > 2){
                 panel_principal2.remove(pan);
@@ -683,7 +669,7 @@ public class Principal extends JFrame{
         });
 
         boton_contratos_ocasionales.setBounds(10, boton_contratos_mensuales.getY() + boton_contratos_mensuales.getHeight() + 10 ,120, 20);
-        boton_contratos_ocasionales.addActionListener(accion ->{
+        boton_contratos_ocasionales.addActionListener(_ ->{
             panel_principal2.remove(panel_informacion);
             if(panel_principal2.getComponentCount() > 2){
                 panel_principal2.remove(pan);
@@ -697,7 +683,7 @@ public class Principal extends JFrame{
         });
 
         boton_contratante.setBounds(10, boton_contratos_ocasionales.getY() + boton_contratos_ocasionales.getHeight() + 10 ,120, 20);
-        boton_contratante.addActionListener(accion ->{
+        boton_contratante.addActionListener(_ ->{
 
             panel_principal2.remove(panel_informacion);
             if(panel_principal2.getComponentCount() > 2){
@@ -716,7 +702,7 @@ public class Principal extends JFrame{
         label_principal.setFont(new Font("britannic bold", Font.BOLD, 20));
         label_principal.setHorizontalAlignment(JLabel.CENTER);
 
-        // Configuracion del panel_izq
+        // configuracion panel izq
         panel_izq.setPreferredSize(new Dimension(140,panel_principal2.getHeight()));
         panel_izq.setBackground(new Color(52, 135, 25));
         panel_izq.add(boton_extractos_mensuales);

@@ -68,7 +68,7 @@ public class Actualizar_conductor extends Insertar_conductor{
         boton_guardar = new JButton("Guardar");
         jPanel1.add(boton_guardar);
         boton_guardar.setBounds(pos_boton_guardar);
-        boton_guardar.addActionListener(accion ->{
+        boton_guardar.addActionListener(_ ->{
             
             if(text_documento.getText().compareTo("") == 0){
                 JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios", "Error", JOptionPane.ERROR_MESSAGE);
