@@ -391,12 +391,7 @@ create table consecutivo_extracto_ocasional(
     con_placa text primary key,
     con_numero integer not null);
 
-create table documentos_vehiculo (
-    veh_placa text primary key,
-    doc_link text,
-    
-    foreign key (veh_placa) references vehiculo(veh_placa)
-);
+
 
 -- Seccion de las vistas de las diferentes tablas
 create view vw_vehiculo as 

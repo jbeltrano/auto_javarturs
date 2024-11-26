@@ -29,14 +29,13 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
-
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.util.LinkedList;
+
 
 public class Principal extends JFrame{
     
@@ -59,15 +58,15 @@ public class Principal extends JFrame{
         this.url = url;
 
 
-        //FlatLightLaf.setup();
-        try{
-           UIManager.setLookAndFeel(new FlatLightLaf());
-           //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        FlatLightLaf.setup();
+        // try{
+        //     UIManager.setLookAndFeel(new FlatLightLaf());
+        //     //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 
 
-        }catch(Exception ex){
-           System.out.println(ex);
-        }
+        //     }catch(Exception ex){
+        //       System.out.println(ex);
+        // }
 
         setPreferredSize(new Dimension(1200,700));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

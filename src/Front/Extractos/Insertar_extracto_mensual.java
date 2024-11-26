@@ -522,7 +522,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
     private void set_tabla_destino(){
         String datos[][] = null;
                 
-        base = new Base(url);
+        base = new Ciudad(url);
         try{
             datos = ((Ciudad)base).consultar_ciudades(text_destino.getText());
             JTable tabla_aux = Modelo_tabla.set_tabla_ciudad(datos);
