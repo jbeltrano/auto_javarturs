@@ -3,6 +3,12 @@ package Base;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
 
 public class Extractos extends Base{
     
@@ -162,11 +168,15 @@ public class Extractos extends Base{
         PreparedStatement pstate2;
         PreparedStatement pstate3;
         ResultSet resultado2;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
+        String fecha_resultado;
+        LocalDate date1;
+        LocalDate date2;
 
         consultar = "select * from extracto_mensual";
         consultar_consecutivo = "select con_numero from consecutivo_extracto_mensual where con_placa = ?";
         actualizar_consecutivo = "update consecutivo_extracto_mensual set con_numero = ?+1 where con_placa = ?";
-        actualizar = "update extracto_mensual set ext_consecutivo = ? + 1, ext_fecha_inicial = ?, ext_fecha_final = ? where veh_placa = ? and ext_consecutivo = ? and ext_fecha_final >= ?";
+        actualizar = "update extracto_mensual set ext_consecutivo = ? + 1, ext_fecha_inicial = ?, ext_fecha_final = ? where veh_placa = ? and ext_consecutivo = ?";
         
         state = coneccion.createStatement();
         pstate = coneccion.prepareStatement(actualizar);
@@ -178,6 +188,22 @@ public class Extractos extends Base{
         try{
             
             while (resultado.next()) {
+                // Verifica que las fechas sean correctas
+                fecha_resultado = resultado.getString(5);
+
+                try {
+                    // Convertir las cadenas a LocalDate
+                    date1 = LocalDate.parse(fecha_resultado, formatter);
+                    date2 = LocalDate.parse(fecha_final, formatter);
+        
+                    // Comparar las fechas
+                    if (date1.isAfter(date2)) {
+                        continue;
+                    }
+                } catch (DateTimeParseException e) {
+                    System.out.println("Formato de fecha inválido: " + e.getMessage());
+                }
+
                 // se consulta la placa del extracto a evaluar y el consecutivo a actualizar
                 placa = resultado.getString(1);
                 consecutivo_antes = resultado.getInt(2);
@@ -198,7 +224,6 @@ public class Extractos extends Base{
                     pstate.setString(3, fecha_final);
                     pstate.setString(4, placa);
                     pstate.setInt(5, consecutivo_antes);
-                    pstate.setString(6, fecha_final);
     
                     // se actualiza el consecutivo de los extractos mensuales para el vehiculo
                     pstate3.setInt(1, consecutivo_despues);
