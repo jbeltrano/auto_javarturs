@@ -166,7 +166,7 @@ public class Extractos extends Base{
         consultar = "select * from extracto_mensual";
         consultar_consecutivo = "select con_numero from consecutivo_extracto_mensual where con_placa = ?";
         actualizar_consecutivo = "update consecutivo_extracto_mensual set con_numero = ?+1 where con_placa = ?";
-        actualizar = "update extracto_mensual set ext_consecutivo = ? + 1, ext_fecha_inicial = ?, ext_fecha_final = ? where veh_placa = ? and ext_consecutivo = ?";
+        actualizar = "update extracto_mensual set ext_consecutivo = ? + 1, ext_fecha_inicial = ?, ext_fecha_final = ? where veh_placa = ? and ext_consecutivo = ? and ext_fecha_final >= ?";
         
         state = coneccion.createStatement();
         pstate = coneccion.prepareStatement(actualizar);
@@ -198,6 +198,7 @@ public class Extractos extends Base{
                     pstate.setString(3, fecha_final);
                     pstate.setString(4, placa);
                     pstate.setInt(5, consecutivo_antes);
+                    pstate.setString(6, fecha_final);
     
                     // se actualiza el consecutivo de los extractos mensuales para el vehiculo
                     pstate3.setInt(1, consecutivo_despues);

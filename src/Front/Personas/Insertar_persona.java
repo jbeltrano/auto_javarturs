@@ -156,18 +156,18 @@ public class Insertar_persona extends Modales_personas{
         jLabel6.setBounds(17, 124, 54, 16);
         combo_municipio.setMaximumRowCount(5);
         combo_municipio.setSelectedItem("Acacias");
-        //combo_municipio.setPrototypeDisplayValue("Ejemplo ");    // Se utiliza para que el tamaño no cambie
+        //combo_municipio.setPrototypeDisplayValue("Ejemplo de acacias");    // Se utiliza para que el tamaño no cambie
         
         jPanel1.add(combo_municipio);
-        combo_municipio.setBounds(17, 146, 124, 22);
+        combo_municipio.setBounds(17, 146, 160, 22);
 
         jLabel7.setText("Direccion");
         jPanel1.add(jLabel7);
-        jLabel7.setBounds(168, 124, 100, 16);
+        jLabel7.setBounds(220, 124, 100, 16);
 
         text_direccion.setText("");
         jPanel1.add(text_direccion);
-        text_direccion.setBounds(168, 146, 226, 22);
+        text_direccion.setBounds(jLabel7.getX(), 146, 226, 22);
 
         label_correo.setText("Correo Electronico");
         label_correo.setBounds(17,186,120,20);
