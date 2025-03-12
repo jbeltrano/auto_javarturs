@@ -34,6 +34,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 
@@ -47,6 +49,8 @@ public class Principal extends JFrame{
     private JMenuBar barra_menu;
     private JLabel label_imagen;
     private JButton boton_extractos_mensuales;
+    private HashMap<String, String[]> read_links;
+    private HashSet<String> id_links;
 
     /**
      * Este es el constructor general para la clase Principal
@@ -56,7 +60,7 @@ public class Principal extends JFrame{
     public Principal(String url){
         super("Javarturs");
         this.url = url;
-
+        
 
         FlatLightLaf.setup();
         // try{
@@ -91,6 +95,11 @@ public class Principal extends JFrame{
     private void iniciar_componentes(){
         // Carga los comandos necesarios
 
+        
+
+        
+        
+
         // Carga de icono
         ImageIcon icono = new ImageIcon("src\\Front\\Recursos\\Logo javarturs.jpg");
         this.setIconImage(icono.getImage());
@@ -103,12 +112,17 @@ public class Principal extends JFrame{
         barra_menu = new JMenuBar();
         panel_secundario = new JPanel(null);
         panel_principal2 = new JPanel();
+        
         // Configuraicon de los diferentes componentes
         try{
-
+            read_links = Leer_link.get_links();
+            id_links = Leer_link.get_set();
             configuracion_barra_menu();
 
         }catch(IOException ex){
+            read_links = new HashMap<>();
+            id_links = new HashSet<>();
+            
             JOptionPane.showMessageDialog(this, "Error al cargar archivos importantes\n Error 5", "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }
