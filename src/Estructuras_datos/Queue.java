@@ -65,16 +65,5 @@ public class Queue<T>{
         size--;
         return data;
     }
-
-    // public String toString(){
-    //     String valor = "";
-    //     Nodo<T> dato = head;
-
-    //     while(dato != null){
-    //         valor += dato.dato.toString() + " ,";
-    //         dato = head.next;
-    //     }
-
-    //     return valor;
-    // }
+    
 }

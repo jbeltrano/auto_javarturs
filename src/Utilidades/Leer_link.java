@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.HashMap;
 import java.util.LinkedList;
+import Estructuras_datos.Queue;
 import java.util.HashSet;
 
 public class Leer_link {
@@ -32,10 +33,11 @@ public class Leer_link {
      * @return
      * @throws IOException
      */
-    public static HashMap<String, String[]> get_links() throws IOException{
+    public static HashMap<String, Queue<String[]>> get_links() throws IOException{
 
-        HashMap<String,String[]> map = new HashMap<>();
+        HashMap<String,Queue<String[]>> map = new HashMap<>();
         Scanner leer = null;
+        Queue<String[]> cola = new Queue<>();
         set = new HashSet<>();
 
         
@@ -43,12 +45,15 @@ public class Leer_link {
             leer = new Scanner(new File("src\\config\\links.csv"));
 
             String identificador;
-            String complemento[] = new String[2];
+            String complemento[] = null;
             String aux;
             String div[];
 
             while(leer.hasNextLine()){
                 
+                // Crea un nuevo objeto par almacenar la informacion
+                complemento = new String[2];
+
                 // Lee la siguiente linea del archivo
                 aux = leer.nextLine();
                 
@@ -61,7 +66,16 @@ public class Leer_link {
                 complemento[1] = div[2];
                 
                 
-                map.put(identificador, complemento);    // Guarda los datos con el identificador y el complemento
+
+                if(map.containsKey(identificador)){
+                    cola.enqueue(complemento);
+                    map.replace(identificador, cola);
+                }else{
+                    cola = new Queue<>();
+                    cola.enqueue(complemento);
+                    map.put(identificador, cola);
+                }
+                
                 set.add(identificador); // Guarda el identificador
 
             }

@@ -1,7 +1,6 @@
 package Ejecucion;
 
 import java.io.IOException;
-
 import javax.swing.SwingUtilities;
 import Front.Principal;
 
@@ -14,6 +13,6 @@ public class Main {
                 new Principal("src\\DB\\base.db");
             }
         });
-        
+
     }
 }

@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
+import Estructuras_datos.Queue;
 
 
 public class Principal extends JFrame{
@@ -49,7 +49,7 @@ public class Principal extends JFrame{
     private JMenuBar barra_menu;
     private JLabel label_imagen;
     private JButton boton_extractos_mensuales;
-    private HashMap<String, String[]> read_links;
+    private HashMap<String, Queue<String[]>> read_links;
     private HashSet<String> id_links;
 
     /**
@@ -148,26 +148,11 @@ public class Principal extends JFrame{
      * @see JMenuItem
      */
     private void configuracion_barra_menu()throws IOException{
-        // varibalesd especiales
-        LinkedList<String> cola = Leer_link.get_runt();
-        String link_porta = Leer_link.get_portafoleo();
-        String link_runt_principal = cola.poll();
-        String link_runt_vehiculo = cola.poll();
-        String link_runt_persona = cola.poll();
-        String link_runt_liquidacion = cola.poll();
-        String link_runt_pagos = cola.poll();
-        cola.clear();
-
-        cola = Leer_link.get_seguridad_social();
-        String link_ssocial_fosyga = cola.poll();
-        String link_ssocial_aportes_en_linea = cola.poll();
 
         // Configuracion de los diferentes componentes
         JMenu menu_1 = new JMenu("Ayuda");
         JMenu menu_2 = new JMenu("Inicio");
-        JMenu menu_3 = new JMenu("Runt");
-        JMenu menu_4 = new JMenu("Portafoleo");
-        JMenu menu_5 = new JMenu("Seg. Social");
+
 
         // Creacion de variables necesarias para el menu
         // Para ayuda
@@ -180,121 +165,47 @@ public class Principal extends JFrame{
             configuracion_panel_pricipal2();
         });
 
-        // Para Runt
-        /* Para todos estos elementos lo que se esta haciendo es redirigir a un pagina web.
-         * Sin embargo el navegador se abre el que tiene el sistema operativo por defecto
-         */
 
-        JMenuItem pag_principal = new JMenuItem("Pagina principal");
-        pag_principal.addActionListener(_ ->{
-            try{
-
-                assert link_runt_principal != null;
-                Desktop.getDesktop().browse(new URI(link_runt_principal));
-            }catch(Exception e){
-                JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
-            }
-            
-        });
-        JMenuItem pag_vehiculos = new JMenuItem("Vehiculos");
-        pag_vehiculos.addActionListener(_ ->{
-            try{
-                assert link_runt_vehiculo != null;
-                Desktop.getDesktop().browse(new URI(link_runt_vehiculo));
-            }catch(Exception e){
-                JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
-            }
-            
-        });
-        JMenuItem pag_personas = new JMenuItem("Personas");
-        pag_personas.addActionListener(_ ->{
-            try{
-                assert link_runt_persona != null;
-                Desktop.getDesktop().browse(new URI(link_runt_persona));
-            }catch(Exception e){
-                JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        JMenuItem pag_pagos = new JMenuItem("Pagos CUPL");
-        pag_pagos.addActionListener(_ ->{
-            try{
-
-                assert link_runt_pagos != null;
-                Desktop.getDesktop().browse(new URI(link_runt_pagos));
-
-            }catch(Exception e){
-                JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0", "Error",JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        JMenuItem pag_liquidacion_web = new JMenuItem("LIQ. Web");
-        pag_liquidacion_web.addActionListener(_ ->{
-            try{
-
-                assert link_runt_liquidacion != null;
-                Desktop.getDesktop().browse(new URI(link_runt_liquidacion));
-
-            }catch(Exception e){
-                JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
-            }
-        });
-        
-        // Para portafoleo
-        JMenuItem pag_portafoleo = new JMenuItem("Portafoleo");
-        pag_portafoleo.addActionListener(_ ->{
-            try{
-                Desktop.getDesktop().browse(new URI(link_porta));
-            }catch(Exception e){
-                JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
-            }
-        });
-        
-        JMenuItem fosyga = new JMenuItem("Fosyga");
-        fosyga.addActionListener(_ ->{
-            try{
-                assert link_ssocial_fosyga != null;
-                Desktop.getDesktop().browse(new URI(link_ssocial_fosyga));
-            }catch(Exception e){
-                JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        JMenuItem aportes_en_linea = new JMenuItem("Apt. en linea");
-        aportes_en_linea.addActionListener(_ ->{
-
-            try{
-                assert link_ssocial_aportes_en_linea != null;
-                Desktop.getDesktop().browse(new URI(link_ssocial_aportes_en_linea));
-            }catch(Exception e){
-                JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
-            }
-
-        });
-        
 
         // Adicionamiento
         menu_1.add(documentacion);
         menu_1.add(contacto);
-
         menu_2.add(inicio);
 
-        menu_3.add(pag_principal);
-        menu_3.add(pag_vehiculos);
-        menu_3.add(pag_personas);
-        menu_3.add(pag_liquidacion_web);
-        menu_3.add(pag_pagos);
-
-        menu_4.add(pag_portafoleo);
-
-        menu_5.add(fosyga);
-        menu_5.add(aportes_en_linea);
 
         barra_menu.add(menu_2);
         barra_menu.add(menu_1);
-        barra_menu.add(menu_3);
-        barra_menu.add(menu_4);
-        barra_menu.add(menu_5);
+        for(String id: id_links){
+            barra_menu.add(extraer_menu(id, read_links.get(id)));
+        }
+    }
+
+
+    private JMenu extraer_menu(String identificador, Queue<String[]> cola){
+
+        JMenu menu = new JMenu(identificador);
+        JMenuItem item = null;
+
+        while(!cola.isEmpty()){
+            String aux[] = cola.dequeue();
+
+            item = new JMenuItem(aux[0]);
+            item.addActionListener(_ ->{
+
+                try{
+                    assert aux[1] != null;
+                    Desktop.getDesktop().browse(new URI(aux[1]));
+                }catch(Exception e){
+                    JOptionPane.showMessageDialog(this, "No fue posible abrir el navegador\nError 0","Error",JOptionPane.ERROR_MESSAGE);
+                }
+    
+            });
+
+            menu.add(item);
+        }
+
+
+        return menu; 
     }
 
     private void configuracion_panel_secundario(){
