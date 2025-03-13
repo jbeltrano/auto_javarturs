@@ -21,6 +21,8 @@ public class Leer_rutas {
     public static String PLANTILLA_CONTRATOS = "pantilla_contratos_ocasionales";
     public static String GUARDAR_PDF_EXE = "guardar_pdf_exe";
     public static String GUARDAR_PDF_POWERSHELL = "guardar_pdf_ps1";
+    public static String DB = "base_datos";
+
     private HashMap<String,String> map;
 
     /**
@@ -30,7 +32,7 @@ public class Leer_rutas {
      */
     public Leer_rutas()throws IOException{
         // Inciando los componentes para leer el archivo
-        Scanner archivo = new Scanner(new File("src\\confg\\rutas.txt"));
+        Scanner archivo = new Scanner(new File("src\\config\\rutas.txt"));
         map = new HashMap<>();
         
         while (archivo.hasNextLine()) {

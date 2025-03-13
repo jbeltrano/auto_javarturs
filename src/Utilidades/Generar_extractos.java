@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-
 import Base.BContrato_ocasional;
 import Base.Base;
 import Base.Ciudad;
