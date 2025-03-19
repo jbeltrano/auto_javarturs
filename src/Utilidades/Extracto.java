@@ -172,6 +172,15 @@ public class Extracto {
         set_cell(ROW_CONVENIO, COLUMN_CONVENIO_NOMBRE,nombre_empresa);
         set_cell(ROW_CONVENIO, COLUMN_CONVENIO_DOCUMENTO,documento);
     }
+
+    public void set_convenio(){
+        String documento = "NIT:";
+        String nombre_empresa = "CONVENIO CONSORCIO UNION TEMPORAL CON:";
+
+        set_cell(ROW_CONVENIO, COLUMN_CONVENIO_NOMBRE,nombre_empresa);
+        set_cell(ROW_CONVENIO, COLUMN_CONVENIO_DOCUMENTO,documento);
+    }
+
     public void set_fecha_incial(int dia, String mes, int año){
         mes = mes.toUpperCase();
 
@@ -227,6 +236,23 @@ public class Extracto {
         set_cell(ROW_CONDUCTOR1, COLUMN_LICENCIA, convertir_formato(documento));
         set_cell(ROW_CONDUCTOR1, COLUMN_VIGENCIA, vigencia);
 
+    }
+
+    public void set_conductores(){
+        set_cell(ROW_CONDUCTOR1, COLUMN_NOMBRE, "");
+        set_cell(ROW_CONDUCTOR1, COLUMN_CEDULA, "");
+        set_cell(ROW_CONDUCTOR1, COLUMN_LICENCIA, "");
+        set_cell(ROW_CONDUCTOR1, COLUMN_VIGENCIA, "");
+
+        set_cell(ROW_CONDUCTOR2, COLUMN_NOMBRE, "");
+        set_cell(ROW_CONDUCTOR2, COLUMN_CEDULA, "");
+        set_cell(ROW_CONDUCTOR2, COLUMN_LICENCIA, "");
+        set_cell(ROW_CONDUCTOR2, COLUMN_VIGENCIA, "");
+
+        set_cell(ROW_CONDUCTOR3, COLUMN_NOMBRE, "");
+        set_cell(ROW_CONDUCTOR3, COLUMN_CEDULA, "");
+        set_cell(ROW_CONDUCTOR3, COLUMN_LICENCIA, "");
+        set_cell(ROW_CONDUCTOR3, COLUMN_VIGENCIA, "");
     }
 
     public void set_conductor2(String nombre, String documento, String vigencia){

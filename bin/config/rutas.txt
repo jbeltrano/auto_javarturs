@@ -9,4 +9,4 @@ guardar_pdf_exe = src\Utilidades\PDF\a.exe
 guardar_pdf_ps1 = src\Utilidades\PDF\ConvertirPdf.ps1
 icono = src\Front\Recursos\Logo javarturs.jpg
 logo_principal = src\Front\Recursos\imagen_principal.png
-base_datos = src\DB\base.db
+base_datos = H:\Mi unidad\base.db

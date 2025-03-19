@@ -28,7 +28,7 @@ public class Generar_extractos {
      * @throws NullPointerException
      */
     public static String generar_extracto_mensual_excel(String placa, int consecutivo, String url)throws SQLException, IOException, NullPointerException{
-        Extracto extracto;
+        Extracto extracto = null;
         Base base = new Base(url);
         Vehiculo base_vehiculo = new Vehiculo(url);
         Ciudad base_ciudad = new Ciudad(url);
@@ -129,7 +129,8 @@ public class Generar_extractos {
             
             extracto.guardar(localizacion_fichero, "MENSUAL (" + consecutivo + ")");
             extracto.guardar(localizacion2_fichero);
-
+            
+            
             return localizacion_fichero + placa +" MENSUAL (" + consecutivo + ")";
             
         }finally{
@@ -139,6 +140,8 @@ public class Generar_extractos {
             base_vhc.close();
             base_extractos.close();
             base_cm.close();
+            extracto.close();
+            
         }
         
     }
@@ -158,7 +161,7 @@ public class Generar_extractos {
      * @throws NullPointerException
      */
     public static String generar_extracto_ocasional(String placa, int consecutivo,int contrato, String url, boolean band)throws SQLException, IOException, NullPointerException{
-        Extracto extracto;
+        Extracto extracto = null;
         Base base = new Base(url);
         Vehiculo base_vehiculo = new Vehiculo(url);
         Ciudad base_ciudad = new Ciudad(url);
@@ -305,6 +308,7 @@ public class Generar_extractos {
             base_co.close();
             base_extracto.close();
             base_contratante.close();
+            extracto.close();
         }
         
         return localizacion_fichero + placa + sub_ocasional +" (" + consecutivo + ")\n El contrato se guardo en: " + localizacion_contrato;
@@ -344,7 +348,7 @@ public class Generar_extractos {
         try{
             // Consultando la cantidad de extractos a realizar con el msimo contrato
             placas_contrato = base_co.consultar_placas_contrato_ocasional(contrato);
-            
+
             // inicializacion del objeto para modificar la plantilla de extractos
             extracto = new Extracto("src\\Formatos\\Extracto.xlsx");
             datos_contratante = base_co.consultar_uno_contrato_ocasional(contrato);
@@ -418,7 +422,10 @@ public class Generar_extractos {
             
             // Hace un extracto por cada contrato
             for(int i = 0; i < placas_contrato.length; i++){
-                
+                // Se encarga de blanquear los extractos
+                init_extracto(extracto);
+
+                // Obitiene la nueva informacion, para los extractos
                 datos_conductores = base_vhc.consultar_conductor_has_vehiculo(placas_contrato[i]);
                 datos_vehiculo = base_extractos.consultar_uno_vw_vehiculo_extracto(placas_contrato[i]);
                 parque_automotor = Boolean.parseBoolean(base_vehiculo.consultar_uno_vehiculo(placas_contrato[i])[16]);
@@ -453,6 +460,8 @@ public class Generar_extractos {
                 if(!parque_automotor){
                     extracto.set_convenio(vehiculo_empresa_externa[1], vehiculo_empresa_externa[2]);
                 }
+                
+
                 // Verifica los conductores que tiene el vehiculo para continuar con el proceso
                 if(datos_conductores.length > 1){
                     extracto.set_conductor1(datos_conductores[1][3], datos_conductores[1][2], datos_conductores[1][5]);
@@ -489,10 +498,26 @@ public class Generar_extractos {
             base_extractos.close();
             base_co.close();
             base_contratante.close();
+            extracto.close();
         }
         // Retorna la localizacion del los extractos
         return localizacion_fichero + "\n Contrato guardado en: " + localizacion_contrato;
         
+    }
+
+    /**
+     * Este metodo se utiliza para inicializar un extracto
+     * para evitar cruces de informacion con otros extractos
+     * especificamente, cuando se hacen varios en un ciclo for
+     * @param extracto
+     */
+    private static void init_extracto(Extracto extracto){
+        
+        // Blanquea la parte del convenio del vehiculo
+        extracto.set_convenio();
+        
+        // Blanquea la lista de conducotres
+        extracto.set_conductores();
     }
 
     private static boolean is_extemporaneo() {
