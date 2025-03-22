@@ -543,7 +543,7 @@ public class Extractos extends Base{
     }
 
     public String[]consultar_uno_vehiculo_externo(String placa)throws SQLException{
-        dato = new String[3];
+        dato = new String[4];
         pstate = coneccion.prepareStatement("select * from vw_vehiculo_externo where veh_placa = ?");
 
         pstate.setString(1, placa);
@@ -554,6 +554,7 @@ public class Extractos extends Base{
             dato[0] = resultado.getString(1);
             dato[1] = resultado.getString(2);
             dato[2] = resultado.getString(3);
+            dato[3] = resultado.getString(4);
         }
 
         pstate.close();

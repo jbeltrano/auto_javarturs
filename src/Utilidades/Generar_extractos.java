@@ -105,7 +105,7 @@ public class Generar_extractos {
             }
 
             if(!parque_automotor){
-                extracto.set_convenio(vehiculo_empresa_externa[1], vehiculo_empresa_externa[2]);
+                extracto.set_convenio(vehiculo_empresa_externa[2], vehiculo_empresa_externa[3]);
             }
 
             if(datos_conductores.length > 1){
@@ -458,7 +458,7 @@ public class Generar_extractos {
                 // Verifica si el vehiculo es parte del parque automotor de la empresa
                 // caso contrario simplemente continua con el proceso
                 if(!parque_automotor){
-                    extracto.set_convenio(vehiculo_empresa_externa[1], vehiculo_empresa_externa[2]);
+                    extracto.set_convenio(vehiculo_empresa_externa[2], vehiculo_empresa_externa[3]);
                 }
                 
 

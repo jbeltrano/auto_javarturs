@@ -551,4 +551,66 @@ public class Vehiculo extends Base{
         return dato;
     }
     
+    /**
+     * Este metodo se utiliza para visualizar
+     * los vehiculos que estan por convenio, y
+     * son utilizados por la empresa
+     * @param buscar
+     * @return
+     * @throws SQLException
+     */
+    public String[][] consultar_vehiculo_externo(String buscar)throws SQLException{
+
+        datos = new String[1][4];
+        int cantidad = 0;
+        int i = 1;
+
+        consultar = "select * from vw_vehiculo_externo where veh_placa like\'%"+buscar+"%\' or per_id like \'%"+buscar+"%\' or per_nombre like \'%"+buscar+"%\'";
+        
+        try{
+            state = coneccion.createStatement();
+
+            // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
+            resultado = state.executeQuery("select count() as total from vw_vehiculo_externo where veh_placa like\'%"+buscar+"%\' or per_id like \'%"+buscar+"%\' or per_nombre like \'%"+buscar+"%\'");
+        
+            if(resultado.next()){
+                cantidad = resultado.getInt("total");
+            }
+
+            System.out.println(cantidad);
+
+            if(cantidad == 0){
+                return datos;
+            }
+
+            datos = new String[cantidad+1][4];
+
+            resultado = state.executeQuery(consultar);
+            
+            datos[0][0] = "PLACA";
+            datos[0][1] = "TIPO DOCUMENTO";
+            datos[0][2] = "N° DOCUMENTO";
+            datos[0][3] = "NOMBRE EMPRESA";
+
+
+            while(resultado.next()){
+
+                datos[i][0] = resultado.getString(1);
+                datos[i][1] = resultado.getString(2);
+                datos[i][2] = resultado.getString(3);
+                datos[i][3] = resultado.getString(4);
+
+                i++;
+            }
+            
+        }catch(SQLException ex){
+            throw ex;
+        }finally{
+            resultado.close();
+            state.close();
+        }
+
+        return datos;
+
+    }
 }

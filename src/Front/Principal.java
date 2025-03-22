@@ -17,6 +17,7 @@ import Front.Panel.Personas.Panel_conductores;
 import Front.Panel.Personas.Panel_persona;
 import Front.Panel.vehiculos.Panel_clase_vehiculo;
 import Front.Panel.vehiculos.Panel_documentos_vehiculos;
+import Front.Panel.vehiculos.Panel_vehiculo_convenio;
 import Front.Panel.vehiculos.Panel_vehiculo_has_conductor;
 import Front.Panel.vehiculos.Panel_vehiculos;
 import Utilidades.Leer_link;
@@ -91,14 +92,10 @@ public class Principal extends JFrame{
      * Esta funcion se encarga de Iniciar
      * todos los componentes necesarios para
      * el correcto funcionamiento del Programa
+     * tales como imagenes, y otros archivos
+     * importantes.
      */
     private void iniciar_componentes(){
-        // Carga los comandos necesarios
-
-        
-
-        
-        
 
         // Carga de icono
         ImageIcon icono = new ImageIcon("src\\Front\\Recursos\\Logo javarturs.jpg");
@@ -180,7 +177,14 @@ public class Principal extends JFrame{
         }
     }
 
-
+    /**
+     * Esta funcion se encarga, de extraer de ciertamanera,
+     * los jmenu item, y asociarlos a un menu, utilizando una cola
+     * con los parametros necesarios y el identificador
+     * @param identificador
+     * @param cola
+     * @return
+     */
     private JMenu extraer_menu(String identificador, Queue<String[]> cola){
 
         JMenu menu = new JMenu(identificador);
@@ -208,11 +212,19 @@ public class Principal extends JFrame{
         return menu; 
     }
 
+    /**
+     * Se encarga de configurar el panel secundario
+     * de la interfaz grafica, en este caso, la parte que
+     * lleva los botones en la parte lateral izquierda de
+     * la interfaz grafica.
+     */
     private void configuracion_panel_secundario(){
+
         // Creacio componentes auxiliares
         JButton extractos = new JButton();
         JButton base_personas = new JButton();
         JButton base_ciudad = new JButton();
+
         // Configuraciones del panel
         panel_secundario.setBackground(new Color(28, 96, 6));
         panel_secundario.setPreferredSize(new Dimension(120,this.getHeight()));
@@ -356,12 +368,19 @@ public class Principal extends JFrame{
 
     }
 
+    /**
+     * Este metodo se encarga de configurar
+     * las diferentes acciones y botones que se deben
+     * cargar en el espacio de vehiculos
+     */
     private void configuracion_vehiculos(){
+
+        // Restableciendo el panel a utilizar
         panel_informacion = new JPanel();
         panel_principal2.removeAll();
         panel_principal2.setLayout(new BorderLayout());
 
-        // Cracion de componentes
+        // Inicializacion del label identificador del programa
         JLabel label_principal = new JLabel("Configuracion Vehiculos");
         JPanel panel_izq = new JPanel(null);
         pan = new JPanel(null);
@@ -370,13 +389,14 @@ public class Principal extends JFrame{
         panel_principal2.add(panel_informacion, BorderLayout.CENTER);
         panel_principal2.add(pan,BorderLayout.EAST);
 
+        // Creacion de los botones utilizados para esta parte de la interfaz
         JButton tipo_vehiculo = new JButton("Tipo Vehiculo");
         JButton vehiculos = new JButton("Vehiculos");
         JButton conductores = new JButton("Cond Vehiculos");
         JButton documentos_vehiculos = new JButton("Doc Vehiculos");
-        JButton vehiculos_externos = new JButton("Veh Externos");
+        JButton vehiculos_convenio = new JButton("Veh Convenio");
 
-        // configuracion de botones panel izquierdo
+        // Configuracion boton tipo_vehiculo
         tipo_vehiculo.setBounds(10, 10, 120, 20);
         tipo_vehiculo.addActionListener(_ ->{
             
@@ -391,7 +411,7 @@ public class Principal extends JFrame{
 
         });
 
-        // Configuracion botones
+        // Configuracion boton vehiculos
         vehiculos.setBounds(10,40,120,20);
         vehiculos.addActionListener(_->{
             panel_principal2.remove(panel_informacion);
@@ -404,6 +424,8 @@ public class Principal extends JFrame{
 
         });
         vehiculos.doClick();
+
+        // Configuracion boton conductores
         conductores.setBounds(10,70,120,20);
         conductores.addActionListener(_ ->{
             panel_principal2.remove(panel_informacion);
@@ -415,8 +437,10 @@ public class Principal extends JFrame{
             panel_principal2.repaint();
         });
 
+        // Configuracion documentos vehiculos
         documentos_vehiculos.setBounds(10,100, 120, 20);
         documentos_vehiculos.addActionListener(_ ->{
+
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
             panel_informacion = new Panel_documentos_vehiculos(url);
@@ -427,11 +451,13 @@ public class Principal extends JFrame{
 
         });
 
-        vehiculos_externos.setBounds(10,130, 120, 20);
-        vehiculos_externos.addActionListener(_ ->{
+        // Configuracion vehiculos con convenio
+        vehiculos_convenio.setBounds(10,130, 120, 20);
+        vehiculos_convenio.addActionListener(_ ->{
+
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
-            //panel_informacion = ver_vehiculos_externos();
+            //panel_informacion = Panel_vehiculo_convenio();
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -450,12 +476,7 @@ public class Principal extends JFrame{
         panel_izq.add(vehiculos);
         panel_izq.add(conductores);
         panel_izq.add(documentos_vehiculos);
-
-        // configuracion panel der
-
-        // Adicion de componentes al panel
-        //panel_principal2.add(label_principal,BorderLayout.NORTH);
-        //panel_principal2.add(panel_izq,BorderLayout.WEST);
+        panel_izq.add(vehiculos_convenio);
 
         // Mostrando los componentes en pantalla
         panel_principal2.revalidate();
