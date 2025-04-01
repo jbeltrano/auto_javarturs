@@ -126,6 +126,40 @@ public class Modelo_tabla {
 
     }
 
+    /**
+     * Este metodo retorna un JTable, con los datos cargados
+     * relacionados a la tabla que se va a mostar
+     * para los vehiculos externos o con conveio
+     * @param datos
+     * @return JTable
+     */
+    public static JTable set_tabla_vh_convenio(String[][] datos){
+
+        JTable tab = new JTable();
+        DefaultTableModel modelo; 
+        TableColumnModel clum_model;
+
+        modelo = set_modelo_tablas(datos);
+        tab = new JTable(modelo);
+        tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
+        tab.setGridColor(new Color(66, 73, 73));
+        tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tab.getTableHeader().setReorderingAllowed(false);
+        tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        add_mouse_listener(tab);
+        tab.setCellSelectionEnabled(true);
+        
+        // Configuarcion del tamaño de las columnas
+        clum_model = tab.getColumnModel();
+        clum_model.getColumn(0).setPreferredWidth(60);
+        clum_model.getColumn(1).setPreferredWidth(60);
+        clum_model.getColumn(2).setPreferredWidth(100);
+        clum_model.getColumn(3).setPreferredWidth(200);
+        
+
+        return tab;
+    }
+
     public static JTable set_tabla_extractos_ocasionales(String[][] datos){
         
         JTable tab = new JTable();

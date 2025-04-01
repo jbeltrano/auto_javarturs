@@ -457,7 +457,7 @@ public class Principal extends JFrame{
 
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
-            //panel_informacion = Panel_vehiculo_convenio();
+            panel_informacion = new Panel_vehiculo_convenio(url);
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();

@@ -311,6 +311,7 @@ public class Vehiculo extends Base{
 
     }
 
+    
     /**
      * Hace una consulta de la capacidad de
      * pasajeros que tiene un vehiculo.
@@ -442,6 +443,86 @@ public class Vehiculo extends Base{
 
     }
     
+    public String[][] consultar_vehiculo_externo(String buscar)throws SQLException{
+
+        datos = new String[1][16];
+        int cantidad = 0;
+        int i = 1;
+
+        consultar = "select * from vw_vehiculo where veh_placa like\'%"+buscar+"%\' or per_id like \'%"+buscar+"%\' or per_nombre like \'%"+buscar+"%\' and veh_parque_automotor = 0";
+
+        try{
+            state = coneccion.createStatement();
+
+            // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
+            resultado = state.executeQuery("select count() as total from vw_vehiculo where veh_placa like\'%"+buscar+"%\' or per_id like \'%"+buscar+"%\' or per_nombre like \'%"+buscar+"%\' and veh_parque_automotor = 0");
+            
+            if(resultado.next()){
+                cantidad = resultado.getInt("total");
+            }
+
+            resultado.close();
+
+            if(cantidad == 0){
+                return datos;
+            }
+
+            datos = new String[cantidad+1][16];
+
+            resultado = state.executeQuery(consultar);
+            
+            datos[0][0] = "PLACA";
+            datos[0][1] = "TIPO VEHICULO";
+            datos[0][2] = "MODELO";
+            datos[0][3] = "MARCA";
+            datos[0][4] = "LINEA";
+            datos[0][5] = "CILINDRADA";
+            datos[0][6] = "COLOR";
+            datos[0][7] = "SERVICIO";
+            datos[0][8] = "COMBUSTIBLE";
+            datos[0][9] = "TIPO CARROCERIA";
+            datos[0][10] = "NUMERO MOTOR";
+            datos[0][11] = "NUMERO CHASIS";
+            datos[0][12] = "CANTIDAD";
+            datos[0][13] = "ID PROPIETARIO";
+            datos[0][14] = "NOMBRE PROPIETARIO";
+            datos[0][15] = "PERTENECE JAVARTURS";
+
+
+
+            while(resultado.next()){
+
+                datos[i][0] = resultado.getString("veh_placa");
+                datos[i][1] = resultado.getString("cla_nombre");
+                datos[i][2] = ""+resultado.getInt("veh_modelo");
+                datos[i][3] = resultado.getString("veh_marca");
+                datos[i][4] = resultado.getString("veh_linea");
+                datos[i][5] = resultado.getString("veh_cilindrada");
+                datos[i][6] = resultado.getString("veh_color");
+                datos[i][7] = resultado.getString("ser_nombre");
+                datos[i][8] = resultado.getString("veh_combustible");
+                datos[i][9] = resultado.getString("veh_tipo_carroceria");
+                datos[i][10] = resultado.getString("veh_numero_motor");
+                datos[i][11] = resultado.getString("veh_numero_chasis");
+                datos[i][12] = resultado.getString("veh_cantidad");
+                datos[i][13] = resultado.getString("tip_nombre");
+                datos[i][14] = resultado.getString("per_id");
+                datos[i][15] = resultado.getString("per_nombre");
+
+                i++;
+            }
+            
+        }catch(SQLException ex){
+            throw ex;
+        }finally{
+            resultado.close();
+            state.close();
+        }
+
+        return datos;
+
+    }
+
     /**
      * Consulta un unico registro de la tabla
      * vehiculo determinado por el parametro de
@@ -549,68 +630,5 @@ public class Vehiculo extends Base{
             state.close();
         }
         return dato;
-    }
-    
-    /**
-     * Este metodo se utiliza para visualizar
-     * los vehiculos que estan por convenio, y
-     * son utilizados por la empresa
-     * @param buscar
-     * @return
-     * @throws SQLException
-     */
-    public String[][] consultar_vehiculo_externo(String buscar)throws SQLException{
-
-        datos = new String[1][4];
-        int cantidad = 0;
-        int i = 1;
-
-        consultar = "select * from vw_vehiculo_externo where veh_placa like\'%"+buscar+"%\' or per_id like \'%"+buscar+"%\' or per_nombre like \'%"+buscar+"%\'";
-        
-        try{
-            state = coneccion.createStatement();
-
-            // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
-            resultado = state.executeQuery("select count() as total from vw_vehiculo_externo where veh_placa like\'%"+buscar+"%\' or per_id like \'%"+buscar+"%\' or per_nombre like \'%"+buscar+"%\'");
-        
-            if(resultado.next()){
-                cantidad = resultado.getInt("total");
-            }
-
-            System.out.println(cantidad);
-
-            if(cantidad == 0){
-                return datos;
-            }
-
-            datos = new String[cantidad+1][4];
-
-            resultado = state.executeQuery(consultar);
-            
-            datos[0][0] = "PLACA";
-            datos[0][1] = "TIPO DOCUMENTO";
-            datos[0][2] = "N° DOCUMENTO";
-            datos[0][3] = "NOMBRE EMPRESA";
-
-
-            while(resultado.next()){
-
-                datos[i][0] = resultado.getString(1);
-                datos[i][1] = resultado.getString(2);
-                datos[i][2] = resultado.getString(3);
-                datos[i][3] = resultado.getString(4);
-
-                i++;
-            }
-            
-        }catch(SQLException ex){
-            throw ex;
-        }finally{
-            resultado.close();
-            state.close();
-        }
-
-        return datos;
-
     }
 }

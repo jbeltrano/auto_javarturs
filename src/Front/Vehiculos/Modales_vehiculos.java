@@ -26,6 +26,19 @@ public abstract class Modales_vehiculos extends JDialog{
         
     }
 
+    public Modales_vehiculos(JFrame frame, String url){
+        super(frame, true);
+        this.url = url;
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setPreferredSize(new Dimension(600,600));
+        setResizable(false);
+
+        iniciar_componentes();
+        setLocationRelativeTo(frame);
+        //setLocation(frame.getLocation());
+        
+    }
+
     protected abstract void iniciar_componentes();
 
 }

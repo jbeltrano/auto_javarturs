@@ -1,11 +1,10 @@
 package Ejecucion;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import javax.swing.SwingUtilities;
 import Front.Principal;
 import Utilidades.Leer_rutas;
-import Base.Vehiculo;
+
 public class Main {
     
     public static void main(String[] args) throws IOException{
