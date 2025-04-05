@@ -189,13 +189,13 @@ public class Persona extends Base{
         int cantidad = 0;
         int i = 1;
 
-        consultar = "select * from vw_persona where per_nombre like \'%" + buscar + "%\' or per_id like \'" + buscar + "%\' and tip_nombre = \'NIT\'";
+        consultar = "select * from vw_persona where (per_nombre like \'%" + buscar + "%\' or per_id like \'" + buscar + "%\') and tip_nombre = \'NIT\'";
 
         try{
             state = coneccion.createStatement();
  
             // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
-            resultado = state.executeQuery("select count() as total from vw_persona where per_nombre like \'%" + buscar + "%\' or per_id like \'" + buscar + "%\' and tip_nombre = \'NIT\'");
+            resultado = state.executeQuery("select count() as total from vw_persona where (per_nombre like \'%" + buscar + "%\' or per_id like \'" + buscar + "%\') and tip_nombre = \'NIT\'");
             
             if(resultado.next()){
                 cantidad = resultado.getInt("total");

@@ -449,13 +449,13 @@ public class Vehiculo extends Base{
         int cantidad = 0;
         int i = 1;
 
-        consultar = "select * from vw_vehiculo where veh_placa like\'%"+buscar+"%\' or per_id like \'%"+buscar+"%\' or per_nombre like \'%"+buscar+"%\' and veh_parque_automotor = 0";
+        consultar = "select * from vw_vehiculo where (veh_placa like\'%"+buscar+"%\' or per_id like \'%"+buscar+"%\' or per_nombre like \'%"+buscar+"%\') and veh_placa in (select veh_placa from vehiculo where veh_parque_automotor = 0 and veh_placa not in (select veh_placa from vehiculo_externo))";
 
         try{
             state = coneccion.createStatement();
 
             // Se obtiene la cantidad de elementos a retornar y inicializar la matriz
-            resultado = state.executeQuery("select count() as total from vw_vehiculo where veh_placa like\'%"+buscar+"%\' or per_id like \'%"+buscar+"%\' or per_nombre like \'%"+buscar+"%\' and veh_parque_automotor = 0");
+            resultado = state.executeQuery("select count() as total from vw_vehiculo where (veh_placa like\'%"+buscar+"%\' or per_id like \'%"+buscar+"%\' or per_nombre like \'%"+buscar+"%\') and veh_placa in (select veh_placa from vehiculo where veh_parque_automotor = 0 and veh_placa not in (select veh_placa from vehiculo_externo))");
             
             if(resultado.next()){
                 cantidad = resultado.getInt("total");
