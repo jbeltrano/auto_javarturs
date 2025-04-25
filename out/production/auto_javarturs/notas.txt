@@ -1,0 +1,19 @@
+Error 1:
+    Este error consiste en que un elemento que se intenta elminar esta referenciado por otro en la base de datos
+    por lo cual al intentar eliminar, se puede ver comprometida la informacion
+
+Error 2:
+    Este error consiste cuando no se encuentra alguna consulta en la base de datos, simplemente
+    puede ser que no hay informacion registrada o puede ser un error en la consulta.
+    Para solucionarlo inente hacer una insercion en la tabla
+
+Error 3:
+    Este error sucede cuando por alguna circunstancia no es posible realizar una actualizacion de
+    alguna tabla en la base de datos
+
+Error 4:
+    Este erro sucede cuando se intenta realizar una insercion o inclusion y puede darse por varias rasones,
+    en los parametros no sepaso lo que se solicita o simplemente puede ser un error porque ya existe un elemento
+
+Error 5:
+    Este error se debe a que no fue posible abrir los archivos que cargan los links para el funcionamiento de la aplicacion
