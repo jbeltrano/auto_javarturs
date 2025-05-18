@@ -67,7 +67,7 @@ public class Panel_vehiculo_has_conductor extends Panel{
         
         item_adicionar.addActionListener(_ ->{
             // Cuando se adicione un valor, simplemente se llama al metodo que se encarga de la insercion
-            new Insertar_vehiculo_conductor((JFrame)window, url, "");
+            new Insertar_vehiculo_conductor((JFrame)this.get_window(), url, "");
             
             // Posteriormente se cargan los datos teniendo en cuenta la ultima busqueda del usuario
             accion_text_busqueda();

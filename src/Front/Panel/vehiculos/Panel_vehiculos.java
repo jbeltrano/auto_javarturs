@@ -66,7 +66,7 @@ public class Panel_vehiculos extends Panel{
     protected void config_listener_pop_menu() {
         
         item_adicionar.addActionListener(_ ->{
-            new Insertar_vehiculos((JFrame)window, url, "").setVisible(true);
+            new Insertar_vehiculos((JFrame)this.get_window(), url, "").setVisible(true);
 
             accion_text_busqueda();
         });

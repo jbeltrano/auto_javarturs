@@ -27,6 +27,16 @@ public class Actualizar_ruta extends Insertar_ruta{
         actualizar();
     }
 
+    /**
+     * Este es el constructor para un JFrame,
+     * el cual se encarga de obtener los datos necesarios
+     * para actualizar la informacion de una ruta
+     * @param padre
+     * @param url
+     * @param id_origen
+     * @param id_destino
+     * @param distancia
+     */
     public Actualizar_ruta(JFrame padre, String url, int id_origen, int id_destino, int distancia){
         super(padre, url);
         this.id_origen = id_origen;

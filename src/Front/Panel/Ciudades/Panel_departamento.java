@@ -59,7 +59,16 @@ public class Panel_departamento extends Panel{
 
     @Override
     protected void config_listener_pop_menu() {
-
+        /*
+         * Esto se hace para que en la itnerfaz no aparesca
+         * habilitado estas cosas, puesto que los departamentos
+         * van a mantener constantes, a menos que por fuerza mayor
+         * haya una clase de mofificacion en la divisicon politica
+         * de colombia
+         */
+        item_actualizar.setEnabled(false);
+        item_adicionar.setEnabled(false);
+        item_eliminar.setEnabled(false);
     }
 
     

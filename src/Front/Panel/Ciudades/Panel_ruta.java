@@ -67,11 +67,11 @@ public class Panel_ruta extends Panel{
         item_actualizar.addActionListener(_->{
             int select_row = tabla.getSelectedRow();
 
-            new Actualizar_ruta((JFrame)window, 
-                                url, 
-                                Integer.parseInt((String) tabla.getValueAt(select_row, 0)), 
-                                Integer.parseInt((String) tabla.getValueAt(select_row, 2)),
-                                Integer.parseInt((String) tabla.getValueAt(select_row, 4))
+            new Actualizar_ruta((JFrame)this.get_window(),  // Obtiene el JFrame del programa principal
+                                url,    // Optiene la url de la base de datos
+                                Integer.parseInt((String) tabla.getValueAt(select_row, 0)), // Este es el id de el origen
+                                Integer.parseInt((String) tabla.getValueAt(select_row, 2)), // Este es el id del destino
+                                Integer.parseInt((String) tabla.getValueAt(select_row, 4))  // Esta es la distancia entre origen y destino
                                 ).setVisible(true);
 
             accion_text_busqueda();
@@ -79,7 +79,7 @@ public class Panel_ruta extends Panel{
         });
         item_adicionar.addActionListener(_ ->{
 
-            new Insertar_ruta((JFrame)window, url).setVisible(true);
+            new Insertar_ruta((JFrame)this.get_window(), url).setVisible(true);
             accion_text_busqueda();
 
         });

@@ -69,14 +69,14 @@ public class Panel_conductores extends Panel{
             int select_row = tabla.getSelectedRow();
 
             
-            new Actualizar_conductor((JFrame)window, url, tabla.getValueAt(select_row, 0) + "");
+            new Actualizar_conductor((JFrame)this.get_window(), url, tabla.getValueAt(select_row, 0) + "");
             accion_text_busqueda();
             
 
         });
         item_adicionar.addActionListener(_ ->{
 
-            new Insertar_conductor((JFrame)window, url).setVisible(true);
+            new Insertar_conductor((JFrame)this.get_window(), url).setVisible(true);
             accion_text_busqueda();
 
         });

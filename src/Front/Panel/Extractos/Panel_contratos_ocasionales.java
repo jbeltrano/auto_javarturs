@@ -68,7 +68,7 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
         
         item_adicionar.addActionListener(_ ->{
 
-            new Insertar_contrato_ocasional((JFrame)window, url).setVisible(true);
+            new Insertar_contrato_ocasional((JFrame)this.get_window(), url).setVisible(true);
 
             accion_text_busqueda();
 
@@ -78,7 +78,7 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
             int number = tabla.getSelectedRow();
             int id = Integer.parseInt((String)tabla.getValueAt(number, 0));
 
-            new Actualizar_contrato_ocasional((JFrame)window, url, id, false).setVisible(true);
+            new Actualizar_contrato_ocasional((JFrame)this.get_window(), url, id, false).setVisible(true);
 
             accion_text_busqueda();
 
@@ -102,21 +102,21 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
                 boolean flag = (band == 0)?true:false;
                 try{
                     String ruta = Generar_extractos.generar_extracto_ocasional(num_contrato, url, flag);
-                    JOptionPane.showMessageDialog((JFrame)window, "Exportando el contrato N° " + num_contrato + ", Junto \na sus extractos correspondientes. \n\nPor favor espere...");
+                    JOptionPane.showMessageDialog((JFrame)this.get_window(), "Exportando el contrato N° " + num_contrato + ", Junto \na sus extractos correspondientes. \n\nPor favor espere...");
                     
                     String comando_auxiliar = "powershell -ExecutionPolicy ByPass -File \"" + UBICACION_PS_CONVERTIRPDF + "\"" + " -parametro \""+ UBICACION_PS_EXTRACTOS_OCASIONALES + "\"";
                     
                     int proceso = runtime.exec(comando_auxiliar).waitFor();
     
                     if(proceso == 0){
-                        JOptionPane.showMessageDialog((JFrame)window, "Proceso finalizado con exito.\nRuta de los documentos: "+ ruta);
+                        JOptionPane.showMessageDialog((JFrame)this.get_window(), "Proceso finalizado con exito.\nRuta de los documentos: "+ ruta);
                     }else{
-                        JOptionPane.showMessageDialog((JFrame)window, "El proceso no pudo ser finalizado con exito. Error code: " + proceso);
+                        JOptionPane.showMessageDialog((JFrame)this.get_window(), "El proceso no pudo ser finalizado con exito. Error code: " + proceso);
                     }
                     
     
                 }catch(Exception ex){
-                    JOptionPane.showMessageDialog((JFrame)window, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog((JFrame)this.get_window(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
             
@@ -128,7 +128,7 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
             int number = tabla.getSelectedRow();
             int id = Integer.parseInt((String)tabla.getValueAt(number, 0));
 
-            new Actualizar_contrato_ocasional((JFrame)window, url, id, true).setVisible(true);
+            new Actualizar_contrato_ocasional((JFrame)this.get_window(), url, id, true).setVisible(true);
 
             accion_text_busqueda();
         });
@@ -138,14 +138,14 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
             int number = tabla.getSelectedRow();
             String id = "" + tabla.getValueAt(number, 0);
             String nombre = "" + tabla.getValueAt(number, 2);
-            number = JOptionPane.showConfirmDialog((JFrame)window, "Esta seguro de eliminar el contrato:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
+            number = JOptionPane.showConfirmDialog((JFrame)this.get_window(), "Esta seguro de eliminar el contrato:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
                 base_contrato = new BContrato_ocasional(url);
                 try{
                     base_contrato.eliminar_contrato_ocasional(Integer.parseInt(id));
-                    JOptionPane.showMessageDialog((JFrame)window, "Contrato eliminado correctamente");
+                    JOptionPane.showMessageDialog((JFrame)this.get_window(), "Contrato eliminado correctamente");
                 }catch(SQLException ex){
-                    JOptionPane.showMessageDialog((JFrame)window,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog((JFrame)this.get_window(),ex,"Error",JOptionPane.ERROR_MESSAGE);
                 }finally{
                     base_contrato.close();
                     accion_text_busqueda();

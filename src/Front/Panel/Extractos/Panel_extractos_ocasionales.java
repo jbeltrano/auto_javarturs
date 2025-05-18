@@ -74,14 +74,14 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
             String consecutivo = (String) tabla.getValueAt(row, 1);
             String contrato = (String) tabla.getValueAt(row, 2);
             // actualizar_extracto
-            new Actualizar_extracto_ocasional((JFrame)window, url, placa, consecutivo, contrato, false).setVisible(true);
+            new Actualizar_extracto_ocasional((JFrame)this.get_window(), url, placa, consecutivo, contrato, false).setVisible(true);
             accion_text_busqueda();
             
 
         });
         item_adicionar.addActionListener(_ ->{
 
-            new Insertar_extracto_ocasional((JFrame)window, url).setVisible(true);
+            new Insertar_extracto_ocasional((JFrame)this.get_window(), url).setVisible(true);
             accion_text_busqueda();
         });
         item_plantilla.addActionListener(_ ->{
@@ -90,7 +90,7 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
             String consecutivo = (String) tabla.getValueAt(row, 1);
             String contrato = (String) tabla.getValueAt(row, 2);
 
-            new Actualizar_extracto_ocasional((JFrame)window, url, placa, consecutivo, contrato, true).setVisible(true);
+            new Actualizar_extracto_ocasional((JFrame)this.get_window(), url, placa, consecutivo, contrato, true).setVisible(true);
 
             accion_text_busqueda();
         });
@@ -116,9 +116,9 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
                     
                     runtime.exec(comando_auxiliar);
                     
-                    JOptionPane.showMessageDialog((JFrame)window, "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog((JFrame)this.get_window(), "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
                 }catch(Exception ex){
-                    JOptionPane.showMessageDialog((JFrame)window, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog((JFrame)this.get_window(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }   
             }
             
@@ -128,7 +128,7 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
             int number = tabla.getSelectedRow();
             String placa = "" + tabla.getValueAt(number, 0);
             String consecutivo = "" + tabla.getValueAt(number, 1);
-            number = JOptionPane.showConfirmDialog((JFrame)window, "Esta seguro de eliminar el extracto " + consecutivo + "\ndel vehiculo "+placa,  "eliminar", JOptionPane.OK_CANCEL_OPTION);
+            number = JOptionPane.showConfirmDialog((JFrame)this.get_window(), "Esta seguro de eliminar el extracto " + consecutivo + "\ndel vehiculo "+placa,  "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
                 base_extracto = new Extractos(url);
                 try{
@@ -136,12 +136,12 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
                     base_extracto.eliminar_extracto_ocasional(placa, Integer.parseInt(consecutivo));
 
                 }catch(SQLException ex){
-                    JOptionPane.showMessageDialog((JFrame)window,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog((JFrame)this.get_window(),ex,"Error",JOptionPane.ERROR_MESSAGE);
                 }finally{
                     base_extracto.close();
                 }
                 
-                JOptionPane.showMessageDialog((JFrame)window, "Extracto eliminado correctamente");
+                JOptionPane.showMessageDialog((JFrame)this.get_window(), "Extracto eliminado correctamente");
                 accion_text_busqueda();
             }
                   

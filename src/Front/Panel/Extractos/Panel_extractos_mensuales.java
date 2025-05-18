@@ -71,7 +71,7 @@ public class Panel_extractos_mensuales extends Panel_extractos{
         item_actualizar.addActionListener(_->{
             int row = tabla.getSelectedRow();
             // actualizar_extracto
-            new Actualizar_extracto_mensual((JFrame)window, url,(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1)),false).setVisible(true);
+            new Actualizar_extracto_mensual((JFrame)this.get_window(), url,(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1)),false).setVisible(true);
             accion_text_busqueda();
 
         });
@@ -79,13 +79,13 @@ public class Panel_extractos_mensuales extends Panel_extractos{
 
             int row = tabla.getSelectedRow();
             // actualizar_extracto
-            new Actualizar_extracto_mensual((JFrame)window, url,(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1)),true).setVisible(true);
+            new Actualizar_extracto_mensual((JFrame)this.get_window(), url,(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1)),true).setVisible(true);
             accion_text_busqueda();
 
         });
         item_adicionar.addActionListener(_ ->{
 
-            new Insertar_extracto_mensual((JFrame)window, url).setVisible(true);
+            new Insertar_extracto_mensual((JFrame)this.get_window(), url).setVisible(true);
             accion_text_busqueda();
         });
 
@@ -101,9 +101,9 @@ public class Panel_extractos_mensuales extends Panel_extractos{
                 // implementar funcion que muestre que esperar por favor mientras carga la barra de proceso<
                 JOptionPane.showMessageDialog(null, "Iniciando la exportacion\nPor favor espere...");
                 proceso.waitFor();
-                JOptionPane.showMessageDialog((JFrame)window, "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog((JFrame)this.get_window(), "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
             }catch(Exception ex){
-                JOptionPane.showMessageDialog((JFrame)window, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog((JFrame)this.get_window(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -112,7 +112,7 @@ public class Panel_extractos_mensuales extends Panel_extractos{
             int number = tabla.getSelectedRow();
             String placa = "" + tabla.getValueAt(number, 0);
             String consecutivo = "" + tabla.getValueAt(number, 1);
-            number = JOptionPane.showConfirmDialog((JFrame)window, "Esta seguro de eliminar el extracto " + consecutivo + "\ndel vehiculo "+placa,  "eliminar", JOptionPane.OK_CANCEL_OPTION);
+            number = JOptionPane.showConfirmDialog((JFrame)this.get_window(), "Esta seguro de eliminar el extracto " + consecutivo + "\ndel vehiculo "+placa,  "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
                 base_extractos = new Extractos(url);
                 try{
@@ -120,12 +120,12 @@ public class Panel_extractos_mensuales extends Panel_extractos{
                     base_extractos.eliminar_extracto_mensual(placa, Integer.parseInt(consecutivo));
 
                 }catch(SQLException ex){
-                    JOptionPane.showMessageDialog((JFrame)window,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog((JFrame)this.get_window(),ex,"Error",JOptionPane.ERROR_MESSAGE);
                 }finally{
                     base_extractos.close();
                 }
                 
-                JOptionPane.showMessageDialog((JFrame)window, "Extracto eliminado correctamente");
+                JOptionPane.showMessageDialog((JFrame)this.get_window(), "Extracto eliminado correctamente");
                 accion_text_busqueda();
             }
                   
@@ -144,16 +144,16 @@ public class Panel_extractos_mensuales extends Panel_extractos{
                 String comando_auxiliar = "powershell -ExecutionPolicy ByPass -File \"" + UBICACION_PS_CONVERTIRPDF + "\"" + " -parametro \""+ UBICACION_PS_EXTRACTOS_MENSUALES + "\"";
                 runtime.exec(comando_auxiliar);
                 
-                JOptionPane.showMessageDialog((JFrame)window, "Extractos guardados con exito.", "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog((JFrame)this.get_window(), "Extractos guardados con exito.", "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
             }catch(Exception ex){
-                JOptionPane.showMessageDialog((JFrame)window, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog((JFrame)this.get_window(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
             
         });
 
         item_actualizar_todos.addActionListener(_ -> {
 
-            new Actualizar_todo_ext_mensual((JFrame)window, url).setVisible(true);
+            new Actualizar_todo_ext_mensual((JFrame)this.get_window(), url).setVisible(true);
 
             accion_text_busqueda();
 

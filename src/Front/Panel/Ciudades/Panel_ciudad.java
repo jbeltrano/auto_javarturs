@@ -69,14 +69,14 @@ public class Panel_ciudad extends Panel{
             int select_row = tabla.getSelectedRow();
 
             
-            new Actualizar_ciudad((JFrame)window, url, (String) tabla.getValueAt(select_row, 1), (String) tabla.getValueAt(select_row, 2), Integer.parseInt((String) tabla.getValueAt(select_row, 0))).setVisible(true);
+            new Actualizar_ciudad((JFrame)this.get_window(), url, (String) tabla.getValueAt(select_row, 1), (String) tabla.getValueAt(select_row, 2), Integer.parseInt((String) tabla.getValueAt(select_row, 0))).setVisible(true);
             accion_text_busqueda();
             
 
         });
         item_adicionar.addActionListener(_ ->{
 
-            new Insertar_ciudad((JFrame)window, url).setVisible(true);
+            new Insertar_ciudad((JFrame)this.get_window(), url).setVisible(true);
             
             accion_text_busqueda();
 

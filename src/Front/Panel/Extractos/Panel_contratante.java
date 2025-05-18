@@ -69,13 +69,13 @@ public class Panel_contratante extends Panel{
             int select_row = tabla.getSelectedRow();
 
             
-            new Actualizar_contratante((JFrame)window, url,(String) tabla.getValueAt(select_row, 0)).setVisible(true);
+            new Actualizar_contratante((JFrame)this.get_window(), url,(String) tabla.getValueAt(select_row, 0)).setVisible(true);
             accion_text_busqueda();
 
         });
         item_adicionar.addActionListener(_ ->{
 
-            new Insertar_contratante((JFrame)window, url).setVisible(true);
+            new Insertar_contratante((JFrame)this.get_window(), url).setVisible(true);
 
             accion_text_busqueda();
 
@@ -86,18 +86,18 @@ public class Panel_contratante extends Panel{
             int number = tabla.getSelectedRow();
             String id = "" + tabla.getValueAt(number, 0);
             String nombre = "" + tabla.getValueAt(number, 2);
-            number = JOptionPane.showConfirmDialog((JFrame)window, "Esta seguro de eliminar al contratante:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
+            number = JOptionPane.showConfirmDialog((JFrame)this.get_window(), "Esta seguro de eliminar al contratante:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
                 base_contratante = new Contratante(url);
                 try{
                     base_contratante.eliminar_contratante(id);
                 }catch(SQLException ex){
-                    JOptionPane.showMessageDialog((JFrame)window,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog((JFrame)this.get_window(),ex,"Error",JOptionPane.ERROR_MESSAGE);
                 }finally{
                     base_contratante.close();
                 }
                 
-                JOptionPane.showMessageDialog((JFrame)window, "Contratante eliminado correctamente");
+                JOptionPane.showMessageDialog((JFrame)this.get_window(), "Contratante eliminado correctamente");
                 accion_text_busqueda();
             }
                   

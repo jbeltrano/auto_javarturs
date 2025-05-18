@@ -18,6 +18,7 @@ import Base.Vehiculo;
 import Base.Vh_convenio;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
+import java.awt.Window;
 
 public class Insertar_vh_convenio extends Modales_vehiculos{
 
@@ -48,8 +49,10 @@ public class Insertar_vh_convenio extends Modales_vehiculos{
         this.setPreferredSize(new Dimension(800,300));
         vehiculo_precargado = "";
         pack();
+        
     }
 
+    
     /**
      * Este es un constructor secunadrio, hace la misma funcion
      * que el constructor primario, sin embargo, este se utiliza

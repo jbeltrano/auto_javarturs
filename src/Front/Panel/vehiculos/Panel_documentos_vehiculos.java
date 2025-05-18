@@ -66,7 +66,7 @@ public class Panel_documentos_vehiculos extends Panel{
     protected void config_listener_pop_menu() {
         
         item_adicionar.addActionListener(_ ->{
-            Insertar_documento_vehiculo doc_vehiculo = new Insertar_documento_vehiculo((JFrame)window, url, "");
+            Insertar_documento_vehiculo doc_vehiculo = new Insertar_documento_vehiculo((JFrame)this.get_window(), url, "");
             doc_vehiculo.setVisible(true);
 
             accion_text_busqueda();
@@ -75,7 +75,7 @@ public class Panel_documentos_vehiculos extends Panel{
         item_actualizar.addActionListener(_ ->{
             int number = tabla.getSelectedRow();
             String placa_vehiculo = "" + tabla.getValueAt(number, 0);
-            Actualizar_documento_vehiculo doc_vehiculo = new Actualizar_documento_vehiculo((JFrame)window, url, placa_vehiculo);
+            Actualizar_documento_vehiculo doc_vehiculo = new Actualizar_documento_vehiculo((JFrame)this.get_window(), url, placa_vehiculo);
             doc_vehiculo.setVisible(true);
 
             accion_text_busqueda();

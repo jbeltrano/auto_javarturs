@@ -8,6 +8,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+
 import Base.Vh_convenio;
 import Utilidades.Modelo_tabla;
 
@@ -66,8 +67,8 @@ public class Panel_vehiculo_convenio extends Panel{
     protected void config_listener_pop_menu() {
 
         item_adicionar.addActionListener(_ ->{
-
-            new Insertar_vh_convenio((JFrame)window, url).setVisible(true);
+            
+            new Insertar_vh_convenio((JFrame)this.get_window(), url).setVisible(true);
             accion_text_busqueda();
         });
 

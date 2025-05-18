@@ -117,7 +117,12 @@ public abstract class Panel extends JPanel{
      * que va a tener el popup menu
      */
     protected abstract void config_listener_pop_menu();
+
+    protected Window get_window(){
+        return SwingUtilities.getWindowAncestor(this);
+    }
 }
+
 
 
 

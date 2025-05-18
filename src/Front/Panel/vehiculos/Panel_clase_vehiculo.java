@@ -74,11 +74,11 @@ public class Panel_clase_vehiculo extends Panel{
         item_actualizar.addActionListener(_->{
             
             int numero = tabla.getSelectedRow();
-            new Actualizar_tipo_vehiculo((JFrame)window, url, ""+tabla.getValueAt(numero, 0));
+            new Actualizar_tipo_vehiculo((JFrame)this.get_window(), url, ""+tabla.getValueAt(numero, 0));
             cargar_datos_tabla();
         });
         item_adicionar.addActionListener(_ ->{
-            new Insertar_tipo_vehiculo((JFrame)window, url, "");
+            new Insertar_tipo_vehiculo((JFrame)this.get_window(), url, "");
             cargar_datos_tabla();
 
         });

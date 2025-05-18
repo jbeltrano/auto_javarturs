@@ -69,14 +69,14 @@ public class Panel_persona extends Panel{
             int select_row = tabla.getSelectedRow();
 
             
-            new Actualizar_peronas((JFrame)window, url, "" + tabla.getValueAt(select_row, 0)).setVisible(true);
+            new Actualizar_peronas((JFrame)this.get_window(), url, "" + tabla.getValueAt(select_row, 0)).setVisible(true);
             accion_text_busqueda();
             
 
         });
         item_adicionar.addActionListener(_ ->{
 
-            new Insertar_persona((JFrame)window, url).setVisible(true);
+            new Insertar_persona((JFrame)this.get_window(), url).setVisible(true);
             accion_text_busqueda();
 
         });

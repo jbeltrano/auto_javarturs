@@ -66,7 +66,7 @@ public class Panel_contratos_mensuales extends Panel{
         
         item_adicionar.addActionListener(_ ->{
 
-            new Insertar_contrato_mensual((JFrame)window, url).setVisible(true);
+            new Insertar_contrato_mensual((JFrame)this.get_window(), url).setVisible(true);
 
             accion_text_busqueda();
 
@@ -77,18 +77,18 @@ public class Panel_contratos_mensuales extends Panel{
             int number = tabla.getSelectedRow();
             String id = "" + tabla.getValueAt(number, 0);
             String nombre = "" + tabla.getValueAt(number, 2);
-            number = JOptionPane.showConfirmDialog((JFrame)window, "Esta seguro de eliminar el contrato:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
+            number = JOptionPane.showConfirmDialog((JFrame)this.get_window(), "Esta seguro de eliminar el contrato:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
                 base_contrato = new Contrato_mensual(url);
                 try{
                     base_contrato.eliminar_contrato_mensual(Integer.parseInt(id));
                 }catch(SQLException ex){
-                    JOptionPane.showMessageDialog((JFrame)window,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog((JFrame)this.get_window(),ex,"Error",JOptionPane.ERROR_MESSAGE);
                 }finally{
                     base_contrato.close();
                 }
                 
-                JOptionPane.showMessageDialog((JFrame)window, "Contrato eliminado correctamente");
+                JOptionPane.showMessageDialog((JFrame)this.get_window(), "Contrato eliminado correctamente");
                 accion_text_busqueda();
             }
                   
