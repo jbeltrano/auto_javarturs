@@ -74,7 +74,7 @@ public class Panel_vehiculos extends Panel{
         item_actualizar.addActionListener(_ ->{
             int select_row = tabla.getSelectedRow();
 
-            new Actualizar_vehiculos((JFrame)window, url, (String)tabla.getValueAt(select_row, 0));
+            new Actualizar_vehiculos((JFrame)this.get_window(), url, (String)tabla.getValueAt(select_row, 0));
 
             accion_text_busqueda();
         });
