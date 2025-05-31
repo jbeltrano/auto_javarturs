@@ -30,6 +30,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -63,7 +66,8 @@ public class Principal extends JFrame{
         this.url = url;
         
 
-        FlatLightLaf.setup();
+        //FlatLightLaf.setup();
+        FlatDarkLaf.setup();
         // try{
         //     UIManager.setLookAndFeel(new FlatLightLaf());
         //     //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
