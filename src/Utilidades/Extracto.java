@@ -20,12 +20,14 @@ public class Extracto {
     public static final int EMPRESARIAL = 3;
     public static final int PARTICULAR = 2;
     public static final int PERSONALIZADO = 4;
+    public static final int MANTENIMIENTO = 5;
     public static final String COMPLEMENTO_NOMRAL = "OCASIONAL NORMAL";
     public static final String COMPLEMENTO_EXTEMPORANEO = "OCASIONAL EXTEMPORANEO";
     public static final String TIPO_CONTRATO_PARTICULAR = "SERVICIO DE TRANSPORTE DE PERSONAL PARTICULAR";
     public static final String TIPO_CONTRATO_EMPRESARIAL = "SERVICIO DE TRANSPORTE DE PERSONAL EMPRESARIAL";
     public static final String TIPO_CONTRATO_ESTUDIANTIL = "SERVICIO DE TRANSPORTE DE PERSONAL ESTUDIANTIL";
     public static final String TIPO_CONTRATO_PERSONALIZADO = "TRANSPORTE PARA GRUPO ESPECIFICO DE USUARIOS";
+    public static final String TIPO_CONTRATO_MANTENIMIENTO = "MOVILIZACION DEL VEHICULO POR MANTENIMIENTO";
     public static final String [] MES = {"","ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO","AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"};
     private static final int ROW_NUMERO_PRINCIPAL = 8;
     private static final int COLUMN_NUMERO_PRINCIPAL = 0;
@@ -135,6 +137,8 @@ public class Extracto {
         }else if(valor == PERSONALIZADO){
             
             set_cell(ROW_OBJETO_CONTRATO, COLUMN_BOJETO_CONTRATO, TIPO_CONTRATO_PERSONALIZADO);
+        }else if (valor == MANTENIMIENTO){
+            set_cell(ROW_OBJETO_CONTRATO, COLUMN_BOJETO_CONTRATO, TIPO_CONTRATO_MANTENIMIENTO);
         }else{
             set_cell(ROW_OBJETO_CONTRATO, COLUMN_BOJETO_CONTRATO, TIPO_CONTRATO_PARTICULAR);
         }

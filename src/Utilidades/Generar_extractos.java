@@ -86,23 +86,8 @@ public class Generar_extractos {
             extracto.set_fecha_final(datos_extracto[4]);
             extracto.set_datos_vehiculo(placa, Integer.parseInt(datos_vehiculo[1]), datos_vehiculo[2], datos_vehiculo[3], Integer.parseInt(datos_vehiculo[4]), Integer.parseInt(datos_vehiculo[5]));
 
-            if(datos_tipo_contrato == Extracto.ESTUDIANTIL){
-
-                extracto.set_tipo_contrato(Extracto.ESTUDIANTIL);
-
-            }else if(datos_tipo_contrato == Extracto.EMPRESARIAL){
-
-                extracto.set_tipo_contrato(Extracto.EMPRESARIAL);
-
-            }else if(datos_tipo_contrato == Extracto.PERSONALIZADO){
-
-                extracto.set_tipo_contrato(Extracto.PERSONALIZADO);
-
-            }else{
-
-                extracto.set_tipo_contrato(Extracto.PARTICULAR);
-
-            }
+            
+            extracto.set_tipo_contrato(datos_tipo_contrato);
 
             if(!parque_automotor){
                 extracto.set_convenio(vehiculo_empresa_externa[2], vehiculo_empresa_externa[3]);
@@ -239,23 +224,7 @@ public class Generar_extractos {
                                         Integer.parseInt(datos_vehiculo[5]));
 
             // Verifica el tipo de contrato y si es necesario hace un set
-            if(datos_tipo_contrato == Extracto.ESTUDIANTIL){
-
-                extracto.set_tipo_contrato(Extracto.ESTUDIANTIL);
-
-            }else if(datos_tipo_contrato == Extracto.EMPRESARIAL){
-
-                extracto.set_tipo_contrato(Extracto.EMPRESARIAL);
-
-            }else if(datos_tipo_contrato == Extracto.PERSONALIZADO){
-
-                extracto.set_tipo_contrato(Extracto.PERSONALIZADO);
-
-            }else{
-
-                extracto.set_tipo_contrato(Extracto.PARTICULAR);
-
-            }
+            extracto.set_tipo_contrato(datos_tipo_contrato);
 
 
             // Verifica si el vehiculo es parte del parque automotor de la empresa
@@ -384,24 +353,10 @@ public class Generar_extractos {
                 }
             }
             
-            // Verifica el tipo de contrato y si es necesario hace un set
-            if(datos_tipo_contrato == Extracto.ESTUDIANTIL){
+            // Hace el set Pertinente de el tipo de contrato
+            extracto.set_tipo_contrato(datos_tipo_contrato);
 
-                extracto.set_tipo_contrato(Extracto.ESTUDIANTIL);
-
-            }else if(datos_tipo_contrato == Extracto.EMPRESARIAL){
-
-                extracto.set_tipo_contrato(Extracto.EMPRESARIAL);
-
-            }else if(datos_tipo_contrato == Extracto.PERSONALIZADO){
-
-                extracto.set_tipo_contrato(Extracto.PERSONALIZADO);
-
-            }else{
-
-                extracto.set_tipo_contrato(Extracto.PARTICULAR);
-
-            }
+            
             
             // Establece las fechas iniciales y finales del extracto
             extracto.set_fecha_inicial(datos_contratante[2]);

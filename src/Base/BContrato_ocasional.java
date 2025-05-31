@@ -10,7 +10,7 @@ public class BContrato_ocasional extends Base {
 
     public String[] consultar_tipo_contrato()throws SQLException{
 
-        dato = new String[4];
+        dato = new String[5];
 
         state = coneccion.createStatement();
         resultado = state.executeQuery("select tc_nombre from tipo_contrato");
