@@ -12,8 +12,7 @@ import Base.Clase_vehiculo;
 
 public class Insertar_tipo_vehiculo extends Modales_vehiculos{
     
-    private int id;
-    private String valor;              
+    private Clase_vehiculo base;
 
     public Insertar_tipo_vehiculo(JFrame frame, String url, String valor){
 
@@ -38,23 +37,13 @@ public class Insertar_tipo_vehiculo extends Modales_vehiculos{
         boton_actualizacion.setBounds(25,530,100,20);
         boton_actualizacion.addActionListener(_ ->{
         
-            
-            try{
 
-                valor = ((Clase_vehiculo)base).consultar_uno_clase_vehiculo(tipo_vehiculo.getText())[0];
-
-            }catch(SQLException ex){
-                System.out.println(ex);
-            }
             base = new Clase_vehiculo(url);
-            if(valor  == null){
-                JOptionPane.showMessageDialog(this, "Este elemento no es valido o ya existe.","Error", JOptionPane.ERROR_MESSAGE);
-            }
-            else if(tipo_vehiculo.getText().length() >0){
+            
+            if(tipo_vehiculo.getText().length() >0){
 
                 try{
-                    ((Clase_vehiculo)base).insertar_clase_vehiculo(tipo_vehiculo.getText());
-                    ((Clase_vehiculo)base).actualizar_clase_vehiculo(id, tipo_vehiculo.getText());
+                    base.insertar_clase_vehiculo(tipo_vehiculo.getText().toUpperCase());
                 }catch(SQLException ex){
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
                 }

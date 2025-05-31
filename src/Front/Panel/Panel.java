@@ -16,6 +16,7 @@ import Utilidades.Leer_config;
 
 public abstract class Panel extends JPanel{
     
+    private static final Leer_config config = new Leer_config(); // Se establece de esta manera, para evitar la sobre ejecucion
     private JPanel panel_busqueda;
     private JLabel label_busqueda;
     protected JTextField text_busqueda;
@@ -37,8 +38,6 @@ public abstract class Panel extends JPanel{
         super();    // Llama la super clase de JPanel
         this.url = url;
         this.window = SwingUtilities.getWindowAncestor(this);
-
-        Leer_config config = new Leer_config();
 
         color = (config.get_tema() == 0)?config.get_color_secundario():config.get_color_secundario_oscuro();    // Esto se encarga de configurar el color correctamente
 

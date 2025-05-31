@@ -7,13 +7,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import Base.Base;
 import Base.Clase_vehiculo;
 
 public class Actualizar_tipo_vehiculo extends Modales_vehiculos{
     
     private int id;  
-
+    private Clase_vehiculo base;
     public Actualizar_tipo_vehiculo(JFrame padre, String url, String valor){
 
         super(padre, url, valor);
@@ -52,12 +51,11 @@ public class Actualizar_tipo_vehiculo extends Modales_vehiculos{
         boton_actualizacion.setBounds(25,530,100,20);
         boton_actualizacion.addActionListener(_ ->{
             
-            base = new Base(url);
+            base = new Clase_vehiculo(url);
 
             try{
 
-                ((Clase_vehiculo)base).actualizar_clase_vehiculo(id, tipo_vehiculo.getText());
-                System.out.println("hola");
+                base.actualizar_clase_vehiculo(id, tipo_vehiculo.getText().toUpperCase());
                 JOptionPane.showMessageDialog(this, "Tipo de id: " + id + "\nActualizado con Exito.","Actualizacion", JOptionPane.INFORMATION_MESSAGE);
             
 

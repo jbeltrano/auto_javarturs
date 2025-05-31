@@ -78,7 +78,7 @@ public class Principal extends JFrame{
             color_secundario = config.get_color_secundario_oscuro();
         }
 
-        
+        config = null;
         // try{
         //     UIManager.setLookAndFeel(new FlatLightLaf());
         //     //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
