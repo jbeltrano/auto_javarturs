@@ -72,7 +72,7 @@ public class Modelo_tabla {
         modelo = set_modelo_tablas(datos);
         tab = new JTable(modelo);
         tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
-        tab.setGridColor(new Color(66, 73, 73));
+        tab.setGridColor(Color.GRAY);
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -103,7 +103,7 @@ public class Modelo_tabla {
         modelo = set_modelo_tablas(datos);
         tab = new JTable(modelo);
         tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
-        tab.setGridColor(new Color(66, 73, 73));
+        tab.setGridColor(Color.GRAY);
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -142,7 +142,7 @@ public class Modelo_tabla {
         modelo = set_modelo_tablas(datos);
         tab = new JTable(modelo);
         tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
-        tab.setGridColor(new Color(66, 73, 73));
+        tab.setGridColor(Color.GRAY);
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -165,7 +165,9 @@ public class Modelo_tabla {
         JTable tab = new JTable();
         DefaultTableModel modelo; 
         TableColumnModel clum_model;
-        
+        Color back_color = tab.getBackground();
+        Color fore_color = tab.getForeground();
+
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -194,16 +196,16 @@ public class Modelo_tabla {
 
                     }else{
 
-                        component.setBackground(Color.white);
-                        component.setForeground(Color.black);
+                        component.setBackground(back_color);
+                        component.setForeground(fore_color);
                         setToolTipText("Quedan " + cantidad_dias + " días para que el documento se venza");
 
                     }
 
                 }else{      // Deja las demas Filas y/o celdas por defecto
 
-                    component.setBackground(Color.white);
-                    component.setForeground(Color.black);
+                    component.setBackground(back_color);
+                    component.setForeground(fore_color);
                     setToolTipText(null);
 
                 }
@@ -219,7 +221,7 @@ public class Modelo_tabla {
         modelo = set_modelo_tablas(datos);
         tab = new JTable(modelo);
         tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
-        tab.setGridColor(new Color(66, 73, 73));
+        tab.setGridColor(Color.GRAY);
         tab.setDefaultRenderer(Object.class, renderer);     //Agrega el renderer personalizado realizado anteriormente
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
@@ -246,7 +248,9 @@ public class Modelo_tabla {
         JTable tab = new JTable();
         DefaultTableModel modelo; 
         TableColumnModel clum_model;
-        
+        Color back_color = tab.getBackground();
+        Color fore_color = tab.getForeground();
+
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -275,16 +279,16 @@ public class Modelo_tabla {
 
                     }else{
 
-                        component.setBackground(Color.white);
-                        component.setForeground(Color.black);
+                        component.setBackground(back_color);
+                        component.setForeground(fore_color);
                         setToolTipText("Quedan " + cantidad_dias + " días para que el documento se venza");
 
                     }
 
                 }else{      // Deja las demas Filas y/o celdas por defecto
 
-                    component.setBackground(Color.white);
-                    component.setForeground(Color.black);
+                    component.setBackground(back_color);
+                    component.setForeground(fore_color);
                     setToolTipText(null);
 
                 }
@@ -300,7 +304,7 @@ public class Modelo_tabla {
         modelo = set_modelo_tablas(datos);
         tab = new JTable(modelo);
         tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
-        tab.setGridColor(new Color(66, 73, 73));
+        tab.setGridColor(Color.GRAY);
         tab.setDefaultRenderer(Object.class, renderer);     //Agrega el renderer personalizado realizado anteriormente
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
@@ -327,6 +331,8 @@ public class Modelo_tabla {
         JTable tab = new JTable();
         DefaultTableModel modelo; 
         TableColumnModel clum_model;
+        Color back_color = tab.getBackground();
+        Color fore_color = tab.getForeground();
         
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
             @Override
@@ -362,16 +368,16 @@ public class Modelo_tabla {
 
                     }else{      // Deja las demas celdas por defecto
 
-                        component.setBackground(Color.white);
-                        component.setForeground(Color.black);
+                        component.setBackground(back_color);
+                        component.setForeground(fore_color);
                         setToolTipText(null);
 
                     }
 
                 }else{      // Deja las demas Filas y/o celdas por defecto
 
-                    component.setBackground(Color.white);
-                    component.setForeground(Color.black);
+                    component.setBackground(back_color);
+                    component.setForeground(fore_color);
                     setToolTipText(null);
 
                 }
@@ -387,7 +393,7 @@ public class Modelo_tabla {
         modelo = set_modelo_tablas(datos);
         tab = new JTable(modelo);
         tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
-        tab.setGridColor(new Color(66, 73, 73));
+        tab.setGridColor(Color.GRAY);
         tab.setDefaultRenderer(Object.class, renderer);     //Agrega el renderer personalizado realizado anteriormente
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
@@ -416,7 +422,7 @@ public class Modelo_tabla {
         modelo = set_modelo_tablas(datos);
         tab = new JTable(modelo);
         tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
-        tab.setGridColor(new Color(66, 73, 73));    // Cambia el color de las lineas de las tablas
+        tab.setGridColor(Color.GRAY);    // Cambia el color de las lineas de las tablas
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -460,7 +466,7 @@ public class Modelo_tabla {
         modelo = set_modelo_tablas(datos);
         tab = new JTable(modelo);
         tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
-        tab.setGridColor(new Color(66, 73, 73));
+        tab.setGridColor(Color.GRAY);
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -485,7 +491,7 @@ public class Modelo_tabla {
         modelo = set_modelo_tablas(datos);
         tab = new JTable(modelo);
         tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
-        tab.setGridColor(new Color(66, 73, 73));
+        tab.setGridColor(Color.GRAY);
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -513,7 +519,7 @@ public class Modelo_tabla {
         modelo = set_modelo_tablas(datos);
         tab = new JTable(modelo);
         tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
-        tab.setGridColor(new Color(66, 73, 73));
+        tab.setGridColor(Color.GRAY);
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -539,7 +545,7 @@ public class Modelo_tabla {
         modelo = set_modelo_tablas(datos);
         tab = new JTable(modelo);
         tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
-        tab.setGridColor(new Color(66, 73, 73));
+        tab.setGridColor(Color.GRAY);
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -569,11 +575,13 @@ public class Modelo_tabla {
     }
 
     public static JTable set_tabla_contratos_ocasionales(String[][] datos){
-        JTable tab;
+        JTable tab = new JTable();
         DefaultTableModel modelo;
         TableColumnModel cl_model;
         modelo = set_modelo_tablas(datos);
-
+        Color back_color = tab.getBackground();
+        Color fore_color = tab.getForeground();
+        
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -610,16 +618,16 @@ public class Modelo_tabla {
 
                     }else{      // Deja las demas celdas por defecto
 
-                        component.setBackground(Color.white);
-                        component.setForeground(Color.black);
+                        component.setBackground(back_color);
+                        component.setForeground(fore_color);
                         setToolTipText(null);
 
                     }
 
                 }else{      // Deja las demas Filas y/o celdas por defecto
 
-                    component.setBackground(Color.white);
-                    component.setForeground(Color.black);
+                    component.setBackground(back_color);
+                    component.setForeground(fore_color);
                     setToolTipText(null);
 
                 }
@@ -636,7 +644,7 @@ public class Modelo_tabla {
 
         tab = new JTable(modelo);
         tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
-        tab.setGridColor(new Color(66, 73, 73));
+        tab.setGridColor(Color.GRAY);
         tab.setDefaultRenderer(Object.class, renderer);     //Agrega el renderer personalizado realizado anteriormente
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
@@ -663,9 +671,11 @@ public class Modelo_tabla {
 
     public static JTable set_tabla_vehiculo_has_conductor(String[][] datos){
 
-        JTable tab;
+        JTable tab = new JTable();
         DefaultTableModel modelo;
         TableColumnModel cl_model;
+        Color back_color = tab.getBackground();
+        Color fore_color = tab.getForeground();
 
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
             @Override
@@ -701,16 +711,16 @@ public class Modelo_tabla {
 
                     }else{      // Deja las demas celdas por defecto
 
-                        component.setBackground(Color.white);
-                        component.setForeground(Color.black);
+                        component.setBackground(back_color);
+                        component.setForeground(fore_color);
                         setToolTipText(null);
 
                     }
 
                 }else{      // Deja las demas Filas y/o celdas por defecto
 
-                    component.setBackground(Color.white);
-                    component.setForeground(Color.black);
+                    component.setBackground(back_color);
+                    component.setForeground(fore_color);
                     setToolTipText(null);
 
                 }
@@ -725,7 +735,7 @@ public class Modelo_tabla {
         modelo = set_modelo_tablas(datos);
         tab = new JTable(modelo);
         tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
-        tab.setGridColor(new Color(66, 73, 73));
+        tab.setGridColor(Color.GRAY);
         tab.setDefaultRenderer(Object.class, renderer);     //Agrega el renderer personalizado realizado anteriormente
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
@@ -745,9 +755,11 @@ public class Modelo_tabla {
 
     public static JTable set_tabla_documentos_vehiculos(String [][] datos){
 
-        JTable tab;
+        JTable tab = new JTable();
         DefaultTableModel modelo;
         TableColumnModel cl_model;
+        Color back_color = tab.getBackground();
+        Color fore_color = tab.getForeground();
 
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
             @Override
@@ -791,16 +803,16 @@ public class Modelo_tabla {
 
                     }else{      // Deja las demas celdas por defecto
 
-                        component.setBackground(Color.white);
-                        component.setForeground(Color.black);
+                        component.setBackground(back_color);
+                        component.setForeground(fore_color);
                         setToolTipText(null);
 
                     }
 
                 }else{      // Deja las demas Filas y/o celdas por defecto
 
-                    component.setBackground(Color.white);
-                    component.setForeground(Color.black);
+                    component.setBackground(back_color);
+                    component.setForeground(fore_color);
                     setToolTipText(null);
 
                 }
@@ -816,7 +828,7 @@ public class Modelo_tabla {
         modelo = set_modelo_tablas(datos);
         tab = new JTable(modelo);
         tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
-        tab.setGridColor(new Color(66, 73, 73));
+        tab.setGridColor(Color.GRAY);
         tab.setDefaultRenderer(Object.class, renderer);     //Agrega el renderer personalizado realizado anteriormente
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);

@@ -20,6 +20,7 @@ import Front.Panel.vehiculos.Panel_documentos_vehiculos;
 import Front.Panel.vehiculos.Panel_vehiculo_convenio;
 import Front.Panel.vehiculos.Panel_vehiculo_has_conductor;
 import Front.Panel.vehiculos.Panel_vehiculos;
+import Utilidades.Leer_config;
 import Utilidades.Leer_link;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -30,8 +31,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
-import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.event.WindowAdapter;
@@ -55,6 +54,8 @@ public class Principal extends JFrame{
     private JButton boton_extractos_mensuales;
     private HashMap<String, Queue<String[]>> read_links;
     private HashSet<String> id_links;
+    private int color_principal;
+    private int color_secundario;
 
     /**
      * Este es el constructor general para la clase Principal
@@ -64,10 +65,20 @@ public class Principal extends JFrame{
     public Principal(String url){
         super("Javarturs");
         this.url = url;
+        Leer_config config = new Leer_config();
         
+        if(config.get_tema() == 0){
+            FlatLightLaf.setup();
+            color_principal = config.get_color_principal();
+            color_secundario = config.get_color_secundario();
 
-        //FlatLightLaf.setup();
-        FlatDarkLaf.setup();
+        }else {
+            FlatDarkLaf.setup();
+            color_principal = config.get_color_principal_oscuro();
+            color_secundario = config.get_color_secundario_oscuro();
+        }
+
+        
         // try{
         //     UIManager.setLookAndFeel(new FlatLightLaf());
         //     //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
@@ -230,7 +241,7 @@ public class Principal extends JFrame{
         JButton base_ciudad = new JButton();
 
         // Configuraciones del panel
-        panel_secundario.setBackground(new Color(28, 96, 6));
+        panel_secundario.setBackground(new Color(color_principal));
         panel_secundario.setPreferredSize(new Dimension(120,this.getHeight()));
 
         // Cre_ de componentes y configuracion de los mismos
@@ -357,7 +368,7 @@ public class Principal extends JFrame{
 
         // Configuracion del panel_izq
         panel_izq.setPreferredSize(new Dimension(140,panel_principal2.getHeight()));
-        panel_izq.setBackground(new Color(52, 135, 25));
+        panel_izq.setBackground(new Color(color_secundario));
         panel_izq.add(boton_ciudad);
         panel_izq.add(boton_Departamento);
         panel_izq.add(boton_ruta);
@@ -475,7 +486,7 @@ public class Principal extends JFrame{
 
         // configuracion panel izq
         panel_izq.setPreferredSize(new Dimension(140,panel_principal2.getHeight()));
-        panel_izq.setBackground(new Color(52, 135, 25));
+        panel_izq.setBackground(new Color(color_secundario));
         panel_izq.add(tipo_vehiculo);
         panel_izq.add(vehiculos);
         panel_izq.add(conductores);
@@ -539,7 +550,7 @@ public class Principal extends JFrame{
 
         // configuracion panel izq
         panel_izq.setPreferredSize(new Dimension(140,panel_principal2.getHeight()));
-        panel_izq.setBackground(new Color(52, 135, 25));
+        panel_izq.setBackground(new Color(color_secundario));
         panel_izq.add(boton_personas);
         panel_izq.add(boton_conductores);
 
@@ -653,7 +664,7 @@ public class Principal extends JFrame{
 
         // configuracion panel izq
         panel_izq.setPreferredSize(new Dimension(140,panel_principal2.getHeight()));
-        panel_izq.setBackground(new Color(52, 135, 25));
+        panel_izq.setBackground(new Color(color_secundario));
         panel_izq.add(boton_extractos_mensuales);
         panel_izq.add(boton_extractos_ocasionales);
         panel_izq.add(boton_contratos_mensuales);

@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import java.awt.Window;
 import Utilidades.Key_adapter;
+import Utilidades.Leer_config;
 
 public abstract class Panel extends JPanel{
     
@@ -26,6 +27,7 @@ public abstract class Panel extends JPanel{
     protected String url;
     protected JTable tabla;
     protected Window window;
+    protected int color;
     
     /**
      * Este constructor se encarga de establecer
@@ -35,6 +37,10 @@ public abstract class Panel extends JPanel{
         super();    // Llama la super clase de JPanel
         this.url = url;
         this.window = SwingUtilities.getWindowAncestor(this);
+
+        Leer_config config = new Leer_config();
+
+        color = (config.get_tema() == 0)?config.get_color_secundario():config.get_color_secundario_oscuro();    // Esto se encarga de configurar el color correctamente
 
         setLayout(new BorderLayout());  // Establece el Layout a utilizar
         scroll = new JScrollPane(); // Inicializa el scroll que se va a utilizar
@@ -70,7 +76,8 @@ public abstract class Panel extends JPanel{
         panel_busqueda.add(label_busqueda);
         panel_busqueda.add(text_busqueda);
         panel_busqueda.setPreferredSize(new Dimension(700,24));
-        panel_busqueda.setBackground(new Color(52, 135, 25));
+        panel_busqueda.setBackground(new Color(color));
+        
 
         // Establece el escuchador para la busqueda
         text_busqueda.addKeyListener(new Key_adapter() {
