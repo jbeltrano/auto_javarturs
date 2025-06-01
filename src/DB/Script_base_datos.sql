@@ -558,3 +558,12 @@ create view vw_ruta as select
         from ruta join 
             (select ciu_id as id, ciu_nombre as nombre from ciudad) on (rut_origen_id = id) 
         join ciudad on (rut_destino_id = ciu_id);
+
+-- Este es un trigger para eliminar los vehiculos de vehiculo_externo
+-- Cuando los vehiculos pasan a ser parte del parque automotor de la empresa
+CREATE TRIGGER tg_vehiculo_externo
+AFTER UPDATE ON VEHICULO
+WHEN NEW.veh_parque_automotor = 1 AND OLD.veh_parque_automotor != 1
+BEGIN
+    DELETE FROM VEHICULO_EXTERNO WHERE veh_placa = NEW.veh_placa;
+END;

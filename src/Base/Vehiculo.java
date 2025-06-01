@@ -209,8 +209,8 @@ public class Vehiculo extends Base{
 
             pstate.executeUpdate();
         }catch(SQLException ex){
-            SQLException e = new SQLException("No es posible realizar la actualizacion a vehiculos.\n Error 3");
-            throw e;
+            //SQLException e = new SQLException("No es posible realizar la actualizacion a vehiculos.\n Error 3");
+            throw ex;
         }
     }
     

@@ -266,9 +266,6 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
                 }
                 
             }
-    
-                
-            
             
         }catch(NumberFormatException ex){
             JOptionPane.showMessageDialog(this, "Los campos:\nTarjeda de Operacion\nNumero Interno\nDeben ser de tipo Numerico", "Error", JOptionPane.ERROR_MESSAGE);
@@ -306,6 +303,7 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
             base.close();
         }
     }
+
     protected void datos_vehiculo(){
         base = new Documentos(url);
         try{

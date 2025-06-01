@@ -39,6 +39,8 @@ public class Insertar_vh_convenio extends Modales_vehiculos{
     private static final int ALTO = 20; // Constante que fija la altura de los componentes
 
     private String vehiculo_precargado; // Este atributo se usa, cuando se requiere una pre inicializacion
+
+    
     /**
      * Constructor principal, necesario para realizar la respectiva insercion
      * @param frame

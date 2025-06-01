@@ -65,64 +65,74 @@ public class Actualizar_vehiculos extends Insertar_vehiculos{
     protected void guardar(){
 
         boolean[] campos = new boolean[11];
-            boolean confirmacion = false;
-            String propietario = "";
-            int cilindrada = 0;
-            int pasajeros = 0;
+        boolean confirmacion = false;
+        String propietario = "";
+        int cilindrada = 0;
+        int pasajeros = 0;
 
             // guardamos si los diferentes campos estan llenos o no en el arreglo
-            campos[0] = (text_placa.getText().compareTo("") == 0)? true:false;
-            campos[1] = (text_marca.getText().compareTo("") == 0)? true:false;
-            campos[2] = (text_linea.getText().compareTo("") == 0)? true:false;
-            campos[3] = (text_cilindrada.getText().compareTo("") == 0)? true:false;
-            campos[4] = (text_color.getText().compareTo("") == 0)? true:false;
-            campos[5] = (text_combustible.getText().compareTo("") == 0)? true:false;
-            campos[6] = (text_carroceria.getText().compareTo("") == 0)? true:false;
-            campos[7] = (text_motor.getText().compareTo("") == 0)? true:false;
-            campos[8] = (text_chasis.getText().compareTo("") == 0)? true:false;
-            campos[9] = (text_pasajeros.getText().compareTo("") == 0)? true:false;
-            campos[10] = (text_propietario.getText().compareTo("") == 0)? true:false;
+        campos[0] = (text_placa.getText().compareTo("") == 0)? true:false;
+        campos[1] = (text_marca.getText().compareTo("") == 0)? true:false;
+        campos[2] = (text_linea.getText().compareTo("") == 0)? true:false;
+        campos[3] = (text_cilindrada.getText().compareTo("") == 0)? true:false;
+        campos[4] = (text_color.getText().compareTo("") == 0)? true:false;
+        campos[5] = (text_combustible.getText().compareTo("") == 0)? true:false;
+        campos[6] = (text_carroceria.getText().compareTo("") == 0)? true:false;
+        campos[7] = (text_motor.getText().compareTo("") == 0)? true:false;
+        campos[8] = (text_chasis.getText().compareTo("") == 0)? true:false;
+        campos[9] = (text_pasajeros.getText().compareTo("") == 0)? true:false;
+        campos[10] = (text_propietario.getText().compareTo("") == 0)? true:false;
             
-            // verificamos que campos tiene true y cuales false, para botar el respectivo error
-            for(int i = 0; i< campos.length; i++){
-                if(campos[i]){
-                    JOptionPane.showMessageDialog(this, "Faltan campos por llenar","",JOptionPane.INFORMATION_MESSAGE);
-                    confirmacion = false;
-                    break;
-                }else{
-                    confirmacion = true;
-                }
+        // verificamos que campos tiene true y cuales false, para botar el respectivo error
+        for(int i = 0; i< campos.length; i++){
+            if(campos[i]){
+                JOptionPane.showMessageDialog(this, "Faltan campos por llenar","",JOptionPane.INFORMATION_MESSAGE);
+                confirmacion = false;
+                break;
+            }else{
+                confirmacion = true;
             }
+        }
 
-            // verificamos que los campos que deben ser numeros si sean numeros y no otro tipo de datos
-            if(confirmacion){
-                try{
+        // verificamos que los campos que deben ser numeros si sean numeros y no otro tipo de datos
+        if(confirmacion){
+            try{
 
-                    cilindrada = Integer.parseInt(text_cilindrada.getText());
-                    pasajeros = Integer.parseUnsignedInt(text_pasajeros.getText());
-                    propietario = "" + Integer.parseInt(text_propietario.getText());
+                cilindrada = Integer.parseInt(text_cilindrada.getText());
+                pasajeros = Integer.parseUnsignedInt(text_pasajeros.getText());
+                propietario = "" + Integer.parseInt(text_propietario.getText());
 
-                }catch(NumberFormatException ex){
-                    JOptionPane.showMessageDialog(this, "Los campos:\nCilindrada\nPasajeros\nPropietario\nDeben ser valores enteros","Error", JOptionPane.ERROR_MESSAGE);
-                    confirmacion = false;
-                }
+            }catch(NumberFormatException ex){
+                JOptionPane.showMessageDialog(this, "Los campos:\nCilindrada\nPasajeros\nPropietario\nDeben ser valores enteros","Error", JOptionPane.ERROR_MESSAGE);
+                confirmacion = false;
+            }
                 
-            }
-            if(confirmacion){
-                base = new Vehiculo(url);
-                Clase_vehiculo base2 = new Clase_vehiculo(url);
-                try{
-                    dato = base2.consultar_uno_clase_vehiculo(combo_tipo_vehiculo.getSelectedItem()+"");
-                    ((Vehiculo)base).actualizar_vehiculo(text_placa.getText(),cilindrada, text_color.getText(), text_motor.getText(), text_chasis.getText(), pasajeros, propietario, boton_parque.isSelected());
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-                    base.close();
-                    this.setVisible(false);
+        }
+        if(confirmacion){
+            base = new Vehiculo(url);
+            Clase_vehiculo base2 = new Clase_vehiculo(url);
+
+            try{
+
+                // En este caso, se realiza la actualizacion correspondiente
+                dato = base2.consultar_uno_clase_vehiculo(combo_tipo_vehiculo.getSelectedItem()+"");
+                ((Vehiculo)base).actualizar_vehiculo(text_placa.getText(),cilindrada, text_color.getText(), text_motor.getText(), text_chasis.getText(), pasajeros, propietario, boton_parque.isSelected());
+                
+                if(!boton_parque.isSelected()){
+
                 }
-                base.close();
-                JOptionPane.showMessageDialog(this, "Actualizacion para vehiculo: "+ text_placa.getText() + "\nRealizado correctamente.","",JOptionPane.QUESTION_MESSAGE);
+            }catch(SQLException ex){
+
+                JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                 this.setVisible(false);
+            
+            }finally{
+                base.close();
             }
+            
+            JOptionPane.showMessageDialog(this, "Actualizacion para vehiculo: "+ text_placa.getText() + "\nRealizado correctamente.","",JOptionPane.QUESTION_MESSAGE);
+            this.setVisible(false);
+        }
 
     }
 

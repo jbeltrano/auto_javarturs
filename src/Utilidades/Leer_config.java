@@ -3,7 +3,6 @@ package Utilidades;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
-import java.awt.Color;
 public class Leer_config {
     
     public static String TEMA = "tema";

@@ -12,8 +12,21 @@ import Base.Clase_vehiculo;
 
 public class Insertar_tipo_vehiculo extends Modales_vehiculos{
     
-    private Clase_vehiculo base;
+    private Clase_vehiculo base;    // Variable que se va a utlizar para el manejo de la base de datos
+    private JPanel panel;   // Este es el panel principal sobre el cual se va a trabajar
+    private JLabel primero; // Este es el primer label, donde se indica el campo a rellenar
+    private JButton boton_actualizacion;    // El boton a utilizar para guardar los datos
+    private JTextField tipo_vehiculo;       // El text field donde se va a ingresar la informacion
 
+
+    /**
+     * Constructor de la clase, se encarga de generar el JDialog
+     * para poder realizar la insercion de tipo de vehiculo,
+     * y de paso hacer la insercion en la base de datos
+     * @param frame determina el padre de donde se llama la ventana
+     * @param url es la direccion de la base de datos
+     * @param valor es un valor por defecto puede ser ""
+     */
     public Insertar_tipo_vehiculo(JFrame frame, String url, String valor){
 
         super(frame, url, valor);
@@ -21,45 +34,57 @@ public class Insertar_tipo_vehiculo extends Modales_vehiculos{
         setVisible(true);
     }
 
+    /**
+     * Este metodo es el que se encarga de inicializar
+     * todos los componentes necesarios para que se
+     * renderice lo que se quiere mostrar en el panel
+     */
     protected void iniciar_componentes(){
-        JPanel panel = new JPanel(null);
-        JLabel primero;
-        JButton boton_actualizacion;
-        JTextField tipo_vehiculo;
 
-        primero = new JLabel("Ingrese el tipo de vehiculo");
-        primero.setBounds(25,10,250,20);
+        panel = new JPanel(null);    // Panel principal
 
-        tipo_vehiculo = new JTextField("");
-        tipo_vehiculo.setBounds(25, 40,300,20);
+        primero = new JLabel("Ingrese el tipo de vehiculo");    // Inicializacion del JLabel
+        primero.setBounds(25,10,250,20);    // Ubicacion dentro del panel
 
-        boton_actualizacion = new JButton("Guardar");
-        boton_actualizacion.setBounds(25,530,100,20);
-        boton_actualizacion.addActionListener(_ ->{
+        tipo_vehiculo = new JTextField("");     // Inicializacion del TextField
+        tipo_vehiculo.setBounds(25, 40,300,20);     // Ubicacion dentro del panel
+
+        boton_actualizacion = new JButton("Guardar");   // Inicializacion del boton
+        boton_actualizacion.setBounds(25,530,100,20);   // Ubicacion dentro del panel
+        boton_actualizacion.addActionListener(_ ->{                      // Accion a realizar a precionar el boton
         
 
-            base = new Clase_vehiculo(url);
+            base = new Clase_vehiculo(url);     // Obtiene el accdeso a la base de datos, para hacer cambios en la tabla clase vehiculo
             
-            if(tipo_vehiculo.getText().length() >0){
+            if(tipo_vehiculo.getText().length() >0){        // Determina que haya algun valor ingresado dentro del textfield
 
-                try{
-                    base.insertar_clase_vehiculo(tipo_vehiculo.getText().toUpperCase());
-                }catch(SQLException ex){
+                try{    
+                    base.insertar_clase_vehiculo(tipo_vehiculo.getText().toUpperCase());    // Realiza la insercion del dato ingresado
+                }catch(SQLException ex){    // En caso que haya problemas de coneccion a la base dadtos
+
+                    // Muestra el siguiente mensaje de error lanzando la excepcion atrapada
                     JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+
+                }finally{
+                    base.close();   // Cierra la coneccion con la base de datos
                 }
 
-                base.close();
-
-                JOptionPane.showMessageDialog(this, "Tipo vehiculo insertado con exito.","Insercion", JOptionPane.INFORMATION_MESSAGE);
-                this.dispose();
+                // Muestra que la insercion se realizo correctamente
+                JOptionPane.showMessageDialog(this, // Referencia a el padre
+                                            "Tipo vehiculo insertado con exito.",   // Texto especifico a mostrar
+                                            "Insercion",    // Informacion relevante en la ventana
+                                            JOptionPane.INFORMATION_MESSAGE);   // Tipo de mensaje
+                
+                this.dispose(); // Cierra la ventana
             }
             
         });        
 
+        // En este espacio se agregan los diferentes componentes a el panel
         panel.add(boton_actualizacion);
         panel.add(tipo_vehiculo);
         panel.add(primero);
-        add(panel);
+        add(panel); // Agrega el panel a el JDialog
         pack();
     }
 }
