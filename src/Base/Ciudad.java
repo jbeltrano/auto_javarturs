@@ -1,5 +1,6 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import Utilidades.Capitalizar_Strings;
@@ -8,8 +9,8 @@ public class Ciudad extends Base{
     
     private String[] HEAD_TABLA = {"ID", "CIUDAD", "DEPARTAMENTO"};
 
-    public Ciudad(String url){
-        super(url);
+    public Ciudad() throws IOException, SQLException{
+        super();
     }
     /**
      * Inserta una ciudad donde {@code dep_id}

@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import com.toedter.calendar.JDateChooser;
 import Base.Documentos;
 import Base.Vehiculo;
@@ -45,8 +46,8 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
     protected JDialog ventana;
     protected boolean flag_is_particular;
 
-    public Insertar_documento_vehiculo(JFrame frame, String url, String valor){
-        super(frame, url, valor);
+    public Insertar_documento_vehiculo(JFrame frame, String valor){
+        super(frame, valor);
         this.setPreferredSize(new Dimension(500,500));
         pack();
     }
@@ -234,8 +235,9 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
                 JOptionPane.showMessageDialog(this, "El campo: Placa es obligatorio", "Error", JOptionPane.ERROR_MESSAGE);
             
             }else{
-                base = new Documentos(url);
+                
                 try{
+                    base = new Documentos();
 
                     if(flag_is_particular){     // En caso de ser un vehiculo de servicio particular
                         
@@ -257,12 +259,12 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
                     JOptionPane.showMessageDialog(this, "El Los documentos para el vehiculo " + text_placa.getText() +"\nFueron insertados correctamente.","",JOptionPane.INFORMATION_MESSAGE);
                     setVisible(false);
                 
-                }catch(SQLException ex){
+                }catch(SQLException | IOException ex){
                 
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 
                 }finally{
-                    base.close();
+                    if(base != null) base.close();
                 }
                 
             }
@@ -282,8 +284,10 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
      */
     protected void is_particular(String placa){
 
-        base = new Vehiculo(url);
+        
         try{
+            base = new Vehiculo();
+
             if(((Vehiculo)base).is_particular(placa)){
                 flag_is_particular = true;
                 text_numero_interno.setEnabled(false);
@@ -297,35 +301,37 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
                 fecha_top.setEnabled(true);
                 text_top.setEnabled(true);
             }
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally{
-            base.close();
+            if(base != null) base.close();
         }
     }
 
     protected void datos_vehiculo(){
-        base = new Documentos(url);
+        
         try{
+            base = new Documentos();
             datos = ((Documentos)base).consultar_vehiculo_sin_documento(true);
             tabla_vehiculo.setModel(Modelo_tabla.set_modelo_tablas(datos));
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally{
-            base.close();
+            if(base != null) base.close();
         }
     }
 
     protected void datos_vehiculo(String varible_busqueda){
 
-        base = new Documentos(url);
+        
         try{
+            base = new Documentos();
             datos = ((Documentos)base).consultar_vehiculo_sin_documento(varible_busqueda);
             tabla_vehiculo.setModel(Modelo_tabla.set_modelo_tablas(datos));
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally{
-            base.close();
+            if(base != null) base.close();
         }
 
     }

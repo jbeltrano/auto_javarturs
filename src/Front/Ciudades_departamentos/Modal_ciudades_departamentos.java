@@ -6,20 +6,17 @@ import javax.swing.JDialog;
 
 public abstract class Modal_ciudades_departamentos extends JDialog{
 
-    protected String url;
 
-    public Modal_ciudades_departamentos(JFrame padre, String url){
+    public Modal_ciudades_departamentos(JFrame padre){
         super(padre, true);
-        this.url = url;
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setPreferredSize(new Dimension(460,250));
         iniciar_componentes();
         setLocationRelativeTo(padre);
     }
 
-    public Modal_ciudades_departamentos(JDialog padre, String url){
+    public Modal_ciudades_departamentos(JDialog padre){
         super(padre, true);
-        this.url = url;
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setPreferredSize(new Dimension(460,250));
         iniciar_componentes();

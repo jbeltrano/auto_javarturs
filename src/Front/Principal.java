@@ -44,7 +44,6 @@ import Estructuras_datos.Queue;
 
 public class Principal extends JFrame{
     
-    private final String url;
     private JPanel panel_secundario;
     private JPanel panel_principal2;
     private JPanel panel_informacion;
@@ -62,9 +61,8 @@ public class Principal extends JFrame{
      * se encarga de iniciar la gran mayoria de componentes y el JFrame como tal
      * @see JFrame
     */
-    public Principal(String url){
+    public Principal(){
         super("Javarturs");
-        this.url = url;
         Leer_config config = new Leer_config();
         
         if(config.get_tema() == 0){
@@ -113,10 +111,10 @@ public class Principal extends JFrame{
     private void iniciar_componentes(){
 
         // Carga de icono
-        ImageIcon icono = new ImageIcon("src\\Front\\Recursos\\Logo javarturs.jpg");
+        ImageIcon icono = new ImageIcon(getClass().getResource("/Front/Recursos/Logo javarturs.jpg"));
         this.setIconImage(icono.getImage());
         // Carga de imagen principal
-        ImageIcon imagen1 = new ImageIcon("src\\Front\\Recursos\\imagen_principal.png");
+        ImageIcon imagen1 = new ImageIcon(getClass().getResource("/Front/Recursos/imagen_principal.png"));
         label_imagen = new JLabel(imagen1);
 
         // Inicializacion de los componentes a utilizar
@@ -325,7 +323,7 @@ public class Principal extends JFrame{
         boton_ciudad.addActionListener(_ ->{
             panel_principal2.remove(panel_informacion);
 
-            panel_informacion = new Panel_ciudad(url);
+            panel_informacion = new Panel_ciudad();
 
            // Agregacion al panel
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
@@ -340,7 +338,7 @@ public class Principal extends JFrame{
 
             panel_principal2.remove(panel_informacion);
 
-            panel_informacion = new Panel_departamento(url);
+            panel_informacion = new Panel_departamento();
 
            // Agregacion al panel
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
@@ -354,7 +352,7 @@ public class Principal extends JFrame{
 
             panel_principal2.remove(panel_informacion);
 
-            panel_informacion = new Panel_ruta(url);
+            panel_informacion = new Panel_ruta();
 
            // Agregacion al panel
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
@@ -417,7 +415,7 @@ public class Principal extends JFrame{
             
             panel_principal2.remove(panel_informacion);
 
-            panel_informacion = new Panel_clase_vehiculo(url);
+            panel_informacion = new Panel_clase_vehiculo();
 
            // Agregacion al panel
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
@@ -431,7 +429,7 @@ public class Principal extends JFrame{
         vehiculos.addActionListener(_->{
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
-            panel_informacion = new Panel_vehiculos(url);
+            panel_informacion = new Panel_vehiculos();
 
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -445,7 +443,7 @@ public class Principal extends JFrame{
         conductores.addActionListener(_ ->{
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
-            panel_informacion = new Panel_vehiculo_has_conductor(url);
+            panel_informacion = new Panel_vehiculo_has_conductor();
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -458,7 +456,7 @@ public class Principal extends JFrame{
 
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
-            panel_informacion = new Panel_documentos_vehiculos(url);
+            panel_informacion = new Panel_documentos_vehiculos();
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -472,7 +470,7 @@ public class Principal extends JFrame{
 
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
-            panel_informacion = new Panel_vehiculo_convenio(url);
+            panel_informacion = new Panel_vehiculo_convenio();
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -522,7 +520,7 @@ public class Principal extends JFrame{
             
             panel_principal2.remove(panel_informacion);
 
-            panel_informacion = new Panel_persona(url);
+            panel_informacion = new Panel_persona();
 
            // Agregacion al panel
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
@@ -537,7 +535,7 @@ public class Principal extends JFrame{
         boton_conductores.addActionListener(_->{
             panel_principal2.remove(panel_informacion);
             
-            panel_informacion = new Panel_conductores(url);
+            panel_informacion = new Panel_conductores();
 
             panel_principal2.add(panel_informacion,BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -589,7 +587,7 @@ public class Principal extends JFrame{
                 panel_principal2.remove(pan);
             }
             
-            panel_informacion = new Panel_extractos_mensuales(url);
+            panel_informacion = new Panel_extractos_mensuales();
             
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -606,7 +604,7 @@ public class Principal extends JFrame{
                 panel_principal2.remove(pan);
             }
             
-            panel_informacion = new Panel_extractos_ocasionales(url);
+            panel_informacion = new Panel_extractos_ocasionales();
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -621,7 +619,7 @@ public class Principal extends JFrame{
             }
             
             // cambiar para ver extractos mensuales
-            panel_informacion = new Panel_contratos_mensuales(url);
+            panel_informacion = new Panel_contratos_mensuales();
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -635,7 +633,7 @@ public class Principal extends JFrame{
                 panel_principal2.remove(pan);
             }
             // cambiar para ver extractos ocasionales
-            panel_informacion = new Panel_contratos_ocasionales(url);
+            panel_informacion = new Panel_contratos_ocasionales();
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();
@@ -652,7 +650,7 @@ public class Principal extends JFrame{
             
             
             // cambiar para ver ver contratatnes
-            panel_informacion = new Panel_contratante(url);
+            panel_informacion = new Panel_contratante();
 
             panel_principal2.add(panel_informacion, BorderLayout.CENTER);
             panel_principal2.revalidate();

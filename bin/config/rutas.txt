@@ -1,10 +1,11 @@
 guardar_extractos_mensuales = Desktop\Extractos\Extractos mensuales
+guardar_extractos_mensuales2 = H:\.shortcut-targets-by-id\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\0. EXTRACTOS Y CONTRATOS\EXTRACTO DEL CONTRATO\MENSUALES
 guardar_extractos_ocasionales = Desktop\Extractos\Extractos ocasionales
-guardar_extractos_ocasionales2 = L:\.shortcut-targets-by-id\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\0. EXTRACTOS Y CONTRATOS\EXTRACTO DEL CONTRATO
-guardar_contratos_ocasionales = Desktop\Extractos\Contratos ocasionales
-guardar_contratos_ocasionales2 = L:\.shortcut-targets-by-id\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\0. EXTRACTOS Y CONTRATOS\CONTRATOS DE SERVICIOS OCASIONALES
-plantilla_extractos = src\plantillas\Extracto.xlsx
-pantilla_contratos_ocasionales = src\plantillas\Documento.docx
+guardar_extractos_ocasionales2 = H:\.shortcut-targets-by-id\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\0. EXTRACTOS Y CONTRATOS\EXTRACTO DEL CONTRATO
+guardar_contratos_ocasionales = Desktop\Extractos\Contratos Ocasionales
+guardar_contratos_ocasionales2 = H:\.shortcut-targets-by-id\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\0. EXTRACTOS Y CONTRATOS\CONTRATOS DE SERVICIOS OCASIONALES\
+plantilla_extractos = src\\Formatos\\Extracto.xlsx
+pantilla_contratos_ocasionales = src\Formatos\Documento.docx
 guardar_pdf_exe = src\Utilidades\PDF\a.exe
 guardar_pdf_ps1 = src\Utilidades\PDF\ConvertirPdf.ps1
 icono = src\Front\Recursos\Logo javarturs.jpg

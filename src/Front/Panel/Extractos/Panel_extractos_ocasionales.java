@@ -12,27 +12,30 @@ import Front.Extractos.Insertar_extracto_ocasional;
 import Front.Panel.Panel_extractos;
 import Utilidades.Generar_extractos;
 import Utilidades.Modelo_tabla;
+import java.io.IOException;
 
 public class Panel_extractos_ocasionales extends Panel_extractos{
     
     private Extractos base_extracto;
 
-    public Panel_extractos_ocasionales(String url){
-        super(url);
+    public Panel_extractos_ocasionales(){
+        super();
     }
 
 
     @Override
     protected void cargar_datos_tabla() {
-        base_extracto = new Extractos(url);   // Hace una coneccion a la base de datos
+        
         try{
+            base_extracto = new Extractos();   // Hace una coneccion a la base de datos
+
             tabla = Modelo_tabla.set_tabla_extractos_ocasionales( // Pone un formato para la tabla
                 base_extracto.consultar_vw_extracto_ocasional("")
             );
 
-        }catch(SQLException ex){
+        }catch(SQLException | IOException ex){
             // En caso que haya un error, muestra este mensaje de error con el motivo
-            JOptionPane.showMessageDialog(window, ex.getMessage()+"\nCerrando el Programa", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(window, ex.getLocalizedMessage()+"\nCerrando el Programa", "Error", JOptionPane.ERROR_MESSAGE);
             
             // Esto se utiliza para cerrar el programa despues del error
             if (window != null) {
@@ -40,14 +43,16 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
             }
 
         }finally{
-            base_extracto.close();
+            if(base_extracto != null) base_extracto.close();
         }   
     }
 
     @Override
     protected void accion_text_busqueda() {
-        base_extracto = new Extractos(url);
+        
         try{
+            base_extracto = new Extractos();
+            
             // Obtiene los datos y crea una tabla auxiliar con los datos proporcionados por el text Field
             JTable tabla_aux = Modelo_tabla.set_tabla_extractos_ocasionales(
                 base_extracto.consultar_vw_extracto_ocasional(text_busqueda.getText())
@@ -57,10 +62,10 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
             tabla.setModel(tabla_aux.getModel());
             tabla.setColumnModel(tabla_aux.getColumnModel());
 
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(window, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(window, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally{
-            base_extracto.close();
+            if(base_extracto != null) base_extracto.close();
         }
     }
 
@@ -74,14 +79,14 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
             String consecutivo = (String) tabla.getValueAt(row, 1);
             String contrato = (String) tabla.getValueAt(row, 2);
             // actualizar_extracto
-            new Actualizar_extracto_ocasional((JFrame)this.get_window(), url, placa, consecutivo, contrato, false).setVisible(true);
+            new Actualizar_extracto_ocasional((JFrame)this.get_window(), placa, consecutivo, contrato, false).setVisible(true);
             accion_text_busqueda();
             
 
         });
         item_adicionar.addActionListener(_ ->{
 
-            new Insertar_extracto_ocasional((JFrame)this.get_window(), url).setVisible(true);
+            new Insertar_extracto_ocasional((JFrame)this.get_window()).setVisible(true);
             accion_text_busqueda();
         });
         item_plantilla.addActionListener(_ ->{
@@ -90,7 +95,7 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
             String consecutivo = (String) tabla.getValueAt(row, 1);
             String contrato = (String) tabla.getValueAt(row, 2);
 
-            new Actualizar_extracto_ocasional((JFrame)this.get_window(), url, placa, consecutivo, contrato, true).setVisible(true);
+            new Actualizar_extracto_ocasional((JFrame)this.get_window(), placa, consecutivo, contrato, true).setVisible(true);
 
             accion_text_busqueda();
         });
@@ -112,13 +117,13 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
                 try{
                     String ruta;
                     String comando_auxiliar = "powershell -ExecutionPolicy ByPass -File \"" + UBICACION_PS_CONVERTIRPDF + "\"" + " -parametro \""+ UBICACION_PS_EXTRACTOS_OCASIONALES + "\"";
-                    ruta = Generar_extractos.generar_extracto_ocasional(Integer.parseInt((String) tabla.getValueAt(select_row, 2)), url, flag);
+                    ruta = Generar_extractos.generar_extracto_ocasional(Integer.parseInt((String) tabla.getValueAt(select_row, 2)), flag);
                     
                     runtime.exec(comando_auxiliar);
                     
                     JOptionPane.showMessageDialog((JFrame)this.get_window(), "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
                 }catch(Exception ex){
-                    JOptionPane.showMessageDialog((JFrame)this.get_window(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog((JFrame)this.get_window(), ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }   
             }
             
@@ -130,15 +135,16 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
             String consecutivo = "" + tabla.getValueAt(number, 1);
             number = JOptionPane.showConfirmDialog((JFrame)this.get_window(), "Esta seguro de eliminar el extracto " + consecutivo + "\ndel vehiculo "+placa,  "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
-                base_extracto = new Extractos(url);
+                
                 try{
+                    base_extracto = new Extractos();
                     // realizando la eliminacion del registro
                     base_extracto.eliminar_extracto_ocasional(placa, Integer.parseInt(consecutivo));
 
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog((JFrame)this.get_window(),ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog((JFrame)this.get_window(),ex.getLocalizedMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                 }finally{
-                    base_extracto.close();
+                    if(base_extracto != null) base_extracto.close();
                 }
                 
                 JOptionPane.showMessageDialog((JFrame)this.get_window(), "Extracto eliminado correctamente");

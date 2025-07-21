@@ -13,8 +13,8 @@ public abstract class Panel_extractos extends Panel{
     protected static final String UBICACION_PS_EXTRACTOS_MENSUALES = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
     protected static final String UBICACION_PS_EXTRACTOS_OCASIONALES = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
     
-    public Panel_extractos(String url){
-        super(url);
+    public Panel_extractos(){
+        super();
     }
 
     @Override

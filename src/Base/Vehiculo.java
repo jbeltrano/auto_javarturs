@@ -1,5 +1,6 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -11,9 +12,11 @@ public class Vehiculo extends Base{
      * @param url Es la url del archivo
      * para establecer la conexion con la
      * base de datos.
+     * @throws SQLException 
+     * @throws IOException 
      */
-    public Vehiculo(String url){
-        super(url);
+    public Vehiculo() throws IOException, SQLException{
+        super();
     }
 
     /**

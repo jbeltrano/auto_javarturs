@@ -1,11 +1,12 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class Departamento extends Base{
     
-    public Departamento(String url){
-        super(url);
+    public Departamento() throws IOException, SQLException{
+        super();
     }
 
     /**

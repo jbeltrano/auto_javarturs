@@ -1,5 +1,6 @@
 package Front.Extractos;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -16,8 +17,8 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
     private int id;
     private boolean is_plantilla;
 
-    public Actualizar_contrato_ocasional(JFrame padre, String url, int id, boolean is_plantilla){
-        super(padre, url);
+    public Actualizar_contrato_ocasional(JFrame padre, int id, boolean is_plantilla){
+        super(padre);
         this.id = id;
         this.is_plantilla = is_plantilla;
         modificar();
@@ -28,8 +29,10 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
             text_numero_contrato.setEnabled(false);
         }
         
-        base = new BContrato_ocasional(url);
+        
         try{
+            base = new BContrato_ocasional();
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
             LocalDate fInicial;
             LocalDate fFinal;
@@ -50,11 +53,11 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
 
             fecha_incial.setDate(Date.from(fInicial.atStartOfDay(ZoneId.systemDefault()).toInstant()));
             fecha_final.setDate(Date.from(fFinal.atStartOfDay(ZoneId.systemDefault()).toInstant()));
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            setVisible(false);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            Actualizar_contrato_ocasional.this.dispose();
         }finally{
-            base.close();
+            if(base != null) base.close();
         }
         
     }
@@ -73,8 +76,9 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
             double valor_contrato;
             text_valor_contrato.setText(text_valor_contrato.getText().replaceAll(",", "."));
             
-            base = new BContrato_ocasional(url);
+            
             try{
+                base = new BContrato_ocasional();
                 Integer.parseInt(text_contratante.getText());
                 numero_contrato = (text_numero_contrato.getText().compareTo("") == 0)?null: Integer.parseInt(text_numero_contrato.getText());
                 valor_contrato = (text_valor_contrato.getText().compareTo("") == 0)?0:Double.parseDouble(text_valor_contrato.getText());
@@ -97,18 +101,18 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
                                                        tipo_contrato);
     
                     JOptionPane.showMessageDialog(this, "Contrato Ocasional guardado correctamente", "Transaccion exitosa", JOptionPane.INFORMATION_MESSAGE);
-                    setVisible(false);
+                    Actualizar_contrato_ocasional.this.dispose();
     
                 }else{
                     JOptionPane.showMessageDialog(this, "Por favor, rellene todos los campos para continuar...", "Error", JOptionPane.ERROR_MESSAGE);
                 }
     
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }catch(SQLException | IOException ex){
+                JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }catch(NumberFormatException ex){
                 JOptionPane.showMessageDialog(this, "Los campos: \nNumero de contrato\nContratante\norigen y destino\nDeben ser de tipo numerico", "Error", JOptionPane.ERROR_MESSAGE);
             }finally{
-                base.close();
+                if(base != null) base.close();
             }
         }else{
             super.guardar();

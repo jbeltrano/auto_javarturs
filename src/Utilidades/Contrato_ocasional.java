@@ -24,6 +24,7 @@ public class Contrato_ocasional{
     private FileInputStream fis;
     private XWPFDocument documento;
     private String numero_contrato;
+    private Leer_rutas rutas;
 
     /**
      * Constructor por defecto que abre
@@ -32,9 +33,11 @@ public class Contrato_ocasional{
      * @param url
      * @throws IOException
      */
-    public Contrato_ocasional(String url) throws IOException{
+    public Contrato_ocasional() throws IOException{
 
-        fis = new FileInputStream(url);
+        rutas = new Leer_rutas();
+        fis = new FileInputStream(new File(rutas.get_ruta(Leer_rutas.PLANTILLA_CONTRATOS)));
+
         documento = new XWPFDocument(fis);
         
         

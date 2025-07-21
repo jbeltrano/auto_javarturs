@@ -1,12 +1,13 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import Estructuras_datos.Graph;
 
 public class Ruta extends Base{
     
-    public Ruta(String url){
-        super(url);
+    public Ruta() throws IOException, SQLException{
+        super();
     }
 
     

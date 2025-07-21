@@ -2,6 +2,7 @@ package Front.Vehiculos;
 
 
 import java.awt.event.MouseAdapter;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Vector;
 import javax.swing.JFrame;
@@ -64,9 +65,9 @@ public class Insertar_vehiculos extends Modales_vehiculos{
     protected String[][] datos;
     protected String[] dato;
 
-    public Insertar_vehiculos(JFrame padre, String url, String valor){
+    public Insertar_vehiculos(JFrame padre, String valor){
         
-        super(padre, url,valor);
+        super(padre,valor);
         pack();
 
     }
@@ -141,14 +142,15 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         jPanel1.add(text_modelo);
 
 
-        base = new Clase_vehiculo(url);
+        
         try{
+            base = new Clase_vehiculo();
             vector = ((Clase_vehiculo)base).consultar_clase_vehiculo(2);
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR);
-            this.setVisible(false);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR);
+            Insertar_vehiculos.this.dispose();
         }finally{
-            base.close();
+            if(base != null) base.close();
         }
         
         combo_tipo_vehiculo = new JComboBox<>(vector);
@@ -187,16 +189,17 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         label_servicio.setBounds(450,90,70,16);
         jPanel1.add(label_servicio);
 
-        base = new Vehiculo(url);
+        
         try{
+            base = new Vehiculo();
             combo_servicio = new JComboBox<>(((Vehiculo)base).consultar_servicio());
             combo_servicio.setSelectedIndex(1);
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
-            base.close();
-            this.setVisible(false);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+            if(base != null) base.close();
+            Insertar_vehiculos.this.dispose();
         }
-        base.close();
+        if(base != null) base.close();
 
         combo_servicio.setBounds(450,120,110,22);
         jPanel1.add(combo_servicio);
@@ -237,22 +240,22 @@ public class Insertar_vehiculos extends Modales_vehiculos{
             public void accion() {
                 String datos[][] = null;
                 
-                
-                base = new Clase_vehiculo(url);
-                Persona base_persona = new Persona(url);
+                Persona base_persona = null;
                 try{
+                    base = new Clase_vehiculo();
+                    base_persona = new Persona();
                     datos = base_persona.consultar_persona(text_propietario.getText());
                     JTable tabla_aux = Modelo_tabla.set_tabla_personas(datos);
                     tab.setModel(tabla_aux.getModel());
                     tab.setColumnModel(tabla_aux.getColumnModel());
         
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog(padre, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     padre.setVisible(false);
-                    base.close();
+                    if(base != null) base.close();
                 }finally{
-                    base.close();
-                    base_persona.close();
+                    if(base != null) base.close();
+                    if(base_persona != null) base_persona.close();
                 }
                 
             }
@@ -266,13 +269,14 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         jPanel1.add(text_propietario);
         text_propietario.setBounds(130, 280, 120, 22);
 
-        base = new Persona(url);
+        
         try{
+            base = new Persona();
             datos = ((Persona)base).consultar_persona();
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(),"Error",JOptionPane.ERROR_MESSAGE);
         }finally{
-            base.close();
+            if(base != null) base.close();
         }
 
         tab = Modelo_tabla.set_tabla_personas(datos);
@@ -283,21 +287,22 @@ public class Insertar_vehiculos extends Modales_vehiculos{
             public void mouseClicked(java.awt.event.MouseEvent e){
                 if(SwingUtilities.isRightMouseButton(e)){
                     // Carga un formulario para insertar personas
-                    Insertar_persona persona = new Insertar_persona(padre, url);
+                    Insertar_persona persona = new Insertar_persona(padre);
                     persona.setVisible(false);
                     persona = null;
-                    base = new Persona(url);
+                    
                     try {
+                        base = new Persona();
                         datos = ((Persona)base).consultar_persona();
                         JTable tabla_aux = Modelo_tabla.set_tabla_personas(datos);
                         tab.setModel(tabla_aux.getModel());
                         tab.setColumnModel(tabla_aux.getColumnModel());
                         
-                    } catch (SQLException ec) {
-                        JOptionPane.showMessageDialog(null, ec.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                    } catch (SQLException | IOException ex) {
+                        JOptionPane.showMessageDialog(null, ex.getLocalizedMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                         
                     }finally{
-                        base.close();
+                        if(base != null) base.close();
                     }
 
                 }else{
@@ -391,23 +396,27 @@ public class Insertar_vehiculos extends Modales_vehiculos{
             
         }
         if(confirmacion){
-            base = new Base(url);
-            Clase_vehiculo base_clase_vehiculo = new Clase_vehiculo(url);
-            Vehiculo base_vehiculo = new Vehiculo(url);
+            
+            Clase_vehiculo base_clase_vehiculo = null;
+            Vehiculo base_vehiculo = null;
+
             try{
+                base = new Base();
+                base_clase_vehiculo = new Clase_vehiculo();
+                base_vehiculo = new Vehiculo();
                 dato = base_clase_vehiculo.consultar_uno_clase_vehiculo(combo_tipo_vehiculo.getSelectedItem()+"");
                 base_vehiculo.insertar_vehiculo(text_placa.getText().toUpperCase(), Integer.parseInt(dato[0]),modelo,text_marca.getText().toUpperCase(), text_linea.getText().toUpperCase(), cilindrada, text_color.getText().toUpperCase(),combo_servicio.getSelectedIndex()+1, text_combustible.getText().toUpperCase(), text_carroceria.getText().toUpperCase(), text_motor.getText().toUpperCase(), text_chasis.getText().toUpperCase(), pasajeros, propietario, boton_parque.isSelected());
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+            }catch(SQLException | IOException ex){
+                JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                 
-                this.setVisible(false);
+                Insertar_vehiculos.this.dispose();
             }finally{
-                base.close();
-                base_clase_vehiculo.close();
-                base_vehiculo.close();
+                if(base != null) base.close();
+                if(base_clase_vehiculo != null) base_clase_vehiculo.close();
+                if(base_vehiculo != null) base_vehiculo.close();
             }
             JOptionPane.showMessageDialog(this, "Vehiculo guardado correctamente","",JOptionPane.QUESTION_MESSAGE);
-            this.setVisible(false);
+            Insertar_vehiculos.this.dispose();
         }
     }
 }

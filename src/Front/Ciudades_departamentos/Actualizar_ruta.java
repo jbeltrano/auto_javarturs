@@ -1,6 +1,7 @@
 package Front.Ciudades_departamentos;
 
 import java.sql.SQLException;
+import java.io.IOException;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -18,8 +19,8 @@ public class Actualizar_ruta extends Insertar_ruta{
     private String[][] datos_origen;
     private String[][] datos_destino;
 
-    public Actualizar_ruta(JDialog padre, String url, int id_origen, int id_destino, int distancia){
-        super(padre, url);
+    public Actualizar_ruta(JDialog padre, int id_origen, int id_destino, int distancia){
+        super(padre);
         this.id_origen = id_origen;
         this.id_destino = id_destino;
         this.distancia = distancia;
@@ -30,15 +31,14 @@ public class Actualizar_ruta extends Insertar_ruta{
     /**
      * Este es el constructor para un JFrame,
      * el cual se encarga de obtener los datos necesarios
-     * para actualizar la informacion de una ruta
-     * @param padre
-     * @param url
-     * @param id_origen
-     * @param id_destino
-     * @param distancia
+     * para actualizar la información de una ruta
+     * @param padre Frame padre de esta ventana
+     * @param id_origen ID de la ciudad origen
+     * @param id_destino ID de la ciudad destino
+     * @param distancia Distancia entre las ciudades
      */
-    public Actualizar_ruta(JFrame padre, String url, int id_origen, int id_destino, int distancia){
-        super(padre, url);
+    public Actualizar_ruta(JFrame padre, int id_origen, int id_destino, int distancia){
+        super(padre);
         this.id_origen = id_origen;
         this.id_destino = id_destino;
         this.distancia = distancia;
@@ -47,14 +47,12 @@ public class Actualizar_ruta extends Insertar_ruta{
     }
 
     private void actualizar(){
-        
         text_origen.setText("" + id_origen);
         text_destino.setText("" + id_destino);
         text_distancia.setText("" + distancia);
 
-        base_ciudad = new Ciudad(url);
-
         try{
+            base_ciudad = new Ciudad();
             datos_origen = base_ciudad.consultar_ciudades("" + id_origen);
             datos_destino = base_ciudad.consultar_ciudades("" + id_destino);
             
@@ -69,35 +67,32 @@ public class Actualizar_ruta extends Insertar_ruta{
 
             tabla_origen.changeSelection(0, 0, false, false);
             tabla_destino.changeSelection(0, 0, false, false);
-
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             setVisible(false);
         }finally{
-            base_ciudad.close();
+            if(base_ciudad != null) base_ciudad.close();
         }
 
         pack();
     }
     @Override
     protected void accion_guardar(){
-        base_ruta = new Ruta(url);
-
         try{
+            base_ruta = new Ruta();
             
             int origen = Integer.parseInt((String) tabla_origen.getValueAt(tabla_origen.getSelectedRow(), 0));
             int destino = Integer.parseInt((String) tabla_destino.getValueAt(tabla_destino.getSelectedRow(), 0));
             int distancia = Integer.parseInt(text_distancia.getText());
             
-            base_ruta.actualizar_ruta(id_origen,id_destino,origen, destino, distancia);
+            base_ruta.actualizar_ruta(id_origen, id_destino, origen, destino, distancia);
 
-            JOptionPane.showMessageDialog(this, "Datos insertados correctamente.", null, JOptionPane.INFORMATION_MESSAGE);
-
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Ruta actualizada correctamente.", null, JOptionPane.INFORMATION_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             setVisible(false);
         }finally{
-            base_ruta.close();
+            if(base_ruta != null) base_ruta.close();
         }
 
         

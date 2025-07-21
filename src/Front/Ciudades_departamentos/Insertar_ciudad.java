@@ -7,6 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.sql.SQLException;
+import java.io.IOException;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
@@ -29,12 +30,12 @@ public class Insertar_ciudad extends Modal_ciudades_departamentos{
     protected JTextField text_ciudad;
 
 
-    public Insertar_ciudad(JFrame padre, String url){
-        super(padre ,url);
+    public Insertar_ciudad(JFrame padre){
+        super(padre);
     }
 
-    public Insertar_ciudad(JDialog padre, String url){
-        super(padre ,url);
+    public Insertar_ciudad(JDialog padre){
+        super(padre);
     }
     
     @Override               
@@ -55,14 +56,14 @@ public class Insertar_ciudad extends Modal_ciudades_departamentos{
         jLabel1.setBounds(POSICION_X, POSICION_X, 96, ALTURA_Y);
     
         // Cargando los datos necesarios para el comobo_departamento
-        base = new Departamento(url);
         try{
+            base = new Departamento();
             combo_departamento.setModel(new DefaultComboBoxModel<>(((Departamento)base).consultar_departamento()));
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             setVisible(false);
         }finally{
-            base.close();
+            if(base != null) base.close();
         }
         
         combo_departamento.setSelectedItem("Meta");
@@ -104,18 +105,15 @@ public class Insertar_ciudad extends Modal_ciudades_departamentos{
             if(text_ciudad.getText().compareTo("") == 0){
                 JOptionPane.showMessageDialog(this, "Por favor diligenciar el campo Ciudad");
             }else{
-                
-                base = new Ciudad(url);
                 try{
-
+                    base = new Ciudad();
                     ((Ciudad)base).insertar_ciudad(text_ciudad.getText(), (String) combo_departamento.getSelectedItem());
-                    base.close();
                     JOptionPane.showMessageDialog(this, "Ciudad insertada con exito");
                     setVisible(false);
-
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    base.close();
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    if(base != null) base.close();
                 }
             }
         });

@@ -10,27 +10,30 @@ import Front.Panel.Panel;
 import Front.Vehiculos.Insertar_vehiculo_conductor;
 import Utilidades.Modelo_tabla;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 public class Panel_vehiculo_has_conductor extends Panel{
 
     private Vehiculo_has_conductor base_vehiculo_has_conductor;
 
-    public Panel_vehiculo_has_conductor(String url){
-        super(url);
+    public Panel_vehiculo_has_conductor(){
+        super();
     }
 
     @Override
     protected void cargar_datos_tabla() {
 
-        base_vehiculo_has_conductor = new Vehiculo_has_conductor(url);   // Hace una coneccion a la base de datos
+        
         try{
+            base_vehiculo_has_conductor = new Vehiculo_has_conductor();   // Hace una coneccion a la base de datos
+
             tabla = Modelo_tabla.set_tabla_vehiculo_has_conductor(             // Pone un formato para la tabla
                 base_vehiculo_has_conductor.consultar_conductor_has_vehiculo() // Pasa los datos que va a tener la tabla
             );
 
-        }catch(SQLException ex){
+        }catch(SQLException | IOException ex){
             // En caso que haya un error, muestra este mensaje de error con el motivo
-            JOptionPane.showMessageDialog(this, ex.getMessage()+"\nCerrando el Programa", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage()+"\nCerrando el Programa", "Error", JOptionPane.ERROR_MESSAGE);
             
             // Esto se utiliza para cerrar el programa despues del error
             if (window != null) {
@@ -38,14 +41,18 @@ public class Panel_vehiculo_has_conductor extends Panel{
             }
 
         }finally{
-            base_vehiculo_has_conductor.close();
+            if(base_vehiculo_has_conductor != null){
+                base_vehiculo_has_conductor.close(); // Cierra la coneccion a la base de datos
+            }
         }   
     }
 
     @Override
     protected void accion_text_busqueda() {
-        base_vehiculo_has_conductor = new Vehiculo_has_conductor(url);
+        
         try{
+            base_vehiculo_has_conductor = new Vehiculo_has_conductor();
+
             // Obtiene los datos y crea una tabla auxiliar con los datos proporcionados por el text Field
             JTable tabla_aux = Modelo_tabla.set_tabla_documentos_vehiculos(
                 base_vehiculo_has_conductor.consultar_conductor_has_vehiculo(text_busqueda.getText())
@@ -55,10 +62,12 @@ public class Panel_vehiculo_has_conductor extends Panel{
             tabla.setModel(tabla_aux.getModel());
             tabla.setColumnModel(tabla_aux.getColumnModel());
 
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally{
-            base_vehiculo_has_conductor.close();
+            if(base_vehiculo_has_conductor != null){
+                base_vehiculo_has_conductor.close(); // Cierra la coneccion a la base de datos
+            }
         }
     }
 
@@ -67,7 +76,7 @@ public class Panel_vehiculo_has_conductor extends Panel{
         
         item_adicionar.addActionListener(_ ->{
             // Cuando se adicione un valor, simplemente se llama al metodo que se encarga de la insercion
-            new Insertar_vehiculo_conductor((JFrame)this.get_window(), url, "");
+            new Insertar_vehiculo_conductor((JFrame)this.get_window(), "");
             
             // Posteriormente se cargan los datos teniendo en cuenta la ultima busqueda del usuario
             accion_text_busqueda();
@@ -88,17 +97,21 @@ public class Panel_vehiculo_has_conductor extends Panel{
             number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el registro\n"+ placa_vehiculo +"|"+tabla.getValueAt(number, 3), "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){    // En caso de ser un si, se procede con la eliminacion del registro
                 
-                base_vehiculo_has_conductor = new Vehiculo_has_conductor(url);
+                
                 try{
+                    base_vehiculo_has_conductor = new Vehiculo_has_conductor();
+                    
                     base_vehiculo_has_conductor.eliminar_vehiculo_has_conductor(conductor_id,placa_vehiculo);
                     JOptionPane.showMessageDialog(this, "Registro eliminado correctamente");
 
                     accion_text_busqueda();
 
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog(this,ex.getLocalizedMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                 }finally{
-                    base_vehiculo_has_conductor.close();
+                    if(base_vehiculo_has_conductor != null){
+                        base_vehiculo_has_conductor.close(); // Cierra la coneccion a la base de datos
+                    }
                 }
 
             }

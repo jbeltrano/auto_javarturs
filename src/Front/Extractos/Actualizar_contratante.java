@@ -1,5 +1,6 @@
 package Front.Extractos;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import javax.swing.JFrame;
 import Base.Contratante;
@@ -7,8 +8,8 @@ import Base.Contratante;
 public class Actualizar_contratante extends Insertar_contratante{
 
     private String id;
-    public Actualizar_contratante(JFrame padre, String url, String id){
-        super(padre, url);
+    public Actualizar_contratante(JFrame padre, String id){
+        super(padre);
         this.id = id;
         modificar();
         
@@ -25,11 +26,17 @@ public class Actualizar_contratante extends Insertar_contratante{
     @Override
     protected void guardar()throws SQLException{
 
-        base = new Contratante(url);
+        try{
+            base = new Contratante();
 
-        ((Contratante)base).actualizar_contratante(text_contratante.getText(), text_responsable.getText());
-
-        base.close();
+            ((Contratante)base).actualizar_contratante(text_contratante.getText(), text_responsable.getText());
+        }catch(SQLException | IOException ex){
+            throw new SQLException("Error al actualizar el contratante: " + ex.getLocalizedMessage());
+            
+        }finally{
+            if(base != null) base.close();
+        }
+        
 
     }
 }

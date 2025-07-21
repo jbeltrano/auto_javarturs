@@ -3,6 +3,7 @@ package Front.Extractos;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -37,13 +38,13 @@ public class Insertar_contratante extends Modal_extracto{
     private String[][] datos_tabla_contratante;
     private JDialog ventana;
 
-    public Insertar_contratante(JFrame padre, String url){
-        super(padre, url);
+    public Insertar_contratante(JFrame padre){
+        super(padre);
         ventana = this;
     }
 
-    public Insertar_contratante(JDialog padre, String url){
-        super(padre, url);
+    public Insertar_contratante(JDialog padre){
+        super(padre);
         ventana = this;
     }
 
@@ -62,15 +63,17 @@ public class Insertar_contratante extends Modal_extracto{
         boton_guardar = new JButton();
 
         // Consultando los datos de los contratantes
-        base = new Persona(url);
-        try{
-            
+        try {
+            base = new Persona();
             tabla_contratante = Modelo_tabla.set_tabla_personas(((Persona)base).consultar_no_contratante(""));
             tabla_responsable = Modelo_tabla.set_tabla_personas(((Persona)base).consultar_persona());
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }finally{
-            base.close();
+        } catch(SQLException | IOException ex) {
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            setVisible(false);
+        } finally {
+            if (base != null) {
+                base.close();
+            }
         }
         
 
@@ -129,7 +132,7 @@ public class Insertar_contratante extends Modal_extracto{
                 if(SwingUtilities.isLeftMouseButton(e)){
                     accion_tabla_contratante();
                 }else{
-                    new Insertar_persona(ventana, url);
+                    new Insertar_persona(ventana);
                     set_tabla_contratante();
                 }
                 
@@ -148,7 +151,7 @@ public class Insertar_contratante extends Modal_extracto{
                 if(SwingUtilities.isLeftMouseButton(e)){
                     accion_tabla_responsable();
                 }else{
-                    new Insertar_persona(ventana, url);
+                    new Insertar_persona(ventana);
                     set_tabla_responsable();
                 }
                 
@@ -175,7 +178,7 @@ public class Insertar_contratante extends Modal_extracto{
             errores += "\nSon necesarios";
 
             if(band){
-                try{
+                try {
                     Double.parseDouble(text_contratante.getText());
                     Double.parseDouble(text_responsable.getText());
 
@@ -184,11 +187,13 @@ public class Insertar_contratante extends Modal_extracto{
                     JOptionPane.showMessageDialog(this, "Contrante guardado correctamente", "Guardado", JOptionPane.INFORMATION_MESSAGE);
                     this.setVisible(false);
 
-                }catch(NumberFormatException ex){
+                } catch(NumberFormatException ex) {
                     JOptionPane.showMessageDialog(this, "Los campos:\n Documento, Responsable\nDeben ser numeros enteros.", "Error", JOptionPane.ERROR_MESSAGE);
-                }catch(SQLException ex){
-                    base.close();
-                    JOptionPane.showMessageDialog(this,ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                } catch(SQLException | IOException ex) {
+                    if (base != null) {
+                        base.close();
+                    }
+                    JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }else{
                 JOptionPane.showMessageDialog(this, errores, "Error", JOptionPane.ERROR_MESSAGE);
@@ -213,13 +218,15 @@ public class Insertar_contratante extends Modal_extracto{
         return new Dimension(630,350);
     }
 
-    protected void guardar()throws SQLException{
-
-        base = new Contratante(url);
-
-        ((Contratante)base).insertar_contratante(text_contratante.getText(), text_responsable.getText());
-
-
+    protected void guardar() throws SQLException, IOException{
+        try {
+            base = new Contratante();
+            ((Contratante)base).insertar_contratante(text_contratante.getText(), text_responsable.getText());
+        } finally {
+            if (base != null) {
+                base.close();
+            }
+        }
     }
 
     private void accion_tabla_contratante(){
@@ -244,45 +251,43 @@ public class Insertar_contratante extends Modal_extracto{
         jPanel1.repaint();
     }
 
-    public void set_tabla_contratante(){
-        base = new Persona(url);
-        try{
-                    
+    public void set_tabla_contratante() {
+        try {
+            base = new Persona();
             datos_tabla_contratante = ((Persona)base).consultar_no_contratante(text_contratante.getText());
             JTable aux = Modelo_tabla.set_tabla_personas(datos_tabla_contratante);
             tabla_contratante.setModel(aux.getModel());
             tabla_contratante.setColumnModel(aux.getColumnModel());
             
-
             jPanel1.revalidate();
             jPanel1.repaint();
         
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }finally{
-            base.close();
+        } catch(SQLException | IOException ex) {
+            JOptionPane.showMessageDialog(null, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            if (base != null) {
+                base.close();
+            }
         }
     }
 
-    public void set_tabla_responsable(){
-
-        base = new Persona(url);
-        try{
-            
+    public void set_tabla_responsable() {
+        try {
+            base = new Persona();
             datos_tabla_responsable = ((Persona)base).consultar_persona(text_responsable.getText());
             JTable aux = Modelo_tabla.set_tabla_personas(datos_tabla_responsable);
             tabla_responsable.setModel(aux.getModel());
             tabla_responsable.setColumnModel(aux.getColumnModel());
                     
-
             jPanel1.revalidate();
             jPanel1.repaint();
 
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }finally{
-            base.close();
+        } catch(SQLException | IOException ex) {
+            JOptionPane.showMessageDialog(null, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            if (base != null) {
+                base.close();
+            }
         }
-
     }
 }

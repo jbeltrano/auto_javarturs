@@ -6,6 +6,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+
 import Base.Contratante;
 import Front.Extractos.Actualizar_contratante;
 import Front.Extractos.Insertar_contratante;
@@ -16,21 +18,22 @@ public class Panel_contratante extends Panel{
     
     private Contratante base_contratante;
 
-    public Panel_contratante(String url){
-        super(url);
+    public Panel_contratante(){
+        super();
     }
 
     @Override
     protected void cargar_datos_tabla() {
-        base_contratante = new Contratante(url);   // Hace una coneccion a la base de datos
+        
         try{
+            base_contratante = new Contratante();   // Hace una coneccion a la base de datos
             tabla = Modelo_tabla.set_tabla_contratante( // Pone un formato para la tabla
                 base_contratante.consultar_contratante("") // Pasa los datos que va a tener la tabla
             );
 
-        }catch(SQLException ex){
+        }catch(SQLException | IOException ex){
             // En caso que haya un error, muestra este mensaje de error con el motivo
-            JOptionPane.showMessageDialog(window, ex.getMessage()+"\nCerrando el Programa", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(window, ex.getLocalizedMessage()+"\nCerrando el Programa", "Error", JOptionPane.ERROR_MESSAGE);
             
             // Esto se utiliza para cerrar el programa despues del error
             if (window != null) {
@@ -38,14 +41,15 @@ public class Panel_contratante extends Panel{
             }
 
         }finally{
-            base_contratante.close();
+            if(base_contratante != null) base_contratante.close();
         }   
     }
 
     @Override
     protected void accion_text_busqueda() {
-        base_contratante = new Contratante(url);
+        
         try{
+            base_contratante = new Contratante();
             // Obtiene los datos y crea una tabla auxiliar con los datos proporcionados por el text Field
             JTable tabla_aux = Modelo_tabla.set_tabla_contratante(
                 base_contratante.consultar_contratante(text_busqueda.getText())
@@ -55,10 +59,10 @@ public class Panel_contratante extends Panel{
             tabla.setModel(tabla_aux.getModel());
             tabla.setColumnModel(tabla_aux.getColumnModel());
 
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(window), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(window), ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally{
-            base_contratante.close();
+            if(base_contratante != null) base_contratante.close();
         }
     }
 
@@ -69,13 +73,13 @@ public class Panel_contratante extends Panel{
             int select_row = tabla.getSelectedRow();
 
             
-            new Actualizar_contratante((JFrame)this.get_window(), url,(String) tabla.getValueAt(select_row, 0)).setVisible(true);
+            new Actualizar_contratante((JFrame)this.get_window(),(String) tabla.getValueAt(select_row, 0)).setVisible(true);
             accion_text_busqueda();
 
         });
         item_adicionar.addActionListener(_ ->{
 
-            new Insertar_contratante((JFrame)this.get_window(), url).setVisible(true);
+            new Insertar_contratante((JFrame)this.get_window()).setVisible(true);
 
             accion_text_busqueda();
 
@@ -88,13 +92,14 @@ public class Panel_contratante extends Panel{
             String nombre = "" + tabla.getValueAt(number, 2);
             number = JOptionPane.showConfirmDialog((JFrame)this.get_window(), "Esta seguro de eliminar al contratante:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
-                base_contratante = new Contratante(url);
+                
                 try{
+                    base_contratante = new Contratante();
                     base_contratante.eliminar_contratante(id);
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog((JFrame)this.get_window(),ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog((JFrame)this.get_window(),ex.getLocalizedMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                 }finally{
-                    base_contratante.close();
+                    if(base_contratante != null) base_contratante.close();
                 }
                 
                 JOptionPane.showMessageDialog((JFrame)this.get_window(), "Contratante eliminado correctamente");

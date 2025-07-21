@@ -3,6 +3,7 @@ package Front.Extractos;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -36,10 +37,11 @@ public class Insertar_contrato_mensual extends Modal_extracto{
     private String ultimo_contrato;
     private JLabel label_tipo_contrato;
     protected JComboBox<String> combo_tipo_contrato;
+    protected Contratante base_contratante;
+    protected Contrato_mensual base_cm;
+    public Insertar_contrato_mensual(JFrame padre){
 
-    public Insertar_contrato_mensual(JFrame padre, String url){
-
-        super(padre, url);
+        super(padre);
 
     }
 
@@ -59,21 +61,24 @@ public class Insertar_contrato_mensual extends Modal_extracto{
         label_tipo_contrato = new JLabel();
         
         // Consultando los datos de los contratantes
-        base = new BContrato_ocasional(url);
-        Contratante base_contratante = new Contratante(url);
-        Contrato_mensual base_cm = new Contrato_mensual(url);
         
         try{
+
+            base = new BContrato_ocasional();
+            base_contratante = new Contratante();
+            base_cm = new Contrato_mensual();
+        
+
             datos = base_contratante.consultar_contratante("");
             ultimo_contrato = "" + (Integer.parseInt(base_cm.consultar_ultimo_contrato_mensual()) +1);
             combo_tipo_contrato = new JComboBox<>(((BContrato_ocasional)base).consultar_tipo_contrato());
 
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally{
-            base.close();
-            base_contratante.close();
-            base_cm.close();
+            if(base != null) base.close();
+            if(base_contratante != null) base_contratante.close();
+            if(base_cm != null) base_cm.close();
         }
         panel.setLayout(null);
 
@@ -96,19 +101,20 @@ public class Insertar_contrato_mensual extends Modal_extracto{
             @Override
             public void accion(){
 
-                base = new Contratante(url);
+                
                 try{
 
+                    base = new Contratante();
                     datos = ((Contratante)base).consultar_contratante(text_contratante.getText());
                     JTable aux = Modelo_tabla.set_tabla_contratante(datos);
                     tabla_contratante.setModel(aux.getModel());
                     tabla_contratante.setColumnModel(aux.getColumnModel());
                     
         
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog(null, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }finally{
-                    base.close();
+                    if(base != null) base.close();
                 }
 
             }
@@ -140,7 +146,7 @@ public class Insertar_contrato_mensual extends Modal_extracto{
                     int row = tabla_contratante.getSelectedRow();
                     text_contratante.setText("" + tabla_contratante.getValueAt(row, 0));
                 }else if(SwingUtilities.isRightMouseButton(e)){
-                    new Insertar_contratante(padre, url).setVisible(true);
+                    new Insertar_contratante(padre).setVisible(true);
                 }
                 
             }
@@ -181,9 +187,8 @@ public class Insertar_contrato_mensual extends Modal_extracto{
 
                 }catch(NumberFormatException ex){
                     JOptionPane.showMessageDialog(this, "Los campos:\n Numero de contrato, Contratante\nDeben ser numeros enteros.", "Error", JOptionPane.ERROR_MESSAGE);
-                }catch(SQLException ex){
-                    base.close();
-                    JOptionPane.showMessageDialog(this,ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog(this,ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }else{
                 JOptionPane.showMessageDialog(this, errores, "Error", JOptionPane.ERROR_MESSAGE);
@@ -202,13 +207,19 @@ public class Insertar_contrato_mensual extends Modal_extracto{
         return new Dimension(700,350);
     }
     
-    protected void guardar()throws SQLException{
+    protected void guardar()throws SQLException, IOException{
         int numero_contrato = Integer.parseInt(text_contrato.getText());
-        base = new Contrato_mensual(url);
+        
+        try{
 
-        ((Contrato_mensual)base).insertar_contrato_mensual((numero_contrato == 0)?1:numero_contrato, text_contratante.getText(), combo_tipo_contrato.getSelectedIndex()+1);
+            base = new Contrato_mensual();
 
-        base.close();
+            ((Contrato_mensual)base).insertar_contrato_mensual((numero_contrato == 0)?1:numero_contrato, text_contratante.getText(), combo_tipo_contrato.getSelectedIndex()+1);
+
+        }finally{
+            if(base != null) base.close();
+        }
+
 
     }
 }

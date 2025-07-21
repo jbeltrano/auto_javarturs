@@ -1,11 +1,12 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class Contrato_mensual extends Base{
     
-    public Contrato_mensual(String url){
-        super(url);
+    public Contrato_mensual() throws IOException, SQLException{
+        super();
     }
 
     public int consultar_tipo_contrato_mensual(int contrato)throws SQLException{

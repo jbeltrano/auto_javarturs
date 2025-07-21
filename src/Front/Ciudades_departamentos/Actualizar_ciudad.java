@@ -1,6 +1,7 @@
 package Front.Ciudades_departamentos;
 
 import java.sql.SQLException;
+import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -12,8 +13,8 @@ public class Actualizar_ciudad extends Insertar_ciudad{
     private String ciudad;
     private String departamento;
 
-    public Actualizar_ciudad(JFrame padre, String url, String ciudad, String departamento, int id_ciudad){
-        super(padre, url);
+    public Actualizar_ciudad(JFrame padre, String ciudad, String departamento, int id_ciudad){
+        super(padre);
 
         this.ciudad = ciudad;
         this.departamento = departamento;
@@ -40,19 +41,15 @@ public class Actualizar_ciudad extends Insertar_ciudad{
             if(text_ciudad.getText().compareTo("") == 0){
                 JOptionPane.showMessageDialog(this, "Por favor diligenciar el campo Ciudad");
             }else{
-                
-                base = new Ciudad(url);
                 try{
-
-                    ((Ciudad)base).actualizar_ciudad(id_ciudad, text_ciudad.getText());
+                    base = new Ciudad();
                     ((Ciudad)base).actualizar_ciudad(id_ciudad, text_ciudad.getText(), (String) combo_departamento.getSelectedItem());
-                    base.close();
                     JOptionPane.showMessageDialog(this, "Ciudad actualizada con exito");
                     setVisible(false);
-
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    base.close();
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }finally{
+                    if(base != null) base.close();
                 }
             }
         });

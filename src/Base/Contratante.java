@@ -1,11 +1,12 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class Contratante extends Base{
 
-    public Contratante(String url){
-        super(url);
+    public Contratante() throws IOException, SQLException{
+        super();
     }
 
     public void insertar_contratante(String contratante, String responsable)throws SQLException{

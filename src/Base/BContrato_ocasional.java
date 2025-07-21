@@ -1,11 +1,12 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class BContrato_ocasional extends Base {
     
-    public BContrato_ocasional(String url){
-        super(url);
+    public BContrato_ocasional() throws IOException, SQLException{
+        super();
     }
 
     public String[] consultar_tipo_contrato()throws SQLException{

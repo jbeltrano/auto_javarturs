@@ -1,10 +1,11 @@
 package Base;
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class Licencia extends Base{
 
-    public Licencia(String url){
-        super(url);
+    public Licencia() throws IOException, SQLException{
+        super();
     }
     
     /**

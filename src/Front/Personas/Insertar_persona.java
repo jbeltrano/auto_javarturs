@@ -18,6 +18,7 @@ import Base.Persona;
 import Base.Tipo_id;
 
 import java.awt.Dimension;
+import java.io.IOException;
 
 public class Insertar_persona extends Modales_personas{
 
@@ -42,13 +43,13 @@ public class Insertar_persona extends Modales_personas{
     protected JTextField text_correo;
     protected JRadioButton radio_contratante;
 
-    public Insertar_persona(JDialog padre, String url){
-        super(padre,url,new Dimension(550,320));
+    public Insertar_persona(JDialog padre){
+        super(padre,new Dimension(550,320));
         setVisible(true);
     }
 
-    public Insertar_persona(JFrame padre, String url){
-        super(padre,url,new Dimension(550,320));
+    public Insertar_persona(JFrame padre){
+        super(padre,new Dimension(550,320));
 
     }
     
@@ -84,20 +85,23 @@ public class Insertar_persona extends Modales_personas{
         jPanel1.add(jLabel1);
         jLabel1.setBounds(17, 6, 103, 16);
 
-        base = new Tipo_id(url);
-        Ciudad base_ciudad = new Ciudad(url);
-        Departamento base_departamento = new Departamento(url);
+        Ciudad base_ciudad = null;
+        Departamento base_departamento = null;
         try{
+            base = new Tipo_id();
+            base_ciudad = new Ciudad();
+            base_departamento = new Departamento();
+
             combo_tipo_documento = new JComboBox<>(((Tipo_id)base).consultar_tipo_id(1));
             combo_departamento = new JComboBox<>(base_departamento.consultar_departamento());
             combo_municipio = new JComboBox<>(base_ciudad.consultar_ciudad(""+combo_departamento.getSelectedItem(), 1));
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
-            this.setVisible(false);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+            Insertar_persona.this.dispose();
         }finally{
-            base.close();
-            base_ciudad.close();
-            base_departamento.close();
+            if(base!= null) base.close();
+            if(base_ciudad != null) base_ciudad.close();
+            if(base_departamento != null) base_departamento.close();
         }
         
         jPanel1.add(combo_tipo_documento);
@@ -132,18 +136,19 @@ public class Insertar_persona extends Modales_personas{
         jLabel5.setBounds(292, 68, 90, 16);
 
         combo_departamento.addActionListener(_ ->{
-            base = new Ciudad(url);
+            
             try{
+                base = new Ciudad();
                 String dato[] = ((Ciudad)base).consultar_ciudad((String)combo_departamento.getSelectedItem(), 1);
                 combo_municipio.removeAllItems();
                 for(String valor : dato){
                     combo_municipio.addItem(valor);
                 }
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+            }catch(SQLException | IOException ex){
+                JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                 
             }finally{
-                base.close();
+                if(base != null) base.close();
             }
         });
         combo_departamento.setSelectedItem("Meta");
@@ -258,11 +263,14 @@ public class Insertar_persona extends Modales_personas{
                 Long.parseLong(text_documento.getText());   // Obtiene el dato numerico para el tipo de documento
                 tipo_documento = combo_tipo_documento.getSelectedIndex() + 1;   // Determina el id del tipo de documento
 
-                base = new Persona(url);   // Establece coneccion para la base de datos
-                Contratante base_contratante = new Contratante(url);    // Establece la coneccion con la base de datos para contratante
-                Ciudad base_ciudad = new Ciudad(url);   // Establece la coneccion para la bese de datos con las tablas ciudad
+                Contratante base_contratante = null;
+                Ciudad base_ciudad = null;
                 try {
                     
+                    base = new Persona();   // Establece coneccion para la base de datos
+                    base_contratante = new Contratante();    // Establece la coneccion con la base de datos para contratante
+                    base_ciudad = new Ciudad();   // Establece la coneccion para la bese de datos con las tablas ciudad
+
                     ciudad = Integer.parseInt(          // Convierte el dato a entero
                             base_ciudad.consultar_uno_ciudad(  // Consulta en la base de datos la ciudad
                             (String)combo_municipio.getSelectedItem())[0]); // Pasa como parametro el nombre del municipio
@@ -287,17 +295,19 @@ public class Insertar_persona extends Modales_personas{
                     // Imprime un mensaje que todo salio correcto
                     JOptionPane.showMessageDialog(this, "Persona Insertada correctamente");
                     
-                } catch (SQLException e) {
+                } catch (SQLException | IOException ex) {
                     // Imprime un mnesaje si hay errores
                     JOptionPane.showMessageDialog(  this,   // Es el padre al que pertenece la ventana
-                                                    e.getMessage(), // Es el mensaje que apare en la ventana
+                                                    ex.getLocalizedMessage(), // Es el mensaje que apare en la ventana
                                                     "Error",    // Es el titulo de la ventana
                                                     JOptionPane.ERROR_MESSAGE); // Es el icono que aparece en la ventana
 
                 }finally{
-                    base.close();   // Cierra la coneccion con la base de datos
-                    base_contratante.close();
-                    this.setVisible(false); // Hace invisible la ventana para despues cerrarla
+                    if(base != null) base.close();   // Cierra la coneccion con la base de datos
+                    if(base_contratante != null) base_contratante.close();
+                    if(base_ciudad != null) base_ciudad.close();
+
+                    Insertar_persona.this.dispose(); // Hace invisible la ventana para despues cerrarla
                 }
                 
             }catch(NumberFormatException e){    // Si no hay datos de tipo numerico en los campos muestra los errores

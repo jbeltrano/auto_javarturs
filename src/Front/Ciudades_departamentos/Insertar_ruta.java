@@ -3,11 +3,12 @@ package Front.Ciudades_departamentos;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.sql.SQLException;
 import Base.Ciudad;
 import Base.Ruta;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
-import java.sql.SQLException;
 import Estructuras_datos.Queue;
 
 public class Insertar_ruta extends Modal_ruta{
@@ -29,14 +30,13 @@ public class Insertar_ruta extends Modal_ruta{
     private JDialog ventana;
     private Queue<String> error;
 
-    public Insertar_ruta(JDialog padre, String url){
-        super(padre, url);
+    public Insertar_ruta(JDialog padre){
+        super(padre);
         ventana = this;
-        
     }
 
-    public Insertar_ruta(JFrame padre, String url){
-        super(padre, url);
+    public Insertar_ruta(JFrame padre){
+        super(padre);
         ventana = this;
 
     }
@@ -58,15 +58,15 @@ public class Insertar_ruta extends Modal_ruta{
 
         // Cargando datos con respecto a la tabla
         try{
-            base_ciudad = new Ciudad(url);
+            base_ciudad = new Ciudad();
             String datos[][] = base_ciudad.consultar_ciudad();
             tabla_origen = Modelo_tabla.set_tabla_ciudad(datos);
             tabla_destino = Modelo_tabla.set_tabla_ciudad(datos);
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.setVisible(false);
         }finally{
-            base_ciudad.close();
+            if(base_ciudad != null) base_ciudad.close();
         }
 
         // Configuracion de los label
@@ -87,19 +87,17 @@ public class Insertar_ruta extends Modal_ruta{
             @Override
             public void accion() {
                 try{
-                    base_ciudad = new Ciudad(url);
+                    base_ciudad = new Ciudad();
                     String datos[][] = base_ciudad.consultar_ciudades(text_origen.getText());
                     JTable tabla = Modelo_tabla.set_tabla_ciudad(datos);
                     tabla_origen.setModel(tabla.getModel());
                     tabla_origen.setColumnModel(tabla.getColumnModel());
                     tabla_origen.changeSelection(0, 0, false, false);
-
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog(ventana, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     ventana.setVisible(false);
-
                 }finally{
-                    base_ciudad.close();
+                    if(base_ciudad != null) base_ciudad.close();
                 }
             }
 
@@ -120,19 +118,17 @@ public class Insertar_ruta extends Modal_ruta{
             @Override
             public void accion() {
                 try{
-                    base_ciudad = new Ciudad(url);
+                    base_ciudad = new Ciudad();
                     String datos[][] = base_ciudad.consultar_ciudades(text_destino.getText());
                     JTable tabla = Modelo_tabla.set_tabla_ciudad(datos);
                     tabla_destino.setModel(tabla.getModel());
                     tabla_destino.setColumnModel(tabla.getColumnModel());
                     tabla_destino.changeSelection(0, 0, false, false);
-
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog(ventana, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     ventana.setVisible(false);
-
                 }finally{
-                    base_ciudad.close();
+                    if(base_ciudad != null) base_ciudad.close();
                 }
             }
 
@@ -251,23 +247,20 @@ public class Insertar_ruta extends Modal_ruta{
      * boton_guardar
      */
     protected void accion_guardar(){
-        base_ruta = new Ruta(url);
-
         try{
+            base_ruta = new Ruta();
             
             int origen = Integer.parseInt((String) tabla_origen.getValueAt(tabla_origen.getSelectedRow(), 0));
             int destino = Integer.parseInt((String) tabla_destino.getValueAt(tabla_destino.getSelectedRow(), 0));
             int distancia = Integer.parseInt(text_distancia.getText());
             
             base_ruta.insertar_ruta(origen, destino, distancia);
-
             JOptionPane.showMessageDialog(this, "Datos insertados correctamente.", null, JOptionPane.INFORMATION_MESSAGE);
-
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             setVisible(false);
         }finally{
-            base_ruta.close();
+            if(base_ruta != null) base_ruta.close();
         }
 
         

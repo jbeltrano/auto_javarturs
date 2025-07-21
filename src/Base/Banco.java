@@ -1,11 +1,12 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class Banco extends Base{
     
-    public Banco(String url){
-        super(url);
+    public Banco()throws IOException, SQLException{
+        super();
     }
 
     /**

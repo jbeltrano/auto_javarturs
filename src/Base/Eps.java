@@ -1,11 +1,12 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class Eps extends Base{
     
-    public Eps(String url){
-        super(url);
+    public Eps() throws IOException, SQLException{
+        super();
     }
 
     /**

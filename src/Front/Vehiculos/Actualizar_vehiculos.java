@@ -1,5 +1,6 @@
 package Front.Vehiculos;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -8,9 +9,9 @@ import Base.Vehiculo;
 
 public class Actualizar_vehiculos extends Insertar_vehiculos{
 
-    public Actualizar_vehiculos(JFrame frame, String url, String valor){
+    public Actualizar_vehiculos(JFrame frame, String valor){
         
-        super(frame,url,valor);
+        super(frame,valor);
         actualizar_vehiculo();
         pack();
         setVisible(true);
@@ -27,8 +28,10 @@ public class Actualizar_vehiculos extends Insertar_vehiculos{
         text_carroceria.setEnabled(false);
         text_combustible.setEnabled(false);
         
-        base = new Vehiculo(url);
+        
         try{
+            base = new Vehiculo();
+
             dato = ((Vehiculo)base).consultar_uno_vehiculo(valor);
             text_placa.setText(dato[0]);
             combo_tipo_vehiculo.setSelectedItem(dato[1]);
@@ -50,12 +53,12 @@ public class Actualizar_vehiculos extends Insertar_vehiculos{
                 boton_parque.setSelected(false);
             }
 
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(),"Error",JOptionPane.ERROR_MESSAGE);
             
             this.setVisible(false);
         }finally{
-            base.close();
+            if(base != null) base.close();
         }
         
 
@@ -109,25 +112,25 @@ public class Actualizar_vehiculos extends Insertar_vehiculos{
                 
         }
         if(confirmacion){
-            base = new Vehiculo(url);
-            Clase_vehiculo base2 = new Clase_vehiculo(url);
-
+            
+            Clase_vehiculo base2 = null;
             try{
+                base = new Vehiculo();
+                base2 = new Clase_vehiculo();
 
                 // En este caso, se realiza la actualizacion correspondiente
                 dato = base2.consultar_uno_clase_vehiculo(combo_tipo_vehiculo.getSelectedItem()+"");
-                ((Vehiculo)base).actualizar_vehiculo(text_placa.getText(),cilindrada, text_color.getText(), text_motor.getText(), text_chasis.getText(), pasajeros, propietario, boton_parque.isSelected());
+                ((Vehiculo)base).actualizar_vehiculo(text_placa.getText(), cilindrada, text_color.getText(), text_motor.getText(), text_chasis.getText(), pasajeros, propietario, boton_parque.isSelected());
                 
-                if(!boton_parque.isSelected()){
-
-                }
-            }catch(SQLException ex){
-
-                JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Actualización para vehículo: "+ text_placa.getText() + "\nRealizada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 this.setVisible(false);
-            
+            }catch(SQLException | IOException ex){
+                JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                this.setVisible(false);
             }finally{
-                base.close();
+                if(base != null) base.close();
+                if(base2 != null) base2.close();
+                if(base2 != null) base2.close();
             }
             
             JOptionPane.showMessageDialog(this, "Actualizacion para vehiculo: "+ text_placa.getText() + "\nRealizado correctamente.","",JOptionPane.QUESTION_MESSAGE);

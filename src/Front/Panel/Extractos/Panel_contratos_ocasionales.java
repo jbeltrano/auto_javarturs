@@ -5,6 +5,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+
 import Base.BContrato_ocasional;
 import Front.Extractos.Actualizar_contrato_ocasional;
 import Front.Extractos.Insertar_contrato_ocasional;
@@ -16,21 +18,23 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
     
     private BContrato_ocasional base_contrato;
 
-    public Panel_contratos_ocasionales(String url){
-        super(url);
+    public Panel_contratos_ocasionales(){
+        super();
     }
 
     @Override
     protected void cargar_datos_tabla() {
-        base_contrato = new BContrato_ocasional(url);   // Hace una coneccion a la base de datos
+        
         try{
+            base_contrato = new BContrato_ocasional();   // Hace una coneccion a la base de datos
+            
             tabla = Modelo_tabla.set_tabla_contratos_ocasionales( // Pone un formato para la tabla
                 base_contrato.consultar_contrato_ocasional("")
             );
 
-        }catch(SQLException ex){
+        }catch(SQLException | IOException ex){
             // En caso que haya un error, muestra este mensaje de error con el motivo
-            JOptionPane.showMessageDialog(window, ex.getMessage()+"\nCerrando el Programa", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(window, ex.getLocalizedMessage()+"\nCerrando el Programa", "Error", JOptionPane.ERROR_MESSAGE);
             
             // Esto se utiliza para cerrar el programa despues del error
             if (window != null) {
@@ -38,14 +42,16 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
             }
 
         }finally{
-            base_contrato.close();
+            if(base_contrato != null) base_contrato.close();
         }   
     }
 
     @Override
     protected void accion_text_busqueda() {
-        base_contrato = new BContrato_ocasional(url);
+        
         try{
+            base_contrato = new BContrato_ocasional();
+
             // Obtiene los datos y crea una tabla auxiliar con los datos proporcionados por el text Field
             JTable tabla_aux = Modelo_tabla.set_tabla_contratos_ocasionales(
                 base_contrato.consultar_contrato_ocasional(text_busqueda.getText())
@@ -55,10 +61,10 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
             tabla.setModel(tabla_aux.getModel());
             tabla.setColumnModel(tabla_aux.getColumnModel());
 
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(window, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(window, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally{
-            base_contrato.close();
+            if(base_contrato != null) base_contrato.close();
         }
     }
 
@@ -68,7 +74,7 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
         
         item_adicionar.addActionListener(_ ->{
 
-            new Insertar_contrato_ocasional((JFrame)this.get_window(), url).setVisible(true);
+            new Insertar_contrato_ocasional((JFrame)this.get_window()).setVisible(true);
 
             accion_text_busqueda();
 
@@ -78,7 +84,7 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
             int number = tabla.getSelectedRow();
             int id = Integer.parseInt((String)tabla.getValueAt(number, 0));
 
-            new Actualizar_contrato_ocasional((JFrame)this.get_window(), url, id, false).setVisible(true);
+            new Actualizar_contrato_ocasional((JFrame)this.get_window(), id, false).setVisible(true);
 
             accion_text_busqueda();
 
@@ -101,7 +107,7 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
             if(band >= 0){
                 boolean flag = (band == 0)?true:false;
                 try{
-                    String ruta = Generar_extractos.generar_extracto_ocasional(num_contrato, url, flag);
+                    String ruta = Generar_extractos.generar_extracto_ocasional(num_contrato, flag);
                     JOptionPane.showMessageDialog((JFrame)this.get_window(), "Exportando el contrato N° " + num_contrato + ", Junto \na sus extractos correspondientes. \n\nPor favor espere...");
                     
                     String comando_auxiliar = "powershell -ExecutionPolicy ByPass -File \"" + UBICACION_PS_CONVERTIRPDF + "\"" + " -parametro \""+ UBICACION_PS_EXTRACTOS_OCASIONALES + "\"";
@@ -116,7 +122,7 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
                     
     
                 }catch(Exception ex){
-                    JOptionPane.showMessageDialog((JFrame)this.get_window(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog((JFrame)this.get_window(), ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
             
@@ -128,7 +134,7 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
             int number = tabla.getSelectedRow();
             int id = Integer.parseInt((String)tabla.getValueAt(number, 0));
 
-            new Actualizar_contrato_ocasional((JFrame)this.get_window(), url, id, true).setVisible(true);
+            new Actualizar_contrato_ocasional((JFrame)this.get_window(), id, true).setVisible(true);
 
             accion_text_busqueda();
         });
@@ -140,14 +146,16 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
             String nombre = "" + tabla.getValueAt(number, 2);
             number = JOptionPane.showConfirmDialog((JFrame)this.get_window(), "Esta seguro de eliminar el contrato:\n"+ id + ", " + nombre, "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
-                base_contrato = new BContrato_ocasional(url);
+                
                 try{
+                    base_contrato = new BContrato_ocasional();
+
                     base_contrato.eliminar_contrato_ocasional(Integer.parseInt(id));
                     JOptionPane.showMessageDialog((JFrame)this.get_window(), "Contrato eliminado correctamente");
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog((JFrame)this.get_window(),ex,"Error",JOptionPane.ERROR_MESSAGE);
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog((JFrame)this.get_window(),ex.getLocalizedMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                 }finally{
-                    base_contrato.close();
+                    if(base_contrato != null) base_contrato.close();
                     accion_text_busqueda();
                 }
             }   

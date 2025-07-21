@@ -16,6 +16,7 @@ import Front.Personas.Insertar_conductor;
 import Utilidades.Modelo_tabla;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.awt.event.MouseAdapter;
 import Base.Licencia;
 import Base.Vehiculo;
@@ -37,9 +38,9 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
     private JFrame padre;
     protected Vehiculo base_Vehiculo;
 
-    public Insertar_vehiculo_conductor(JFrame padre, String url, String valor){
+    public Insertar_vehiculo_conductor(JFrame padre, String valor){
 
-        super(padre, url, valor);
+        super(padre, valor);
         this.padre = padre;
         pack();
         setVisible(true);
@@ -76,18 +77,20 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
                 }else{
                     variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
                 }
-                base = new Vehiculo(url);
+                
                 try{
+                    base = new Vehiculo();
+
                     datos = ((Vehiculo)base).consultar_vehiculo(variable_auxiliar);
                     tabla_vehiculo.setModel(Modelo_tabla.set_modelo_tablas(datos));
                     
         
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    ventana.setVisible(false);
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog(ventana, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    Insertar_vehiculo_conductor.this.dispose();
                     
                 }finally{
-                    base.close();
+                    if(base != null) base.close();
                 }
             }
         });
@@ -110,32 +113,35 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
                 }else{
                     variable_auxiliar = variable_auxiliar.substring(0, variable_auxiliar.length()-1);
                 }
-                base = new Licencia(url);
+                
                 try{
+                    base = new Licencia();
+
                     datos = ((Licencia)base).consultar_licencia(variable_auxiliar);
                     tabla_conductor.setModel(Modelo_tabla.set_modelo_tablas(datos));
                     
         
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    ventana.setVisible(false);
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog(ventana, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    Insertar_vehiculo_conductor.this.dispose();
                 }finally{
-                    base.close();
+                    if(base != null) base.close();
                 }
             }
         });
 
         // Configuracion de tablas modelo
-        base = new Licencia(url);
-        base_Vehiculo = new Vehiculo(url);
+        
         try{
+            base = new Licencia();
+            base_Vehiculo = new Vehiculo();
             tabla_vehiculo.setModel(Modelo_tabla.set_modelo_tablas(base_Vehiculo.consultar_vehiculo(true)));
             tabla_conductor.setModel(Modelo_tabla.set_modelo_tablas(((Licencia)base).consultar_licencia()));
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(),"Error",JOptionPane.ERROR_MESSAGE);
         }finally{
-            base.close();
-            base_Vehiculo.close();
+            if(base != null) base.close();
+            if(base_Vehiculo != null) base_Vehiculo.close();
         }
         
         //configuracion tabla vehiculo
@@ -162,16 +168,17 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
             public void mouseClicked(MouseEvent evt){
 
                 if(SwingUtilities.isRightMouseButton(evt)){
-                    new Insertar_conductor(padre,url).setVisible(true);
+                    new Insertar_conductor(padre).setVisible(true);
 
-                    base = new Licencia(url);
+                    
                     try{
+                        base = new Licencia();
                         tabla_conductor.setModel(Modelo_tabla.set_modelo_tablas(((Licencia)base).consultar_licencia()));
-                    }catch(SQLException ex){
-                        JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                        setVisible(false);
+                    }catch(SQLException | IOException ex){
+                        JOptionPane.showMessageDialog(padre, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        Insertar_vehiculo_conductor.this.dispose();
                     }finally{
-                        base.close();
+                        if(base != null) base.close();
                         
                     }
                 }else{
@@ -213,28 +220,28 @@ public class Insertar_vehiculo_conductor extends Modales_vehiculos{
                 try{
                     //En este caso verificamos que si se digito un numero de identidad valido
                     Double.parseDouble(text_conductor.getText());
-                    base_Vehiculo = new Vehiculo(url);
+                    base_Vehiculo = new Vehiculo();
                     datos = base_Vehiculo.consultar_vehiculo(text_placa.getText());
                     
                     // Esto es una forma de comprobar que los datos que diligencio el usuario pertenecen unicamente a un vehiculo y no hay mas concurrencias
                     if(datos.length == 2){
-                        base = new Vehiculo_has_conductor(url);
+                        base = new Vehiculo_has_conductor();
                         ((Vehiculo_has_conductor)base).insertar_vehiuclo_has_conductor(text_conductor.getText(), datos[1][0]);
                         JOptionPane.showMessageDialog(this, "El conductor " + text_conductor.getText() + ", Fue asignado correctamente\nal vehiculo " + datos[1][0]);
 
-                        this.setVisible(false);
+                        Insertar_vehiculo_conductor.this.dispose();
                     }else{
                         JOptionPane.showMessageDialog(this, "No escribiste La placa correctamente.\nPor favor selecciona un vehiculo de la tabla");
                     }
                     
                 }catch(NumberFormatException ex){
                     JOptionPane.showMessageDialog(this, "El campo conductor debe ser de tipo numerico","Error",JOptionPane.ERROR_MESSAGE);
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this, ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                     
                 }finally{
-                    base_Vehiculo.close();
-                    base.close();
+                    if(base_Vehiculo != null) base_Vehiculo.close();
+                    if(base != null) base.close();
                 }
 
             }

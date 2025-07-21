@@ -1,13 +1,14 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import Utilidades.Capitalizar_Strings;
 
 public class Tipo_empleado extends Base{
 
-    public Tipo_empleado(String url){
-        super(url);
+    public Tipo_empleado() throws IOException, SQLException{
+        super();
     }
 
     /**

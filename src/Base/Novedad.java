@@ -1,12 +1,13 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 
 public class Novedad extends Base{
     
-    public Novedad(String url){
-        super(url);
+    public Novedad() throws IOException, SQLException{
+        super();
     }
 
     /**

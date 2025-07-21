@@ -1,11 +1,12 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class Vh_convenio extends Base {
 
-    public Vh_convenio(String url) {
-        super(url);
+    public Vh_convenio() throws IOException, SQLException {
+        super();
         
     }
     

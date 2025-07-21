@@ -1,11 +1,12 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class Pension extends Base{
     
-    public Pension(String url){
-        super(url);
+    public Pension() throws IOException, SQLException{
+        super();
     }
 
     /**

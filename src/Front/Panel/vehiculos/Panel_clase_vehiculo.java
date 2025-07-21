@@ -8,6 +8,8 @@ import Utilidades.Modelo_tabla;
 import java.sql.SQLException;
 import java.awt.Color;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -18,8 +20,8 @@ public class Panel_clase_vehiculo extends Panel{
     
     private Clase_vehiculo base_clase_vehiculo;
 
-    public Panel_clase_vehiculo(String url){
-        super(url);
+    public Panel_clase_vehiculo(){
+        super();
     }
     
     @Override
@@ -29,8 +31,10 @@ public class Panel_clase_vehiculo extends Panel{
         String[][] datos = null;
         TableColumnModel cl_model;
 
-        base_clase_vehiculo = new Clase_vehiculo(url);
+        
         try{
+            base_clase_vehiculo = new Clase_vehiculo();
+
             datos = base_clase_vehiculo.consultar_clase_vehiculo();
             modelo = Modelo_tabla.set_modelo_tablas(datos);
             tabla = new JTable(modelo);
@@ -46,9 +50,9 @@ public class Panel_clase_vehiculo extends Panel{
             cl_model = tabla.getColumnModel();
             cl_model.getColumn(0).setPreferredWidth(35);
             cl_model.getColumn(1).setPreferredWidth(200);
-        }catch(SQLException ex){
+        }catch(SQLException | IOException ex){
             
-            JOptionPane.showMessageDialog(this, ex.getMessage()+"\nCerrando el Programa", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage()+"\nCerrando el Programa", "Error", JOptionPane.ERROR_MESSAGE);
             
             // Esto se utiliza para cerrar el programa despues del error
             if (window != null) {
@@ -56,7 +60,7 @@ public class Panel_clase_vehiculo extends Panel{
             }
 
         }finally{
-            base_clase_vehiculo.close();
+            if(base_clase_vehiculo != null) base_clase_vehiculo.close();
         }
 
 
@@ -74,11 +78,11 @@ public class Panel_clase_vehiculo extends Panel{
         item_actualizar.addActionListener(_->{
             
             int numero = tabla.getSelectedRow();
-            new Actualizar_tipo_vehiculo((JFrame)this.get_window(), url, ""+tabla.getValueAt(numero, 0));
+            new Actualizar_tipo_vehiculo((JFrame)this.get_window(), ""+tabla.getValueAt(numero, 0));
             cargar_datos_tabla();
         });
         item_adicionar.addActionListener(_ ->{
-            new Insertar_tipo_vehiculo((JFrame)this.get_window(), url, "");
+            new Insertar_tipo_vehiculo((JFrame)this.get_window(), "");
             cargar_datos_tabla();
 
         });
@@ -89,14 +93,16 @@ public class Panel_clase_vehiculo extends Panel{
 
             number = JOptionPane.showConfirmDialog(this, "Esta seguro de eliminar el item\n"+ valor, "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
-                base_clase_vehiculo = new Clase_vehiculo(url);
+                
                 try{
+                    base_clase_vehiculo = new Clase_vehiculo();
+
                     base_clase_vehiculo.eliminar_clase_vehiculo(Integer.parseInt(valor));
                     JOptionPane.showMessageDialog(this, "Item eliminado correctamente");
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(this,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog(this,ex.getLocalizedMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                 }finally{
-                    base_clase_vehiculo.close();
+                    if(base_clase_vehiculo != null) base_clase_vehiculo.close();
                 }
                 cargar_datos_tabla();
             }

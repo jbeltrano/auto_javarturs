@@ -1,5 +1,6 @@
 package Base;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 
@@ -11,9 +12,11 @@ public class Documentos extends Base{
      * @param url Url o ubicacion en el
      * sistema de archivos de la base de datos
      * para establecer la conexion.
+     * @throws SQLException 
+     * @throws IOException 
      */
-    public Documentos(String url){
-        super(url);
+    public Documentos() throws IOException, SQLException{
+        super();
     }
 
     /**

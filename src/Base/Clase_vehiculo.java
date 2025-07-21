@@ -1,5 +1,6 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Vector;
 
@@ -13,8 +14,8 @@ public class Clase_vehiculo extends Base{
      * @param url Es la ruta del archivo
      * donde se encuentra la base de datos
      */
-    public Clase_vehiculo(String url){
-        super(url);
+    public Clase_vehiculo()throws SQLException, IOException{
+        super();
     }
 
     /**

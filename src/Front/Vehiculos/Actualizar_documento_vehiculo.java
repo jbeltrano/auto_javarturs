@@ -1,5 +1,6 @@
 package Front.Vehiculos;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import javax.swing.JFrame;
@@ -8,24 +9,25 @@ import Base.Documentos;
 
 public class Actualizar_documento_vehiculo extends Insertar_documento_vehiculo{
     
-    public Actualizar_documento_vehiculo(JFrame frame, String url, String valor){
-        super(frame, url, valor);
+    public Actualizar_documento_vehiculo(JFrame frame, String valor){
+        super(frame, valor);
         actualizar_documentos();
     }
 
     private void actualizar_documentos(){
         String []dato = null;
-        base = new Documentos(url);
+        
         
         try{
+            base = new Documentos();
             dato = ((Documentos)base).consultar_uno_documentos(valor);
             
             
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            setVisible(false);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            Actualizar_documento_vehiculo.this.dispose();
         }finally{
-            base.close();
+            if(base != null) base.close();
         }
 
         is_particular(valor);
@@ -79,9 +81,11 @@ public class Actualizar_documento_vehiculo extends Insertar_documento_vehiculo{
                 JOptionPane.showMessageDialog(this, "El campo: Placa es obligatorio", "Error", JOptionPane.ERROR_MESSAGE);
             
             }else{
-                base = new Documentos(url);
+                
                 try{
 
+                    base = new Documentos();
+                    
                     if(flag_is_particular){     // En caso de ser un vehiculo de servicio particular
                         
                         ((Documentos)base).actualizar_documento(text_placa.getText(),  // Vehiculo al cual se le hace la insercion
@@ -99,14 +103,14 @@ public class Actualizar_documento_vehiculo extends Insertar_documento_vehiculo{
                     
                     }
                     JOptionPane.showMessageDialog(this, "El Los documentos para el vehiculo " + text_placa.getText() +"\nFueron insertados correctamente.","",JOptionPane.INFORMATION_MESSAGE);
-                    setVisible(false);
+                    Actualizar_documento_vehiculo.this.dispose();
                 
-                }catch(SQLException ex){
+                }catch(SQLException | IOException ex){
                 
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 
                 }finally{
-                    base.close();
+                    if(base != null) base.close();
                 }
                 
             }

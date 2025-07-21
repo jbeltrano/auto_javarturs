@@ -9,12 +9,10 @@ import Base.Base;
 
 public abstract class Modal_extracto extends JDialog{
     
-    protected String url;
     protected Base base;
 
-    public Modal_extracto(JFrame padre, String url){
+    public Modal_extracto(JFrame padre){
         super(padre, true);
-        this.url = url;
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         iniciar_componentes();
         setPreferredSize(set_dimension());
@@ -25,9 +23,8 @@ public abstract class Modal_extracto extends JDialog{
 
     }
 
-    public Modal_extracto(JDialog padre, String url){
+    public Modal_extracto(JDialog padre){
         super(padre, true);
-        this.url = url;
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         iniciar_componentes();
         setPreferredSize(set_dimension());

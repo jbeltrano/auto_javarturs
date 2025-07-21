@@ -1,5 +1,6 @@
 package Front.Extractos;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -7,15 +8,13 @@ import Base.Extractos;
 
 public class Actualizar_extracto_ocasional extends Insertar_extracto_ocasional {
     
-    private String url;
     private boolean is_plantilla;
     private String placa;
     private String consecutivo;
     private String contrato;
 
-    public Actualizar_extracto_ocasional(JFrame frame, String url, String placa, String consecutivo, String contrato, boolean is_plantilla){
-        super(frame, url);
-        this.url = url;
+    public Actualizar_extracto_ocasional(JFrame frame, String placa, String consecutivo, String contrato, boolean is_plantilla){
+        super(frame);
         this.is_plantilla = is_plantilla;
         this.placa = placa;
         this.consecutivo = consecutivo;
@@ -52,8 +51,9 @@ public class Actualizar_extracto_ocasional extends Insertar_extracto_ocasional {
             String vehiculo;
             int contrato;
 
-            base = new Extractos(url);
+            
             try{
+                base = new Extractos();
 
                 vehiculo = (text_placa.getText().compareTo("") == 0)?null: text_placa.getText();
                 contrato = (text_contrato.getText().compareTo("") == 0)?0: Integer.parseInt(text_contrato.getText());
@@ -70,14 +70,14 @@ public class Actualizar_extracto_ocasional extends Insertar_extracto_ocasional {
                     return false;
                 }
 
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }catch(SQLException | IOException ex){
+                JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }catch(NumberFormatException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }finally{
-                base.close();
+                if(base != null) base.close();
             }
         }
     }

@@ -1,5 +1,6 @@
 package Front.Vehiculos;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -27,9 +28,9 @@ public class Insertar_tipo_vehiculo extends Modales_vehiculos{
      * @param url es la direccion de la base de datos
      * @param valor es un valor por defecto puede ser ""
      */
-    public Insertar_tipo_vehiculo(JFrame frame, String url, String valor){
+    public Insertar_tipo_vehiculo(JFrame frame, String valor){
 
-        super(frame, url, valor);
+        super(frame, valor);
         
         setVisible(true);
     }
@@ -54,19 +55,22 @@ public class Insertar_tipo_vehiculo extends Modales_vehiculos{
         boton_actualizacion.addActionListener(_ ->{                      // Accion a realizar a precionar el boton
         
 
-            base = new Clase_vehiculo(url);     // Obtiene el accdeso a la base de datos, para hacer cambios en la tabla clase vehiculo
+            
             
             if(tipo_vehiculo.getText().length() >0){        // Determina que haya algun valor ingresado dentro del textfield
 
+                
                 try{    
+                    base = new Clase_vehiculo();     // Obtiene el accdeso a la base de datos, para hacer cambios en la tabla clase vehiculo
+
                     base.insertar_clase_vehiculo(tipo_vehiculo.getText().toUpperCase());    // Realiza la insercion del dato ingresado
-                }catch(SQLException ex){    // En caso que haya problemas de coneccion a la base dadtos
+                }catch(SQLException | IOException ex){    // En caso que haya problemas de coneccion a la base dadtos
 
                     // Muestra el siguiente mensaje de error lanzando la excepcion atrapada
-                    JOptionPane.showMessageDialog(this,ex,"Error",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this,ex.getLocalizedMessage(),"Error",JOptionPane.ERROR_MESSAGE);
 
                 }finally{
-                    base.close();   // Cierra la coneccion con la base de datos
+                    if(base != null) base.close();   // Cierra la coneccion con la base de datos
                 }
 
                 // Muestra que la insercion se realizo correctamente

@@ -13,12 +13,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+
 import Base.Persona;
 import Base.Vehiculo;
 import Base.Vh_convenio;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
-import java.awt.Window;
 
 public class Insertar_vh_convenio extends Modales_vehiculos{
 
@@ -46,8 +47,8 @@ public class Insertar_vh_convenio extends Modales_vehiculos{
      * @param frame
      * @param url
      */
-    public Insertar_vh_convenio(JFrame frame, String url) {
-        super(frame, url);
+    public Insertar_vh_convenio(JFrame frame) {
+        super(frame);
         this.setPreferredSize(new Dimension(800,300));
         vehiculo_precargado = "";
         pack();
@@ -63,8 +64,8 @@ public class Insertar_vh_convenio extends Modales_vehiculos{
      * @param placa
      * @param url
      */
-    public Insertar_vh_convenio(JFrame frame, String placa, String url){
-        super(frame, url);
+    public Insertar_vh_convenio(JFrame frame, String placa){
+        super(frame);
         this.setPreferredSize(new Dimension(800,300));
         vehiculo_precargado = placa;
         pack();
@@ -159,21 +160,23 @@ public class Insertar_vh_convenio extends Modales_vehiculos{
         // Configuracion tablas
         // Obtencion de los datos
 
-        Vehiculo base_vehiculo = new Vehiculo(url);
-        Persona base_persona = new Persona(url);
+        Vehiculo base_vehiculo = null;
+        Persona base_persona = null;
 
         try{
+            base_vehiculo = new Vehiculo();
+            base_persona = new Persona();
             // Intenta realizar la consulta a la base de datos
             datos_vehiculo = base_vehiculo.consultar_vehiculo_externo("");
             datos_empresa = base_persona.consultar_empresa("");
 
-        }catch(SQLException ex){    // Si hay algun error con los datos, lanza un mensaje de error
+        }catch(SQLException|IOException ex){    // Si hay algun error con los datos, lanza un mensaje de error
             JOptionPane.showMessageDialog(this, ex, "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose(); // Cierra la ventana
             
         }finally{   // Finalmente limpia las conexiones con la base de datos
-            base_vehiculo.close();
-            base_persona.close();
+            if(base_vehiculo != null) base_vehiculo.close();
+            if(base_persona != null) base_persona.close();
         }
 
 
@@ -283,10 +286,10 @@ public class Insertar_vh_convenio extends Modales_vehiculos{
      * la gurada en la base de datos
      */
     private void guardar(){
-        
+        Vh_convenio base_convenio = null;
         try{
             verificacion();
-            Vh_convenio base_convenio = new Vh_convenio(url);
+            base_convenio = new Vh_convenio();
             String dato_placa = (String) tabla_vehiculo.getValueAt(tabla_vehiculo.getSelectedRow(), 0);
             String dato_empresa = (String) tabla_empresa.getValueAt(tabla_empresa.getSelectedRow(), 0);
             int opcion = 0;
@@ -318,7 +321,7 @@ public class Insertar_vh_convenio extends Modales_vehiculos{
                 
                 JOptionPane.showMessageDialog(  // Muestra un mensaje en pantalla
                                             this,   // Utiliza como apdre esta misma ventana
-                                            ex.getMessage(),    // Muestra el mensaje de error
+                                            ex.getLocalizedMessage(),    // Muestra el mensaje de error
                                             "Error",    // Titulo
                                             JOptionPane.ERROR_MESSAGE); // Tipo de Joptionpane 
                 this.setVisible(false); // Cierra la ventana
@@ -329,8 +332,8 @@ public class Insertar_vh_convenio extends Modales_vehiculos{
     
             }
             
-        }catch(NullPointerException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+        }catch(NullPointerException | IOException | SQLException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(),"Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -355,9 +358,11 @@ public class Insertar_vh_convenio extends Modales_vehiculos{
     private void set_tabla_vehiculo(){
         String datos[][] = null;    // Son los datos a utilizar
                 
-        Vehiculo base_vehiculo = new Vehiculo(url); // Abre coneccion con la base de datos
+        Vehiculo base_vehiculo = null; // Abre coneccion con la base de datos
 
         try{    // Pueden haber problemas, por eso esta esto aqui
+
+            base_vehiculo = new Vehiculo();
 
             datos = base_vehiculo.consultar_vehiculo_externo(text_placa.getText()); // Hace la consulta pertienente y carga los datos
             JTable tabla_aux = Modelo_tabla.set_tabla_vehiculo(datos);              // En una tabla auxiliar pone los datos obtenidos
@@ -369,11 +374,11 @@ public class Insertar_vh_convenio extends Modales_vehiculos{
 
 
 
-        }catch(SQLException ex){    // En caso de un error
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);   // Muestra el error en pantalla
+        }catch(SQLException | IOException ex){    // En caso de un error
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);   // Muestra el error en pantalla
             this.setVisible(false); // Cierra la ventana
         }finally{
-            base_vehiculo.close();  // Cierra la conexion con la base de datos
+            if(base_vehiculo != null) base_vehiculo.close();  // Cierra la conexion con la base de datos
         }
         
     }
@@ -398,9 +403,11 @@ public class Insertar_vh_convenio extends Modales_vehiculos{
     private void set_tabla_empresa(){
         String datos[][] = null;    // Son los datos a utilizar
                 
-        Persona base_empresa = new Persona(url);    // Establece conexion con la base de datos
+        Persona base_empresa = null;    // Establece conexion con la base de datos
 
         try{    // Por si hay algun tipo de error
+
+            base_empresa = new Persona();
 
             datos = base_empresa.consultar_empresa(text_empresa.getText()); // Realiza la consulta pertinente
             JTable tabla_aux = Modelo_tabla.set_tabla_personas(datos);      // Establece los datos con el modelo pertienente en una tabla auxiliar
@@ -410,16 +417,16 @@ public class Insertar_vh_convenio extends Modales_vehiculos{
             panel_principal.revalidate();   // Revalida el panel 
             panel_principal.repaint();      // Repinta el panel
 
-        }catch(SQLException ex){    // Por si hay algun tipo de problema
+        }catch(SQLException | IOException ex){    // Por si hay algun tipo de problema
 
             JOptionPane.showMessageDialog(  // Muestra un mensaje en pantalla
                                         this,   // Utiliza como apdre esta misma ventana
-                                        ex.getMessage(),    // Muestra el mensaje de error
+                                        ex.getLocalizedMessage(),    // Muestra el mensaje de error
                                         "Error",    // Titulo
                                         JOptionPane.ERROR_MESSAGE); // Tipo de Joptionpane 
             this.setVisible(false); // Cierra la ventana
         }finally{
-            base_empresa.close();   // Cierra al base de datos
+            if(base_empresa != null) base_empresa.close();   // Cierra al base de datos
         }
         
     }

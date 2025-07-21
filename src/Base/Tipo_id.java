@@ -1,11 +1,12 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class Tipo_id extends Base{
 
-    public Tipo_id(String url){
-        super(url);
+    public Tipo_id() throws IOException, SQLException{
+        super();
     }
 
     /**

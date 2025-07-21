@@ -25,7 +25,6 @@ public abstract class Panel extends JPanel{
     protected JMenuItem item_eliminar;
     protected JMenuItem item_adicionar;
     protected JScrollPane scroll;
-    protected String url;
     protected JTable tabla;
     protected Window window;
     protected int color;
@@ -34,9 +33,8 @@ public abstract class Panel extends JPanel{
      * Este constructor se encarga de establecer
      * un un formato para el panel a utilizar.
      */
-    public Panel(String url){
+    public Panel(){
         super();    // Llama la super clase de JPanel
-        this.url = url;
         this.window = SwingUtilities.getWindowAncestor(this);
 
         color = (config.get_tema() == 0)?config.get_color_secundario():config.get_color_secundario_oscuro();    // Esto se encarga de configurar el color correctamente
@@ -128,23 +126,3 @@ public abstract class Panel extends JPanel{
         return SwingUtilities.getWindowAncestor(this);
     }
 }
-
-
-
-
-// En este caso, la idea es implementar el siguiente metodo
-    // Si no hay informacion para mostrar
-    // if(tabla.getRowCount() == 0 ){
-    //     JButton boton_auxiliar = new JButton("Agregar");
-    //     pan = new JPanel(null);
-    //     boton_auxiliar.setBounds(10,10,100,20);
-    //     boton_auxiliar.addActionListener(ac ->{
-            
-    //         new Insertar_vehiculos(this, url, "").setVisible(true);
-    //         panel_principal2.remove(pan);
-    //         vehiculos.doClick();
-    //     });
-    //     pan.add(boton_auxiliar);
-    //     pan.setPreferredSize(new Dimension(120,40));
-    //     panel_principal2.add(pan,BorderLayout.EAST);
-    // }

@@ -1,5 +1,6 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class Vehiculo_has_conductor extends Base{
@@ -7,9 +8,11 @@ public class Vehiculo_has_conductor extends Base{
     /**
      * constructor de la clase Vehiculo_has_conductor
      * @param url
+     * @throws SQLException 
+     * @throws IOException 
      */
-    public Vehiculo_has_conductor(String url){
-        super(url);
+    public Vehiculo_has_conductor() throws IOException, SQLException{
+        super();
     }
 
     /**

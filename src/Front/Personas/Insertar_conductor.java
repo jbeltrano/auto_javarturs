@@ -18,6 +18,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+
 import com.toedter.calendar.JDateChooser;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,12 +44,14 @@ public class Insertar_conductor extends Modales_personas{
     private Calendar calendar;
     private Date currentDate;
 
-    public Insertar_conductor(JFrame padre, String url){
-        super(padre, url, new Dimension(500,300));
+    protected Licencia base_licencia;
+
+    public Insertar_conductor(JFrame padre){
+        super(padre, new Dimension(500,300));
     }
 
-    public Insertar_conductor(JDialog padre, String url){
-        super(padre, url, new Dimension(500,300));
+    public Insertar_conductor(JDialog padre){
+        super(padre, new Dimension(500,300));
     }
 
     @Override
@@ -84,18 +88,20 @@ public class Insertar_conductor extends Modales_personas{
         jPanel1.add(combo_conductor);
         combo_conductor.setBounds(147, 28, 87, 22);
 
-        base = new Persona(url);
-        Licencia base_licencia = new Licencia(url);
+        
         try{
+            base = new Persona();
+            base_licencia = new Licencia();
+
             datos = ((Persona)base).consultar_persona_natural("");
             combo_conductor.setModel(new DefaultComboBoxModel<>(base.get_datos_tabla(base_licencia.consultar_categoria(), 1)));
             tabla_persona = Modelo_tabla.set_tabla_personas(datos);
 
-        }catch(SQLException e){
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally{
-            base.close();
-            base_licencia.close();
+            if(base != null) base.close();
+            if(base_licencia != null) base_licencia.close();
         }
 
         tabla_persona.addMouseListener(new MouseAdapter() {
@@ -103,20 +109,22 @@ public class Insertar_conductor extends Modales_personas{
             @Override
             public void mouseClicked(MouseEvent evt){
                 if(SwingUtilities.isRightMouseButton(evt)){
-                    new Insertar_persona(padre, url);
-                    base = new Persona(url);
+                    new Insertar_persona(padre);
+                    
                 try{
+                    base = new Persona();
+
                     datos = ((Persona)base).consultar_persona_natural("");
                     JTable tab = Modelo_tabla.set_tabla_personas(datos);
                     tabla_persona.setModel(tab.getModel());
                     tabla_persona.setColumnModel(tab.getColumnModel());
 
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    padre.setVisible(false);
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog(padre, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    padre.dispose();
                     
                 }finally{
-                    base.close();
+                    if(base != null) base.close();
                 }
                     
                 }else{
@@ -135,20 +143,21 @@ public class Insertar_conductor extends Modales_personas{
                 String variable_auxiliar = text_documento.getText();
                 
                 
-                base = new Persona(url);
+                
                 try{
+                    base = new Persona();
                     datos = ((Persona)base).consultar_persona_natural(variable_auxiliar);
                     JTable tab = Modelo_tabla.set_tabla_personas(datos);
                     tabla_persona.setModel(tab.getModel());
                     tabla_persona.setColumnModel(tab.getColumnModel());
                     
         
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(padre, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    padre.setVisible(false);
-                    base.close();
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog(padre, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    padre.dispose();
+                    if(base != null) base.close();
                 }
-                base.close();
+                if(base != null) base.close();
                 tabla_persona.changeSelection(0, 0, false, false);
             }
 
@@ -215,9 +224,11 @@ public class Insertar_conductor extends Modales_personas{
                 String fecha = formato.format(buscar_fecha.getDate());      // Establece el Date en un String con el formato
                 Double.parseDouble(text_documento.getText());       // Verifica si el numero de documento es un numero                     
 
-                base = new Licencia(url);   // Abre un objeto de tipo base para hacer consultas u otro tipo de acciones a la base de datos
+                
                 
                 try{
+                    base = new Licencia();   // Abre un objeto de tipo base para hacer consultas u otro tipo de acciones a la base de datos
+                    
                     // Inserta los datos en la base de datos
                     ((Licencia)base).insertar_licencia( text_documento.getText(),               // Numero de documento del conductor
                                             combo_conductor.getSelectedIndex()+1,   // Tipo de licencia de conduccion
@@ -230,16 +241,16 @@ public class Insertar_conductor extends Modales_personas{
                                             JOptionPane.INFORMATION_MESSAGE);       // Tipo de icono que aparece en la ventana
                 
                     // Hace invicible la ventana antes de cerrarla
-                    padre.setVisible(false);
-                }catch(SQLException ex){
+                    padre.dispose();
+                }catch(SQLException | IOException ex){
                     // Si hay un error lo muestra en una ventana modal
                     JOptionPane.showMessageDialog(  padre,  // Padre al que pertenece la ventana
-                                                    ex.getMessage(),    // Mensaje de error que se muestra en la ventana
+                                                    ex.getLocalizedMessage(),    // Mensaje de error que se muestra en la ventana
                                                     "Error",      // Titulo de la ventana
                                                     JOptionPane.ERROR_MESSAGE); // Tipo de icono en la ventana
 
                 }finally{
-                    base.close();   // Finaliza la coneccion con la base de datos
+                    if(base != null) base.close();   // Finaliza la coneccion con la base de datos
                 }
 
             }catch(NumberFormatException e){

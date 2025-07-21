@@ -12,27 +12,30 @@ import Front.Extractos.Insertar_extracto_mensual;
 import Front.Panel.Panel_extractos;
 import Utilidades.Generar_extractos;
 import Utilidades.Modelo_tabla;
+import java.io.IOException;
 
 public class Panel_extractos_mensuales extends Panel_extractos{
     
     protected Extractos base_extractos;
 
-    public Panel_extractos_mensuales(String url){
-        super(url);
+    public Panel_extractos_mensuales(){
+        super();
     }
 
 
     @Override
     protected void cargar_datos_tabla() {
-        base_extractos = new Extractos(url);   // Hace una coneccion a la base de datos
+        
         try{
+            base_extractos = new Extractos();   // Hace una coneccion a la base de datos
+
             tabla = Modelo_tabla.set_tabla_extractos_mensuales( // Pone un formato para la tabla
                 base_extractos.consultar_vw_extracto_mensual("") // Pasa los datos que va a tener la tabla
             );
 
-        }catch(SQLException ex){
+        }catch(SQLException | IOException ex){
             // En caso que haya un error, muestra este mensaje de error con el motivo
-            JOptionPane.showMessageDialog(window, ex.getMessage()+"\nCerrando el Programa", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(window, ex.getLocalizedMessage()+"\nCerrando el Programa", "Error", JOptionPane.ERROR_MESSAGE);
             
             // Esto se utiliza para cerrar el programa despues del error
             if (window != null) {
@@ -40,14 +43,16 @@ public class Panel_extractos_mensuales extends Panel_extractos{
             }
 
         }finally{
-            base_extractos.close();
+            if(base_extractos != null) base_extractos.close();
         }   
     }
 
     @Override
     protected void accion_text_busqueda() {
-        base_extractos = new Extractos(url);
+        
         try{
+            base_extractos = new Extractos();
+            
             // Obtiene los datos y crea una tabla auxiliar con los datos proporcionados por el text Field
             JTable tabla_aux = Modelo_tabla.set_tabla_extractos_mensuales(
                 base_extractos.consultar_vw_extracto_mensual(text_busqueda.getText())
@@ -57,10 +62,10 @@ public class Panel_extractos_mensuales extends Panel_extractos{
             tabla.setModel(tabla_aux.getModel());
             tabla.setColumnModel(tabla_aux.getColumnModel());
 
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(window, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(window, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally{
-            base_extractos.close();
+            if(base_extractos != null) base_extractos.close();
         }
     }
 
@@ -71,7 +76,7 @@ public class Panel_extractos_mensuales extends Panel_extractos{
         item_actualizar.addActionListener(_->{
             int row = tabla.getSelectedRow();
             // actualizar_extracto
-            new Actualizar_extracto_mensual((JFrame)this.get_window(), url,(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1)),false).setVisible(true);
+            new Actualizar_extracto_mensual((JFrame)this.get_window(),(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1)),false).setVisible(true);
             accion_text_busqueda();
 
         });
@@ -79,13 +84,13 @@ public class Panel_extractos_mensuales extends Panel_extractos{
 
             int row = tabla.getSelectedRow();
             // actualizar_extracto
-            new Actualizar_extracto_mensual((JFrame)this.get_window(), url,(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1)),true).setVisible(true);
+            new Actualizar_extracto_mensual((JFrame)this.get_window(),(String) tabla.getValueAt(row, 0), Integer.parseInt((String)tabla.getValueAt(row, 1)),true).setVisible(true);
             accion_text_busqueda();
 
         });
         item_adicionar.addActionListener(_ ->{
 
-            new Insertar_extracto_mensual((JFrame)this.get_window(), url).setVisible(true);
+            new Insertar_extracto_mensual((JFrame)this.get_window()).setVisible(true);
             accion_text_busqueda();
         });
 
@@ -94,7 +99,7 @@ public class Panel_extractos_mensuales extends Panel_extractos{
 
             try{
                 String ruta;
-                ruta = Generar_extractos.generar_extracto_mensual_excel((String) tabla.getValueAt(select_row, 0),Integer.parseInt((String) tabla.getValueAt(select_row, 1)), url);
+                ruta = Generar_extractos.generar_extracto_mensual_excel((String) tabla.getValueAt(select_row, 0),Integer.parseInt((String) tabla.getValueAt(select_row, 1)));
                 String comando_auxiliar = "powershell -ExecutionPolicy ByPass -File \"" + UBICACION_PS_CONVERTIRPDF + "\"" + " -parametro \""+ UBICACION_PS_EXTRACTOS_MENSUALES + "\"";
                     
                 Process proceso = runtime.exec(comando_auxiliar);
@@ -103,7 +108,7 @@ public class Panel_extractos_mensuales extends Panel_extractos{
                 proceso.waitFor();
                 JOptionPane.showMessageDialog((JFrame)this.get_window(), "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
             }catch(Exception ex){
-                JOptionPane.showMessageDialog((JFrame)this.get_window(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog((JFrame)this.get_window(), ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -114,15 +119,17 @@ public class Panel_extractos_mensuales extends Panel_extractos{
             String consecutivo = "" + tabla.getValueAt(number, 1);
             number = JOptionPane.showConfirmDialog((JFrame)this.get_window(), "Esta seguro de eliminar el extracto " + consecutivo + "\ndel vehiculo "+placa,  "eliminar", JOptionPane.OK_CANCEL_OPTION);
             if(number == 0){
-                base_extractos = new Extractos(url);
+                
                 try{
+                    base_extractos = new Extractos();
+
                     // realizando la eliminacion del registro
                     base_extractos.eliminar_extracto_mensual(placa, Integer.parseInt(consecutivo));
 
-                }catch(SQLException ex){
+                }catch(SQLException | IOException ex){
                     JOptionPane.showMessageDialog((JFrame)this.get_window(),ex,"Error",JOptionPane.ERROR_MESSAGE);
                 }finally{
-                    base_extractos.close();
+                    if(base_extractos != null) base_extractos.close();
                 }
                 
                 JOptionPane.showMessageDialog((JFrame)this.get_window(), "Extracto eliminado correctamente");
@@ -139,21 +146,21 @@ public class Panel_extractos_mensuales extends Panel_extractos{
                 for(int i = 0; i < tabla.getRowCount(); i++){
                     placa = (String) tabla.getValueAt(i, 0);
                     consecutivo = (String) tabla.getValueAt(i, 1);
-                    Generar_extractos.generar_extracto_mensual_excel(placa, Integer.parseInt(consecutivo), url);
+                    Generar_extractos.generar_extracto_mensual_excel(placa, Integer.parseInt(consecutivo));
                 }
                 String comando_auxiliar = "powershell -ExecutionPolicy ByPass -File \"" + UBICACION_PS_CONVERTIRPDF + "\"" + " -parametro \""+ UBICACION_PS_EXTRACTOS_MENSUALES + "\"";
                 runtime.exec(comando_auxiliar);
                 
                 JOptionPane.showMessageDialog((JFrame)this.get_window(), "Extractos guardados con exito.", "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
             }catch(Exception ex){
-                JOptionPane.showMessageDialog((JFrame)this.get_window(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog((JFrame)this.get_window(), ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
             
         });
 
         item_actualizar_todos.addActionListener(_ -> {
 
-            new Actualizar_todo_ext_mensual((JFrame)this.get_window(), url).setVisible(true);
+            new Actualizar_todo_ext_mensual((JFrame)this.get_window()).setVisible(true);
 
             accion_text_busqueda();
 

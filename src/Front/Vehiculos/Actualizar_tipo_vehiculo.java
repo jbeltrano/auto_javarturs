@@ -1,5 +1,6 @@
 package Front.Vehiculos;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,9 +14,9 @@ public class Actualizar_tipo_vehiculo extends Modales_vehiculos{
     
     private int id;  
     private Clase_vehiculo base;
-    public Actualizar_tipo_vehiculo(JFrame padre, String url, String valor){
+    public Actualizar_tipo_vehiculo(JFrame padre, String valor){
 
-        super(padre, url, valor);
+        super(padre, valor);
         
         setVisible(true);
     }
@@ -30,11 +31,14 @@ public class Actualizar_tipo_vehiculo extends Modales_vehiculos{
         // incializacion de valores
         valores = new String[2];
 
-        base = new Clase_vehiculo(url);
+        
         try{
+            base = new Clase_vehiculo();
             valores = ((Clase_vehiculo)base).consultar_uno_clase_vehiculo(valor);
-        }catch(SQLException ex){
-            System.out.println(ex);
+        }catch(SQLException | IOException ex){
+            System.out.println(ex.getLocalizedMessage());
+        }finally{
+            if(base != null) base.close();
         }
 
         id = Integer.parseInt(valores[0]);
@@ -51,19 +55,19 @@ public class Actualizar_tipo_vehiculo extends Modales_vehiculos{
         boton_actualizacion.setBounds(25,530,100,20);
         boton_actualizacion.addActionListener(_ ->{
             
-            base = new Clase_vehiculo(url);
+            
 
             try{
-
+                base = new Clase_vehiculo();
                 base.actualizar_clase_vehiculo(id, tipo_vehiculo.getText().toUpperCase());
                 JOptionPane.showMessageDialog(this, "Tipo de id: " + id + "\nActualizado con Exito.","Actualizacion", JOptionPane.INFORMATION_MESSAGE);
             
 
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+            }catch(SQLException | IOException ex){
+                JOptionPane.showMessageDialog(this,ex.getLocalizedMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+            }finally{
+                if(base != null) base.close();
             }
-
-            base.close();
             this.dispose();
         });
         

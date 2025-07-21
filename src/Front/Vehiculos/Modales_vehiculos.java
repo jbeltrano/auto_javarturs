@@ -8,13 +8,11 @@ import java.awt.Dimension;
 
 public abstract class Modales_vehiculos extends JDialog{
     
-    protected String url;
     protected String valor;
     protected Base base;
 
-    public Modales_vehiculos(JFrame frame, String url, String valor){
+    public Modales_vehiculos(JFrame frame, String valor){
         super(frame, true);
-        this.url = url;
         this.valor = valor;
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setPreferredSize(new Dimension(600,600));
@@ -26,9 +24,8 @@ public abstract class Modales_vehiculos extends JDialog{
         
     }
 
-    public Modales_vehiculos(JFrame frame, String url){
+    public Modales_vehiculos(JFrame frame){
         super(frame, true);
-        this.url = url;
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setPreferredSize(new Dimension(600,600));
         setResizable(false);

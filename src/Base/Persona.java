@@ -1,13 +1,14 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import Utilidades.Capitalizar_Strings;
 
 public class Persona extends Base{
     
-    public Persona(String url){
-        super(url);
+    public Persona() throws IOException, SQLException{
+        super();
     }
 
     /**

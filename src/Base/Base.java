@@ -1,5 +1,6 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,51 +9,58 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
+import Utilidades.Leer_rutas;
+
 public class Base{
 
-    
     protected String[] dato;
     protected String[][] datos;
-    private String url = "jdbc:sqlite:";
-    protected Connection coneccion;
+    private static String url = "jdbc:sqlite:";
+    private static boolean band = true;
+    protected Connection coneccion = null;
     protected String insertar;
     protected String actualizar;
     protected String borrar;
     protected String consultar;
-    protected Statement state;
-    protected ResultSet resultado;
-    protected PreparedStatement pstate;
+    protected Statement state = null;
+    protected ResultSet resultado = null;
+    protected PreparedStatement pstate = null;
+
+    static {    //Esta funcion solo se ejecuta una vez, y se hace cuando se carga la clase en memoria
+
+        try{
+            Leer_rutas ruta = new Leer_rutas();
+            url = url.concat(ruta.get_ruta(Leer_rutas.DB));
+
+        }catch(IOException ex){
+
+            band = false;
+        }
+            
+    }
 
     /**
      * Este es el constructor recibe como parametro la ubicacion
      * del archivo .db de sqlite3, y establece coneccion con
      * la base de datos.
+     * @throws IOException 
+     * @throws SQLException 
      */
-    public Base(String url){
-        this.url = this.url.concat(url);        //Guarda y da formato a la url que se va a utilizar
-        iniciar_base();     // Establece coneccion con la base de datos
-    }
-
-    
-    
-    /**
-     * Este metodo se encarga de inicializar la base de datos
-     * y ver que no hayan errores al moento de establecer
-     * coneccion con la misma
-     * 
-     * @see DriverManager
-     */
-    private void iniciar_base(){
+    public Base() throws IOException, SQLException {
+        if (!band) {      // Se encarga de revisar la bandera, en caso de ser negativo retorna un error
+            throw new IOException("No es posible encontrar el archivo: Direccion.txt");
+        }
         
-        try{
+        try {
             coneccion = DriverManager.getConnection(url);
             state = coneccion.createStatement();
             state.execute("PRAGMA foreign_keys = ON");
-            state.close();
-        }catch(SQLException ex){
-            System.out.println("Error en la coneccion con la base de datos");
+        } catch (SQLException ex) {
+            close(); // Cierra cualquier recurso que se haya abierto
+            throw new SQLException("No es posible establecer conexion con la base de datos", ex);
         }
     }
+
 
     /**
      * Es el encargado de finalizar la conecicon con
@@ -60,11 +68,14 @@ public class Base{
      * 
      * @see Connection
      */
-    public void close(){
-        try{
-            coneccion.close();      // Cierra la coneccion con la base de datos
-        }catch(SQLException ex){
-            System.out.println("No se puedo cerrar la coneccion correctamente");
+    public void close() {
+        try {
+            if (resultado != null) resultado.close();
+            if (pstate != null) pstate.close();
+            if (state != null) state.close();
+            if (coneccion != null) coneccion.close();
+        } catch(SQLException ex) {
+            System.out.println("Error al cerrar los recursos de base de datos: " + ex.getMessage());
         }
     }
 
@@ -78,27 +89,38 @@ public class Base{
      * @return en formato Vector<String>
      * @throws SQLException
      */
-    public Vector<String> get_vector_tabla(String nombre, int columna)throws SQLException{
+    public Vector<String> get_vector_tabla(String nombre, int columna) throws SQLException {
         Vector<String> vector = new Vector<String>();
+        Statement localState = null;
+        ResultSet localResultado = null;
 
-        consultar = "select * from "+nombre;        // Da formato para realizar la consulta
+        consultar = "select * from " + nombre;        // Da formato para realizar la consulta
 
-        try{
-
-            state = coneccion.createStatement();
-            resultado = state.executeQuery(consultar);      // Realiza la consulta y la guarda en resultado
+        try {
+            localState = coneccion.createStatement();
+            localResultado = localState.executeQuery(consultar);      // Realiza la consulta y la guarda en resultado
             
-            
-            while(resultado.next()){
-                vector.add(resultado.getString(columna));       // Itera sobre resultado y va guardando el el vector
+            while(localResultado.next()) {
+                vector.add(localResultado.getString(columna));       // Itera sobre resultado y va guardando el el vector
             }
             
-            
-        }catch(SQLException ex){
+        } catch(SQLException ex) {
             throw ex;
-        }finally{
-            state.close();
-            resultado.close();
+        } finally {
+            if (localResultado != null) {
+                try {
+                    localResultado.close();
+                } catch (SQLException e) {
+                    // log error
+                }
+            }
+            if (localState != null) {
+                try {
+                    localState.close();
+                } catch (SQLException e) {
+                    // log error
+                }
+            }
         }
 
         return vector;
@@ -125,4 +147,14 @@ public class Base{
         return dato; 
     }
 
+    protected static SQLException no_base(SQLException ex){
+
+        if(ex.getErrorCode() == 1){
+
+            ex = new SQLException("No fue posible acceder a la base de datos, revisar que se encuentre en la ubicacion: " + url.split("jdbc:sqlite:")[1]);
+        
+        }
+
+        return ex;
+    }
 }

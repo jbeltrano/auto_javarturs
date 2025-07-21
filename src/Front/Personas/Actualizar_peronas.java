@@ -1,5 +1,6 @@
 package Front.Personas;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -12,8 +13,10 @@ public class Actualizar_peronas extends Insertar_persona{
     
     private String buscar;
     private String dato[];
-    public Actualizar_peronas(JFrame padre, String url, String buscar){
-        super(padre, url);
+    protected Ciudad base_ciudad;
+
+    public Actualizar_peronas(JFrame padre, String buscar){
+        super(padre);
         this.buscar = buscar; 
 
         set_componentes();
@@ -26,18 +29,18 @@ public class Actualizar_peronas extends Insertar_persona{
         radio_contratante.setVisible(false);
         label_contratante.setVisible(false);
 
-        base = new Persona(url);
+        
 
         try{
-            
+            base = new Persona();
             dato = ((Persona)base).consultar_uno_persona(buscar);
 
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            setVisible(false);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            Actualizar_peronas.this.dispose();
 
         }finally{
-            base.close();
+            if(base != null) base.close();
         }
 
         // Inicializando componentes
@@ -90,20 +93,23 @@ public class Actualizar_peronas extends Insertar_persona{
                     Long.parseLong(text_celular.getText());
                     Long.parseLong(text_documento.getText());
                     tipo_documento = combo_tipo_documento.getSelectedIndex() + 1;
-                    base = new Persona(url);
-                    Ciudad base_Ciudad = new Ciudad(url);
+                    
                     try {
-                        ciudad = Integer.parseInt(base_Ciudad.consultar_uno_ciudad((String)combo_municipio.getSelectedItem())[0]);
+                        base = new Persona();
+                        base_ciudad = new Ciudad();
+                        ciudad = Integer.parseInt(base_ciudad.consultar_uno_ciudad((String)combo_municipio.getSelectedItem())[0]);
                         ((Persona)base).actualizar_persona(text_documento.getText(), tipo_documento, text_nombre.getText(), text_celular.getText(), ciudad, text_direccion.getText(), text_correo.getText());
         
                         JOptionPane.showMessageDialog(this, "Persona actualizada correctamente");
                         
-                    } catch (SQLException e) {
-                        JOptionPane.showMessageDialog(this, e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                    } catch (SQLException | IOException ex) {
+                        JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(),"Error",JOptionPane.ERROR_MESSAGE);
                         
                     }finally{
-                        base.close();
-                        this.setVisible(false);
+                        if(base != null) base.close();
+                        if(base_ciudad != null) base_ciudad.close();
+
+                        Actualizar_peronas.this.dispose();
                     }
                     
                 }catch(NumberFormatException e){

@@ -15,26 +15,37 @@ import Base.Extractos;
 
 public class Generar_extractos {
 
+    private static Leer_rutas rutas;
+    
+    static {
+
+        try {
+            rutas = new Leer_rutas();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
     /**
      * Este metodo se encarga de exportar los extractos
      * en formato pdf carecterizando el archivo como extracto
      * mensual con placa y id del vehiculo
      * @param placa
      * @param consecutivo
-     * @param url
      * @return
      * @throws SQLException
      * @throws IOException
      * @throws NullPointerException
      */
-    public static String generar_extracto_mensual_excel(String placa, int consecutivo, String url)throws SQLException, IOException, NullPointerException{
+    public static String generar_extracto_mensual_excel(String placa, int consecutivo)throws SQLException, IOException, NullPointerException{
+        Leer_rutas rutas = new Leer_rutas();
         Extracto extracto = null;
-        Base base = new Base(url);
-        Vehiculo base_vehiculo = new Vehiculo(url);
-        Ciudad base_ciudad = new Ciudad(url);
-        Vehiculo_has_conductor base_vhc = new Vehiculo_has_conductor(url);
-        Contrato_mensual base_cm = new Contrato_mensual(url);
-        Extractos base_extractos = new Extractos(url);
+        Base base = new Base();
+        Vehiculo base_vehiculo = new Vehiculo();
+        Ciudad base_ciudad = new Ciudad();
+        Vehiculo_has_conductor base_vhc = new Vehiculo_has_conductor();
+        Contrato_mensual base_cm = new Contrato_mensual();
+        Extractos base_extractos = new Extractos();
         boolean parque_automotor = true;
         String[] datos_extracto;
         String[] datos_vehiculo;
@@ -45,12 +56,14 @@ public class Generar_extractos {
         String[] vehiculo_empresa_externa;
         String año;
         int datos_tipo_contrato;
-        String localizacion_fichero = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Mensuales";
-        String localizacion2_fichero = "H:\\.shortcut-targets-by-id\\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\\0. EXTRACTOS Y CONTRATOS\\EXTRACTO DEL CONTRATO\\MENSUALES\\";
+        String localizacion_fichero = System.getProperty("user.home") + "\\" + rutas.get_ruta(Leer_rutas.EXTRACTOS_MENSUALES) + "\\";
+        String localizacion2_fichero = rutas.get_ruta(Leer_rutas.EXTRACTOS_MENSUALES_DRIVE) + "\\";
+
+        
 
         try{
             // inicializacion del objeto para modificar la plantilla de extractos
-            extracto = new Extracto("src\\Formatos\\Extracto.xlsx");
+            extracto = new Extracto(rutas.get_ruta(Leer_rutas.PLANTILLA_EXTRACTOS));
             datos_extracto = base_extractos.consultar_uno_extracto_mensual(placa, consecutivo);
             datos_contratante = base_cm.consultar_uno_contrato_mensual(Integer.parseInt(datos_extracto[2]));
             datos_conductores = base_vhc.consultar_conductor_has_vehiculo(placa);
@@ -138,22 +151,22 @@ public class Generar_extractos {
      * @param placa
      * @param consecutivo
      * @param contrato
-     * @param url
-     * @param band  // Define si se muestra la ruta entre origen y destino
+     * @param band Define si se muestra la ruta entre origen y destino
      * @return
      * @throws SQLException
      * @throws IOException
      * @throws NullPointerException
      */
-    public static String generar_extracto_ocasional(String placa, int consecutivo,int contrato, String url, boolean band)throws SQLException, IOException, NullPointerException{
+    public static String generar_extracto_ocasional(String placa, int consecutivo,int contrato, boolean band)throws SQLException, IOException, NullPointerException{
+        
         Extracto extracto = null;
-        Base base = new Base(url);
-        Vehiculo base_vehiculo = new Vehiculo(url);
-        Ciudad base_ciudad = new Ciudad(url);
-        Vehiculo_has_conductor base_vhc = new Vehiculo_has_conductor(url);
-        BContrato_ocasional base_co = new BContrato_ocasional(url);
-        Contratante base_contratante = new Contratante(url);
-        Extractos base_extracto = new Extractos(url);
+        Base base = new Base();
+        Vehiculo base_vehiculo = new Vehiculo();
+        Ciudad base_ciudad = new Ciudad();
+        Vehiculo_has_conductor base_vhc = new Vehiculo_has_conductor();
+        BContrato_ocasional base_co = new BContrato_ocasional();
+        Contratante base_contratante = new Contratante();
+        Extractos base_extracto = new Extractos();
         boolean parque_automotor = true;
         String sub_ocasional = "OCASIONAL ";
         String[] datos_per_contratante;
@@ -167,12 +180,14 @@ public class Generar_extractos {
         String año;
         String localizacion_contrato;
         int datos_tipo_contrato;
-        String localizacion_fichero = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
-        String localizacion2_fichero = "H:\\.shortcut-targets-by-id\\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\\0. EXTRACTOS Y CONTRATOS\\EXTRACTO DEL CONTRATO";
+        String localizacion_fichero = System.getProperty("user.home") + "\\" + rutas.get_ruta(Leer_rutas.EXTRACTOS_OCASIONALES) + "\\";
+        String localizacion2_fichero = rutas.get_ruta(Leer_rutas.EXTRACTOS_OCASIONALES_DIRVE) +"\\";
+        
+        
 
         try{
             // inicializacion del objeto para modificar la plantilla de extractos
-            extracto = new Extracto("src\\Formatos\\Extracto.xlsx");
+            extracto = new Extracto(rutas.get_ruta(Leer_rutas.PLANTILLA_EXTRACTOS));
             datos_contratante = base_co.consultar_uno_contrato_ocasional(contrato);
             datos_per_contratante = base_contratante.consultar_uno_contratante(datos_contratante[1]);
             datos_conductores = base_vhc.consultar_conductor_has_vehiculo(placa);
@@ -266,18 +281,24 @@ public class Generar_extractos {
             // Guarda el extracto en la direccion indicada por el path, o el archivo de configuracion
             extracto.guardar(localizacion_fichero, sub_ocasional+" (" + consecutivo + ")");
             extracto.guardar(localizacion2_fichero);
-            localizacion_contrato = Generar_contratos_ocasionales.generar_contrato_ocasional(placas_contrato,""+contrato, url, band);
+            
+            localizacion_contrato = 
+                Generar_contratos_ocasionales.generar_contrato_ocasional(
+                    placas_contrato,    // Estas son las placas que van a ir en el contrato
+                    ""+contrato,        // Este es el numero del contrato
+                    band                // Define si es una ruta o un origen y un destino
+                    );
 
         // Retorna la direccion de guardado
         }finally{
-            base.close();
-            base_vehiculo.close();
-            base_ciudad.close();
-            base_vhc.close();
-            base_co.close();
-            base_extracto.close();
-            base_contratante.close();
-            extracto.close();
+            if(base != null) base.close();
+            if(base_vehiculo != null) base_vehiculo.close();
+            if(base_ciudad != null) base_ciudad.close();
+            if(base_vhc != null) base_vhc.close();
+            if(base_co != null) base_co.close();
+            if(base_extracto != null) base_extracto.close();
+            if(base_contratante != null) base_contratante.close();
+            if(base_extracto != null) extracto.close();
         }
         
         return localizacion_fichero + placa + sub_ocasional +" (" + consecutivo + ")\n El contrato se guardo en: " + localizacion_contrato;
@@ -287,16 +308,16 @@ public class Generar_extractos {
     // La idea es que este se encarga de exportar los extractos por el contrato
     // de tal forma que exporta los extractos a los vehiculos que tienen este contrato
     // Y posteriormente genera el extracto mensual
-    public static String generar_extracto_ocasional(int contrato, String url, boolean band)throws IOException, SQLException, NullPointerException{
+    public static String generar_extracto_ocasional(int contrato, boolean band)throws IOException, SQLException, NullPointerException{
         
         Extracto extracto = null;
-        Base base = new Base(url);
-        Vehiculo base_vehiculo = new Vehiculo(url);
-        Ciudad base_ciudad = new Ciudad(url);
-        Vehiculo_has_conductor base_vhc = new Vehiculo_has_conductor(url);
-        Extractos base_extractos = new Extractos(url);
-        BContrato_ocasional base_co = new BContrato_ocasional(url);
-        Contratante base_contratante = new Contratante(url);
+        Base base = new Base();
+        Vehiculo base_vehiculo = new Vehiculo();
+        Ciudad base_ciudad = new Ciudad();
+        Vehiculo_has_conductor base_vhc = new Vehiculo_has_conductor();
+        Extractos base_extractos = new Extractos();
+        BContrato_ocasional base_co = new BContrato_ocasional();
+        Contratante base_contratante = new Contratante();
         boolean parque_automotor = true;
         String sub_ocasional = "OCASIONAL ";
         String[] datos_per_contratante;
@@ -311,15 +332,17 @@ public class Generar_extractos {
         int datos_tipo_contrato;
         int consecutivo;
         String placas_contrato[];    // Se utiliza para obtener las placas que hacen relacion al contrato
-        String localizacion_fichero = System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales";
-        String localizacion2_fichero = "H:\\.shortcut-targets-by-id\\1t_bzTNBvxadgo0YhZcGtt_W_kRVu_3Hh\\0. EXTRACTOS Y CONTRATOS\\EXTRACTO DEL CONTRATO\\";
+        String localizacion_fichero = System.getProperty("user.home") + "\\" + rutas.get_ruta(Leer_rutas.EXTRACTOS_OCASIONALES) + "\\";
+        String localizacion2_fichero = rutas.get_ruta(Leer_rutas.EXTRACTOS_OCASIONALES_DIRVE) +"\\";
+
+        
 
         try{
             // Consultando la cantidad de extractos a realizar con el msimo contrato
             placas_contrato = base_co.consultar_placas_contrato_ocasional(contrato);
 
             // inicializacion del objeto para modificar la plantilla de extractos
-            extracto = new Extracto("src\\Formatos\\Extracto.xlsx");
+            extracto = new Extracto(rutas.get_ruta(Leer_rutas.PLANTILLA_EXTRACTOS));
             datos_contratante = base_co.consultar_uno_contrato_ocasional(contrato);
             datos_origen = base_ciudad.consultar_uno_ciudades(datos_contratante[4]);
             datos_destino = base_ciudad.consultar_uno_ciudades(datos_contratante[5]);
@@ -442,18 +465,17 @@ public class Generar_extractos {
 
             }
             
-            localizacion_contrato = Generar_contratos_ocasionales.generar_contrato_ocasional(placas_contrato,""+contrato, url, band);
+            localizacion_contrato = Generar_contratos_ocasionales.generar_contrato_ocasional(placas_contrato,""+contrato, band);
 
         }finally{
-            base.close();
-            base_vehiculo.close();
-            base_ciudad.close();
-            extracto.close();
-            base_vhc.close();
-            base_extractos.close();
-            base_co.close();
-            base_contratante.close();
-            extracto.close();
+            if(base != null) base.close();
+            if(base_vehiculo != null) base_vehiculo.close();
+            if(base_ciudad != null) base_ciudad.close();
+            if(base_vhc != null) base_vhc.close();
+            if(base_extractos != null) base_extractos.close();
+            if(base_co != null) base_co.close();
+            if(base_contratante != null) base_contratante.close();
+            if(extracto != null) extracto.close();
         }
         // Retorna la localizacion del los extractos
         return localizacion_fichero + "\n Contrato guardado en: " + localizacion_contrato;

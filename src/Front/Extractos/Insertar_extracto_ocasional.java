@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class Insertar_extracto_ocasional extends Modal_documento{
@@ -38,9 +39,10 @@ public class Insertar_extracto_ocasional extends Modal_documento{
     private JButton boton_guardar;
     private JButton boton_guardar_exportar;
     private JFrame ventana;
+    protected Vehiculo base_vehiculo;
 
-    public Insertar_extracto_ocasional(JFrame frame, String url){
-        super(frame,url);
+    public Insertar_extracto_ocasional(JFrame frame){
+        super(frame);
         ventana = frame;
     }
 
@@ -61,9 +63,10 @@ public class Insertar_extracto_ocasional extends Modal_documento{
         boton_guardar_exportar = new JButton("Guardar y Exportar");
 
         // Inicializacion de los valores de las tablas
-        base = new BContrato_ocasional(url);
-        Vehiculo base_vehiculo = new Vehiculo(url);
+        
         try{
+            base = new BContrato_ocasional();
+            base_vehiculo = new Vehiculo();
             String[][] datos_vehiculo = base_vehiculo.consultar_vehiculo("");
             String[][] datos_contrato = ((BContrato_ocasional)base).consultar_contrato_ocasional("");
 
@@ -74,11 +77,11 @@ public class Insertar_extracto_ocasional extends Modal_documento{
             tabla_vehiculo.changeSelection(0,0,false,false);
             
 
-        }catch (SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(),"Error" ,JOptionPane.ERROR_MESSAGE);
+        }catch (SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(),"Error" ,JOptionPane.ERROR_MESSAGE);
         }finally {
-            base.close();
-            base_vehiculo.close();
+            if(base != null) base.close();
+            if(base_vehiculo != null) base_vehiculo.close();
         }
         label_vehiculo.setBounds(POS_X,POS_X,100,HEIGHT);
         panel.add(label_vehiculo);
@@ -90,9 +93,11 @@ public class Insertar_extracto_ocasional extends Modal_documento{
             public void accion(){
                 String datos[][] = null;
 
-                base = new Base(url);
-                Vehiculo base_vehiculo = new Vehiculo(url);
+                
                 try{
+
+                    base = new Base();
+                    base_vehiculo = new Vehiculo();
 
                     datos = base_vehiculo.consultar_vehiculo(text_placa.getText());
                     JTable tabla_auxiliar = Modelo_tabla.set_tabla_vehiculo(datos);
@@ -101,12 +106,12 @@ public class Insertar_extracto_ocasional extends Modal_documento{
                     scroll_vehiculo.setViewportView(tabla_vehiculo);
 
 
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog(ventana, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     ventana.setVisible(false);
                 }finally{
-                    base.close();
-                    base_vehiculo.close();
+                    if(base != null) base.close();
+                    if(base_vehiculo != null) base_vehiculo.close();
                 }
 
                 tabla_vehiculo.changeSelection(0, 0, false, false);
@@ -140,20 +145,21 @@ public class Insertar_extracto_ocasional extends Modal_documento{
 
                 String datos[][] = null;
 
-                base = new BContrato_ocasional(url);
+                
                 try{
+                    base = new BContrato_ocasional();
                     datos = ((BContrato_ocasional)base).consultar_contrato_ocasional(text_contrato.getText());
                     JTable tabla_auxiliar = Modelo_tabla.set_tabla_contratos_ocasionales(datos);
                     tabla_contrato.setModel(tabla_auxiliar.getModel());
                     tabla_contrato.setColumnModel(tabla_auxiliar.getColumnModel());
                     scroll_contrato.setViewportView(tabla_contrato);
 
-                }catch(SQLException ex){
-                    JOptionPane.showMessageDialog(ventana, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }catch(SQLException | IOException ex){
+                    JOptionPane.showMessageDialog(ventana, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     ventana.setVisible(false);
 
                 }finally {
-                    base.close();
+                    if(base != null) base.close();
                 }
                 tabla_contrato.changeSelection(0, 0, false, false);
 
@@ -223,7 +229,7 @@ public class Insertar_extracto_ocasional extends Modal_documento{
                                         System.getProperty("user.home") + "\\Desktop\\Extractos\\Extractos Ocasionales"};
                     Runtime runtieme = Runtime.getRuntime();
 
-                    ruta = Generar_extractos.generar_extracto_ocasional(text_placa.getText(), Integer.parseInt(text_consecutivo.getText()),Integer.parseInt(text_contrato.getText()), url, band2);
+                    ruta = Generar_extractos.generar_extracto_ocasional(text_placa.getText(), Integer.parseInt(text_consecutivo.getText()),Integer.parseInt(text_contrato.getText()), band2);
                     runtieme.exec(comando);
                     JOptionPane.showMessageDialog(this, "Extracto guardado con exito.\nUbicacion: " + ruta + "\nEl contrato lo encontraras en la carpeta de contratos ocasionales", "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
                     setVisible(false);
@@ -252,8 +258,10 @@ public class Insertar_extracto_ocasional extends Modal_documento{
         String vehiculo;
         int contrato;
 
-        base = new Extractos(url);
+        
         try{
+
+            base = new Extractos();
 
             vehiculo = (text_placa.getText().compareTo("") == 0)?null: text_placa.getText();
             contrato = (text_contrato.getText().compareTo("") == 0)?0: Integer.parseInt(text_contrato.getText());
@@ -270,14 +278,14 @@ public class Insertar_extracto_ocasional extends Modal_documento{
                 return false;
             }
 
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }catch(NumberFormatException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }finally{
-            base.close();
+            if(base != null) base.close();
         }
 
     }
@@ -292,9 +300,10 @@ public class Insertar_extracto_ocasional extends Modal_documento{
         int valor_auxilia = tabla_vehiculo.getSelectedRow();
         int consecutivo = 0;
         text_placa.setText("" + tabla_vehiculo.getValueAt(valor_auxilia, 0));
-        base = new Extractos(url);
+        
         try{
 
+            base = new Extractos();
             consecutivo = ((Extractos)base).consultar_consecutivo_ocasional(text_placa.getText());
             if(consecutivo == 0){
                 
@@ -304,10 +313,10 @@ public class Insertar_extracto_ocasional extends Modal_documento{
                 text_consecutivo.setText("" + (consecutivo + 1));
             }
 
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage());
         }finally{
-            base.close();
+            if(base != null) base.close();
         }
     }
 

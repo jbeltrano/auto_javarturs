@@ -7,13 +7,11 @@ import Base.Base;
 
 public abstract class Modales_personas extends JDialog{
     
-    protected String url;
     protected Base base;
 
-    public Modales_personas(JDialog padre, String url, Dimension dimension){
+    public Modales_personas(JDialog padre, Dimension dimension){
 
         super(padre, true);
-        this.url = url;
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setPreferredSize(dimension);
         setResizable(false);
@@ -22,10 +20,9 @@ public abstract class Modales_personas extends JDialog{
         
     }
 
-    public Modales_personas(JFrame padre, String url, Dimension dimension){
+    public Modales_personas(JFrame padre, Dimension dimension){
 
         super(padre, true);
-        this.url = url;
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setPreferredSize(dimension);
         setResizable(false);

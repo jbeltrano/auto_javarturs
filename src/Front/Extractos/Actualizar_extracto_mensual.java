@@ -1,5 +1,6 @@
 package Front.Extractos;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,8 +15,8 @@ public class Actualizar_extracto_mensual extends Insertar_extracto_mensual{
     private String datos[];
     private boolean is_plantilla;
 
-    public Actualizar_extracto_mensual(JFrame padre, String url, String placa, int consecutivo, boolean is_plantilla){
-        super(padre, url);
+    public Actualizar_extracto_mensual(JFrame padre, String placa, int consecutivo, boolean is_plantilla){
+        super(padre);
         this.placa = placa;
         this.consecutivo = consecutivo;
         this.is_plantilla = is_plantilla;
@@ -33,9 +34,10 @@ public class Actualizar_extracto_mensual extends Insertar_extracto_mensual{
 
 
         // Cargando la informacion
-        base = new Extractos(url);
+        
         try{
-
+            base = new Extractos();
+            
             // inicializando los valores
             SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
             datos = ((Extractos)base).consultar_uno_extracto_mensual(placa, consecutivo);
@@ -48,14 +50,14 @@ public class Actualizar_extracto_mensual extends Insertar_extracto_mensual{
             fecha_final.setDate(formato.parse(datos[4]));
 
             
-        }catch(SQLException ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }catch(SQLException | IOException ex){
+            JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             setVisible(false);
         }catch(ParseException ex){
             JOptionPane.showMessageDialog(this, "Problemas al realizar conversiones", "Error", JOptionPane.ERROR_MESSAGE);
             setVisible(false);
         }finally{
-            base.close();
+            if(base != null) base.close();
         }
     }
 
@@ -72,9 +74,10 @@ public class Actualizar_extracto_mensual extends Insertar_extracto_mensual{
             int destino;
             SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
     
-            base = new Extractos(url);
+            
             try{
-    
+                base = new Extractos();
+
                 vehiculo = (text_placa.getText().compareTo("") == 0)?null: text_placa.getText();
                 contratante = (text_contratante.getText().compareTo("") == 0)?0: Integer.parseInt(text_contratante.getText());
                 ffecha_inicial = formato.format(fecha_incial.getDate());
@@ -87,7 +90,7 @@ public class Actualizar_extracto_mensual extends Insertar_extracto_mensual{
     
                     ((Extractos)base).actualizar_extracto_mensual(vehiculo, consecutivo, contratante, ffecha_inicial, ffecha_final, origen, destino);
                     JOptionPane.showMessageDialog(this, "Extracto mensual guardado correctamente", "Transaccion exitosa", JOptionPane.INFORMATION_MESSAGE);
-                    base.close();
+                    if(base != null) base.close();
                     return true;
     
                 }else{
@@ -95,14 +98,14 @@ public class Actualizar_extracto_mensual extends Insertar_extracto_mensual{
                     return false;
                 }
     
-            }catch(SQLException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }catch(SQLException | IOException ex){
+                JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }catch(NumberFormatException ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }finally{
-                base.close();
+                if(base != null) base.close();
             }
         
         }else{

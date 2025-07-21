@@ -1,5 +1,6 @@
 package Base;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,8 +11,8 @@ import java.time.format.DateTimeParseException;
 
 public class Extractos extends Base{
     
-    public Extractos(String url){
-        super(url);
+    public Extractos() throws IOException, SQLException{
+        super();
     }
 
     public int consultar_consecutivo_mensual(String buscar)throws SQLException{
