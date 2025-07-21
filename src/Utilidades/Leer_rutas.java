@@ -17,7 +17,7 @@ public class Leer_rutas {
     public static String EXTRACTOS_MENSUALES = "guardar_extractos_mensuales";
     public static String EXTRACTOS_MENSUALES_DRIVE = "guardar_extractos_mensuales2";
     public static String EXTRACTOS_OCASIONALES = "guardar_extractos_ocasionales";
-    public static String EXTRACTOS_OCASIONALES_DIRVE = "guardar_extractos_ocasionales";
+    public static String EXTRACTOS_OCASIONALES_DIRVE = "guardar_extractos_ocasionales2";
     public static String CONTRATOS_OCASIONALES = "guardar_contratos_ocasionales";
     public static String CONTRATOS_OCASIONALES_DRIVE = "guardar_contratos_ocasionales2";
     public static String PLANTILLA_EXTRACTOS = "plantilla_extractos";

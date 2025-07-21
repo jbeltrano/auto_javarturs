@@ -1,1 +1,0 @@
-"C:\Program Files\Java\jdk-22\bin\java.exe" -jar auto_javarturs.jar
