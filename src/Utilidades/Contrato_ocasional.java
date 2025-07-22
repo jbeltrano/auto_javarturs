@@ -500,7 +500,7 @@ public class Contrato_ocasional{
      * @param placas
      * @throws IOException
      */
-    public void guardar(String url, String[] placas) throws IOException{
+    public String guardar(String url, String[] placas) throws IOException{
         String placa = "";
         for(int i = 0; i < placas.length; i++){
             placa = (i == placas.length -1)?placa + placas[i]:placa + placas[i] + ", ";
@@ -517,6 +517,8 @@ public class Contrato_ocasional{
         documento.write(fos);
 
         fos.close();
+
+        return url;
     }
 }
 

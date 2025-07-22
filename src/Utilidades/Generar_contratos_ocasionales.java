@@ -140,7 +140,10 @@ public class Generar_contratos_ocasionales {
                 
             // Finalmente Guarda en la ruta de destino con su respectivo nombre
             doc_contrato.guardar(url_destino, placas);
-            doc_contrato.guardar(url_destino2,placas);
+            String direccion_origen = doc_contrato.guardar(url_destino2,placas);
+            
+            Convertir_contrato_pdf.convertir_contrato_pdf(direccion_origen, url_destino2);
+            
         }finally{
             if(base_Vehiculo != null) base_Vehiculo.close();
             if(doc_contrato != null) doc_contrato.close();

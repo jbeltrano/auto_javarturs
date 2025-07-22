@@ -121,6 +121,7 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
                     
                     runtime.exec(comando_auxiliar);
                     
+                    
                     JOptionPane.showMessageDialog((JFrame)this.get_window(), "Extracto guardado con exito.\nUbicacion: " + ruta, "Guardado Exitoso", JOptionPane.INFORMATION_MESSAGE);
                 }catch(Exception ex){
                     JOptionPane.showMessageDialog((JFrame)this.get_window(), ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
