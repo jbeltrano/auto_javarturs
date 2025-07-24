@@ -90,10 +90,17 @@ public class Modelo_tabla {
                 setTableZoom(table, zoomFactor);
                 e.consume(); // Evita que el evento se propague
             } else {
-                // Scroll normal cuando no se presiona Ctrl
-                int unitsToScroll = e.getUnitsToScroll();
+                // Scroll normal
                 Rectangle visibleRect = table.getVisibleRect();
-                visibleRect.y += unitsToScroll * table.getRowHeight();
+                int unitsToScroll = e.getUnitsToScroll();
+                
+                if (e.isShiftDown()) {
+                    // Scroll horizontal cuando se presiona Shift
+                    visibleRect.x += unitsToScroll * 30; // 30 píxeles por unidad de scroll
+                } else {
+                    // Scroll vertical cuando no se presiona Shift
+                    visibleRect.y += unitsToScroll * table.getRowHeight();
+                }
                 table.scrollRectToVisible(visibleRect);
             }
         });
