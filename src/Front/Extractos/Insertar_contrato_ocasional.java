@@ -218,9 +218,8 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
                 
                 try{
                     base = new Ciudad();
-                    JTable auxiliar = Modelo_tabla.set_tabla_ciudad(((Ciudad)base).consultar_ciudades(text_origen.getText()));
-                    tabla_origen.setModel(auxiliar.getModel());
-                    tabla_origen.setColumnModel(auxiliar.getColumnModel());
+                    String[][] datos = ((Ciudad)base).consultar_ciudades(text_origen.getText());
+                    Modelo_tabla.updateTableModel(tabla_origen, datos);
         
                 }catch(SQLException | IOException ex){
                     JOptionPane.showMessageDialog(ventana, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -274,9 +273,7 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
                 try{
                     base = new Ciudad();
                     datos = ((Ciudad)base).consultar_ciudades(text_destino.getText());
-                    JTable tabla_aux = Modelo_tabla.set_tabla_ciudad(datos);
-                    tabla_destino.setModel(tabla_aux.getModel());
-                    tabla_destino.setColumnModel(tabla_aux.getColumnModel());
+                    Modelo_tabla.updateTableModel(tabla_destino, datos);
                     
                     scroll_destino.setViewportView(tabla_destino);
                     
@@ -363,15 +360,12 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
     }
 
     private void set_tabla_contratante(){
-
         String [][] datos = null;
         
         try{
             base = new Contratante();
             datos = ((Contratante)base).consultar_contratante(text_contratante.getText());
-            JTable tabla_auxiliar = Modelo_tabla.set_tabla_contratante(datos);
-            tabla_contratante.setModel(tabla_auxiliar.getModel());
-            tabla_contratante.setColumnModel(tabla_auxiliar.getColumnModel());
+            Modelo_tabla.updateTableModel(tabla_contratante, datos);
             scroll_contratante.setViewportView(tabla_contratante);
             
 

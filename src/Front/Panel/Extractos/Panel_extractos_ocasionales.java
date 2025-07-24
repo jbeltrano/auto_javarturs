@@ -4,7 +4,6 @@ import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import java.awt.event.WindowEvent;
 import Base.Extractos;
 import Front.Extractos.Actualizar_extracto_ocasional;
@@ -52,15 +51,8 @@ public class Panel_extractos_ocasionales extends Panel_extractos{
         
         try{
             base_extracto = new Extractos();
-            
-            // Obtiene los datos y crea una tabla auxiliar con los datos proporcionados por el text Field
-            JTable tabla_aux = Modelo_tabla.set_tabla_extractos_ocasionales(
-                base_extracto.consultar_vw_extracto_ocasional(text_busqueda.getText())
-            );
 
-            // Estos metodos se encargan que el formato de la tabla se aplique sin afectar sus propiedades
-            tabla.setModel(tabla_aux.getModel());
-            tabla.setColumnModel(tabla_aux.getColumnModel());
+            Modelo_tabla.updateTableModel(tabla, base_extracto.consultar_vw_extracto_ocasional(text_busqueda.getText()));
 
         }catch(SQLException | IOException ex){
             JOptionPane.showMessageDialog(window, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);

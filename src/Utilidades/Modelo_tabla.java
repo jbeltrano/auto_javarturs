@@ -4,18 +4,148 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
+import javax.swing.table.TableColumn;
+import java.awt.Font;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.Rectangle;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 public class Modelo_tabla {
     
+    public static float DEFAULT_ZOOM_FACTOR = 1.1f;
+    private static final float MIN_ZOOM = 0.5f;
+    private static final float MAX_ZOOM = 2.0f;
+    private static final String ZOOM_KEY = "table.zoom.factor";
+
+    public static void setTableZoom(JTable table, float zoomFactor) {
+        // Obtener el zoom actual de la tabla específica
+        float currentZoom = table.getClientProperty(ZOOM_KEY) != null ? 
+            (float) table.getClientProperty(ZOOM_KEY) : 1.0f;
+            
+        // Si el factor es 1.0, significa que queremos mantener el zoom actual
+        float newZoom = (zoomFactor == 1.0f) ? currentZoom : currentZoom * zoomFactor;
+        
+        // Verificar límites de zoom
+        if (newZoom < MIN_ZOOM || newZoom > MAX_ZOOM) {
+            return;
+        }
+        
+        // Guardar el nuevo zoom en la tabla específica
+        table.putClientProperty(ZOOM_KEY, newZoom);
+        
+        // Obtener la fuente actual
+        Font currentFont = table.getFont();
+        // Calcular el nuevo tamaño de fuente base
+        int baseSize = 12; // Tamaño base de la fuente
+        int newSize = Math.round(baseSize * currentZoom);
+        // Crear nueva fuente con el tamaño ajustado
+        Font newFont = new Font(currentFont.getName(), currentFont.getStyle(), newSize);
+        
+        // Aplicar la nueva fuente a la tabla y al encabezado
+        table.setFont(newFont);
+        table.getTableHeader().setFont(newFont);
+        
+        // Ajustar la altura de las filas
+        int baseRowHeight = 16; // Altura base de la fila
+        int rowHeight = Math.round(baseRowHeight * currentZoom);
+        table.setRowHeight(rowHeight);
+        
+        // Ajustar el ancho de las columnas proporcionalmente usando los anchos base
+        TableColumnModel columnModel = table.getColumnModel();
+        int[] baseWidths = (int[]) table.getClientProperty(COLUMN_BASE_WIDTHS);
+        if (baseWidths != null) {
+            for (int i = 0; i < columnModel.getColumnCount(); i++) {
+                TableColumn column = columnModel.getColumn(i);
+                // Aplicamos el zoom al ancho base original
+                column.setPreferredWidth(Math.round(baseWidths[i] * newZoom));
+            }
+        }
+    }
+    
+    private static final String COLUMN_BASE_WIDTHS = "table.column.base.widths";
+
+    public static void setupZoomListener(JTable table) {
+        // Guardar los anchos base de las columnas
+        TableColumnModel columnModel = table.getColumnModel();
+        int[] baseWidths = new int[columnModel.getColumnCount()];
+        for (int i = 0; i < columnModel.getColumnCount(); i++) {
+            baseWidths[i] = columnModel.getColumn(i).getPreferredWidth();
+        }
+        table.putClientProperty(COLUMN_BASE_WIDTHS, baseWidths);
+
+        // Listener para el mouse wheel
+        table.addMouseWheelListener(e -> {
+            if (e.isControlDown()) {
+                // Zoom con Ctrl + rueda
+                float zoomFactor = e.getWheelRotation() < 0 ? 1.1f : 0.9f;
+                setTableZoom(table, zoomFactor);
+                e.consume(); // Evita que el evento se propague
+            } else {
+                // Scroll normal cuando no se presiona Ctrl
+                int unitsToScroll = e.getUnitsToScroll();
+                Rectangle visibleRect = table.getVisibleRect();
+                visibleRect.y += unitsToScroll * table.getRowHeight();
+                table.scrollRectToVisible(visibleRect);
+            }
+        });
+        
+        // Listener para las teclas Ctrl + y Ctrl -
+        table.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.isControlDown()) {
+                    if (e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_ADD) {
+                        setTableZoom(table, 1.1f);
+                        e.consume();
+                    } else if (e.getKeyCode() == KeyEvent.VK_MINUS || e.getKeyCode() == KeyEvent.VK_SUBTRACT) {
+                        setTableZoom(table, 0.9f);
+                        e.consume();
+                    }
+                }
+            }
+        });
+    }
+    
+    private static void preserveTableProperties(JTable source, JTable target) {
+        // Preservar el zoom
+        Float zoom = (Float) source.getClientProperty(ZOOM_KEY);
+        if (zoom != null) {
+            target.putClientProperty(ZOOM_KEY, zoom);
+            setTableZoom(target, 1.0f);
+        }
+        
+        // Preservar anchos de columna si tienen el mismo número de columnas
+        if (source.getColumnCount() == target.getColumnCount()) {
+            TableColumnModel sourceColumns = source.getColumnModel();
+            TableColumnModel targetColumns = target.getColumnModel();
+            for (int i = 0; i < sourceColumns.getColumnCount(); i++) {
+                targetColumns.getColumn(i).setPreferredWidth(
+                    sourceColumns.getColumn(i).getPreferredWidth());
+            }
+        }
+    }
+
+    public static void updateTableModel(JTable table, String[][] datos) {
+        // Crear una tabla temporal con los nuevos datos
+        JTable tempTable = new JTable(set_modelo_tablas(datos));
+        
+        // Preservar propiedades antes de actualizar el modelo
+        preserveTableProperties(table, tempTable);
+        
+        // Actualizar el modelo y columnas
+        table.setModel(tempTable.getModel());
+        table.setColumnModel(tempTable.getColumnModel());
+    }
+
     public static DefaultTableModel set_modelo_tablas(String [][] datos){
         DefaultTableModel modelo;
         
@@ -32,9 +162,7 @@ public class Modelo_tabla {
         }
     
         for(int i = 1; i < datos.length; i++){
-                
             modelo.addRow(datos[i]);
-    
         }
 
         return modelo;
@@ -64,14 +192,12 @@ public class Modelo_tabla {
     }
 
     public static JTable set_tabla_contratante(String[][] datos){
-        
         JTable tab = new JTable();
-        DefaultTableModel modelo; 
         TableColumnModel clum_model;
         
-        modelo = set_modelo_tablas(datos);
-        tab = new JTable(modelo);
-        tab.setShowGrid(true);  // Se encarga de mostrar las lineas de la tabla
+        // Configuración inicial de la tabla
+        tab = new JTable(set_modelo_tablas(datos));
+        tab.setShowGrid(true);
         tab.setGridColor(Color.GRAY);
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
@@ -79,7 +205,7 @@ public class Modelo_tabla {
         add_mouse_listener(tab);
         tab.setCellSelectionEnabled(true);
         
-        // Configuarcion del tamaño de las columnas
+        // Configuración del tamaño de las columnas
         clum_model = tab.getColumnModel();
         clum_model.getColumn(0).setPreferredWidth(100);
         clum_model.getColumn(1).setPreferredWidth(40);
@@ -89,7 +215,14 @@ public class Modelo_tabla {
         clum_model.getColumn(5).setPreferredWidth(100);
         clum_model.getColumn(6).setPreferredWidth(180);
         
-
+        // Guardar los anchos base de las columnas para el zoom
+        int[] baseWidths = new int[clum_model.getColumnCount()];
+        for (int i = 0; i < clum_model.getColumnCount(); i++) {
+            baseWidths[i] = clum_model.getColumn(i).getPreferredWidth();
+        }
+        tab.putClientProperty(COLUMN_BASE_WIDTHS, baseWidths);
+        
+        setupZoomListener(tab);
         return tab;
 
     }
@@ -122,6 +255,8 @@ public class Modelo_tabla {
         clum_model.getColumn(7).setPreferredWidth(200);
         
 
+        
+        setupZoomListener(tab);
         return tab;
 
     }
@@ -157,6 +292,8 @@ public class Modelo_tabla {
         clum_model.getColumn(3).setPreferredWidth(200);
         
 
+        
+        setupZoomListener(tab);
         return tab;
     }
 
@@ -239,6 +376,8 @@ public class Modelo_tabla {
         clum_model.getColumn(5).setPreferredWidth(180);
         
 
+        
+        setupZoomListener(tab);
         return tab;
 
     }
@@ -322,6 +461,8 @@ public class Modelo_tabla {
         clum_model.getColumn(5).setPreferredWidth(180);
         
 
+        
+        setupZoomListener(tab);
         return tab;
 
     }
@@ -409,6 +550,8 @@ public class Modelo_tabla {
         clum_model.getColumn(3).setPreferredWidth(120);
         
 
+        
+        setupZoomListener(tab);
         return tab;
 
     }
@@ -453,6 +596,9 @@ public class Modelo_tabla {
         
 
 
+        
+        setupZoomListener(tab);  // Agregamos el control de zoom
+        setupZoomListener(tab);
         return tab;
 
     }
@@ -479,6 +625,8 @@ public class Modelo_tabla {
         clum_model.getColumn(1).setPreferredWidth(160);
         
 
+        
+        setupZoomListener(tab);
         return tab;
     }
 
@@ -507,6 +655,8 @@ public class Modelo_tabla {
         clum_model.getColumn(4).setPreferredWidth(60);
         
 
+        
+        setupZoomListener(tab);
         return tab;
     }
 
@@ -533,6 +683,8 @@ public class Modelo_tabla {
         clum_model.getColumn(2).setPreferredWidth(160);
         
         
+        
+        setupZoomListener(tab);
         return tab;
 
     }
@@ -571,6 +723,8 @@ public class Modelo_tabla {
         clum_model.getColumn(14).setPreferredWidth(80);
         clum_model.getColumn(15).setPreferredWidth(200);
 
+        
+        setupZoomListener(tab);
         return tab;
     }
 
@@ -666,6 +820,8 @@ public class Modelo_tabla {
         cl_model.getColumn(10).setPreferredWidth(100);
         cl_model.getColumn(11).setPreferredWidth(100);
 
+        
+        setupZoomListener(tab);
         return tab;
     }
 
@@ -750,6 +906,8 @@ public class Modelo_tabla {
         cl_model.getColumn(3).setPreferredWidth(180);
         cl_model.getColumn(5).setPreferredWidth(100);
 
+        
+        setupZoomListener(tab);
         return tab;
     }
 
@@ -843,6 +1001,8 @@ public class Modelo_tabla {
         cl_model.getColumn(3).setPreferredWidth(180);
         cl_model.getColumn(5).setPreferredWidth(100);
 
+        
+        setupZoomListener(tab);
         return tab;
     }
 
