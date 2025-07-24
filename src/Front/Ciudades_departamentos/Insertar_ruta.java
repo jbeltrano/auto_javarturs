@@ -88,10 +88,9 @@ public class Insertar_ruta extends Modal_ruta{
             public void accion() {
                 try{
                     base_ciudad = new Ciudad();
-                    String datos[][] = base_ciudad.consultar_ciudades(text_origen.getText());
-                    JTable tabla = Modelo_tabla.set_tabla_ciudad(datos);
-                    tabla_origen.setModel(tabla.getModel());
-                    tabla_origen.setColumnModel(tabla.getColumnModel());
+
+                    Modelo_tabla.updateTableModel(tabla_origen, base_ciudad.consultar_ciudades(text_origen.getText())); // Actualiza el modelo de la tabla
+
                     tabla_origen.changeSelection(0, 0, false, false);
                 }catch(SQLException | IOException ex){
                     JOptionPane.showMessageDialog(ventana, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);

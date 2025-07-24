@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
+
 
 import Base.Vh_convenio;
 import Utilidades.Modelo_tabla;
@@ -52,14 +52,8 @@ public class Panel_vehiculo_convenio extends Panel{
         
         try{
             base_vh_convenio = new Vh_convenio();
-            // Obtiene los datos y crea una tabla auxiliar con los datos proporcionados por el text Field
-            JTable tabla_aux = Modelo_tabla.set_tabla_vh_convenio(
-                base_vh_convenio.consultar_vh_convenio(text_busqueda.getText())
-            );
 
-            // Estos metodos se encargan que el formato de la tabla se aplique sin afectar sus propiedades
-            tabla.setModel(tabla_aux.getModel());
-            tabla.setColumnModel(tabla_aux.getColumnModel());
+            Modelo_tabla.updateTableModel(tabla, base_vh_convenio.consultar_vh_convenio(text_busqueda.getText())); // Actualiza el modelo de la tabla
 
         }catch(SQLException | IOException ex){
             JOptionPane.showMessageDialog(window, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);

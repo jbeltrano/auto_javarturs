@@ -11,7 +11,6 @@ import java.io.IOException;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import Base.Base;
 import Base.Ciudad;
 import Base.Contrato_mensual;
 import Base.Extractos;
@@ -133,20 +132,14 @@ public class Insertar_extracto_mensual extends Modal_documento {
             
             @Override
             public void accion(){
-                String datos[][] = null;
 
-                
                 
                 try{
                     
-                    base = new Base();
                     base_vehiculo = new Vehiculo();
                     // Dependiendo de lo que vaya ingresando el usuario, se modifica la tabla
-                    datos = base_vehiculo.consultar_vehiculo(text_placa.getText());
-                    JTable tabla_auxiliar = Modelo_tabla.set_tabla_vehiculo(datos);
-                    tabla_vehiculo.setModel(tabla_auxiliar.getModel());
-                    tabla_vehiculo.setColumnModel(tabla_auxiliar.getColumnModel());
-                    scroll_vehiculo.setViewportView(tabla_vehiculo);
+
+                    Modelo_tabla.updateTableModel(tabla_vehiculo, base_vehiculo.consultar_vehiculo(text_placa.getText())); // Actualiza el modelo de la tabla
 
                     // Va seleccionando el primer argumento que aparesca en la tabla si existe
                     tabla_vehiculo.changeSelection(0, 0, false, false);
@@ -271,6 +264,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
             
             @Override
             public void accion() {
+
                 set_tabla_origen();
                 tabla_origen.changeSelection(0, 0, false, false);
                 jPanel1.revalidate();
@@ -488,15 +482,12 @@ public class Insertar_extracto_mensual extends Modal_documento {
     }
 
     private void set_tabla_contratante(){
-        String [][] datos = null;
         
         try{
             base = new Contrato_mensual();
 
-            datos = ((Contrato_mensual)base).consultar_contratos_mensuales(text_contratante.getText());
-            JTable tabla_auxiliar = Modelo_tabla.set_tabla_contratos_mensuales(datos);
-            tabla_contratante.setModel(tabla_auxiliar.getModel());
-            tabla_contratante.setColumnModel(tabla_auxiliar.getColumnModel());
+            
+            Modelo_tabla.updateTableModel(tabla_contratante, ((Contrato_mensual)base).consultar_contratos_mensuales(text_contratante.getText())); // Actualiza el modelo de la tabla
             
             jPanel1.revalidate();
             jPanel1.repaint();
@@ -510,17 +501,12 @@ public class Insertar_extracto_mensual extends Modal_documento {
     }
 
     private void set_tabla_origen(){
-        String datos[][] = null;
-
         
         try{
             base = new Ciudad();
-
-            datos = ((Ciudad)base).consultar_ciudades(text_origen.getText());
-            JTable auxiliar = Modelo_tabla.set_tabla_ciudad(datos);
-            tabla_origen.setModel(auxiliar.getModel());
-            tabla_origen.setColumnModel(auxiliar.getColumnModel());
             
+            Modelo_tabla.updateTableModel(tabla_origen, ((Ciudad)base).consultar_ciudades(text_origen.getText())); // Actualiza el modelo de la tabla
+
             jPanel1.revalidate();
             jPanel1.repaint();
 
@@ -533,18 +519,14 @@ public class Insertar_extracto_mensual extends Modal_documento {
         }
         
     }
-    private void set_tabla_destino(){
-        String datos[][] = null;
-                
+    private void set_tabla_destino(){                
         
         try{
             base = new Ciudad();
             
-            datos = ((Ciudad)base).consultar_ciudades(text_destino.getText());
-            JTable tabla_aux = Modelo_tabla.set_tabla_ciudad(datos);
-            tabla_destino.setModel(tabla_aux.getModel());
-            tabla_destino.setColumnModel(tabla_aux.getColumnModel());
             
+            Modelo_tabla.updateTableModel(tabla_destino, ((Ciudad)base).consultar_ciudades(text_destino.getText())); // Actualiza el modelo de la tabla
+
             jPanel1.revalidate();
             jPanel1.repaint();
 

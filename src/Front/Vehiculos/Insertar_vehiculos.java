@@ -238,23 +238,17 @@ public class Insertar_vehiculos extends Modales_vehiculos{
 
             @Override
             public void accion() {
-                String datos[][] = null;
                 
                 Persona base_persona = null;
                 try{
-                    base = new Clase_vehiculo();
                     base_persona = new Persona();
-                    datos = base_persona.consultar_persona(text_propietario.getText());
-                    JTable tabla_aux = Modelo_tabla.set_tabla_personas(datos);
-                    tab.setModel(tabla_aux.getModel());
-                    tab.setColumnModel(tabla_aux.getColumnModel());
+
+                    Modelo_tabla.updateTableModel(tab, base_persona.consultar_persona(text_propietario.getText())); // Actualiza el modelo de la tabla
         
                 }catch(SQLException | IOException ex){
                     JOptionPane.showMessageDialog(padre, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     padre.setVisible(false);
-                    if(base != null) base.close();
                 }finally{
-                    if(base != null) base.close();
                     if(base_persona != null) base_persona.close();
                 }
                 

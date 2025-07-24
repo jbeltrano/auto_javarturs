@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import Base.Ciudad;
 import Front.Ciudades_departamentos.Actualizar_ciudad;
@@ -44,15 +43,11 @@ public class Panel_ciudad extends Panel{
     @Override
     protected void accion_text_busqueda() {
         try{
+            
             base_ciudad = new Ciudad();
             // Obtiene los datos y crea una tabla auxiliar con los datos proporcionados por el text Field
-            JTable tabla_aux = Modelo_tabla.set_tabla_ciudad(
-                base_ciudad.consultar_ciudades(text_busqueda.getText())
-            );
-
-            // Estos metodos se encargan que el formato de la tabla se aplique sin afectar sus propiedades
-            tabla.setModel(tabla_aux.getModel());
-            tabla.setColumnModel(tabla_aux.getColumnModel());
+            Modelo_tabla.updateTableModel(tabla, base_ciudad.consultar_ciudades(text_busqueda.getText()));
+        
         }catch(SQLException | IOException ex){
             JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally{

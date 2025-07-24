@@ -35,7 +35,6 @@ public class Insertar_contratante extends Modal_extracto{
     protected JTextField text_contratante;
     protected JTextField text_responsable;
     private String[][] datos_tabla_responsable;
-    private String[][] datos_tabla_contratante;
     private JDialog ventana;
 
     public Insertar_contratante(JFrame padre){
@@ -254,10 +253,8 @@ public class Insertar_contratante extends Modal_extracto{
     public void set_tabla_contratante() {
         try {
             base = new Persona();
-            datos_tabla_contratante = ((Persona)base).consultar_no_contratante(text_contratante.getText());
-            JTable aux = Modelo_tabla.set_tabla_personas(datos_tabla_contratante);
-            tabla_contratante.setModel(aux.getModel());
-            tabla_contratante.setColumnModel(aux.getColumnModel());
+
+            Modelo_tabla.updateTableModel(tabla_contratante, ((Persona)base).consultar_no_contratante(text_contratante.getText())); // Actualiza el modelo de la tabla
             
             jPanel1.revalidate();
             jPanel1.repaint();

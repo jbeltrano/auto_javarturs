@@ -6,7 +6,7 @@ import Utilidades.Modelo_tabla;
 import javax.swing.JOptionPane;
 import java.sql.SQLException;
 import java.awt.event.WindowEvent;
-import javax.swing.JTable;
+
 import java.io.IOException;
 
 public class Panel_departamento extends Panel{
@@ -46,13 +46,9 @@ public class Panel_departamento extends Panel{
         try{
             base_Departamento = new Departamento();
             // Obtiene los datos y crea una tabla auxiliar con los datos proporcionados por el text Field
-            JTable tabla_aux = Modelo_tabla.set_tabla_departamento(
-                base_Departamento.consultar_departamentos(text_busqueda.getText())
-            );
 
-            // Estos metodos se encargan que el formato de la tabla se aplique sin afectar sus propiedades
-            tabla.setModel(tabla_aux.getModel());
-            tabla.setColumnModel(tabla_aux.getColumnModel());
+            Modelo_tabla.updateTableModel(tabla, base_Departamento.consultar_departamentos(text_busqueda.getText()));
+            
 
         }catch(SQLException | IOException ex){
             JOptionPane.showMessageDialog(window, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);

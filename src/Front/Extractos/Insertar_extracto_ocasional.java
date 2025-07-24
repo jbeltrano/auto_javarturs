@@ -1,6 +1,5 @@
 package Front.Extractos;
 
-import Base.Base;
 import Base.BContrato_ocasional;
 import Base.Extractos;
 import Base.Vehiculo;
@@ -91,19 +90,14 @@ public class Insertar_extracto_ocasional extends Modal_documento{
 
             @Override
             public void accion(){
-                String datos[][] = null;
 
                 
                 try{
 
-                    base = new Base();
                     base_vehiculo = new Vehiculo();
 
-                    datos = base_vehiculo.consultar_vehiculo(text_placa.getText());
-                    JTable tabla_auxiliar = Modelo_tabla.set_tabla_vehiculo(datos);
-                    tabla_vehiculo.setModel(tabla_auxiliar.getModel());
-                    tabla_vehiculo.setColumnModel(tabla_auxiliar.getColumnModel());
-                    scroll_vehiculo.setViewportView(tabla_vehiculo);
+
+                    Modelo_tabla.updateTableModel(tabla_vehiculo, base_vehiculo.consultar_vehiculo(text_placa.getText())); // Actualiza el modelo de la tabla
 
 
                 }catch(SQLException | IOException ex){
@@ -143,16 +137,12 @@ public class Insertar_extracto_ocasional extends Modal_documento{
             @Override
             public void accion() {
 
-                String datos[][] = null;
 
                 
                 try{
                     base = new BContrato_ocasional();
-                    datos = ((BContrato_ocasional)base).consultar_contrato_ocasional(text_contrato.getText());
-                    JTable tabla_auxiliar = Modelo_tabla.set_tabla_contratos_ocasionales(datos);
-                    tabla_contrato.setModel(tabla_auxiliar.getModel());
-                    tabla_contrato.setColumnModel(tabla_auxiliar.getColumnModel());
-                    scroll_contrato.setViewportView(tabla_contrato);
+
+                    Modelo_tabla.updateTableModel(tabla_contrato, ((BContrato_ocasional)base).consultar_contrato_ocasional(text_contrato.getText())); // Actualiza el modelo de la tabla
 
                 }catch(SQLException | IOException ex){
                     JOptionPane.showMessageDialog(ventana, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);

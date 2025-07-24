@@ -146,10 +146,8 @@ public class Insertar_conductor extends Modales_personas{
                 
                 try{
                     base = new Persona();
-                    datos = ((Persona)base).consultar_persona_natural(variable_auxiliar);
-                    JTable tab = Modelo_tabla.set_tabla_personas(datos);
-                    tabla_persona.setModel(tab.getModel());
-                    tabla_persona.setColumnModel(tab.getColumnModel());
+
+                    Modelo_tabla.updateTableModel(tabla_persona, ((Persona)base).consultar_persona_natural(variable_auxiliar)); // Actualiza el modelo de la tabla
                     
         
                 }catch(SQLException | IOException ex){

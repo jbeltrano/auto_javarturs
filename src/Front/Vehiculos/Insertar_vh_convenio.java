@@ -356,7 +356,6 @@ public class Insertar_vh_convenio extends Modales_vehiculos{
      * vehiculo, para poder hacer busquedas en la base de datos
      */
     private void set_tabla_vehiculo(){
-        String datos[][] = null;    // Son los datos a utilizar
                 
         Vehiculo base_vehiculo = null; // Abre coneccion con la base de datos
 
@@ -364,13 +363,7 @@ public class Insertar_vh_convenio extends Modales_vehiculos{
 
             base_vehiculo = new Vehiculo();
 
-            datos = base_vehiculo.consultar_vehiculo_externo(text_placa.getText()); // Hace la consulta pertienente y carga los datos
-            JTable tabla_aux = Modelo_tabla.set_tabla_vehiculo(datos);              // En una tabla auxiliar pone los datos obtenidos
-            tabla_vehiculo.setModel(tabla_aux.getModel());                          // Copia el modelo de la tabla auxiliar a la otra tabla
-            tabla_vehiculo.setColumnModel(tabla_aux.getColumnModel());              // Copia el modelo de las columnas a la tabla vehiculo
-            
-            panel_principal.revalidate();   // Revalida el panel
-            panel_principal.repaint();      // Repinta el panel
+            Modelo_tabla.updateTableModel(tabla_vehiculo, base_vehiculo.consultar_vehiculo_externo(text_placa.getText())); // Actualiza el modelo de la tabla
 
 
 
@@ -409,13 +402,7 @@ public class Insertar_vh_convenio extends Modales_vehiculos{
 
             base_empresa = new Persona();
 
-            datos = base_empresa.consultar_empresa(text_empresa.getText()); // Realiza la consulta pertinente
-            JTable tabla_aux = Modelo_tabla.set_tabla_personas(datos);      // Establece los datos con el modelo pertienente en una tabla auxiliar
-            tabla_empresa.setModel(tabla_aux.getModel());                   // Reestablece el modelo en la tabla empresa
-            tabla_empresa.setColumnModel(tabla_aux.getColumnModel());       // Reestablece el valor de las columnas en la tabla empresa
-            
-            panel_principal.revalidate();   // Revalida el panel 
-            panel_principal.repaint();      // Repinta el panel
+            Modelo_tabla.updateTableModel(tabla_empresa, base_empresa.consultar_empresa(text_empresa.getText())); // Actualiza el modelo de la tabla empresa
 
         }catch(SQLException | IOException ex){    // Por si hay algun tipo de problema
 

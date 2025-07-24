@@ -105,10 +105,8 @@ public class Insertar_contrato_mensual extends Modal_extracto{
                 try{
 
                     base = new Contratante();
-                    datos = ((Contratante)base).consultar_contratante(text_contratante.getText());
-                    JTable aux = Modelo_tabla.set_tabla_contratante(datos);
-                    tabla_contratante.setModel(aux.getModel());
-                    tabla_contratante.setColumnModel(aux.getColumnModel());
+
+                    Modelo_tabla.updateTableModel(tabla_contratante, ((Contratante)base).consultar_contratante(text_contratante.getText())); // Actualiza el modelo de la tabla
                     
         
                 }catch(SQLException | IOException ex){

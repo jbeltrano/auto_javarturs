@@ -7,7 +7,7 @@ import Front.Ciudades_departamentos.Insertar_ruta;
 import Front.Panel.Panel;
 import Utilidades.Modelo_tabla;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
+
 import javax.swing.JFrame;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -50,14 +50,8 @@ public class Panel_ruta extends Panel{
         try{
             base_ruta = new Ruta();
             
-            // Obtiene los datos y crea una tabla auxiliar con los datos proporcionados por el text Field
-            JTable tabla_aux = Modelo_tabla.set_tabla_ruta(
-                base_ruta.consultar_ruta(text_busqueda.getText())
-            );
 
-            // Estos metodos se encargan que el formato de la tabla se aplique sin afectar sus propiedades
-            tabla.setModel(tabla_aux.getModel());
-            tabla.setColumnModel(tabla_aux.getColumnModel());
+            Modelo_tabla.updateTableModel(tabla, base_ruta.consultar_ruta(text_busqueda.getText()));
 
         }catch(SQLException | IOException ex){
             JOptionPane.showMessageDialog(window, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);

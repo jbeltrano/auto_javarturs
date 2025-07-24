@@ -3,7 +3,7 @@ package Front.Panel.vehiculos;
 import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
+
 import javax.swing.SwingUtilities;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -51,15 +51,8 @@ public class Panel_vehiculos extends Panel{
         
         try{
             base_Vehiculo = new Vehiculo();
-
-            // Obtiene los datos y crea una tabla auxiliar con los datos proporcionados por el text Field
-            JTable tabla_aux = Modelo_tabla.set_tabla_vehiculo(
-                base_Vehiculo.consultar_vehiculo(text_busqueda.getText())
-            );
-
-            // Estos metodos se encargan que el formato de la tabla se aplique sin afectar sus propiedades
-            tabla.setModel(tabla_aux.getModel());
-            tabla.setColumnModel(tabla_aux.getColumnModel());
+            
+            Modelo_tabla.updateTableModel(tabla, base_Vehiculo.consultar_vehiculo(text_busqueda.getText())); // Actualiza el modelo de la tabla
 
         }catch(SQLException | IOException ex){
             JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);

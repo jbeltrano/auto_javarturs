@@ -218,8 +218,8 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
                 
                 try{
                     base = new Ciudad();
-                    String[][] datos = ((Ciudad)base).consultar_ciudades(text_origen.getText());
-                    Modelo_tabla.updateTableModel(tabla_origen, datos);
+
+                    Modelo_tabla.updateTableModel(tabla_origen, ((Ciudad)base).consultar_ciudades(text_origen.getText()));
         
                 }catch(SQLException | IOException ex){
                     JOptionPane.showMessageDialog(ventana, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);

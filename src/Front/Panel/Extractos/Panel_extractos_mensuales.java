@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
+
 import Base.Extractos;
 import Front.Extractos.Actualizar_extracto_mensual;
 import Front.Extractos.Actualizar_todo_ext_mensual;
@@ -52,15 +52,8 @@ public class Panel_extractos_mensuales extends Panel_extractos{
         
         try{
             base_extractos = new Extractos();
-            
-            // Obtiene los datos y crea una tabla auxiliar con los datos proporcionados por el text Field
-            JTable tabla_aux = Modelo_tabla.set_tabla_extractos_mensuales(
-                base_extractos.consultar_vw_extracto_mensual(text_busqueda.getText())
-            );
 
-            // Estos metodos se encargan que el formato de la tabla se aplique sin afectar sus propiedades
-            tabla.setModel(tabla_aux.getModel());
-            tabla.setColumnModel(tabla_aux.getColumnModel());
+            Modelo_tabla.updateTableModel(tabla, base_extractos.consultar_vw_extracto_mensual(text_busqueda.getText()));
 
         }catch(SQLException | IOException ex){
             JOptionPane.showMessageDialog(window, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
