@@ -148,9 +148,17 @@ public class Modelo_tabla {
         // Preservar propiedades antes de actualizar el modelo
         preserveTableProperties(table, tempTable);
         
+        // Guardar el estado de selección de celdas
+        boolean cellSelectionEnabled = table.getCellSelectionEnabled();
+        int selectionMode = table.getSelectionModel().getSelectionMode();
+        
         // Actualizar el modelo y columnas
         table.setModel(tempTable.getModel());
         table.setColumnModel(tempTable.getColumnModel());
+        
+        // Restaurar el estado de selección de celdas
+        table.setCellSelectionEnabled(cellSelectionEnabled);
+        table.setSelectionMode(selectionMode);
     }
 
     public static DefaultTableModel set_modelo_tablas(String [][] datos){
@@ -209,7 +217,7 @@ public class Modelo_tabla {
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
+        
         tab.setCellSelectionEnabled(true);
         
         // Configuración del tamaño de las columnas
@@ -230,6 +238,7 @@ public class Modelo_tabla {
         tab.putClientProperty(COLUMN_BASE_WIDTHS, baseWidths);
         
         setupZoomListener(tab);
+        add_mouse_listener(tab);
         return tab;
 
     }
@@ -247,7 +256,7 @@ public class Modelo_tabla {
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
+        
         tab.setCellSelectionEnabled(true);
         
         // Configuarcion del tamaño de las columnas
@@ -264,6 +273,7 @@ public class Modelo_tabla {
 
         
         setupZoomListener(tab);
+        add_mouse_listener(tab);
         return tab;
 
     }
@@ -288,7 +298,7 @@ public class Modelo_tabla {
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
+        
         tab.setCellSelectionEnabled(true);
         
         // Configuarcion del tamaño de las columnas
@@ -301,6 +311,7 @@ public class Modelo_tabla {
 
         
         setupZoomListener(tab);
+        add_mouse_listener(tab);
         return tab;
     }
 
@@ -370,7 +381,7 @@ public class Modelo_tabla {
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
+        
         tab.setCellSelectionEnabled(true);
         
         // Configuarcion del tamaño de las columnas
@@ -385,6 +396,7 @@ public class Modelo_tabla {
 
         
         setupZoomListener(tab);
+        add_mouse_listener(tab);
         return tab;
 
     }
@@ -455,7 +467,7 @@ public class Modelo_tabla {
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
+        
         tab.setCellSelectionEnabled(true);
         
         // Configuarcion del tamaño de las columnas
@@ -470,6 +482,7 @@ public class Modelo_tabla {
 
         
         setupZoomListener(tab);
+        add_mouse_listener(tab);
         return tab;
 
     }
@@ -546,7 +559,7 @@ public class Modelo_tabla {
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
+        
         tab.setCellSelectionEnabled(true);
         
         // Configuarcion del tamaño de las columnas
@@ -559,6 +572,7 @@ public class Modelo_tabla {
 
         
         setupZoomListener(tab);
+        add_mouse_listener(tab);
         return tab;
 
     }
@@ -576,7 +590,7 @@ public class Modelo_tabla {
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
+        
         tab.setCellSelectionEnabled(true);
         
 
@@ -606,6 +620,7 @@ public class Modelo_tabla {
         
         setupZoomListener(tab);  // Agregamos el control de zoom
         setupZoomListener(tab);
+        add_mouse_listener(tab);
         return tab;
 
     }
@@ -623,7 +638,7 @@ public class Modelo_tabla {
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
+        
         tab.setCellSelectionEnabled(true);
         
         // Configuarcion del tamaño de las columnas
@@ -634,6 +649,7 @@ public class Modelo_tabla {
 
         
         setupZoomListener(tab);
+        add_mouse_listener(tab);
         return tab;
     }
 
@@ -650,7 +666,7 @@ public class Modelo_tabla {
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
+        
         tab.setCellSelectionEnabled(true);
         
         // Configuarcion del tamaño de las columnas
@@ -664,6 +680,7 @@ public class Modelo_tabla {
 
         
         setupZoomListener(tab);
+        add_mouse_listener(tab);
         return tab;
     }
 
@@ -680,7 +697,7 @@ public class Modelo_tabla {
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
+        
         tab.setCellSelectionEnabled(true);
         
         // Configuarcion del tamaño de las columnas
@@ -692,6 +709,7 @@ public class Modelo_tabla {
         
         
         setupZoomListener(tab);
+        add_mouse_listener(tab);
         return tab;
 
     }
@@ -708,7 +726,7 @@ public class Modelo_tabla {
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add_mouse_listener(tab);
+        
         tab.setCellSelectionEnabled(true);
         
         // Configuarcion del tamaño de las columnas
@@ -732,6 +750,7 @@ public class Modelo_tabla {
 
         
         setupZoomListener(tab);
+        add_mouse_listener(tab);
         return tab;
     }
 
@@ -810,7 +829,7 @@ public class Modelo_tabla {
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setCellSelectionEnabled(true);
-        add_mouse_listener(tab);
+        
         
         
         cl_model = tab.getColumnModel();
@@ -829,6 +848,7 @@ public class Modelo_tabla {
 
         
         setupZoomListener(tab);
+        add_mouse_listener(tab);
         return tab;
     }
 
@@ -903,7 +923,7 @@ public class Modelo_tabla {
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setCellSelectionEnabled(true);
-        add_mouse_listener(tab);
+        
         
         
         cl_model = tab.getColumnModel();
@@ -915,6 +935,7 @@ public class Modelo_tabla {
 
         
         setupZoomListener(tab);
+        add_mouse_listener(tab);
         return tab;
     }
 
@@ -998,7 +1019,7 @@ public class Modelo_tabla {
         tab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         tab.getTableHeader().setReorderingAllowed(false);
         tab.setCellSelectionEnabled(true);
-        add_mouse_listener(tab);
+        
         
         
         cl_model = tab.getColumnModel();
@@ -1010,6 +1031,7 @@ public class Modelo_tabla {
 
         
         setupZoomListener(tab);
+        add_mouse_listener(tab);
         return tab;
     }
 

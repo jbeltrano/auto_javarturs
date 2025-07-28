@@ -3,11 +3,9 @@ package Front.Panel.vehiculos;
 import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
 import javax.swing.SwingUtilities;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-
 import Base.Vehiculo;
 import Front.Panel.Panel;
 import Front.Vehiculos.Actualizar_vehiculos;
