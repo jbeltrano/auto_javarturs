@@ -2,6 +2,8 @@ package Front;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import com.formdev.flatlaf.FlatLightLaf;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,18 +16,20 @@ public class Dialogo_documentos extends JDialog {
     
     public Dialogo_documentos(Frame parent) {
         super(parent, "Vencimientos documentos", true);
+        FlatLightLaf.setup();
         Lista_vehiculos = new ArrayList<>();
         initializeComponents();
         setupLayout();
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setSize(500, 400);
         setLocationRelativeTo(parent);
+        
     }
     
     private void initializeComponents() {
         Dialogo_documentosPanel = new JPanel();
         Dialogo_documentosPanel.setLayout(new BoxLayout(Dialogo_documentosPanel, BoxLayout.Y_AXIS));
-        Dialogo_documentosPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        Dialogo_documentosPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         Dialogo_documentosPanel.setBackground(Color.WHITE);
         
         scrollPane = new JScrollPane(Dialogo_documentosPanel);
