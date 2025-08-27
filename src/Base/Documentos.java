@@ -327,7 +327,7 @@ public class Documentos extends Base{
             datos[0][8] = "TIPO ID";
             datos[0][9] = "ID PROPIETARIO";
 
-
+            
 
             while(resultado.next()){
 
