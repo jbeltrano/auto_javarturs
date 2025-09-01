@@ -1,18 +1,16 @@
-## Getting Started
+## Inicio
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Este proyecto se encarga de administar y automatizar diversos campos que pueden verse repetitivos para una empresa de transporte de servicio especial de pasajeros
 
-## Folder Structure
+## Observaciones
 
-The workspace contains two folders by default, where:
+Por el momento, el proyecto se mantiene funcional, puede generar extractos junto a sus contratos, en caso de ser necesarios, automatizando todo el proceso para entregar dichos documentos en formato pdf.
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+Utiliza una base de datos ligera (SQLite), sin embargo, dicha base de datos se encuenta alojada en un  Drive, para que pueda fucionar de menera compartida con unos pocos usuarios, puesto que este tipo de base de datos, no esta realizada para soportar multiples usuarios como si lo puede hacer MySql.
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+## Requerimientos
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+- `LibreOffice`: Para la exportacion de los contratos, se requiere libre office, para que este realice la convercion de .docx (El formato en que se trabajan los formatos) a pdf.
+- `Office`: El office de microsoft, en este caso se utiliza de la misma manera que libre office, sin embargo, es utilizado para la parte de los extractos, puesto que LibreOffice, no maneja adecuadamente la plantilla .xlsx omitiendo algunos fondos del documento, pricnipalmente es necesario para convertir de .xlsx a pdf.
 
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+- `Windows`: Para que el programa funcione correctamente, esta basado para funcionar de manera local utilizando algunas funcionalidades del sistema operativo Windows (Este sistema ha sido testeado de Windows 10 en adelante)
