@@ -25,8 +25,8 @@ public class Verificacion_documentos {
      */
     public static String[] verificar_documentos_vehiculo(
                                             String placa,
-                                            String fecha_rtm,
                                             String fecha_soat,
+                                            String fecha_rtm,
                                             String fecha_seguros,
                                             String fecha_top
                                         ){
@@ -46,13 +46,13 @@ public class Verificacion_documentos {
         long top = comparar_fecha(fecha_top);
 
         // Si todos los documentos estan vigentes, retorna una cadena vacia
-        if(rtm > 30 && soat > 30 && seguros > 30 && top > 30){
+        if(rtm > 3 && soat > 8 && seguros > 30 && top > 30){
             return null;
         }
 
         // Si alguno de los documentos esta por vencer, se agrega al mensaje de resultado
-        resultado[1] += (rtm >= 0 && rtm <= 30)?"Tecnomecanica, vence en " + rtm + " dias\n":"";
-        resultado[1] += (soat >= 0 && soat <= 30)?"SOAT, vence en " + soat + " dias\n":"";
+        resultado[1] += (rtm >= 0 && rtm <= 3)?"Tecnomecanica, vence en " + rtm + " dias\n":"";
+        resultado[1] += (soat >= 0 && soat <= 8)?"SOAT, vence en " + soat + " dias\n":"";
         resultado[1] += (seguros >= 0 && seguros <= 30)?"Seguros rcc y rce, vencen en " + seguros + " dias\n" :"";
         resultado[1] += (top >= 0 && top <= 30)?"Tarjeta de Operacion, vence en " + top + " dias\n" :"";
 
@@ -74,8 +74,8 @@ public class Verificacion_documentos {
      */
     public static String[] verificar_documentos_vehiculo(
                                             String placa,
-                                            String fecha_rtm,
-                                            String fecha_soat
+                                            String fecha_soat,
+                                            String fecha_rtm
                                         ){
 
         String[] resultado = new String[2];
@@ -89,13 +89,13 @@ public class Verificacion_documentos {
         long soat = comparar_fecha(fecha_soat);
 
         // Si todos los documentos estan vigentes, retorna una cadena vacia
-        if(rtm > 30 && soat > 30){
+        if(rtm > 3 && soat > 8){
             return null;
         }
 
         // Si alguno de los documentos esta por vencer, se agrega al mensaje de resultado
-        resultado[1] += (rtm >= 0 && rtm <= 30)?"Tecnomecanica, vence en " + rtm + " dias\n":"";
-        resultado[1] += (soat >= 0 && soat <= 30)?"SOAT, vence en " + soat + " dias\n":"";
+        resultado[1] += (rtm >= 0 && rtm <= 3)?"Tecnomecanica, vence en " + rtm + " dias\n":"";
+        resultado[1] += (soat >= 0 && soat <= 8)?"SOAT, vence en " + soat + " dias\n":"";
 
         // Dado cada resultado, lo adiciona en el meensaje de resultado
         resultado[1] += (rtm < 0)?"Tecnomecanica, vencio el " + fecha_rtm + "\n":"";
@@ -123,11 +123,11 @@ public class Verificacion_documentos {
 
         long cantidad_dias = comparar_fecha(fecha_pase);
 
-        if(cantidad_dias > 30){
+        if(cantidad_dias > 4){
             return null;
         }
 
-        resultado[1] += (cantidad_dias >= 0 && cantidad_dias <= 30)?
+        resultado[1] += (cantidad_dias >= 0 && cantidad_dias <= 4)?
             "El pase de " + nombre + " vence en " + cantidad_dias + " dias.\n":"";
         
         resultado[1] += (cantidad_dias < 0)?
