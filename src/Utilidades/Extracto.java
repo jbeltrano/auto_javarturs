@@ -83,6 +83,7 @@ public class Extracto {
 
     public void close() throws IOException{
         libro.close();
+        plantilla.close();
     }
     // Metodos especificos
     public void set_numero_principal(String año, String contrato, String consecutivo){

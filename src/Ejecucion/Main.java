@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.swing.SwingUtilities;
 import Front.Dialogo_documentos;
 import Front.Principal;
+import Utilidades.Nomina_Electronica;
 
 public class Main {
     
@@ -53,6 +54,21 @@ public class Main {
         // // Ejecuta el comando
         // processBuilder.start();
 
+        new Runnable() {
+            public void run() {
+                try {
+                    // Aquí puedes ejecutar el comando de la consola
+                    
+                    Nomina_Electronica nomina = new Nomina_Electronica("C:\\Users\\juan\\Desktop\\auto_javarturs\\Formatos\\Nomina_Electronica.xlsx");
+                    nomina.add_trabajador(new String[]{"CC","123456789","Perez","Gomez","Juan","Carlos","}@gmail.com","Colombia","Antioquia","Medellin","Calle 123 #45-67","Indefinido"});
+                    nomina.add_trabajador(new String[]{"CC","987654321","Lopez","Martinez","Ana","Maria","}@gmail.com","Colombia","Cundinamarca","Bogota","Carrera 89 #12-34","Fijo"});
+                    nomina.guardar("C:\\Users\\juan\\Desktop");
+                    nomina.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.run();
     }
 
     
