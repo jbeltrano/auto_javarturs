@@ -11,6 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 
 
 public class Nomina_Electronica {
@@ -28,7 +29,7 @@ public class Nomina_Electronica {
     private static final int COL_CIUDAD = 11;
     private static final int COL_DIRECCION = 12;
     private static final int COL_TIPO_CONTRATO = 13;
-    private static final int ROW_INICIO_TRABAJADORES = 9;
+    private static final int ROW_INICIO_TRABAJADORES = 8;
 
 
     private Workbook libro;
@@ -63,9 +64,16 @@ public class Nomina_Electronica {
      * @param valor Valor a establecer
      */
     private void set_cell(Sheet hoja, int row, int column, String valor){
-
         Row fila = hoja.getRow(row);
         Cell celda = fila.getCell(column);
+        
+        celda.setCellValue(valor);
+    }
+
+    private void set_cell(Sheet hoja, int row, int column, long valor){
+        Row fila = hoja.getRow(row);
+        Cell celda = fila.getCell(column);
+        
         celda.setCellValue(valor);
     }
 
@@ -81,9 +89,9 @@ public class Nomina_Electronica {
 
     public void add_trabajador(String[] datos){
         
-        set_cell(hoja_nomina, prin_fila_actual, COL_CODIGO_TRABAJADOR, ""+codigo_inicial);
+        set_cell(hoja_nomina, prin_fila_actual, COL_CODIGO_TRABAJADOR, codigo_inicial);
         set_cell(hoja_nomina, prin_fila_actual, COL_TIPO_DOCUMENTO, datos[0]);
-        set_cell(hoja_nomina, prin_fila_actual, COL_NUMERO_DOCUMENTO, datos[1]);
+        set_cell(hoja_nomina, prin_fila_actual, COL_NUMERO_DOCUMENTO, Long.parseLong(datos[1]));
         set_cell(hoja_nomina, prin_fila_actual, COL_PRIMER_APELLIDO, datos[2]);
         set_cell(hoja_nomina, prin_fila_actual, COL_SEGUNDO_APELLIDO, datos[3]);
         set_cell(hoja_nomina, prin_fila_actual, COL_PRIMER_NOMBRE, datos[4]);

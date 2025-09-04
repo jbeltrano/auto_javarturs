@@ -59,9 +59,9 @@ public class Main {
                 try {
                     // Aquí puedes ejecutar el comando de la consola
                     
-                    Nomina_Electronica nomina = new Nomina_Electronica("C:\\Users\\juan\\Desktop\\auto_javarturs\\Formatos\\Nomina_Electronica.xlsx");
-                    nomina.add_trabajador(new String[]{"CC","123456789","Perez","Gomez","Juan","Carlos","}@gmail.com","Colombia","Antioquia","Medellin","Calle 123 #45-67","Indefinido"});
-                    nomina.add_trabajador(new String[]{"CC","987654321","Lopez","Martinez","Ana","Maria","}@gmail.com","Colombia","Cundinamarca","Bogota","Carrera 89 #12-34","Fijo"});
+                    Nomina_Electronica nomina = new Nomina_Electronica("C:\\Users\\juan\\Desktop\\auto_javarturs\\src\\Formatos\\Formato_Nomina_E.xlsx");
+                    nomina.add_trabajador(new String[]{"13-CC","123456789","Perez","Gomez","Juan","Carlos","juancarlos@gmail.com","CO-Colombia","_50_Meta","Medellin","Calle 123 #45-67","2-Término Indefinido"});
+                    nomina.add_trabajador(new String[]{"13-CC","987654321","Lopez","Martinez","Ana","Maria","anamartinez@gmail.com","CO-Colombia","_50_Meta","Bogota","Carrera 89 #12-34","2-Término Indefinido"});
                     nomina.guardar("C:\\Users\\juan\\Desktop");
                     nomina.close();
                 } catch (IOException e) {
