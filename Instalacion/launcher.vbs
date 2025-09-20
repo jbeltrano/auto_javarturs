@@ -1,0 +1,1 @@
+CreateObject("Wscript.Shell").Run "jdk\bin\javaw.exe -jar auto_javarturs.jar", 0, False

@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
+import time
 
 # Validar argumentos
 if len(sys.argv) < 3 or len(sys.argv[1:]) % 2 != 0:
@@ -37,7 +38,6 @@ wait = WebDriverWait(driver, 30)  # 30 segundos máximo
 try:
     # Abrir WhatsApp Web
     driver.get("https://web.whatsapp.com")
-    
     # Esperar a que WhatsApp Web cargue completamente
     # Buscar el elemento que indica que está cargado (por ejemplo, la barra de búsqueda o el panel de chats)
     print("Esperando que WhatsApp Web cargue...")
@@ -92,6 +92,7 @@ try:
                     EC.presence_of_element_located((By.XPATH, '//span[@data-icon="msg-check" or @data-icon="msg-dblcheck"]'))
                 )
                 print("✅ Confirmación de envío recibida")
+                time.sleep(2)  # Esperar un poco para asegurar que el mensaje se envió
             except TimeoutException:
                 print("⚠️ No se recibió confirmación de envío, pero probablemente se envió")
                 
