@@ -36,6 +36,8 @@ import javax.swing.JPanel;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
+import Base.Coneccion_base;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -123,6 +125,17 @@ public class Principal extends JFrame{
         super("Javarturs");
         Leer_config config = new Leer_config();
         
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try{
+                    Coneccion_base.get_instancia().close_coneccion();
+                    System.out.println("Coneccion cerrada");
+                } catch (Exception ex) {
+                    System.out.println("Error al cerrar la conexion: " + ex.getMessage());
+                }
+            }
+        });
         
         if(config.get_tema() == 0){
             FlatLightLaf.setup();

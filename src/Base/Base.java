@@ -2,22 +2,17 @@ package Base;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
-import Utilidades.Leer_rutas;
-
 public class Base{
 
+    protected Connection coneccion = null;
     protected String[] dato;
     protected String[][] datos;
-    private static String url = "jdbc:sqlite:";
-    private static boolean band = true;
-    protected Connection coneccion = null;
     protected String insertar;
     protected String actualizar;
     protected String borrar;
@@ -26,18 +21,6 @@ public class Base{
     protected ResultSet resultado = null;
     protected PreparedStatement pstate = null;
 
-    static {    //Esta funcion solo se ejecuta una vez, y se hace cuando se carga la clase en memoria
-
-        try{
-            Leer_rutas ruta = new Leer_rutas();
-            url = url.concat(ruta.get_ruta(Leer_rutas.DB));
-
-        }catch(IOException ex){
-
-            band = false;
-        }
-            
-    }
 
     /**
      * Este es el constructor recibe como parametro la ubicacion
@@ -47,20 +30,9 @@ public class Base{
      * @throws SQLException 
      */
     public Base() throws IOException, SQLException {
-        if (!band) {      // Se encarga de revisar la bandera, en caso de ser negativo retorna un error
-            throw new IOException("No es posible encontrar el archivo: Direccion.txt");
-        }
-        
-        try {
-            coneccion = DriverManager.getConnection(url);
-            state = coneccion.createStatement();
-            state.execute("PRAGMA foreign_keys = ON");
-        } catch (SQLException ex) {
-            close(); // Cierra cualquier recurso que se haya abierto
-            throw new SQLException("No es posible establecer conexion con la base de datos", ex);
-        }
+        Coneccion_base base_datos = Coneccion_base.get_instancia();
+        this.coneccion = base_datos.get_coneccion();
     }
-
 
     /**
      * Es el encargado de finalizar la conecicon con
@@ -73,7 +45,6 @@ public class Base{
             if (resultado != null) resultado.close();
             if (pstate != null) pstate.close();
             if (state != null) state.close();
-            if (coneccion != null) coneccion.close();
         } catch(SQLException ex) {
             System.out.println("Error al cerrar los recursos de base de datos: " + ex.getMessage());
         }
@@ -147,14 +118,4 @@ public class Base{
         return dato; 
     }
 
-    protected static SQLException no_base(SQLException ex){
-
-        if(ex.getErrorCode() == 1){
-
-            ex = new SQLException("No fue posible acceder a la base de datos, revisar que se encuentre en la ubicacion: " + url.split("jdbc:sqlite:")[1]);
-        
-        }
-
-        return ex;
-    }
 }

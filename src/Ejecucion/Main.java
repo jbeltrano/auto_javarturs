@@ -8,7 +8,6 @@ import Front.Principal;
 import Utilidades.Nomina_Electronica;
 
 public class Main {
-    
     public static void main(String[] args) throws IOException{
         
         SwingUtilities.invokeLater(new Runnable() {
