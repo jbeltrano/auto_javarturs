@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
+import java.util.function.Consumer;
 import Front.Panel.Ciudades.Panel_ciudad;
 import Front.Panel.Ciudades.Panel_departamento;
 import Front.Panel.Ciudades.Panel_ruta;
@@ -32,12 +33,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
+import javax.swing.Timer;
+import javax.swing.SwingWorker;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-
 import Base.Coneccion_base;
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -47,14 +47,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import Estructuras_datos.Queue;
 
-
 public class Principal extends JFrame{
     
     private static final int TAMAÑO_PANEL_SECUNDARIO = 70;
-    private static final int TAMAÑO_PANEL_SECUNDARIO_ANCHO = 170;
+    private static final int TAMAÑO_PANEL_SECUNDARIO_ANCHO = 200;
     private static final int TAMAÑO_BOTON = 50;
     private static final int TAMAÑO_PANEL_IZ = 70;
     private static final int TAMAÑO_PANEL_IZ_ANCHO = 170;
+    private static final int ANIMATION_DURATION = 100; // Duración de la animación en ms
+    private static final int ANIMATION_STEPS = 30; // Número de pasos en la animación
+    private static final int X_BOTONES_DESPLEGABLES = 20;
+    private static final int X_BOTON_PRINCIPAL = 10;
+
+    private Queue<JButton> cola_botones_desplegables = new Queue<>();
+    private Queue<JLabel> cola_labels_desplegables = new Queue<>();
 
     private JPanel panel_secundario;
     private JPanel panel_principal2;
@@ -64,6 +70,8 @@ public class Principal extends JFrame{
     private JMenuBar barra_menu;
     private JLabel label_imagen;
 
+    private JLabel label_principal;
+    
     private JButton boton_extractos_mensuales;
     private JButton boton_extractos_ocasionales;
     private JButton boton_contratos_mensuales;
@@ -115,6 +123,16 @@ public class Principal extends JFrame{
     private HashSet<String> id_links;
     private int color_principal;
     private int color_secundario;
+    
+    private JLabel label_boton_extractos;
+    private JLabel label_boton_personas;
+    private JLabel label_boton_empleados;
+    private JLabel label_boton_ciudades;
+    private JLabel label_boton_vehiculos;
+
+    // Variables para las animaciones
+    private Timer animationTimerIzq;
+    private Timer animationTimerSec;
 
     /**
      * Este es el constructor general para la clase Principal
@@ -123,20 +141,52 @@ public class Principal extends JFrame{
     */
     public Principal(){
         super("Javarturs");
-        Leer_config config = new Leer_config();
-        
+
+        ConfigurarTema();
+
+        EventoCerrarConexion();
+        setPreferredSize(new Dimension(1200,700));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        iniciar_componentes();
+
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
         addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                dispose();
+            }
+        });
+    }
+
+    /**
+     * Este metodo se encarga de cerrar la coneccion
+     * con la base de datos el momento de cerrar la ventana
+     * 
+     */
+    private void EventoCerrarConexion(){
+        this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 try{
                     Coneccion_base.get_instancia().close_coneccion();
-                    System.out.println("Coneccion cerrada");
                 } catch (Exception ex) {
                     System.out.println("Error al cerrar la conexion: " + ex.getMessage());
                 }
             }
         });
-        
+    }
+    
+    /**
+     * Configura el tema de la interfaz grafica
+     * segun la configuracion establecida por el usuario
+     * en el archivo de configuracion.
+     */
+    private void ConfigurarTema(){
+    
+        Leer_config config = new Leer_config();
+    
         if(config.get_tema() == 0){
             FlatLightLaf.setup();
             color_principal = config.get_color_principal();
@@ -149,20 +199,6 @@ public class Principal extends JFrame{
         }
 
         config = null;
-
-        setPreferredSize(new Dimension(1200,700));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        iniciar_componentes();
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                // Llama a un método que maneje la lógica de cierre
-                dispose();
-            }
-        });
     }
 
     /**
@@ -172,8 +208,9 @@ public class Principal extends JFrame{
      * @param alto El alto deseado para la imagen
      * @param callback La función que se ejecutará cuando la imagen esté lista
      */
-    private void cargar_imagen_asincrona(String ruta, int ancho, int alto, java.util.function.Consumer<ImageIcon> callback) {
-        javax.swing.SwingWorker<ImageIcon, Void> worker = new javax.swing.SwingWorker<ImageIcon, Void>() {
+    private void cargar_imagen_asincrona(String ruta, int ancho, int alto, Consumer<ImageIcon> callback) {
+        SwingWorker<ImageIcon, Void> worker = new SwingWorker<ImageIcon, Void>() {
+
             @Override
             protected ImageIcon doInBackground() throws Exception {
                 ImageIcon icono = new ImageIcon(getClass().getResource(ruta));
@@ -205,44 +242,7 @@ public class Principal extends JFrame{
      */
     private void iniciar_componentes(){
 
-        // Carga de icono
-        ImageIcon icono = new ImageIcon(getClass().getResource("/Front/Recursos/Logo javarturs.jpg"));
-        this.setIconImage(icono.getImage());
-        // Carga de imagen principal
-        ImageIcon imagen1 = new ImageIcon(getClass().getResource("/Front/Recursos/imagen_principal.png"));
-        label_imagen = new JLabel(imagen1);
-
-        // Carga de imagenes para los botones
-        imagen_ciudades = new ImageIcon(getClass().getResource("/Front/Recursos/Imagen_ciudades.png"));
-        imagen_ciudades = new ImageIcon(imagen_ciudades.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
-
-        imagen_vehiculos = new ImageIcon(getClass().getResource("/Front/Recursos/Imagen_vehiculos.png"));
-        imagen_vehiculos = new ImageIcon(imagen_vehiculos.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
-
-        imagen_extractos = new ImageIcon(getClass().getResource("/Front/Recursos/Imagen_extractos.png"));
-        imagen_extractos = new ImageIcon(imagen_extractos.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
-
-        imagen_personas = new ImageIcon(getClass().getResource("/Front/Recursos/Imagen_personas.png"));
-        imagen_personas = new ImageIcon(imagen_personas.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
-
-        imagen_empleados = new ImageIcon(getClass().getResource("/Front/Recursos/Imagen_empleados.png"));
-        imagen_empleados = new ImageIcon(imagen_empleados.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
-
-        // Carga de imagenes para los paneles internos
-        cargar_imagen_asincrona("/Front/Recursos/Ciudades/Imagen_ciudad.png", 50, 50, imagen ->{imagen_ciudad = imagen;});
-        cargar_imagen_asincrona("/Front/Recursos/Ciudades/Imagen_departamento.jpg", 40, 40, imagen ->{imagen_departamento = imagen;});
-        cargar_imagen_asincrona("/Front/Recursos/Ciudades/Imagen_ruta.png", 40, 40, imagen ->{imagen_ruta = imagen;});
-        cargar_imagen_asincrona("/Front/Recursos/Vehiculos/Imagen_tipo_vehiculo.png", 50, 50, imagen ->{imagen_tipo_vehiculo = imagen;});
-        cargar_imagen_asincrona("/Front/Recursos/Vehiculos/Imagen_vehiculo.png", 50, 50, imagen ->{imagen_vehiculo = imagen;});
-        cargar_imagen_asincrona("/Front/Recursos/Vehiculos/Imagen_conductor.png", 60, 60, imagen ->{imagen_conductores = imagen;});
-        cargar_imagen_asincrona("/Front/Recursos/Vehiculos/Imagen_documentos.png", 50, 50, imagen ->{imagen_documentos_vehiculos = imagen;});
-        cargar_imagen_asincrona("/Front/Recursos/Vehiculos/Imagen_convenio.png", 50, 50, imagen ->{imagen_vehiculo_convenio = imagen;});
-        cargar_imagen_asincrona("/Front/Recursos/Extractos/Imagen_extracto_mensual.png", 50, 50, imagen ->{imagen_extracto_mensual = imagen;});
-        cargar_imagen_asincrona("/Front/Recursos/Extractos/Imagen_extracto.png", 50, 50, imagen ->{imagen_extracto_ocasional = imagen;});
-        cargar_imagen_asincrona("/Front/Recursos/Extractos/Imagen_contrato.png", 50, 50, imagen ->{imagen_contrato_mensual = imagen;});
-        cargar_imagen_asincrona("/Front/Recursos/Extractos/Imagen_contrato_ocasional.png", 50, 50, imagen ->{imagen_contrato_ocasional = imagen;});
-        cargar_imagen_asincrona("/Front/Recursos/Extractos/Imagen_contratante.png", 50, 50, imagen ->{imagen_contratante = imagen;});
-
+        CargarImagenes();
 
         // Inicializacion de los componentes a utilizar
         JPanel panel_principal = new JPanel(new BorderLayout());
@@ -257,8 +257,6 @@ public class Principal extends JFrame{
             configuracion_barra_menu();
 
         }catch(IOException ex){
-            read_links = new HashMap<>();
-            id_links = new HashSet<>();
             
             JOptionPane.showMessageDialog(this, "Error al cargar archivos importantes\n Error 5", "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
@@ -276,6 +274,53 @@ public class Principal extends JFrame{
         add(panel_principal);
 
     }
+
+    /**
+     * Carga las imagenes necesarias para
+     * el correcto funcionamiento del programa
+     * y las asigna a las variables correspondientes
+     */
+    private void CargarImagenes(){
+
+        ImageIcon icono = new ImageIcon(getClass().getResource("/Front/Recursos/Logo javarturs.jpg"));
+        this.setIconImage(icono.getImage());
+
+        ImageIcon imagen1 = new ImageIcon(getClass().getResource("/Front/Recursos/imagen_principal.png"));
+        label_imagen = new JLabel(imagen1);
+
+        // Carga de imagenes para los botones principales
+        imagen_ciudades = new ImageIcon(getClass().getResource("/Front/Recursos/Imagen_ciudades.png"));
+        imagen_ciudades = new ImageIcon(imagen_ciudades.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
+
+        imagen_vehiculos = new ImageIcon(getClass().getResource("/Front/Recursos/Imagen_vehiculos.png"));
+        imagen_vehiculos = new ImageIcon(imagen_vehiculos.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
+
+        imagen_extractos = new ImageIcon(getClass().getResource("/Front/Recursos/Imagen_extractos.png"));
+        imagen_extractos = new ImageIcon(imagen_extractos.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+
+        imagen_personas = new ImageIcon(getClass().getResource("/Front/Recursos/Imagen_personas.png"));
+        imagen_personas = new ImageIcon(imagen_personas.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH));
+
+        imagen_empleados = new ImageIcon(getClass().getResource("/Front/Recursos/Imagen_empleados.png"));
+        imagen_empleados = new ImageIcon(imagen_empleados.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+
+        // Carga de imagenes para los botones desplegables
+        cargar_imagen_asincrona("/Front/Recursos/Ciudades/Imagen_ciudad.png", 50, 50, imagen ->{imagen_ciudad = imagen;});
+        cargar_imagen_asincrona("/Front/Recursos/Ciudades/Imagen_departamento.jpg", 40, 40, imagen ->{imagen_departamento = imagen;});
+        cargar_imagen_asincrona("/Front/Recursos/Ciudades/Imagen_ruta.png", 40, 40, imagen ->{imagen_ruta = imagen;});
+        cargar_imagen_asincrona("/Front/Recursos/Vehiculos/Imagen_tipo_vehiculo.png", 50, 50, imagen ->{imagen_tipo_vehiculo = imagen;});
+        cargar_imagen_asincrona("/Front/Recursos/Vehiculos/Imagen_vehiculo.png", 50, 50, imagen ->{imagen_vehiculo = imagen;});
+        cargar_imagen_asincrona("/Front/Recursos/Vehiculos/Imagen_conductor.png", 60, 60, imagen ->{imagen_conductores = imagen;});
+        cargar_imagen_asincrona("/Front/Recursos/Vehiculos/Imagen_documentos.png", 50, 50, imagen ->{imagen_documentos_vehiculos = imagen;});
+        cargar_imagen_asincrona("/Front/Recursos/Vehiculos/Imagen_convenio.png", 50, 50, imagen ->{imagen_vehiculo_convenio = imagen;});
+        cargar_imagen_asincrona("/Front/Recursos/Extractos/Imagen_extracto_mensual.png", 50, 50, imagen ->{imagen_extracto_mensual = imagen;});
+        cargar_imagen_asincrona("/Front/Recursos/Extractos/Imagen_extracto.png", 50, 50, imagen ->{imagen_extracto_ocasional = imagen;});
+        cargar_imagen_asincrona("/Front/Recursos/Extractos/Imagen_contrato.png", 50, 50, imagen ->{imagen_contrato_mensual = imagen;});
+        cargar_imagen_asincrona("/Front/Recursos/Extractos/Imagen_contrato_ocasional.png", 50, 50, imagen ->{imagen_contrato_ocasional = imagen;});
+        cargar_imagen_asincrona("/Front/Recursos/Extractos/Imagen_contratante.png", 50, 50, imagen ->{imagen_contratante = imagen;});
+
+    }
+
 
     /**
      * Configura por defecto los diferentes botones
@@ -353,26 +398,59 @@ public class Principal extends JFrame{
     }
 
     /**
-     * Este metodo se encarga de establecer el ancho del panel secundario
-     * cuando el mouse entra o sale de este, para que se vea mas amplio
-     * @return
+     * Anima el cambio de tamaño de un panel de forma suave
+     * @param panel El panel a animar
+     * @param targetWidth El ancho objetivo
+     * @param isLeftPanel true si es panel_izq, false si es panel_secundario
      */
-    private MouseAdapter set_ancho_panel_izq(){
-        return new MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) {
-                panel_izq.setPreferredSize(new Dimension(TAMAÑO_PANEL_IZ_ANCHO,panel_izq.getHeight()));
-                panel_izq.revalidate();
-                panel_izq.repaint();
+    private void animatePanel(JPanel panel, int targetWidth, boolean isLeftPanel) {
+        // Detener animación previa si existe
+        Timer currentTimer = isLeftPanel ? animationTimerIzq : animationTimerSec;
+        if (currentTimer != null && currentTimer.isRunning()) {
+            currentTimer.stop();
+        }
+        
+        int currentWidth = panel.getWidth();
+        int diff = targetWidth - currentWidth;
+        
+        // Si la diferencia es muy pequeña, cambiar directamente
+        if (Math.abs(diff) < 5) {
+            panel.setPreferredSize(new Dimension(targetWidth, panel.getHeight()));
+            panel.revalidate();
+            panel.repaint();
+            return;
+        }
+        
+        // Calcular incremento por paso
+        int delay = ANIMATION_DURATION / ANIMATION_STEPS;
+        double increment = (double) diff / ANIMATION_STEPS;
+        
+        Timer timer = new Timer(delay, null);
+        final int[] step = {0};
+        
+        timer.addActionListener(e -> {
+            step[0]++;
+            if (step[0] >= ANIMATION_STEPS) {
+                panel.setPreferredSize(new Dimension(targetWidth, panel.getHeight()));
+                panel.revalidate();
+                panel.repaint();
+                timer.stop();
+            } else {
+                int newWidth = currentWidth + (int) (increment * step[0]);
+                panel.setPreferredSize(new Dimension(newWidth, panel.getHeight()));
+                panel.revalidate();
+                panel.repaint();
             }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent e) {
-                panel_izq.setPreferredSize(new Dimension(TAMAÑO_PANEL_IZ,panel_izq.getHeight()));
-                panel_izq.revalidate();
-                panel_izq.repaint();
-            }
-        };
+        });
+        
+        // Guardar referencia del timer
+        if (isLeftPanel) {
+            animationTimerIzq = timer;
+        } else {
+            animationTimerSec = timer;
+        }
+        
+        timer.start();
     }
 
     /**
@@ -385,16 +463,12 @@ public class Principal extends JFrame{
         return new MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent e) {
-                panel_izq.setPreferredSize(new Dimension(tamaño_ancho,panel_izq.getHeight()));
-                panel_izq.revalidate();
-                panel_izq.repaint();
+                animatePanel(panel_izq, tamaño_ancho, true);
             }
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent e) {
-                panel_izq.setPreferredSize(new Dimension(TAMAÑO_PANEL_IZ,panel_izq.getHeight()));
-                panel_izq.revalidate();
-                panel_izq.repaint();
+                animatePanel(panel_izq, TAMAÑO_PANEL_IZ, true);
             }
         };
     }
@@ -403,16 +477,12 @@ public class Principal extends JFrame{
         return new MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent e) {
-                panel_secundario.setPreferredSize(new Dimension(TAMAÑO_PANEL_SECUNDARIO_ANCHO,panel_secundario.getHeight()));
-                panel_secundario.revalidate();
-                panel_secundario.repaint();
+                animatePanel(panel_secundario, TAMAÑO_PANEL_SECUNDARIO_ANCHO, false);
             }
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent e) {
-                panel_secundario.setPreferredSize(new Dimension(TAMAÑO_PANEL_SECUNDARIO,panel_secundario.getHeight()));
-                panel_secundario.revalidate();
-                panel_secundario.repaint();
+                animatePanel(panel_secundario, TAMAÑO_PANEL_SECUNDARIO, false);
             }
         };
     }
@@ -449,6 +519,133 @@ public class Principal extends JFrame{
 
     }
 
+
+    private void setPosicionInicialBotones(){
+
+        boton_ciudad.setBounds(10,10,TAMAÑO_BOTON,TAMAÑO_BOTON);
+        boton_vehiculos.setBounds(10,boton_ciudad.getY() + TAMAÑO_BOTON + 10,TAMAÑO_BOTON,TAMAÑO_BOTON);
+        boton_empleados.setBounds(10,boton_vehiculos.getY() + TAMAÑO_BOTON + 10,TAMAÑO_BOTON,TAMAÑO_BOTON);
+        boton_personas.setBounds(10,boton_empleados.getY() + TAMAÑO_BOTON + 10,TAMAÑO_BOTON,TAMAÑO_BOTON);
+        boton_extractos.setBounds(10,boton_personas.getY() + TAMAÑO_BOTON + 10,TAMAÑO_BOTON,TAMAÑO_BOTON);
+        
+    }
+
+    private void setPosicionInicialLabels(){
+
+        config_label(label_boton_ciudades, boton_ciudad);
+        config_label(label_boton_vehiculos, boton_vehiculos);
+        config_label(label_boton_empleados, boton_empleados);
+        config_label(label_boton_personas, boton_personas);
+        config_label(label_boton_extractos, boton_extractos);
+
+    }
+    
+    private void setPosicionBotonesDependientes(JButton boton_inicial, JButton boton_final){
+
+        boton_final.setBounds(boton_final.getX(),boton_inicial.getY() + boton_inicial.getHeight() + 10,boton_final.getWidth(),boton_final.getHeight());
+    }
+
+    private void setPosicionBotonesDependientes(JButton botones []){
+        int boton_inical = 0;
+        int boton_siguiente = 1;
+
+        while(boton_siguiente < botones.length){
+            
+            setPosicionBotonesDependientes(botones[boton_inical], botones[boton_siguiente]);
+
+            boton_inical++;
+            boton_siguiente++;
+        }
+
+    }
+
+    private void InicializarBotonCiudad(){
+        boton_ciudad = new JButton();
+        label_boton_ciudades = new JLabel("Ciudades");
+
+        boton_ciudad.setIcon(imagen_ciudades);
+        boton_ciudad.addActionListener(_ ->{
+            eliminar_elementos_desplegables();
+            configuracion_ciudad();
+        });
+
+        boton_ciudad.addMouseListener(set_ancho_secundario());
+        back_ground_color(boton_ciudad);
+
+        panel_secundario.add(boton_ciudad);
+        panel_secundario.add(label_boton_ciudades);
+    }
+
+    private void InicializarBotonVehiculos(){
+        boton_vehiculos = new JButton();
+        label_boton_vehiculos = new JLabel("Vehiculos");
+
+        boton_vehiculos.setIcon(imagen_vehiculos);
+        boton_vehiculos.addActionListener(_ ->{
+            eliminar_elementos_desplegables();
+            configuracion_vehiculos();
+        });
+
+        boton_vehiculos.addMouseListener(set_ancho_secundario());
+        back_ground_color(boton_vehiculos);
+
+        panel_secundario.add(boton_vehiculos);
+        panel_secundario.add(label_boton_vehiculos);
+    }
+
+    private void InicializarBotonEmpleados(){
+        boton_empleados = new JButton();
+        label_boton_empleados = new JLabel("Empleados");
+
+        boton_empleados.setIcon(imagen_empleados);
+        boton_empleados.addActionListener(_ ->{
+            eliminar_elementos_desplegables();
+            configuracion_empleados();
+        });
+
+        boton_empleados.addMouseListener(set_ancho_secundario());
+        back_ground_color(boton_empleados);
+
+        panel_secundario.add(boton_empleados);
+        panel_secundario.add(label_boton_empleados);
+    }
+
+    private void InicializarBotonPersonas(){
+        boton_personas = new JButton();
+        label_boton_personas = new JLabel("Personas");
+
+        boton_personas.setIcon(imagen_personas);
+        boton_personas.addActionListener(_ ->{
+            eliminar_elementos_desplegables();
+            configuracion_personas();
+        });
+
+        boton_personas.addMouseListener(set_ancho_secundario());
+        back_ground_color(boton_personas);
+
+        panel_secundario.add(boton_personas);
+        panel_secundario.add(label_boton_personas);
+    }
+
+    private void InicializarBotonExtractos(){
+        boton_extractos = new JButton();
+        label_boton_extractos = new JLabel("Extractos");
+
+        boton_extractos.setIcon(imagen_extractos);
+        boton_extractos.addActionListener(_ ->{
+            eliminar_elementos_desplegables();
+            configuracion_boton_extractos();
+            boton_extractos_mensuales.doClick();
+        });
+
+        boton_extractos.addMouseListener(set_ancho_secundario());
+        back_ground_color(boton_extractos);
+
+        panel_secundario.add(boton_extractos);
+        panel_secundario.add(label_boton_extractos);
+    }
+
+    
     /**
      * Se encarga de configurar el panel secundario
      * de la interfaz grafica, en este caso, la parte que
@@ -457,100 +654,22 @@ public class Principal extends JFrame{
      */
     private void configuracion_panel_secundario(){
 
-        // Creacio componentes auxiliares
-        boton_extractos = new JButton();
-        boton_personas = new JButton();
-        boton_ciudad = new JButton();
-        boton_vehiculos = new JButton();
-        boton_empleados = new JButton();
+        InicializarBotonCiudad();
+        InicializarBotonVehiculos();
+        InicializarBotonEmpleados();
+        InicializarBotonPersonas();
+        InicializarBotonExtractos();
 
-        // Labels para los botones
-        JLabel label_boton_extractos = new JLabel("Extractos");
-        JLabel label_boton_personas = new JLabel("Personas");
-        JLabel label_boton_empleados = new JLabel("Empleados");
-        JLabel label_boton_ciudades = new JLabel("Ciudades");
-        JLabel label_boton_vehiculos = new JLabel("Vehiculos");
+        setPosicionInicialBotones();
+        setPosicionInicialLabels();
 
         // Configuraciones del panel
         panel_secundario.setBackground(new Color(color_principal));
         panel_secundario.setPreferredSize(new Dimension(TAMAÑO_PANEL_SECUNDARIO,this.getHeight()));
-        
-
-        // Cre_ de componentes y configuracion de los mismos
-        boton_ciudad.setIcon(imagen_ciudades);
-        boton_ciudad.setBounds(10,10,TAMAÑO_BOTON,TAMAÑO_BOTON);
-        boton_ciudad.addActionListener(_ ->{
-            configuracion_ciudad();
-        });
-
-        boton_vehiculos.setIcon(imagen_vehiculos);
-        boton_vehiculos.setBounds(10,boton_ciudad.getY() + TAMAÑO_BOTON + 10,TAMAÑO_BOTON,TAMAÑO_BOTON);
-        
-        boton_vehiculos.addActionListener(_ ->{
-            configuracion_vehiculos();
-        });
-
-        boton_empleados.setIcon(imagen_empleados);
-        boton_empleados.setBounds(10,boton_vehiculos.getY() + TAMAÑO_BOTON + 10,TAMAÑO_BOTON,TAMAÑO_BOTON);
-
-        boton_empleados.addActionListener(_ ->{
-            configuracion_empleados();
-        });
-
-        boton_personas.setIcon(imagen_personas);
-        boton_personas.setBounds(10,boton_empleados.getY() + TAMAÑO_BOTON + 10,TAMAÑO_BOTON,TAMAÑO_BOTON);
-
-        boton_personas.addActionListener(_ ->{
-            configuracion_personas();
-        });
-
-        boton_extractos.setIcon(imagen_extractos);
-        boton_extractos.setBounds(10,boton_personas.getY() + TAMAÑO_BOTON + 10,TAMAÑO_BOTON,TAMAÑO_BOTON);
-
-        boton_extractos.addActionListener(_ ->{
-            configuracion_boton_extractos();
-            boton_extractos_mensuales.doClick();
-        });
 
         // Mouse listener para el ancho del panel secundario
         panel_secundario.addMouseListener(set_ancho_secundario());
-        boton_ciudad.addMouseListener(set_ancho_secundario());
-        boton_vehiculos.addMouseListener(set_ancho_secundario());
-        boton_empleados.addMouseListener(set_ancho_secundario());
-        boton_personas.addMouseListener(set_ancho_secundario());
-        boton_extractos.addMouseListener(set_ancho_secundario());
 
-
-        // Mouse listener para el cambio de color de fondo de botones
-        back_ground_color(boton_ciudad);
-        back_ground_color(boton_vehiculos);
-        back_ground_color(boton_empleados);
-        back_ground_color(boton_personas);
-        back_ground_color(boton_extractos);
-
-        // Configuracion de los labels
-        config_label(label_boton_ciudades, boton_ciudad);
-        config_label(label_boton_vehiculos, boton_vehiculos);
-        config_label(label_boton_extractos, boton_extractos);
-        config_label(label_boton_personas, boton_personas);
-        config_label(label_boton_empleados, boton_empleados);
-
-        
-        // Adicionamiento componentes
-        panel_secundario.add(boton_ciudad);
-        panel_secundario.add(boton_vehiculos);
-        panel_secundario.add(boton_empleados);
-        panel_secundario.add(boton_personas);
-        panel_secundario.add(boton_extractos);
-
-        // Adicionamiento de labels
-        panel_secundario.add(label_boton_ciudades);
-        panel_secundario.add(label_boton_vehiculos);
-        panel_secundario.add(label_boton_extractos);
-        panel_secundario.add(label_boton_personas);
-        panel_secundario.add(label_boton_empleados);
-
-        
         panel_secundario.revalidate();
         panel_secundario.repaint();
         
@@ -571,14 +690,45 @@ public class Principal extends JFrame{
 
     }
 
+    private void encolar_elementos_desplegables(JButton botones [], JLabel labels []){
+        for(JButton boton: botones){
+            cola_botones_desplegables.enqueue(boton);
+        }
+        for(JLabel label: labels){
+            cola_labels_desplegables.enqueue(label);
+        }
+    }
+
+    private void eliminar_elementos_desplegables(){
+        while(!cola_botones_desplegables.isEmpty()){
+            eliminar_boton_panel(cola_botones_desplegables.peek(), panel_secundario);
+            cola_botones_desplegables.dequeue();
+        }
+
+        while(!cola_labels_desplegables.isEmpty()){
+            eliminar_label_panel(cola_labels_desplegables.peek(), panel_secundario);
+            cola_labels_desplegables.dequeue();
+        }
+    }
+    private static void eliminar_boton_panel(JButton boton, JPanel panel){
+        panel.remove(boton);
+    }
+    
+    private static void eliminar_label_panel(JLabel label, JPanel panel){
+        panel.remove(label);
+    }
+
     private void configuracion_ciudad(){
+    
+        JButton[] botones_ciudad;
+        JLabel[] labels_ciudad;
         panel_informacion = new JPanel();
         panel_principal2.removeAll();
         panel_principal2.setLayout(new BorderLayout());
 
         // Creacion de componentes auxiliares
         panel_izq = new JPanel(null); 
-        JLabel label_principal = new JLabel("Configuracion Ciudades y Departamentos");
+        label_principal = new JLabel("Configuracion Ciudades y Departamentos");
         boton_ciudades = new JButton();
         boton_Departamento = new JButton();
         boton_ruta = new JButton();
@@ -591,7 +741,7 @@ public class Principal extends JFrame{
 
         // Configuracion componentes
         boton_ciudades.setIcon(imagen_ciudad);
-        boton_ciudades.setBounds(10, 10, TAMAÑO_BOTON, TAMAÑO_BOTON);
+        boton_ciudades.setBounds(X_BOTONES_DESPLEGABLES, boton_ciudad.getY() + boton_ciudad.getHeight() + 10, TAMAÑO_BOTON, TAMAÑO_BOTON);
         boton_ciudades.addActionListener(_ ->{
             panel_principal2.remove(panel_informacion);
 
@@ -603,11 +753,10 @@ public class Principal extends JFrame{
             panel_principal2.repaint();
             
         });
-        boton_ciudades.addMouseListener(set_ancho_panel_izq());
         boton_ciudades.doClick();
 
         boton_Departamento.setIcon(imagen_departamento);
-        boton_Departamento.setBounds(10, boton_ciudades.getY() + TAMAÑO_BOTON + 10, TAMAÑO_BOTON, TAMAÑO_BOTON);
+        boton_Departamento.setBounds(X_BOTONES_DESPLEGABLES, boton_ciudades.getY() + TAMAÑO_BOTON + 10, TAMAÑO_BOTON, TAMAÑO_BOTON);
         boton_Departamento.addActionListener(_ ->{
 
             panel_principal2.remove(panel_informacion);
@@ -620,10 +769,9 @@ public class Principal extends JFrame{
             panel_principal2.repaint();
 
         });
-        boton_Departamento.addMouseListener(set_ancho_panel_izq());
 
         boton_ruta.setIcon(imagen_ruta);
-        boton_ruta.setBounds(10, boton_Departamento.getY() + TAMAÑO_BOTON + 10, TAMAÑO_BOTON, TAMAÑO_BOTON);
+        boton_ruta.setBounds(X_BOTONES_DESPLEGABLES, boton_Departamento.getY() + TAMAÑO_BOTON + 10, TAMAÑO_BOTON, TAMAÑO_BOTON);
         boton_ruta.addActionListener(_ ->{
 
             panel_principal2.remove(panel_informacion);
@@ -636,7 +784,6 @@ public class Principal extends JFrame{
             panel_principal2.repaint();
 
         });
-        boton_ruta.addMouseListener(set_ancho_panel_izq());
 
         label_principal.setFont(new Font("britannic bold", Font.BOLD, 20));
         label_principal.setHorizontalAlignment(JLabel.CENTER);
@@ -646,22 +793,37 @@ public class Principal extends JFrame{
         config_label(label_ruta, boton_ruta);
         config_label(label_departamento, boton_Departamento);
 
+        // mouse listener para los botones
+        boton_ciudades.addMouseListener(set_ancho_secundario());
+        boton_Departamento.addMouseListener(set_ancho_secundario());
+        boton_ruta.addMouseListener(set_ancho_secundario());
         // Configuracion del color de los botones
         back_ground_color(boton_ciudades);
         back_ground_color(boton_Departamento);
         back_ground_color(boton_ruta);
 
         // Configuracion del panel_izq
-        panel_izq.setPreferredSize(new Dimension(TAMAÑO_PANEL_IZ,panel_principal2.getHeight()));
-        panel_izq.setBackground(new Color(color_secundario));
-        panel_izq.addMouseListener(set_ancho_panel_izq());
-        panel_izq.add(boton_ciudades);
-        panel_izq.add(boton_Departamento);
-        panel_izq.add(boton_ruta);
-        panel_izq.add(label_ciudad);
-        panel_izq.add(label_departamento);
-        panel_izq.add(label_ruta);
         
+        panel_secundario.add(boton_ciudades);
+        panel_secundario.add(boton_Departamento);
+        panel_secundario.add(boton_ruta);
+        panel_secundario.add(label_ciudad);
+        panel_secundario.add(label_departamento);
+        panel_secundario.add(label_ruta);
+        
+        botones_ciudad = new JButton[]{boton_ciudades, boton_Departamento, boton_ruta};
+        labels_ciudad = new JLabel[]{label_ciudad, label_departamento, label_ruta};
+
+        
+        // Prueba
+        setPosicionInicialBotones();
+        boton_vehiculos.setBounds(boton_vehiculos.getBounds().x, boton_ruta.getY() + boton_ruta.getHeight() +20, boton_vehiculos.getBounds().width, boton_vehiculos.getBounds().height);
+
+        setPosicionBotonesDependientes(new JButton[]{boton_vehiculos, boton_empleados, boton_personas, boton_extractos});
+        setPosicionInicialLabels();
+        
+        encolar_elementos_desplegables(botones_ciudad, labels_ciudad);
+        // fin de prueba
 
         // Agregacion a panel_principal2 y set panel_principal2
         panel_principal2.add(label_principal,BorderLayout.NORTH);
@@ -678,9 +840,10 @@ public class Principal extends JFrame{
      * cargar en el espacio de vehiculos
      */
     private void configuracion_vehiculos(){
+        setPosicionInicialBotones();
 
-        int tamaño_ancho = 240;     // Este es el ancho que tendra el panel izquierdo cuando se abra la parte de vehiculos
-
+        JButton botones_vehiculos[];
+        JLabel labels_vehiculos[];
 
         // Restableciendo el panel a utilizar
         panel_informacion = new JPanel();
@@ -688,7 +851,7 @@ public class Principal extends JFrame{
         panel_principal2.setLayout(new BorderLayout());
 
         // Inicializacion del label identificador del programa
-        JLabel label_principal = new JLabel("Configuracion Vehiculos");
+        label_principal = new JLabel("Configuracion Vehiculos");
         panel_izq = new JPanel(null);
         pan = new JPanel(null);
         panel_principal2.add(label_principal,BorderLayout.NORTH);
@@ -715,8 +878,7 @@ public class Principal extends JFrame{
 
         // Configuracion boton tipo_vehiculo
         tipo_vehiculo.setIcon(imagen_tipo_vehiculo);
-        tipo_vehiculo.setBounds(10, 10, TAMAÑO_BOTON, TAMAÑO_BOTON);
-        tipo_vehiculo.addMouseListener(set_ancho_panel_izq(tamaño_ancho));
+        tipo_vehiculo.setBounds(X_BOTONES_DESPLEGABLES, boton_vehiculos.getY() + boton_vehiculos.getHeight() + 10, TAMAÑO_BOTON, TAMAÑO_BOTON);
         tipo_vehiculo.addActionListener(_ ->{
             
             panel_principal2.remove(panel_informacion);
@@ -732,8 +894,7 @@ public class Principal extends JFrame{
 
         // Configuracion boton vehiculos
         vehiculos.setIcon(imagen_vehiculo);
-        vehiculos.setBounds(10,tipo_vehiculo.getY() + TAMAÑO_BOTON + 10,TAMAÑO_BOTON,TAMAÑO_BOTON);
-        vehiculos.addMouseListener(set_ancho_panel_izq(tamaño_ancho));
+        vehiculos.setBounds(X_BOTONES_DESPLEGABLES,tipo_vehiculo.getY() + TAMAÑO_BOTON + 10,TAMAÑO_BOTON,TAMAÑO_BOTON);
         vehiculos.addActionListener(_->{
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
@@ -748,8 +909,7 @@ public class Principal extends JFrame{
 
         // Configuracion boton conductores
         conductores.setIcon(imagen_conductores);
-        conductores.setBounds(10,vehiculos.getY() + TAMAÑO_BOTON + 10,TAMAÑO_BOTON,TAMAÑO_BOTON);
-        conductores.addMouseListener(set_ancho_panel_izq(tamaño_ancho));
+        conductores.setBounds(X_BOTONES_DESPLEGABLES,vehiculos.getY() + TAMAÑO_BOTON + 10,TAMAÑO_BOTON,TAMAÑO_BOTON);
         conductores.addActionListener(_ ->{
             panel_principal2.remove(panel_informacion);
             panel_principal2.remove(pan);
@@ -762,8 +922,7 @@ public class Principal extends JFrame{
 
         // Configuracion documentos vehiculos
         documentos_vehiculos.setIcon(imagen_documentos_vehiculos);
-        documentos_vehiculos.setBounds(10,conductores.getY() + TAMAÑO_BOTON + 10, TAMAÑO_BOTON, TAMAÑO_BOTON);
-        documentos_vehiculos.addMouseListener(set_ancho_panel_izq(tamaño_ancho));
+        documentos_vehiculos.setBounds(X_BOTONES_DESPLEGABLES,conductores.getY() + TAMAÑO_BOTON + 10, TAMAÑO_BOTON, TAMAÑO_BOTON);
         documentos_vehiculos.addActionListener(_ ->{
 
             panel_principal2.remove(panel_informacion);
@@ -778,8 +937,7 @@ public class Principal extends JFrame{
 
         // Configuracion vehiculos con convenio
         vehiculos_convenio.setIcon(imagen_vehiculo_convenio);
-        vehiculos_convenio.setBounds(10,documentos_vehiculos.getY() + TAMAÑO_BOTON + 10, TAMAÑO_BOTON, TAMAÑO_BOTON);
-        vehiculos_convenio.addMouseListener(set_ancho_panel_izq(tamaño_ancho));
+        vehiculos_convenio.setBounds(X_BOTONES_DESPLEGABLES,documentos_vehiculos.getY() + TAMAÑO_BOTON + 10, TAMAÑO_BOTON, TAMAÑO_BOTON);
         vehiculos_convenio.addActionListener(_ ->{
 
             panel_principal2.remove(panel_informacion);
@@ -796,6 +954,13 @@ public class Principal extends JFrame{
         label_principal.setFont(new Font("britannic bold", Font.BOLD, 20));
         label_principal.setHorizontalAlignment(JLabel.CENTER);
 
+        // Mouse listener para los botones
+        tipo_vehiculo.addMouseListener(set_ancho_secundario());
+        vehiculos.addMouseListener(set_ancho_secundario());
+        conductores.addMouseListener(set_ancho_secundario());
+        documentos_vehiculos.addMouseListener(set_ancho_secundario());
+        vehiculos_convenio.addMouseListener(set_ancho_secundario());
+
         // Configuracion del background de los botones
         back_ground_color(tipo_vehiculo);
         back_ground_color(vehiculos);
@@ -810,21 +975,30 @@ public class Principal extends JFrame{
         config_label(label_documentos_vehiculos, documentos_vehiculos);
         config_label(label_vehiculos_convenio, vehiculos_convenio);
 
-        // configuracion panel izq
-        panel_izq.setPreferredSize(new Dimension(TAMAÑO_PANEL_IZ,panel_principal2.getHeight()));
-        panel_izq.setBackground(new Color(color_secundario));
-        panel_izq.addMouseListener(set_ancho_panel_izq(240));
 
-        panel_izq.add(tipo_vehiculo);
-        panel_izq.add(vehiculos);
-        panel_izq.add(conductores);
-        panel_izq.add(documentos_vehiculos);
-        panel_izq.add(vehiculos_convenio);
-        panel_izq.add(label_tipo_vehiculo);
-        panel_izq.add(label_vehiculos);
-        panel_izq.add(label_conductores);
-        panel_izq.add(label_documentos_vehiculos);
-        panel_izq.add(label_vehiculos_convenio);
+        panel_secundario.add(tipo_vehiculo);
+        panel_secundario.add(vehiculos);
+        panel_secundario.add(conductores);
+        panel_secundario.add(documentos_vehiculos);
+        panel_secundario.add(vehiculos_convenio);
+        panel_secundario.add(label_tipo_vehiculo);
+        panel_secundario.add(label_vehiculos);
+        panel_secundario.add(label_conductores);
+        panel_secundario.add(label_documentos_vehiculos);
+        panel_secundario.add(label_vehiculos_convenio);
+
+        botones_vehiculos = new JButton[]{tipo_vehiculo, vehiculos, conductores, documentos_vehiculos, vehiculos_convenio};
+        labels_vehiculos = new JLabel[]{label_tipo_vehiculo, label_vehiculos, label_conductores, label_documentos_vehiculos, label_vehiculos_convenio};
+        // Prueba
+        
+        boton_empleados.setBounds(boton_empleados.getBounds().x, vehiculos_convenio.getHeight() + vehiculos_convenio.getY() +20, boton_empleados.getBounds().width, boton_empleados.getBounds().height);
+        
+        setPosicionBotonesDependientes(new JButton[]{boton_empleados, boton_personas, boton_extractos});
+        setPosicionInicialLabels();
+
+        encolar_elementos_desplegables(botones_vehiculos, labels_vehiculos);
+        
+        // fin de prueba
 
         // Mostrando los componentes en pantalla
         panel_principal2.revalidate();
@@ -843,7 +1017,7 @@ public class Principal extends JFrame{
         panel_principal2.setLayout(new BorderLayout());
 
         // Cracion de componentes
-        JLabel label_principal = new JLabel("Configuracion Personas");
+        label_principal = new JLabel("Configuracion Personas");
         panel_izq = new JPanel(null);
 
         boton_persona = new JButton();
@@ -912,6 +1086,16 @@ public class Principal extends JFrame{
         panel_principal2.add(panel_izq,BorderLayout.WEST);
         panel_principal2.add(panel_informacion, BorderLayout.CENTER);
 
+         // Prueba
+        setPosicionInicialBotones();
+        boton_extractos.setBounds(boton_extractos.getBounds().x, boton_extractos.getY() + boton_conductores.getY() +10, boton_extractos.getBounds().width, boton_extractos.getBounds().height);
+        
+        
+        setPosicionInicialLabels();
+
+        
+        // fin de prueba
+
         // Mostrando los componentes en pantalla
         panel_principal2.revalidate();
         panel_principal2.repaint();
@@ -931,7 +1115,7 @@ public class Principal extends JFrame{
 
         // Creacion de componentes auxiliares
         panel_izq = new JPanel(null); 
-        JLabel label_principal = new JLabel("Configuración boton_extractos");
+        label_principal = new JLabel("Configuración boton_extractos");
 
         // Labeles para los botones
         JLabel label_extractos_mensuales = new JLabel("Extractos Mensuales");

@@ -18,40 +18,20 @@ public class Main {
             
         });
 
-        new Runnable(){
-            public void run() {
-                
-                Dialogo_documentos dialog = new Dialogo_documentos(null);
-                
-                ArrayList<String[]> mensajes = Utilidades.Verificacion_documentos.verificar_documentos();
-
-                for(String[] mensaje : mensajes){
-                    dialog.addVehicle(mensaje);
-                }
-
-                dialog.setVisible(true);
-            }
-        }.run();
-
         // new Runnable(){
         //     public void run() {
-        //         try {
-        //             // Aquí puedes ejecutar el comando de la consola
-        //             String[] argumentos = {"Mensajes.exe", "+573112188934", "Hola, este es un mensaje de prueba desde Java!"};
-        //             ProcessBuilder processBuilder = new ProcessBuilder(argumentos);
-        //             // Ejecuta el comando
-        //             processBuilder.start();
-        //         } catch (IOException e) {
-        //             e.printStackTrace();
+                
+        //         Dialogo_documentos dialog = new Dialogo_documentos(null);
+                
+        //         ArrayList<String[]> mensajes = Utilidades.Verificacion_documentos.verificar_documentos();
+
+        //         for(String[] mensaje : mensajes){
+        //             dialog.addVehicle(mensaje);
         //         }
+
+        //         dialog.setVisible(true);
         //     }
         // }.run();
-
-    
-        // String[] argumentos = {"Mensajes.exe", "+573214848600", "Hola, este es un mensaje de prueba desde Java!"};
-        // ProcessBuilder processBuilder = new ProcessBuilder(argumentos);
-        // // Ejecuta el comando
-        // processBuilder.start();
 
         new Runnable() {
             public void run() {
@@ -74,3 +54,49 @@ public class Main {
 }
 
             
+// Necesitarás una biblioteca como Apache Batik para cargar SVG
+// Instala la biblioteca y asegúrate de que esté en tu classpath.
+
+// import org.apache.batik.swing.JSVGImage;
+// import javax.swing.*;
+// import java.net.URL;
+// import java.awt.*;
+
+// public class Main extends JFrame {
+//     public BotonSvg() {
+//         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//         setSize(300, 200);
+
+//         JButton boton = new JButton();
+
+//         // Carga la imagen SVG
+//         try {
+//             URL imageUrl = getClass().getResource("/ruta/a/tu/icono.svg");
+//             if (imageUrl != null) {
+//                 // Usa Batik para cargar y renderizar el SVG como un Image
+//                 JSVGImage svgImage = new JSVGImage(imageUrl.toString());
+//                 // Puedes ajustar el tamaño si es necesario
+//                 Image scaledImage = svgImage.createImage(new Dimension(20, 20));
+//                 boton.setIcon(new ImageIcon(scaledImage));
+//             } else {
+//                 System.err.println("No se encontró la imagen SVG en la ruta especificada.");
+//                 boton.setText("Icono no encontrado");
+//             }
+//         } catch (Exception e) {
+//             e.printStackTrace();
+//             boton.setText("Error al cargar");
+//         }
+
+//         // Para ajustar el tamaño del botón y que el icono se vea mejor
+//         boton.setHorizontalAlignment(SwingConstants.CENTER);
+//         boton.setVerticalAlignment(SwingConstants.CENTER);
+//         boton.setPreferredSize(new Dimension(50, 50)); // Ajusta según necesites
+
+//         add(boton);
+//         setVisible(true);
+//     }
+
+//     public static void main(String[] args) {
+//         SwingUtilities.invokeLater(BotonSvg::new);
+//     }
+// }
