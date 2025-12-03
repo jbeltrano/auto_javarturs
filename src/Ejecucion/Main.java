@@ -2,36 +2,35 @@ package Ejecucion;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import javax.swing.SwingUtilities;
 import Front.Dialogo_documentos;
 import Front.Principal;
 import Utilidades.Nomina_Electronica;
 
 public class Main {
     public static void main(String[] args) throws IOException{
-        
-        SwingUtilities.invokeLater(new Runnable() {
+
+        new Runnable() {
 
             public void run() {
                 new Principal();
             }
             
-        });
+        }.run();
 
-        // new Runnable(){
-        //     public void run() {
+        new Runnable(){
+            public void run() {
                 
-        //         Dialogo_documentos dialog = new Dialogo_documentos(null);
+                Dialogo_documentos dialog = new Dialogo_documentos(null);
                 
-        //         ArrayList<String[]> mensajes = Utilidades.Verificacion_documentos.verificar_documentos();
+                ArrayList<String[]> mensajes = Utilidades.Verificacion_documentos.verificar_documentos();
 
-        //         for(String[] mensaje : mensajes){
-        //             dialog.addVehicle(mensaje);
-        //         }
+                for(String[] mensaje : mensajes){
+                    dialog.addVehicle(mensaje);
+                }
 
-        //         dialog.setVisible(true);
-        //     }
-        // }.run();
+                dialog.setVisible(true);
+            }
+        }.run();
 
         new Runnable() {
             public void run() {

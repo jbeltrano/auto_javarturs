@@ -53,7 +53,6 @@ public class Principal extends JFrame{
     private static final int TAMAÑO_PANEL_SECUNDARIO_ANCHO = 200;
     private static final int TAMAÑO_BOTON = 50;
     private static final int ANIMATION_DURATION = 100; // Duración de la animación en ms
-    private static final int ANIMATION_STEPS = 30; // Número de pasos en la animación
     private static final int X_BOTONES_DESPLEGABLES = 80;
     private static final int X_BOTON_PRINCIPAL = 10;
 
@@ -148,6 +147,7 @@ public class Principal extends JFrame{
     private GenericButton genericContratosMensuales;
     private GenericButton genericContratosOcasionales;
     private GenericButton genericContratante;
+
     /**
      * Este es el constructor general para la clase Principal
      * se encarga de iniciar la gran mayoria de componentes y el JFrame como tal
@@ -183,11 +183,7 @@ public class Principal extends JFrame{
         iniciarBotonesEmpleados();
         iniciarBotonesExtractos();
     }
-    /**
-     * Este metodo se encarga de cerrar la coneccion
-     * con la base de datos el momento de cerrar la ventana
-     * 
-     */
+
     private void EventoCerrarConexion(){
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -201,11 +197,6 @@ public class Principal extends JFrame{
         });
     }
     
-    /**
-     * Configura el tema de la interfaz grafica
-     * segun la configuracion establecida por el usuario
-     * en el archivo de configuracion.
-     */
     private void ConfigurarTema(){
     
         Leer_config config = new Leer_config();
@@ -222,13 +213,6 @@ public class Principal extends JFrame{
         config = null;
     }
 
-    /**
-     * Esta funcion se encarga de Iniciar
-     * todos los componentes necesarios para
-     * el correcto funcionamiento del Programa
-     * tales como imagenes, y otros archivos
-     * importantes.
-     */
     private void iniciar_componentes(){
 
         CargarImagenes();
@@ -239,17 +223,7 @@ public class Principal extends JFrame{
         panel_secundario = new JPanel(null);
         panel_principal2 = new JPanel();
         
-        // Configuraicon de los diferentes componentes
-        try{
-            read_links = Leer_link.get_links();
-            id_links = Leer_link.get_set();
-            configuracion_barra_menu();
-
-        }catch(IOException ex){
-            
-            JOptionPane.showMessageDialog(this, "Error al cargar archivos importantes\n Error 5", "Error", JOptionPane.ERROR_MESSAGE);
-            this.dispose();
-        }
+        configuracionBarraMenu();
         
         configuracion_panel_secundario();
         configuracion_panel_pricipal2();
@@ -266,11 +240,19 @@ public class Principal extends JFrame{
 
     }
 
-    /**
-     * Carga las imagenes necesarias para
-     * el correcto funcionamiento del programa
-     * y las asigna a las variables correspondientes
-     */
+    private void configuracionBarraMenu(){
+        try{
+            read_links = Leer_link.get_links();
+            id_links = Leer_link.get_set();
+            iniciarBarraMenu();
+
+        }catch(IOException ex){
+            
+            JOptionPane.showMessageDialog(this, "Error al cargar archivos importantes\n Error 5", "Error", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
+        }
+    }
+
     private void CargarImagenes(){
 
         ImageIcon icono = new ImageIcon(getClass().getResource("/Front/Recursos/Logo javarturs.jpg"));
@@ -337,15 +319,7 @@ public class Principal extends JFrame{
 
     }
 
-
-    /**
-     * Configura por defecto los diferentes botones
-     * del menu que se necesitan en el programa
-     * 
-     * @see JMenu
-     * @see JMenuItem
-     */
-    private void configuracion_barra_menu()throws IOException{
+    private void iniciarBarraMenu()throws IOException{
 
         // Configuracion de los diferentes componentes
         JMenu menu_1 = new JMenu("Ayuda");
@@ -374,7 +348,7 @@ public class Principal extends JFrame{
         barra_menu.add(menu_2);
         barra_menu.add(menu_1);
         for(String id: id_links){
-            barra_menu.add(extraer_menu(id, read_links.get(id)));
+            barra_menu.add(extraerMenu(id, read_links.get(id)));
         }
     }
 
@@ -386,7 +360,7 @@ public class Principal extends JFrame{
      * @param cola
      * @return
      */
-    private JMenu extraer_menu(String identificador, Queue<String[]> cola){
+    private JMenu extraerMenu(String identificador, Queue<String[]> cola){
 
         JMenu menu = new JMenu(identificador);
         JMenuItem item = null;
@@ -433,29 +407,28 @@ public class Principal extends JFrame{
         if (Math.abs(diff) < 5) {
             panel.setPreferredSize(new Dimension(targetWidth, panel.getHeight()));
             panel.revalidate();
-            panel.repaint();
             return;
         }
         
-        // Calcular incremento por paso
-        int delay = ANIMATION_DURATION / ANIMATION_STEPS;
-        double increment = (double) diff / ANIMATION_STEPS;
+        // Usar tiempo basado en lugar de pasos fijos
+        long startTime = System.currentTimeMillis();
         
-        Timer timer = new Timer(delay, null);
-        final int[] step = {0};
-        
+        Timer timer = new Timer(16, null); // ~60 FPS (16ms por frame)
         timer.addActionListener(e -> {
-            step[0]++;
-            if (step[0] >= ANIMATION_STEPS) {
+            long elapsed = System.currentTimeMillis() - startTime;
+            double progress = Math.min(1.0, (double) elapsed / ANIMATION_DURATION);
+            
+            // Easing out cubic para una animación más suave
+            progress = 1 - Math.pow(1 - progress, 3);
+            
+            if (elapsed >= ANIMATION_DURATION) {
                 panel.setPreferredSize(new Dimension(targetWidth, panel.getHeight()));
                 panel.revalidate();
-                panel.repaint();
                 timer.stop();
             } else {
-                int newWidth = currentWidth + (int) (increment * step[0]);
+                int newWidth = currentWidth + (int) (diff * progress);
                 panel.setPreferredSize(new Dimension(newWidth, panel.getHeight()));
                 panel.revalidate();
-                panel.repaint();
             }
         });
         
@@ -482,26 +455,6 @@ public class Principal extends JFrame{
                 animatePanel(panel_secundario, TAMAÑO_PANEL_SECUNDARIO, false);
             }
         };
-    }
-
-    /**
-     * Este metodo se encarga de cambiar el color de fondo
-     * de los botones cuando el mouse entra o sale de este
-     * @param boton El boton al que se le cambiara el color de fondo
-     */
-    public static void back_ground_color(JButton boton){
-        boton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) {
-                boton.setBackground(new Color(0x000000));
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent e) {
-                boton.setBackground(javax.swing.UIManager.getColor("Button.background"));
-
-            }
-        });
     }
 
     public static void config_label(JLabel label, JButton boton){
@@ -872,6 +825,7 @@ public class Principal extends JFrame{
 
     private void configuracion_empleados(){
         JOptionPane.showMessageDialog(this, "En este momento el portal de empleados\nno se encuentra habilitado", "Error", JOptionPane.ERROR_MESSAGE);
+        setPosicionInicialBotones();
     }
 
     private void configuracion_personas(){
