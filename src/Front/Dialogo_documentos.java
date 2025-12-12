@@ -15,7 +15,7 @@ public class Dialogo_documentos extends JDialog {
     private List<String[]> Lista_vehiculos;
     
     public Dialogo_documentos(Frame parent) {
-        super(parent, "Vencimientos documentos", true);
+        super(parent, "Vencimientos documentos", false);
         FlatLightLaf.setup();
         Lista_vehiculos = new ArrayList<>();
         initializeComponents();
