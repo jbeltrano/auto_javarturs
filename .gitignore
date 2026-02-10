@@ -13,4 +13,10 @@
 .env
 .env.local
 
+# Binarios
+.bin/
+.build/
+.nbproject/
+
+# Otros recursos
 LibreOffice/

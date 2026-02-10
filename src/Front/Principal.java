@@ -6,7 +6,6 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
-import java.util.function.Consumer;
 import Front.Panel.Ciudades.Panel_ciudad;
 import Front.Panel.Ciudades.Panel_departamento;
 import Front.Panel.Ciudades.Panel_ruta;
@@ -34,7 +33,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-import javax.swing.SwingWorker;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import Base.Coneccion_base;
@@ -50,7 +48,7 @@ import Estructuras_datos.Queue;
 public class Principal extends JFrame{
     
     private static final int TAMAÑO_PANEL_SECUNDARIO = 70;
-    private static final int TAMAÑO_PANEL_SECUNDARIO_ANCHO = 200;
+    private static final int TAMAÑO_PANEL_SECUNDARIO_ANCHO = 220;
     private static final int TAMAÑO_BOTON = 50;
     private static final int ANIMATION_DURATION = 100; // Duración de la animación en ms
     private static final int X_BOTONES_DESPLEGABLES = 80;
@@ -509,12 +507,15 @@ public class Principal extends JFrame{
 
     }
 
+
     private void InicializarBotonCiudad(){
 
         GenericButton generic_ciudad = new GenericButton(
             () -> {
+                
                 eliminar_elementos_desplegables();
                 configuracion_ciudad();
+                
             },
             imagen_ciudades,
             "Ciudades"
@@ -663,6 +664,7 @@ public class Principal extends JFrame{
     }
 
     private void eliminar_elementos_desplegables(){
+    
         while(!cola_botones_desplegables.isEmpty()){
             eliminar_boton_panel(cola_botones_desplegables.peek(), panel_secundario);
             cola_botones_desplegables.dequeue();
@@ -985,7 +987,7 @@ public class Principal extends JFrame{
         genericBotonTipoVehiculo = new GenericButton(
             () -> set_panel_principal2(new Panel_clase_vehiculo()),
             imagen_tipo_vehiculo,
-            "Tipo Vehiculo"
+            "<html><p>Tipo<br>Vehiculo</p></html>"
         );
         genericBotonTipoVehiculo.addMouseListener(set_ancho_secundario());
         genericBotonTipoVehiculo.setLocation(
@@ -1017,7 +1019,7 @@ public class Principal extends JFrame{
         genericBotonDocumentosVehiculos = new GenericButton(
             () -> set_panel_principal2(new Panel_documentos_vehiculos()),
             imagen_documentos_vehiculos,
-            "Documentos Vehiculos"
+            "<html><p>Documentos<br>Vehiculos</p></html>"
         );
         genericBotonDocumentosVehiculos.addMouseListener(set_ancho_secundario());
         genericBotonDocumentosVehiculos.setLocation(
@@ -1028,7 +1030,7 @@ public class Principal extends JFrame{
         genericBotonVehiculosConvenio = new GenericButton(
             () -> set_panel_principal2(new Panel_vehiculo_convenio()),
             imagen_vehiculo_convenio,
-            "Vehiculos Convenio"
+            "<html><p>Vehiculos<br>Convenio</p></html>"
         );
         genericBotonVehiculosConvenio.addMouseListener(set_ancho_secundario());
         genericBotonVehiculosConvenio.setLocation(
@@ -1072,7 +1074,7 @@ public class Principal extends JFrame{
         genericExtractosMensuales = new GenericButton(
             () -> set_panel_principal2(new Panel_extractos_mensuales()),
             imagen_extracto_mensual,
-            "Extractos Mensuales"
+            "<html><p>Extractos<br>Mensuales</p></html>"
         );
         genericExtractosMensuales.addMouseListener(set_ancho_secundario());
         genericExtractosMensuales.setLocation(
@@ -1083,7 +1085,7 @@ public class Principal extends JFrame{
         genericExtractosOcasionales = new GenericButton(
             () -> set_panel_principal2(new Panel_extractos_ocasionales()),
             imagen_extracto_ocasional,
-            "Extractos Ocasionales"
+            "<html><p>Extractos<br>Ocasionales</p></html>"
         );
         genericExtractosOcasionales.addMouseListener(set_ancho_secundario());
         genericExtractosOcasionales.setLocation(
@@ -1094,7 +1096,7 @@ public class Principal extends JFrame{
         genericContratosMensuales = new GenericButton(
             () -> set_panel_principal2(new Panel_contratos_mensuales()),
             imagen_contrato_mensual,
-            "Contratos Mensuales"
+            "<html><p>Contratos<br>Mensuales</p></html>"
         );
         genericContratosMensuales.addMouseListener(set_ancho_secundario());
         genericContratosMensuales.setLocation(
@@ -1105,7 +1107,7 @@ public class Principal extends JFrame{
         genericContratosOcasionales = new GenericButton(
             () -> set_panel_principal2(new Panel_contratos_ocasionales()),
             imagen_contrato_ocasional,
-            "Contratos Ocasionales"
+            "<html><p>Contratos<br>Ocasionales</p></html>"
         );
         genericContratosOcasionales.addMouseListener(set_ancho_secundario());
         genericContratosOcasionales.setLocation(
