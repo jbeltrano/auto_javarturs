@@ -18,6 +18,7 @@ public class GenericButton{
     private GenericCallback function;
     private JButton button;
     private JLabel label;
+    private Color originalColor;
     private int x;
     private int y;
     private int ancho;
@@ -103,8 +104,19 @@ public class GenericButton{
     public JLabel getLabel() {
         return label;
     }
-
+    
+    public int getX() {
+        return x;
+    }
+    
+    public int getY(){
+        return y;
+    }
+    
     private void setBackGroundColor(){
+        // Guardar el color original del botón
+        originalColor = button.getBackground();
+        
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent e) {
@@ -113,8 +125,7 @@ public class GenericButton{
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent e) {
-                button.setBackground(javax.swing.UIManager.getColor("Button.background"));
-
+                button.setBackground(originalColor);
             }
         });
     }

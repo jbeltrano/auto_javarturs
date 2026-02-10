@@ -48,14 +48,11 @@ import Estructuras_datos.Queue;
 public class Principal extends JFrame{
     
     private static final int TAMAÑO_PANEL_SECUNDARIO = 70;
-    private static final int TAMAÑO_PANEL_SECUNDARIO_ANCHO = 220;
-    private static final int TAMAÑO_BOTON = 50;
+    private static final int TAMAÑO_PANEL_SECUNDARIO_ANCHO = 230;
     private static final int ANIMATION_DURATION = 100; // Duración de la animación en ms
     private static final int X_BOTONES_DESPLEGABLES = 80;
-    private static final int X_BOTON_PRINCIPAL = 10;
 
-    private Queue<JButton> cola_botones_desplegables = new Queue<>();
-    private Queue<JLabel> cola_labels_desplegables = new Queue<>();
+    private Queue<GenericButton> cola_botones_desplegables = new Queue<>();
 
     private JPanel panel_secundario;
     private JPanel panel_principal2;
@@ -65,31 +62,6 @@ public class Principal extends JFrame{
     private JLabel label_imagen;
 
     private JLabel label_principal;
-    
-    private JButton boton_extractos_mensuales;
-    private JButton boton_extractos_ocasionales;
-    private JButton boton_contratos_mensuales;
-    private JButton boton_contratos_ocasionales;
-    private JButton boton_contratante;
-
-    private JButton boton_vehiculos;
-    private JButton boton_extractos;
-    private JButton boton_personas;
-    private JButton boton_ciudad;
-    private JButton boton_empleados;
-
-    private JButton boton_ciudades;
-    private JButton boton_Departamento;
-    private JButton boton_ruta;
-
-    private JButton tipo_vehiculo;
-    private JButton vehiculos;
-    private JButton conductores;
-    private JButton documentos_vehiculos;
-    private JButton vehiculos_convenio;
-
-    private JButton boton_persona;
-    private JButton boton_conductores;
 
     private ImageIcon imagen_ciudades;
     private ImageIcon imagen_vehiculos;
@@ -117,16 +89,19 @@ public class Principal extends JFrame{
     private HashSet<String> id_links;
     private int color_principal;
     
-    private JLabel label_boton_extractos;
-    private JLabel label_boton_personas;
-    private JLabel label_boton_empleados;
-    private JLabel label_boton_ciudades;
-    private JLabel label_boton_vehiculos;
 
     // Variables para las animaciones
     private Timer animationTimerIzq;
     private Timer animationTimerSec;
 
+    // Botones principales
+    private GenericButton genericCiudadPrincipal;
+    private GenericButton genericVehiculosPrincipal;
+    private GenericButton genericEmpleadosPrincipal;
+    private GenericButton genericPersonasPrincipal;
+    private GenericButton genericExtractosPrincipal;
+    
+    // Botones Secundarios
     private GenericButton genericCiudad;
     private GenericButton genericDepartamento;
     private GenericButton genericRuta;
@@ -455,45 +430,26 @@ public class Principal extends JFrame{
         };
     }
 
-    public static void config_label(JLabel label, JButton boton){
-
-        label.setBounds(
-            boton.getX() + boton.getWidth() + 10,
-            boton.getY() + (boton.getHeight() - 20)/2,
-            170,
-            20);
-
-        label.setForeground(Color.black);
-
-    }
 
 
     private void setPosicionInicialBotones(){
+    
+        genericCiudadPrincipal.setLocation(10, 10);
+        genericVehiculosPrincipal.setLocation(10, genericCiudadPrincipal.getY() + genericCiudadPrincipal.getButton().getHeight() + 10);
+        genericEmpleadosPrincipal.setLocation(10, genericVehiculosPrincipal.getY() + genericVehiculosPrincipal.getButton().getHeight() + 10);
+        genericPersonasPrincipal.setLocation(10, genericEmpleadosPrincipal.getY() + genericEmpleadosPrincipal.getButton().getHeight() + 10);
+        genericExtractosPrincipal.setLocation(10, genericPersonasPrincipal.getY() + genericPersonasPrincipal.getButton().getHeight() + 10);
 
-        boton_ciudad.setBounds(10,10,TAMAÑO_BOTON,TAMAÑO_BOTON);
-        boton_vehiculos.setBounds(10,boton_ciudad.getY() + TAMAÑO_BOTON + 10,TAMAÑO_BOTON,TAMAÑO_BOTON);
-        boton_empleados.setBounds(10,boton_vehiculos.getY() + TAMAÑO_BOTON + 10,TAMAÑO_BOTON,TAMAÑO_BOTON);
-        boton_personas.setBounds(10,boton_empleados.getY() + TAMAÑO_BOTON + 10,TAMAÑO_BOTON,TAMAÑO_BOTON);
-        boton_extractos.setBounds(10,boton_personas.getY() + TAMAÑO_BOTON + 10,TAMAÑO_BOTON,TAMAÑO_BOTON);
+    }
+
+    
+    private void setPosicionBotonesDependientes(GenericButton boton_inicial, GenericButton boton_final){
+    
+        boton_final.setLocation(boton_final.getX(), boton_inicial.getY() + boton_inicial.getButton().getHeight() + 20);
         
     }
 
-    private void setPosicionInicialLabels(){
-
-        config_label(label_boton_ciudades, boton_ciudad);
-        config_label(label_boton_vehiculos, boton_vehiculos);
-        config_label(label_boton_empleados, boton_empleados);
-        config_label(label_boton_personas, boton_personas);
-        config_label(label_boton_extractos, boton_extractos);
-
-    }
-    
-    private void setPosicionBotonesDependientes(JButton boton_inicial, JButton boton_final){
-
-        boton_final.setBounds(boton_final.getX(),boton_inicial.getY() + boton_inicial.getHeight() + 10,boton_final.getWidth(),boton_final.getHeight());
-    }
-
-    private void setPosicionBotonesDependientes(JButton botones []){
+    private void setPosicionBotonesDependientes(GenericButton botones []){
         int boton_inical = 0;
         int boton_siguiente = 1;
 
@@ -510,48 +466,44 @@ public class Principal extends JFrame{
 
     private void InicializarBotonCiudad(){
 
-        GenericButton generic_ciudad = new GenericButton(
+        genericCiudadPrincipal = new GenericButton(
             () -> {
                 
                 eliminar_elementos_desplegables();
                 configuracion_ciudad();
+                genericCiudad.getButton().doClick();
                 
             },
             imagen_ciudades,
             "Ciudades"
         );
 
-        generic_ciudad.addMouseListener(set_ancho_secundario());
+        genericCiudadPrincipal.addMouseListener(set_ancho_secundario());
 
-        boton_ciudad = generic_ciudad.getButton();
-        label_boton_ciudades = generic_ciudad.getLabel();
-
-        panel_secundario.add(boton_ciudad);
-        panel_secundario.add(label_boton_ciudades);
+        panel_secundario.add(genericCiudadPrincipal.getButton());
+        panel_secundario.add(genericCiudadPrincipal.getLabel());
     }
 
     private void InicializarBotonVehiculos(){
 
-        GenericButton generic_vehiculos = new GenericButton(
+        genericVehiculosPrincipal = new GenericButton(
             () -> {
                 eliminar_elementos_desplegables();
                 configuracion_vehiculos();
+                genericBotonVehicuos.getButton().doClick();
             },
             imagen_vehiculos,
             "Vehiculos"
         );
 
-        generic_vehiculos.addMouseListener(set_ancho_secundario());
+        genericVehiculosPrincipal.addMouseListener(set_ancho_secundario());
 
-        boton_vehiculos = generic_vehiculos.getButton();
-        label_boton_vehiculos = generic_vehiculos.getLabel();
-
-        panel_secundario.add(boton_vehiculos);
-        panel_secundario.add(label_boton_vehiculos);
+        panel_secundario.add(genericVehiculosPrincipal.getButton());
+        panel_secundario.add(genericVehiculosPrincipal.getLabel());
     }
 
     private void InicializarBotonEmpleados(){
-        GenericButton generic_empleados = new GenericButton(
+        genericEmpleadosPrincipal = new GenericButton(
             () -> {
                 eliminar_elementos_desplegables();
                 configuracion_empleados();
@@ -560,53 +512,45 @@ public class Principal extends JFrame{
             "Empleados"
         );
 
-        generic_empleados.addMouseListener(set_ancho_secundario());
+        genericEmpleadosPrincipal.addMouseListener(set_ancho_secundario());
 
-        boton_empleados = generic_empleados.getButton();
-        label_boton_empleados = generic_empleados.getLabel();
-
-        panel_secundario.add(boton_empleados);
-        panel_secundario.add(label_boton_empleados);
+        panel_secundario.add(genericEmpleadosPrincipal.getButton());
+        panel_secundario.add(genericEmpleadosPrincipal.getLabel());
     }
 
     private void InicializarBotonPersonas(){
-        GenericButton generic_personas = new GenericButton(
+        genericPersonasPrincipal = new GenericButton(
             () -> {
                 eliminar_elementos_desplegables();
                 configuracion_personas();
+                genericBotonPersonas.getButton().doClick();
             },
             imagen_personas,
             "Personas"
         );
 
-        generic_personas.addMouseListener(set_ancho_secundario());
+        genericPersonasPrincipal.addMouseListener(set_ancho_secundario());
 
-        boton_personas = generic_personas.getButton();
-        label_boton_personas = generic_personas.getLabel();
-
-        panel_secundario.add(boton_personas);
-        panel_secundario.add(label_boton_personas);
+        panel_secundario.add(genericPersonasPrincipal.getButton());
+        panel_secundario.add(genericPersonasPrincipal.getLabel());
     }
 
     private void InicializarBotonExtractos(){
 
-        GenericButton generic_extractos = new GenericButton(
+        genericExtractosPrincipal = new GenericButton(
             () -> {
                 eliminar_elementos_desplegables();
                 configuracion_extractos();
-                boton_extractos_mensuales.doClick();
+                genericExtractosMensuales.getButton().doClick();
             },
             imagen_extractos,
             "Extractos"
         );
         
-        generic_extractos.addMouseListener(set_ancho_secundario());
+        genericExtractosPrincipal.addMouseListener(set_ancho_secundario());
 
-        boton_extractos = generic_extractos.getButton();
-        label_boton_extractos = generic_extractos.getLabel();
-
-        panel_secundario.add(boton_extractos);
-        panel_secundario.add(label_boton_extractos);
+        panel_secundario.add(genericExtractosPrincipal.getButton());
+        panel_secundario.add(genericExtractosPrincipal.getLabel());
     }
 
     
@@ -625,7 +569,6 @@ public class Principal extends JFrame{
         InicializarBotonExtractos();
 
         setPosicionInicialBotones();
-        setPosicionInicialLabels();
 
         // Configuraciones del panel
         panel_secundario.setBackground(new Color(color_principal));
@@ -654,25 +597,18 @@ public class Principal extends JFrame{
 
     }
 
-    private void encolar_elementos_desplegables(JButton botones [], JLabel labels []){
-        for(JButton boton: botones){
+    private void encolar_elementos_desplegables(GenericButton botones []){
+        for(GenericButton boton: botones){
             cola_botones_desplegables.enqueue(boton);
-        }
-        for(JLabel label: labels){
-            cola_labels_desplegables.enqueue(label);
         }
     }
 
     private void eliminar_elementos_desplegables(){
     
         while(!cola_botones_desplegables.isEmpty()){
-            eliminar_boton_panel(cola_botones_desplegables.peek(), panel_secundario);
+            eliminar_boton_panel(cola_botones_desplegables.peek().getButton(), panel_secundario);
+            eliminar_label_panel(cola_botones_desplegables.peek().getLabel(), panel_secundario);
             cola_botones_desplegables.dequeue();
-        }
-
-        while(!cola_labels_desplegables.isEmpty()){
-            eliminar_label_panel(cola_labels_desplegables.peek(), panel_secundario);
-            cola_labels_desplegables.dequeue();
         }
         
         // Refrescar el panel después de eliminar elementos
@@ -682,10 +618,10 @@ public class Principal extends JFrame{
     private static void eliminar_boton_panel(JButton boton, JPanel panel){
         panel.remove(boton);
     }
-    
     private static void eliminar_label_panel(JLabel label, JPanel panel){
         panel.remove(label);
     }
+    
 
     private void set_panel_principal2(JPanel panel){
         panel_principal2.removeAll();
@@ -701,8 +637,8 @@ public class Principal extends JFrame{
      */
     private void configuracion_ciudad(){
 
-        JButton[] botones_ciudad;
-        JLabel[] labels_ciudad;
+        GenericButton[] botones_ciudad;
+        
         panel_informacion = new JPanel();
         panel_principal2.removeAll();
         panel_principal2.setLayout(new BorderLayout());
@@ -712,38 +648,24 @@ public class Principal extends JFrame{
         label_principal.setFont(new Font("britannic bold", Font.BOLD, 20));
         label_principal.setHorizontalAlignment(JLabel.CENTER);
 
-        boton_ciudades = genericCiudad.getButton();
-        boton_Departamento = genericDepartamento.getButton();
-        boton_ruta = genericRuta.getButton();
-
-        // labels para los botones
-        JLabel label_ciudad = genericCiudad.getLabel();
-        JLabel label_departamento = genericDepartamento.getLabel();
-        JLabel label_ruta = genericRuta.getLabel();
-
-        boton_ciudades.doClick();
-
         // Configuracion del panel_izq
         
-        panel_secundario.add(boton_ciudades);
-        panel_secundario.add(boton_Departamento);
-        panel_secundario.add(boton_ruta);
-        panel_secundario.add(label_ciudad);
-        panel_secundario.add(label_departamento);
-        panel_secundario.add(label_ruta);
+        panel_secundario.add(genericCiudad.getButton());
+        panel_secundario.add(genericDepartamento.getButton());
+        panel_secundario.add(genericRuta.getButton());
+        panel_secundario.add(genericCiudad.getLabel());
+        panel_secundario.add(genericDepartamento.getLabel());
+        panel_secundario.add(genericRuta.getLabel());
         
-        botones_ciudad = new JButton[]{boton_ciudades, boton_Departamento, boton_ruta};
-        labels_ciudad = new JLabel[]{label_ciudad, label_departamento, label_ruta};
-
+        botones_ciudad = new GenericButton[]{genericCiudad, genericDepartamento, genericRuta};
         
         // Prueba
         setPosicionInicialBotones();
-        boton_vehiculos.setBounds(boton_vehiculos.getBounds().x, boton_ruta.getY() + boton_ruta.getHeight() +20, boton_vehiculos.getBounds().width, boton_vehiculos.getBounds().height);
-
-        setPosicionBotonesDependientes(new JButton[]{boton_vehiculos, boton_empleados, boton_personas, boton_extractos});
-        setPosicionInicialLabels();
+        genericVehiculosPrincipal.setLocation(genericVehiculosPrincipal.getX(), genericRuta.getButton().getY() + genericRuta.getButton().getHeight()+20);
         
-        encolar_elementos_desplegables(botones_ciudad, labels_ciudad);
+        setPosicionBotonesDependientes(new GenericButton[]{genericVehiculosPrincipal, genericEmpleadosPrincipal, genericPersonasPrincipal, genericExtractosPrincipal});
+        
+        encolar_elementos_desplegables(botones_ciudad);
         // fin de prueba
 
         // Agregacion a panel_principal2 y set panel_principal2
@@ -760,8 +682,7 @@ public class Principal extends JFrame{
      * cargar en el espacio de vehiculos
      */
     private void configuracion_vehiculos(){
-        JButton botones_vehiculos[];
-        JLabel labels_vehiculos[];
+        GenericButton[] botones_vehiculos;
 
         // Restableciendo el panel a utilizar
         panel_informacion = new JPanel();
@@ -775,47 +696,31 @@ public class Principal extends JFrame{
         panel_principal2.add(panel_informacion, BorderLayout.CENTER);
         panel_principal2.add(pan,BorderLayout.EAST);
 
-        vehiculos = genericBotonVehicuos.getButton();
-        tipo_vehiculo = genericBotonTipoVehiculo.getButton();
-        conductores = genericBotonConductores.getButton();
-        documentos_vehiculos = genericBotonDocumentosVehiculos.getButton();
-        vehiculos_convenio = genericBotonVehiculosConvenio.getButton();
-
-        // Labels para los botones
-        JLabel label_tipo_vehiculo = genericBotonTipoVehiculo.getLabel();
-        JLabel label_vehiculos = genericBotonVehicuos.getLabel();
-        JLabel label_conductores = genericBotonConductores.getLabel();
-        JLabel label_documentos_vehiculos = genericBotonDocumentosVehiculos.getLabel();
-        JLabel label_vehiculos_convenio = genericBotonVehiculosConvenio.getLabel();
-
-        
-        vehiculos.doClick();
         
         // configuracion label principal
         label_principal.setFont(new Font("britannic bold", Font.BOLD, 20));
         label_principal.setHorizontalAlignment(JLabel.CENTER);
 
-        panel_secundario.add(tipo_vehiculo);
-        panel_secundario.add(vehiculos);
-        panel_secundario.add(conductores);
-        panel_secundario.add(documentos_vehiculos);
-        panel_secundario.add(vehiculos_convenio);
-        panel_secundario.add(label_tipo_vehiculo);
-        panel_secundario.add(label_vehiculos);
-        panel_secundario.add(label_conductores);
-        panel_secundario.add(label_documentos_vehiculos);
-        panel_secundario.add(label_vehiculos_convenio);
+        panel_secundario.add(genericBotonTipoVehiculo.getButton());
+        panel_secundario.add(genericBotonVehicuos.getButton());
+        panel_secundario.add(genericBotonConductores.getButton());
+        panel_secundario.add(genericBotonDocumentosVehiculos.getButton());
+        panel_secundario.add(genericBotonVehiculosConvenio.getButton());
+        panel_secundario.add(genericBotonTipoVehiculo.getLabel());
+        panel_secundario.add(genericBotonVehicuos.getLabel());
+        panel_secundario.add(genericBotonConductores.getLabel());
+        panel_secundario.add(genericBotonDocumentosVehiculos.getLabel());
+        panel_secundario.add(genericBotonVehiculosConvenio.getLabel());
 
-        botones_vehiculos = new JButton[]{tipo_vehiculo, vehiculos, conductores, documentos_vehiculos, vehiculos_convenio};
-        labels_vehiculos = new JLabel[]{label_tipo_vehiculo, label_vehiculos, label_conductores, label_documentos_vehiculos, label_vehiculos_convenio};
+        botones_vehiculos = new GenericButton[]{genericBotonTipoVehiculo,genericBotonVehicuos, genericBotonConductores, genericBotonDocumentosVehiculos, genericBotonVehiculosConvenio};
         // Prueba
         setPosicionInicialBotones();
-        boton_empleados.setBounds(boton_empleados.getBounds().x, vehiculos_convenio.getHeight() + vehiculos_convenio.getY() +20, boton_empleados.getBounds().width, boton_empleados.getBounds().height);
+        genericEmpleadosPrincipal.setLocation(genericEmpleadosPrincipal.getX(), genericBotonVehiculosConvenio.getButton().getHeight() + genericBotonVehiculosConvenio.getButton().getY() +20);
         
-        setPosicionBotonesDependientes(new JButton[]{boton_empleados, boton_personas, boton_extractos});
-        setPosicionInicialLabels();
+        setPosicionBotonesDependientes(new GenericButton[]{genericEmpleadosPrincipal, genericPersonasPrincipal, genericExtractosPrincipal});
 
-        encolar_elementos_desplegables(botones_vehiculos, labels_vehiculos);
+
+        encolar_elementos_desplegables(botones_vehiculos);
         
         // fin de prueba
 
@@ -832,8 +737,7 @@ public class Principal extends JFrame{
 
     private void configuracion_personas(){
 
-        JButton[] botones_persona;
-        JLabel[] labels_persona;
+        GenericButton[] botones_persona;
 
         panel_informacion = new JPanel();
         panel_principal2.removeAll();
@@ -842,41 +746,28 @@ public class Principal extends JFrame{
         // Cracion de componentes
         label_principal = new JLabel("Configuracion Personas");
 
-        boton_persona = genericBotonPersonas.getButton();
-        boton_conductores = genericBotonPConductores.getButton();
-
-        // Labels para los botones
-        JLabel label_persona = genericBotonPersonas.getLabel();
-        JLabel label_conductores = genericBotonPConductores.getLabel();
-
-        
-        boton_persona.doClick();
-
-        
 
         // configuracion label principal
         label_principal.setFont(new Font("britannic bold", Font.BOLD, 20));
         label_principal.setHorizontalAlignment(JLabel.CENTER);
         
-        panel_secundario.add(boton_persona);
-        panel_secundario.add(boton_conductores);
-        panel_secundario.add(label_persona);
-        panel_secundario.add(label_conductores);
+        panel_secundario.add(genericBotonPersonas.getButton());
+        panel_secundario.add(genericBotonPConductores.getButton());
+        panel_secundario.add(genericBotonPersonas.getLabel());
+        panel_secundario.add(genericBotonPConductores.getLabel());
 
         // Adicion de componentes al panel
         panel_principal2.add(label_principal,BorderLayout.NORTH);
         panel_principal2.add(panel_informacion, BorderLayout.CENTER);
 
-        botones_persona = new JButton[]{boton_persona, boton_conductores};
-        labels_persona = new JLabel[]{label_persona, label_conductores};
+        botones_persona = new GenericButton[]{genericBotonPersonas, genericBotonPConductores};
 
         // Prueba
         setPosicionInicialBotones();
-        boton_extractos.setBounds(boton_extractos.getBounds().x, boton_conductores.getY() + boton_conductores.getHeight() +20, boton_extractos.getBounds().width, boton_extractos.getBounds().height);
-
-        setPosicionInicialLabels();
+        genericExtractosPrincipal.setLocation(genericExtractosPrincipal.getX(), genericBotonPConductores.getButton().getY() + genericBotonPConductores.getButton().getHeight() +20);
         
-        encolar_elementos_desplegables(botones_persona, labels_persona);
+        
+        encolar_elementos_desplegables(botones_persona);
         // fin de prueba
 
         // Mostrando los componentes en pantalla
@@ -892,8 +783,7 @@ public class Principal extends JFrame{
      */
     private void configuracion_extractos(){
 
-        JButton[] botones_extractos;
-        JLabel[] labels_extractos;
+        GenericButton[] botones_extractos;
 
         panel_informacion = new JPanel();
         panel_principal2.removeAll();
@@ -901,46 +791,30 @@ public class Principal extends JFrame{
 
 
         label_principal = new JLabel("Configuración boton_extractos");
-
-        // Labeles para los botones
-        JLabel label_extractos_mensuales = genericExtractosMensuales.getLabel();
-        JLabel label_extractos_ocasionales = genericExtractosOcasionales.getLabel();
-        JLabel label_contratos_mensuales = genericContratosMensuales.getLabel();
-        JLabel label_contratos_ocasionales = genericContratosOcasionales.getLabel();
-        JLabel label_contratante = genericContratante.getLabel();
-
-        boton_extractos_mensuales = genericExtractosMensuales.getButton();
-        boton_extractos_ocasionales = genericExtractosOcasionales.getButton();
-        boton_contratos_mensuales = genericContratosMensuales.getButton();
-        boton_contratos_ocasionales = genericContratosOcasionales.getButton();
-        boton_contratante = genericContratante.getButton();
-
         
 
         label_principal.setFont(new Font("britannic bold", Font.BOLD, 20));
         label_principal.setHorizontalAlignment(JLabel.CENTER);
 
 
-        panel_secundario.add(boton_extractos_mensuales);
-        panel_secundario.add(boton_extractos_ocasionales);
-        panel_secundario.add(boton_contratos_mensuales);
-        panel_secundario.add(boton_contratos_ocasionales);
-        panel_secundario.add(boton_contratante);
-        panel_secundario.add(label_extractos_mensuales);
-        panel_secundario.add(label_extractos_ocasionales);
-        panel_secundario.add(label_contratos_mensuales);
-        panel_secundario.add(label_contratos_ocasionales);
-        panel_secundario.add(label_contratante);
+        panel_secundario.add(genericExtractosMensuales.getButton());
+        panel_secundario.add(genericExtractosOcasionales.getButton());
+        panel_secundario.add(genericContratosMensuales.getButton());
+        panel_secundario.add(genericContratosOcasionales.getButton());
+        panel_secundario.add(genericContratante.getButton());
+        panel_secundario.add(genericExtractosMensuales.getLabel());
+        panel_secundario.add(genericExtractosOcasionales.getLabel());
+        panel_secundario.add(genericContratosMensuales.getLabel());
+        panel_secundario.add(genericContratosOcasionales.getLabel());
+        panel_secundario.add(genericContratante.getLabel());
         
 
-        botones_extractos = new JButton[]{boton_extractos_mensuales, boton_extractos_ocasionales, boton_contratos_mensuales, boton_contratos_ocasionales, boton_contratante};
-        labels_extractos = new JLabel[]{label_extractos_mensuales, label_extractos_ocasionales, label_contratos_mensuales, label_contratos_ocasionales, label_contratante};
+        botones_extractos = new GenericButton[]{genericExtractosMensuales, genericExtractosOcasionales, genericContratosMensuales, genericContratosOcasionales, genericContratante};
 
         // Prueba
         setPosicionInicialBotones();
-        setPosicionInicialLabels();
         
-        encolar_elementos_desplegables(botones_extractos, labels_extractos);
+        encolar_elementos_desplegables(botones_extractos);
         
         // Agregacion a panel_principal2 y set panel_principal2
         panel_principal2.add(label_principal,BorderLayout.NORTH);
@@ -960,7 +834,7 @@ public class Principal extends JFrame{
             "Ciudades"
         );
         genericCiudad.addMouseListener(set_ancho_secundario());
-        genericCiudad.setLocation(X_BOTONES_DESPLEGABLES,boton_ciudad.getY() + boton_ciudad.getHeight() + 10);
+        genericCiudad.setLocation(X_BOTONES_DESPLEGABLES,genericCiudadPrincipal.getY() + genericCiudadPrincipal.getButton().getHeight() + 10);
 
         
         genericDepartamento = new GenericButton(
@@ -992,7 +866,7 @@ public class Principal extends JFrame{
         genericBotonTipoVehiculo.addMouseListener(set_ancho_secundario());
         genericBotonTipoVehiculo.setLocation(
             X_BOTONES_DESPLEGABLES,
-            boton_vehiculos.getY() + boton_vehiculos.getHeight() + 10);
+            genericVehiculosPrincipal.getY() + genericVehiculosPrincipal.getButton().getHeight() + 10);
 
         genericBotonVehicuos = new GenericButton(
             () -> set_panel_principal2(new Panel_vehiculos()),
@@ -1054,7 +928,7 @@ public class Principal extends JFrame{
         genericBotonPersonas.addMouseListener(set_ancho_secundario());
         genericBotonPersonas.setLocation(
             X_BOTONES_DESPLEGABLES,
-            boton_personas.getY() + boton_personas.getHeight() + 10
+            genericPersonasPrincipal.getY() + genericPersonasPrincipal.getButton().getHeight() + 10
         );
 
         genericBotonPConductores = new GenericButton(
@@ -1079,7 +953,7 @@ public class Principal extends JFrame{
         genericExtractosMensuales.addMouseListener(set_ancho_secundario());
         genericExtractosMensuales.setLocation(
             X_BOTONES_DESPLEGABLES,
-            boton_extractos.getY() + boton_extractos.getHeight() + 10
+            genericExtractosPrincipal.getY() + genericExtractosPrincipal.getButton().getHeight() + 10
         );
 
         genericExtractosOcasionales = new GenericButton(
