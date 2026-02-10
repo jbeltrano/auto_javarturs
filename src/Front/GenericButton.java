@@ -42,6 +42,7 @@ public class GenericButton{
     public GenericButton(GenericCallback function) {
 
         this.button = new JButton();
+        this.button.setToolTipText(null);
         this.label = new JLabel();
         this.function = function;
 
@@ -120,6 +121,6 @@ public class GenericButton{
 
     private void configLabel(){
         label.setLocation(x + ancho +10, y + (alto-20)/2);
-        label.setSize(170, 20);
+        label.setSize(170, 40);
     }
 }
