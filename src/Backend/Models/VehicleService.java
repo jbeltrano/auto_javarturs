@@ -1,4 +1,4 @@
-package Backend.Models;
+package backend.models;
 
 public class VehicleService {
     

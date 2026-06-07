@@ -1,6 +1,5 @@
-package Backend.Models;
+package backend.models;
 
-import java.time.LocalDate;
 
 public class NewForEmploye {
     
@@ -10,7 +9,6 @@ public class NewForEmploye {
     private boolean state;
     private String inputDate;
     private String outputDate;
-    private LocalDate date;
 
     public NewForEmploye(String EmployeId, int type, boolean state, String inputDate, String outputDate) {
         this.EmployeId = EmployeId;
