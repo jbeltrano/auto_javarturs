@@ -1,4 +1,4 @@
-package Models;
+package Backend.Models;
 
 public class Afp {
     private int id;
