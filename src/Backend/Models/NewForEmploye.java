@@ -1,5 +1,7 @@
 package Models;
 
+import java.time.LocalDate;
+
 public class NewForEmploye {
     
     private String EmployeId;
@@ -8,13 +10,14 @@ public class NewForEmploye {
     private boolean state;
     private String inputDate;
     private String outputDate;
+    private LocalDate date;
 
     public NewForEmploye(String EmployeId, int type, boolean state, String inputDate, String outputDate) {
         this.EmployeId = EmployeId;
         this.type = type;
         this.state = state;
-        this.inputDate = setInputDate(inputDate);
-        this.outputDate = setOutputDate(outputDate);
+        setInputDate(inputDate);
+        setOutputDate(outputDate);
     }
 
     // Getters and setters for each field
@@ -64,7 +67,6 @@ public class NewForEmploye {
     }
 
     public void setOutputDate(String outputDate) {
-        #igual que arriba
         this.outputDate = outputDate;
     }
 }

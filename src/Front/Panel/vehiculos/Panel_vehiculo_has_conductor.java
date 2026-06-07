@@ -18,6 +18,10 @@ public class Panel_vehiculo_has_conductor extends Panel{
 
     public Panel_vehiculo_has_conductor(){
         super();
+        super.setActionButton(e -> {
+            new Insertar_vehiculo_conductor((JFrame)this.get_window(), "");
+            accion_text_busqueda();
+        });
     }
 
     @Override

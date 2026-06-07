@@ -29,11 +29,11 @@ public class LicenceDriver {
     }
 
     public String getLicenceNumber() {
-        return licenceNumber;
+        return driverId;
     }
 
     public void setLicenceNumber(String licenceNumber) {
-        this.licenceNumber = licenceNumber;
+        this.driverId = licenceNumber;
     }
 
     public String getExpiryDate() {

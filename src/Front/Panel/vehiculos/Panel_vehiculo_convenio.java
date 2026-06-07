@@ -20,6 +20,10 @@ public class Panel_vehiculo_convenio extends Panel{
 
     public Panel_vehiculo_convenio(){
         super();
+        super.setActionButton(e -> {
+            new Insertar_vh_convenio((JFrame)this.get_window()).setVisible(true);
+            accion_text_busqueda();
+        });
         item_actualizar.setEnabled(false);
     }
 

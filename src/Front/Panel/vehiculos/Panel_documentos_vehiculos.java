@@ -18,6 +18,12 @@ public class Panel_documentos_vehiculos extends Panel{
 
     public Panel_documentos_vehiculos(){
         super();
+        super.setActionButton(e -> {
+            Insertar_documento_vehiculo doc_vehiculo = new Insertar_documento_vehiculo((JFrame)this.get_window(),  "");
+            doc_vehiculo.setVisible(true);
+
+            accion_text_busqueda();
+        });
     }
     
     @Override

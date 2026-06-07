@@ -22,6 +22,10 @@ public class Panel_clase_vehiculo extends Panel{
 
     public Panel_clase_vehiculo(){
         super();
+        super.setActionButton(e -> {
+            new Insertar_tipo_vehiculo((JFrame)this.get_window(), "");
+            accion_text_busqueda();
+        });
     }
     
     @Override

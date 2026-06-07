@@ -12,7 +12,6 @@ public class Vehicle {
     private String bodyworkType;
     private String engineNumber;
     private String chassisNumber;
-    private int capacity;
     private String ownerId;
     private boolean isInPark;
 
