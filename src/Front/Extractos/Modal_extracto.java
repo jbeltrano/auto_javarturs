@@ -5,11 +5,11 @@ import java.awt.Dimension;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import Base.Base;
+import Base.ConectionDataBase;
 
 public abstract class Modal_extracto extends JDialog{
     
-    protected Base base;
+    protected ConectionDataBase base;
 
     public Modal_extracto(JFrame padre){
         super(padre, true);

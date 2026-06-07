@@ -2,14 +2,14 @@ package Front.Vehiculos;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import Base.Base;
+import Base.ConectionDataBase;
 
 import java.awt.Dimension;
 
 public abstract class Modales_vehiculos extends JDialog{
     
     protected String valor;
-    protected Base base;
+    protected ConectionDataBase base;
 
     public Modales_vehiculos(JFrame frame, String valor){
         super(frame, true);

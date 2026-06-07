@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Vehiculo extends Base{
+public class Vehiculo extends ConectionDataBase{
 
     /**
      * Metodo constructor.

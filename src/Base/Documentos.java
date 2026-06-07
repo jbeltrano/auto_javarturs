@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 
-public class Documentos extends Base{
+public class Documentos extends ConectionDataBase{
 
     /**
      * constructor de la clase.

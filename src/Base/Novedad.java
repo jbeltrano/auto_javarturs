@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 
-public class Novedad extends Base{
+public class Novedad extends ConectionDataBase{
     
     public Novedad() throws IOException, SQLException{
         super();

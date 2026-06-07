@@ -3,7 +3,7 @@ package Base;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class BContrato_ocasional extends Base {
+public class BContrato_ocasional extends ConectionDataBase {
     
     public BContrato_ocasional() throws IOException, SQLException{
         super();

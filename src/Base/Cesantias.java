@@ -3,7 +3,7 @@ package Base;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class Cesantias extends Base{
+public class Cesantias extends ConectionDataBase{
     
     public Cesantias()throws IOException, SQLException{
         super();

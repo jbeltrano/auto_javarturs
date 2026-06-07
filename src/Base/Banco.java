@@ -3,7 +3,7 @@ package Base;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class Banco extends Base{
+public class Banco extends ConectionDataBase{
     
     public Banco()throws IOException, SQLException{
         super();

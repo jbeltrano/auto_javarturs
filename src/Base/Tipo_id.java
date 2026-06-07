@@ -3,7 +3,7 @@ package Base;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class Tipo_id extends Base{
+public class Tipo_id extends ConectionDataBase{
 
     public Tipo_id() throws IOException, SQLException{
         super();

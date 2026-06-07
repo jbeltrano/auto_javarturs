@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Vector;
 
-public class Clase_vehiculo extends Base{
+public class Clase_vehiculo extends ConectionDataBase{
 
     private static final int NUMERO_ATRIBUTOS_TABLA = 2;
     private static final String[] NOMBRES_CABEZA_TABLA = {"ID", "TIPO VEHICULO"};

@@ -3,11 +3,11 @@ package Front.Personas;
 import java.awt.Dimension;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import Base.Base;
+import Base.ConectionDataBase;
 
 public abstract class Modales_personas extends JDialog{
     
-    protected Base base;
+    protected ConectionDataBase base;
 
     public Modales_personas(JDialog padre, Dimension dimension){
 

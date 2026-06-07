@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import Utilidades.Capitalizar_Strings;
 
-public class Persona extends Base{
+public class Persona extends ConectionDataBase{
     
     public Persona() throws IOException, SQLException{
         super();

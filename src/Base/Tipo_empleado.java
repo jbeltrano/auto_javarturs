@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import Utilidades.Capitalizar_Strings;
 
-public class Tipo_empleado extends Base{
+public class Tipo_empleado extends ConectionDataBase{
 
     public Tipo_empleado() throws IOException, SQLException{
         super();

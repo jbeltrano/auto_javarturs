@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import Base.BContrato_ocasional;
-import Base.Base;
+import Base.ConectionDataBase;
 import Base.Ciudad;
 import Base.Contratante;
 import Base.Contrato_mensual;
@@ -40,7 +40,7 @@ public class Generar_extractos {
     public static String generar_extracto_mensual_excel(String placa, int consecutivo)throws SQLException, IOException, NullPointerException{
         Leer_rutas rutas = new Leer_rutas();
         Extracto extracto = null;
-        Base base = new Base();
+        ConectionDataBase base = new ConectionDataBase();
         Vehiculo base_vehiculo = new Vehiculo();
         Ciudad base_ciudad = new Ciudad();
         Vehiculo_has_conductor base_vhc = new Vehiculo_has_conductor();
@@ -160,7 +160,7 @@ public class Generar_extractos {
     public static String generar_extracto_ocasional(String placa, int consecutivo,int contrato, boolean band)throws SQLException, IOException, NullPointerException{
         
         Extracto extracto = null;
-        Base base = new Base();
+        ConectionDataBase base = new ConectionDataBase();
         Vehiculo base_vehiculo = new Vehiculo();
         Ciudad base_ciudad = new Ciudad();
         Vehiculo_has_conductor base_vhc = new Vehiculo_has_conductor();
@@ -311,7 +311,7 @@ public class Generar_extractos {
     public static String generar_extracto_ocasional(int contrato, boolean band)throws IOException, SQLException, NullPointerException{
         
         Extracto extracto = null;
-        Base base = new Base();
+        ConectionDataBase base = new ConectionDataBase();
         Vehiculo base_vehiculo = new Vehiculo();
         Ciudad base_ciudad = new Ciudad();
         Vehiculo_has_conductor base_vhc = new Vehiculo_has_conductor();

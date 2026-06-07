@@ -11,13 +11,13 @@ import java.io.IOException;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
-import Base.Base;
+import Base.ConectionDataBase;
 import Base.Ciudad;
 import Base.Departamento;
 
 public class Insertar_ciudad extends Modal_ciudades_departamentos{
 
-    protected Base base;
+    protected ConectionDataBase base;
     private final int POSICION_X = 10;
     private final int ALTURA_Y = 20;
     private final int SEPARACION_Y = 10;

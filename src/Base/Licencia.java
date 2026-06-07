@@ -2,7 +2,7 @@ package Base;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class Licencia extends Base{
+public class Licencia extends ConectionDataBase{
 
     public Licencia() throws IOException, SQLException{
         super();

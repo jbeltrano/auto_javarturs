@@ -3,7 +3,7 @@ package Base;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class Departamento extends Base{
+public class Departamento extends ConectionDataBase{
     
     public Departamento() throws IOException, SQLException{
         super();

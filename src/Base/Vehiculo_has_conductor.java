@@ -3,7 +3,7 @@ package Base;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class Vehiculo_has_conductor extends Base{
+public class Vehiculo_has_conductor extends ConectionDataBase{
     
     /**
      * constructor de la clase Vehiculo_has_conductor

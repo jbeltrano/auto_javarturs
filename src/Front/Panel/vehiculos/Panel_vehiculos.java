@@ -12,8 +12,6 @@ import Front.Vehiculos.Actualizar_vehiculos;
 import Front.Vehiculos.Insertar_vehiculos;
 import Utilidades.Modelo_tabla;
 
-import javax.swing.JButton;
-
 
 public class Panel_vehiculos extends Panel{
 

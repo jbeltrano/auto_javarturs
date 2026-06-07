@@ -3,7 +3,7 @@ package Base;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class Contratante extends Base{
+public class Contratante extends ConectionDataBase{
 
     public Contratante() throws IOException, SQLException{
         super();

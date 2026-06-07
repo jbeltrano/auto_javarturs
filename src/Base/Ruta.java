@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import Estructuras_datos.Graph;
 
-public class Ruta extends Base{
+public class Ruta extends ConectionDataBase{
     
     public Ruta() throws IOException, SQLException{
         super();

@@ -3,7 +3,7 @@ package Base;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class Eps extends Base{
+public class Eps extends ConectionDataBase{
     
     public Eps() throws IOException, SQLException{
         super();

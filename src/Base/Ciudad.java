@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import Utilidades.Capitalizar_Strings;
 
-public class Ciudad extends Base{
+public class Ciudad extends ConectionDataBase{
     
     private String[] HEAD_TABLA = {"ID", "CIUDAD", "DEPARTAMENTO"};
 

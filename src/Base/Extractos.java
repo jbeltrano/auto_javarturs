@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 
-public class Extractos extends Base{
+public class Extractos extends ConectionDataBase{
     
     public Extractos() throws IOException, SQLException{
         super();

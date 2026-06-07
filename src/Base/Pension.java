@@ -3,7 +3,7 @@ package Base;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class Pension extends Base{
+public class Pension extends ConectionDataBase{
     
     public Pension() throws IOException, SQLException{
         super();

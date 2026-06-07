@@ -18,7 +18,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.GroupLayout;
-import Base.Base;
+import Base.ConectionDataBase;
 import Base.Clase_vehiculo;
 import Base.Persona;
 import Base.Vehiculo;
@@ -395,7 +395,7 @@ public class Insertar_vehiculos extends Modales_vehiculos{
             Vehiculo base_vehiculo = null;
 
             try{
-                base = new Base();
+                base = new ConectionDataBase();
                 base_clase_vehiculo = new Clase_vehiculo();
                 base_vehiculo = new Vehiculo();
                 dato = base_clase_vehiculo.consultar_uno_clase_vehiculo(combo_tipo_vehiculo.getSelectedItem()+"");

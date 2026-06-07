@@ -3,7 +3,7 @@ package Base;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class Vh_convenio extends Base {
+public class Vh_convenio extends ConectionDataBase {
 
     public Vh_convenio() throws IOException, SQLException {
         super();

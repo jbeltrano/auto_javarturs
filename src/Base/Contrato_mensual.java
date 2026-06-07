@@ -3,7 +3,7 @@ package Base;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class Contrato_mensual extends Base{
+public class Contrato_mensual extends ConectionDataBase{
     
     public Contrato_mensual() throws IOException, SQLException{
         super();
