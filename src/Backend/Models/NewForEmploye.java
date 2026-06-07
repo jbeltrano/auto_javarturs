@@ -1,6 +1,5 @@
 package backend.models;
 
-
 public class NewForEmploye {
     
     private String EmployeId;

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.HashMap;
 import java.util.LinkedList;
-import Estructuras_datos.Queue;
+import java.util.Queue;
 import java.util.HashSet;
 
 public class Leer_link {
@@ -37,7 +37,7 @@ public class Leer_link {
 
         HashMap<String,Queue<String[]>> map = new HashMap<>();
         Scanner leer = null;
-        Queue<String[]> cola = new Queue<>();
+        Queue<String[]> cola = new LinkedList<>();
         set = new HashSet<>();
 
         
@@ -68,11 +68,12 @@ public class Leer_link {
                 
 
                 if(map.containsKey(identificador)){
-                    cola.enqueue(complemento);
+                    cola.offer(complemento);
+                    cola.offer(complemento);
                     map.replace(identificador, cola);
                 }else{
-                    cola = new Queue<>();
-                    cola.enqueue(complemento);
+                    cola = new LinkedList<>();
+                    cola.offer(complemento);
                     map.put(identificador, cola);
                 }
                 

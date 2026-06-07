@@ -5,15 +5,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import Base.Ruta;
 import Base.Ciudad;
 import Base.Contratante;
 import Base.Vehiculo;
 import Base.BContrato_ocasional;
-import Estructuras_datos.Graph;
-import Estructuras_datos.HashTable;
-import Estructuras_datos.Queue;
-import Estructuras_datos.Stack;
 
 public class Generar_contratos_ocasionales {
 
@@ -48,13 +43,8 @@ public class Generar_contratos_ocasionales {
         LocalDate fecha_final;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
         int cantidad_pasajeros = 0;
-        HashTable<Integer, String> tabla_hash = new HashTable<>();
-        Graph grafo = new Graph();
-        Stack<Integer> stack = new Stack<>();
-        Queue<Integer> queue = new Queue<>();
         
 
-        Ruta base_ruta = new Ruta();
         Ciudad base_ciudad = new Ciudad();
         Vehiculo base_Vehiculo = new Vehiculo();
         BContrato_ocasional base_contrato_ocasional = new BContrato_ocasional();
@@ -68,18 +58,6 @@ public class Generar_contratos_ocasionales {
             fecha_inicial = LocalDate.parse(contrato_ocasional[2], formatter);
             fecha_final = LocalDate.parse(contrato_ocasional[3], formatter);
             doc_contrato = new Contrato_ocasional(); // Inicializa el documento
-
-            // Ahora para cargar el grafo y la tabla has se hace de la siguiente manera
-            base_ruta.cargarRutasGrafo(grafo);
-            stack = grafo.dijkstra(Integer.parseInt(origen[0]), Integer.parseInt(destino[0])); 
-
-            while(!stack.isEmpty()){
-                queue.enqueue(stack.peek());
-                String datos[] = base_ciudad.consultar_uno_ciudades("" + stack.peek());
-                int id = stack.pop();
-                String formato = datos[1] + " (" + datos[2] + ")";
-                tabla_hash.put(id, formato);
-            }
 
 
             // Consulta la capacidad maxima entre los dos set_cantidad_vehiculos
@@ -119,12 +97,10 @@ public class Generar_contratos_ocasionales {
             doc_contrato.set_cantidad_pasajeros(cantidad_pasajeros);
 
             // Hace un set al origen y destino
-            if(!band || queue.size() <= 2){
-                doc_contrato.set_origen_destino(origen[1] + " (" + origen[2] + ")",      // Origen en formato municipio (departamento) 
+            
+            doc_contrato.set_origen_destino(origen[1] + " (" + origen[2] + ")",      // Origen en formato municipio (departamento) 
                                                 destino[1] + " (" + destino[2] + ")");   // Destino en formato municipio (departamento)
-            }else{
-                doc_contrato.set_origen_destino(queue, tabla_hash);   // Destino en formato municipio (departamento)
-            }
+            
             
             // Hace un set al precio
             doc_contrato.set_valor_contrato(Integer.parseInt(contrato_ocasional[6]));
@@ -149,7 +125,6 @@ public class Generar_contratos_ocasionales {
             if(doc_contrato != null) doc_contrato.close();
             if(base_contrato_ocasional != null) base_contrato_ocasional.close();
             if(base_contratante != null) base_contratante.close();
-            if(base_ruta != null) base_ruta.close();
         }
         return url_destino;
 

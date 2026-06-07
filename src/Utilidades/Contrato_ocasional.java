@@ -12,8 +12,8 @@ import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 
-import Estructuras_datos.HashTable;
-import Estructuras_datos.Queue;
+import java.util.HashMap;
+import java.util.Queue;
 
 public class Contrato_ocasional{
     
@@ -268,18 +268,18 @@ public class Contrato_ocasional{
 
     }
 
-    public void set_origen_destino(Queue<Integer> queue, HashTable<Integer, String> tabla_hash){
+    public void set_origen_destino(Queue<Integer> queue, HashMap<Integer, String> tabla_hash){
 
         XWPFParagraph parrafo;
         XWPFRun run; 
         
-        String origen = tabla_hash.get(queue.dequeue());
+        String origen = tabla_hash.get(queue.poll());
         String destino = "";
         String ruta = "";
         String ruta_completa;
 
         while (queue.size() > 1) {
-            ruta += tabla_hash.get(queue.dequeue());
+            ruta += tabla_hash.get(queue.poll());
             if(queue.size() > 2){
                 ruta += ", ";
             }
@@ -288,7 +288,7 @@ public class Contrato_ocasional{
             }
         }
 
-        destino = tabla_hash.get(queue.dequeue());
+        destino = tabla_hash.get(queue.poll());
 
         ruta_completa = destino + ", pasando por: " + ruta;
         // Definiendo el parrafo a modificar

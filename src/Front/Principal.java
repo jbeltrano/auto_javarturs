@@ -8,7 +8,6 @@ import java.awt.Dimension;
 import java.awt.BorderLayout;
 import Front.Panel.Ciudades.Panel_ciudad;
 import Front.Panel.Ciudades.Panel_departamento;
-import Front.Panel.Ciudades.Panel_ruta;
 import Front.Panel.Extractos.Panel_contratante;
 import Front.Panel.Extractos.Panel_contratos_mensuales;
 import Front.Panel.Extractos.Panel_contratos_ocasionales;
@@ -43,7 +42,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
-import Estructuras_datos.Queue;
+import java.util.Queue;
+import java.util.LinkedList;
 
 public class Principal extends JFrame{
     
@@ -52,7 +52,7 @@ public class Principal extends JFrame{
     private static final int ANIMATION_DURATION = 100; // Duración de la animación en ms
     private static final int X_BOTONES_DESPLEGABLES = 80;
 
-    private Queue<GenericButton> cola_botones_desplegables = new Queue<>();
+    private Queue<GenericButton> cola_botones_desplegables = new LinkedList<>();
 
     private JPanel panel_secundario;
     private JPanel panel_principal2;
@@ -104,7 +104,6 @@ public class Principal extends JFrame{
     // Botones Secundarios
     private GenericButton genericCiudad;
     private GenericButton genericDepartamento;
-    private GenericButton genericRuta;
 
     private GenericButton genericBotonTipoVehiculo;
     private GenericButton genericBotonVehicuos;
@@ -339,7 +338,7 @@ public class Principal extends JFrame{
         JMenuItem item = null;
 
         while(!cola.isEmpty()){
-            String aux[] = cola.dequeue();
+            String aux[] = cola.poll();
 
             item = new JMenuItem(aux[0]);
             item.addActionListener(_ ->{
@@ -599,7 +598,7 @@ public class Principal extends JFrame{
 
     private void encolar_elementos_desplegables(GenericButton botones []){
         for(GenericButton boton: botones){
-            cola_botones_desplegables.enqueue(boton);
+            cola_botones_desplegables.offer(boton);
         }
     }
 
@@ -608,7 +607,7 @@ public class Principal extends JFrame{
         while(!cola_botones_desplegables.isEmpty()){
             eliminar_boton_panel(cola_botones_desplegables.peek().getButton(), panel_secundario);
             eliminar_label_panel(cola_botones_desplegables.peek().getLabel(), panel_secundario);
-            cola_botones_desplegables.dequeue();
+            cola_botones_desplegables.poll();
         }
         
         // Refrescar el panel después de eliminar elementos
@@ -652,16 +651,14 @@ public class Principal extends JFrame{
         
         panel_secundario.add(genericCiudad.getButton());
         panel_secundario.add(genericDepartamento.getButton());
-        panel_secundario.add(genericRuta.getButton());
         panel_secundario.add(genericCiudad.getLabel());
         panel_secundario.add(genericDepartamento.getLabel());
-        panel_secundario.add(genericRuta.getLabel());
         
-        botones_ciudad = new GenericButton[]{genericCiudad, genericDepartamento, genericRuta};
+        botones_ciudad = new GenericButton[]{genericCiudad, genericDepartamento};
         
         // Prueba
         setPosicionInicialBotones();
-        genericVehiculosPrincipal.setLocation(genericVehiculosPrincipal.getX(), genericRuta.getButton().getY() + genericRuta.getButton().getHeight()+20);
+        genericVehiculosPrincipal.setLocation(genericVehiculosPrincipal.getX(), genericDepartamento.getButton().getY() + genericDepartamento.getButton().getHeight()+20);
         
         setPosicionBotonesDependientes(new GenericButton[]{genericVehiculosPrincipal, genericEmpleadosPrincipal, genericPersonasPrincipal, genericExtractosPrincipal});
         
@@ -844,16 +841,6 @@ public class Principal extends JFrame{
         );
         genericDepartamento.addMouseListener(set_ancho_secundario());
         genericDepartamento.setLocation(X_BOTONES_DESPLEGABLES,genericCiudad.getButton().getY() + genericCiudad.getButton().getHeight() + 10);
-
-
-        genericRuta = new GenericButton(
-            () -> set_panel_principal2(new Panel_ruta()),
-            imagen_ruta,
-            "Rutas"
-        );
-        genericRuta.addMouseListener(set_ancho_secundario());
-        genericRuta.setLocation(X_BOTONES_DESPLEGABLES,genericDepartamento.getButton().getY() + genericDepartamento.getButton().getHeight() + 10);
-
 
     }
 
