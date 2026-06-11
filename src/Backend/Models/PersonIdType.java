@@ -1,4 +1,4 @@
-package backend.Models;
+package backend.models;
 
 public class PersonIdType {
     
