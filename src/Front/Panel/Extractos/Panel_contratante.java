@@ -103,4 +103,10 @@ public class Panel_contratante extends Panel{
         });
 
     }
+
+    @Override
+    protected void actionNewButton() {
+        new Insertar_contratante((JFrame)this.get_window()).setVisible(true);
+        accion_text_busqueda();
+    }
 }

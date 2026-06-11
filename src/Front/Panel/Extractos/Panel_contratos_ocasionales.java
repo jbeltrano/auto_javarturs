@@ -158,4 +158,10 @@ public class Panel_contratos_ocasionales extends Panel_extractos{
         pop_menu.remove(item_exportar_todos);
         pop_menu.remove(item_actualizar_todos);
     }
+
+    @Override
+    protected void actionNewButton() {
+        new Insertar_contrato_ocasional((JFrame)this.get_window()).setVisible(true);
+        accion_text_busqueda();
+    }
 }

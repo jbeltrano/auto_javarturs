@@ -104,4 +104,10 @@ public class Panel_conductores extends Panel{
         });
 
     }
+
+    @Override
+    protected void actionNewButton() {
+        new Insertar_conductor((JFrame)this.get_window()).setVisible(true);
+        accion_text_busqueda();
+    }
 }

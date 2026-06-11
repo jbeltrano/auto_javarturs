@@ -160,4 +160,11 @@ public class Panel_extractos_mensuales extends Panel_extractos{
         });
 
     }
+
+
+    @Override
+    protected void actionNewButton() {
+        new Insertar_extracto_mensual((JFrame)this.get_window()).setVisible(true);
+        accion_text_busqueda();
+    }
 }

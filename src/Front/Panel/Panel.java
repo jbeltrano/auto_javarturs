@@ -90,7 +90,11 @@ public abstract class Panel extends JPanel{
         newButton.setFocusPainted(false);   // Elimina el borde que aparece al hacer click en el boton
         newButton.setPreferredSize(new Dimension(100,30));    // Establece el tamaño del boton
         newButton.setPreferredSize(new Dimension(56,56));    // Establece el tamaño del boton flotante
+        newButton.addActionListener(e -> actionNewButton());    // Establece la accion a realizar al hacer click en el boton
     }
+
+    protected abstract void actionNewButton();
+
     /**
      * Este metodo se encarga de configurar el text_field
      * para que realice una accion de buscar dependiendo la
@@ -156,10 +160,6 @@ public abstract class Panel extends JPanel{
      * que va a tener el popup menu
      */
     protected abstract void config_listener_pop_menu();
-
-    protected void setActionButton(ActionListener actionListener){
-        newButton.addActionListener(actionListener);
-    }
 
     protected Window get_window(){
         return SwingUtilities.getWindowAncestor(this);

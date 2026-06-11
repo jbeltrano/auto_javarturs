@@ -1,10 +1,13 @@
 package Front.Panel.vehiculos;
 
 import Base.Clase_vehiculo;
+
 import Front.Panel.Panel;
 import Front.Vehiculos.Actualizar_tipo_vehiculo;
 import Front.Vehiculos.Insertar_tipo_vehiculo;
+
 import Utilidades.Modelo_tabla;
+
 import java.sql.SQLException;
 import java.awt.Color;
 import java.awt.event.WindowEvent;
@@ -22,10 +25,6 @@ public class Panel_clase_vehiculo extends Panel{
 
     public Panel_clase_vehiculo(){
         super();
-        super.setActionButton(e -> {
-            new Insertar_tipo_vehiculo((JFrame)this.get_window(), "");
-            accion_text_busqueda();
-        });
     }
     
     @Override
@@ -113,6 +112,12 @@ public class Panel_clase_vehiculo extends Panel{
                   
         });
 
+    }
+
+    @Override
+    protected void actionNewButton() {
+        new Insertar_tipo_vehiculo((JFrame)this.get_window(), "");
+        accion_text_busqueda();
     }
     
 }

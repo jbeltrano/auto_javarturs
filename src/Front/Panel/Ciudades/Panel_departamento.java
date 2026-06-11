@@ -14,6 +14,8 @@ public class Panel_departamento extends Panel{
     private Departamento base_Departamento;
     public Panel_departamento(){
         super();
+        this.newButton.setEnabled(false);
+        this.newButton.setVisible(false);
     }
 
     @Override
@@ -69,6 +71,11 @@ public class Panel_departamento extends Panel{
         item_actualizar.setEnabled(false);
         item_adicionar.setEnabled(false);
         item_eliminar.setEnabled(false);
+    }
+
+    @Override
+    protected void actionNewButton() {
+        
     }
 
     

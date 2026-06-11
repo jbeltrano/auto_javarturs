@@ -105,4 +105,10 @@ public class Panel_persona extends Panel{
         });
 
     }
+
+    @Override
+    protected void actionNewButton() {
+        new Insertar_persona((JFrame)this.get_window()).setVisible(true);
+        accion_text_busqueda();
+    }
 }

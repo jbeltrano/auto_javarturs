@@ -100,4 +100,10 @@ public class Panel_ciudad extends Panel{
         });
 
     }
+
+    @Override
+    protected void actionNewButton() {
+        new Insertar_ciudad((JFrame)this.get_window()).setVisible(true);
+        accion_text_busqueda();
+    }
 }

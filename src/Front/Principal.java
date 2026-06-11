@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.LinkedList;
+import Utilidades.GenericCallback;
 
 public class Principal extends JFrame{
     
@@ -462,17 +463,16 @@ public class Principal extends JFrame{
 
     }
 
-
     private void InicializarBotonCiudad(){
 
+        GenericCallback callback = () -> {
+            eliminar_elementos_desplegables();
+            configuracion_ciudad();
+            genericCiudad.getButton().doClick();
+        };
+
         genericCiudadPrincipal = new GenericButton(
-            () -> {
-                
-                eliminar_elementos_desplegables();
-                configuracion_ciudad();
-                genericCiudad.getButton().doClick();
-                
-            },
+            callback,
             imagen_ciudades,
             "Ciudades"
         );

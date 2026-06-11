@@ -96,4 +96,10 @@ public class Panel_contratos_mensuales extends Panel{
         pop_menu.remove(item_actualizar);
 
     }
+
+    @Override
+    protected void actionNewButton() {
+        new Insertar_contrato_mensual((JFrame)this.get_window()).setVisible(true);
+        accion_text_busqueda();
+    }
 }

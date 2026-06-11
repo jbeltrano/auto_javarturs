@@ -19,10 +19,6 @@ public class Panel_vehiculos extends Panel{
 
     public Panel_vehiculos(){
         super();
-        super.setActionButton(e -> {
-            new Insertar_vehiculos((JFrame)this.get_window(), "").setVisible(true);
-            accion_text_busqueda();
-        });
     }
     
     @Override
@@ -104,6 +100,12 @@ public class Panel_vehiculos extends Panel{
                   
         });
 
+    }
+
+    @Override
+    protected void actionNewButton() {
+        new Insertar_vehiculos((JFrame)this.get_window(), "").setVisible(true);
+        accion_text_busqueda();
     }    
 
 }
