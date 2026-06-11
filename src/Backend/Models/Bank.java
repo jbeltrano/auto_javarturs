@@ -1,4 +1,4 @@
-package backend.models;
+package backend.Models;
 
 public class Bank {
     private int id;
