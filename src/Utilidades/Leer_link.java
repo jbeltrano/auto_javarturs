@@ -69,7 +69,6 @@ public class Leer_link {
 
                 if(map.containsKey(identificador)){
                     cola.offer(complemento);
-                    cola.offer(complemento);
                     map.replace(identificador, cola);
                 }else{
                     cola = new LinkedList<>();
