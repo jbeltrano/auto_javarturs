@@ -279,7 +279,62 @@ public class Documentos extends ConectionDataBase{
             pstate.close();
         }
     }
-    
+
+    /**
+     * Actualiza solo las fechas y el TOP de un documento
+     * sin modificar doc_interno. Usado por la carga RUNT.
+     */
+    public void actualizar_documento_fechas(String placa, String fecha_soat, String fecha_rtm,
+            int top, String fecha_top, String fecha_polizas) throws SQLException {
+
+        actualizar = "update documento set doc_fecha_soat = ?, doc_fecha_rtm = ?, "
+                + "doc_fecha_rcc = ?, doc_fecha_rce = ?, "
+                + "doc_top = ?, doc_fecha_top = ? where veh_placa = ?";
+
+        try {
+            pstate = coneccion.prepareStatement(actualizar);
+
+            pstate.setString(1, fecha_soat);
+            pstate.setString(2, fecha_rtm);
+            pstate.setString(3, fecha_polizas);
+            pstate.setString(4, fecha_polizas);
+            pstate.setInt(5, top);
+            pstate.setString(6, fecha_top);
+            pstate.setString(7, placa);
+
+            pstate.executeUpdate();
+
+        } catch (SQLException ex) {
+            throw ex;
+        } finally {
+            pstate.close();
+        }
+    }
+
+    /**
+     * Actualiza solo SOAT y RTM de un documento de vehiculo
+     * particular sin modificar doc_interno. Usado por la carga RUNT.
+     */
+    public void actualizar_documento_fechas(String placa, String fecha_soat, String fecha_rtm) throws SQLException {
+
+        actualizar = "update documento set doc_fecha_soat = ?, doc_fecha_rtm = ? where veh_placa = ?";
+
+        try {
+            pstate = coneccion.prepareStatement(actualizar);
+
+            pstate.setString(1, fecha_soat);
+            pstate.setString(2, fecha_rtm);
+            pstate.setString(3, placa);
+
+            pstate.executeUpdate();
+
+        } catch (SQLException ex) {
+            throw ex;
+        } finally {
+            pstate.close();
+        }
+    }
+
     /**
      * Realiza una consulta utilizando el parametro
      * {@code buscar} para realizar un filtro entre los

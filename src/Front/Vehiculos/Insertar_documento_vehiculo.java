@@ -148,10 +148,10 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
         jScrollPane1.setBounds(10, 70, 420, 90);
 
         // Incializacion fechas
-        fecha_soat.setDateFormatString("yyyy-MM-dd");
-        fecha_polizas.setDateFormatString("yyyy-MM-dd");
-        fecha_rtm.setDateFormatString("yyyy-MM-dd");
-        fecha_top.setDateFormatString("yyyy-MM-dd");
+        fecha_soat.setDateFormatString("dd/MM/yyyy");
+        fecha_polizas.setDateFormatString("dd/MM/yyyy");
+        fecha_rtm.setDateFormatString("dd/MM/yyyy");
+        fecha_top.setDateFormatString("dd/MM/yyyy");
 
         fecha_soat.setBounds(210, 30, 100, 22);
         fecha_polizas.setBounds(250, 200, 100, 22);
@@ -212,7 +212,7 @@ public class Insertar_documento_vehiculo extends Modales_vehiculos{
         String ffecha_polizas = "";
         int top = 0;
         int interno = 0;
-        SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         
         if(flag_is_particular){
             ffecha_soat = formato.format(fecha_soat.getDate());
