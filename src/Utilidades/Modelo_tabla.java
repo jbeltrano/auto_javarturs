@@ -333,10 +333,11 @@ public class Modelo_tabla {
                     //Incializa las variables necesarias para el calculo
                     long cantidad_dias = 0;
                     String valor = table.getValueAt(row, column).toString();
-                    LocalDate fecha_sistema = LocalDate.now();      // Obtiene la fecha actual del sistema para hacer la comparacion
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
-                    LocalDate fecha_tabla = LocalDate.parse(valor,formatter);       // Aplica el formato que se declaro anteriormente
-                    cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);        // Compara las dos fechas para obtener la cantidad de dias entre estas dos
+                    LocalDate fecha_sistema = LocalDate.now();
+                    LocalDate fecha_tabla = parsearFecha(valor);
+                    if (fecha_tabla != null) {
+                        cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);
+                    }
 
                     // Esto es para que los ToolTip funcionen correctamente
                     ToolTipManager.sharedInstance().setInitialDelay(0);
@@ -419,10 +420,11 @@ public class Modelo_tabla {
                     //Incializa las variables necesarias para el calculo
                     long cantidad_dias = 0;
                     String valor = table.getValueAt(row, column).toString();
-                    LocalDate fecha_sistema = LocalDate.now();      // Obtiene la fecha actual del sistema para hacer la comparacion
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
-                    LocalDate fecha_tabla = LocalDate.parse(valor,formatter);       // Aplica el formato que se declaro anteriormente
-                    cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);        // Compara las dos fechas para obtener la cantidad de dias entre estas dos
+                    LocalDate fecha_sistema = LocalDate.now();
+                    LocalDate fecha_tabla = parsearFecha(valor);
+                    if (fecha_tabla != null) {
+                        cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);
+                    }
 
                     // Esto es para que los ToolTip funcionen correctamente
                     ToolTipManager.sharedInstance().setInitialDelay(0);
@@ -505,10 +507,11 @@ public class Modelo_tabla {
                     //Incializa las variables necesarias para el calculo
                     long cantidad_dias = 0;
                     String valor = table.getValueAt(row, column).toString();
-                    LocalDate fecha_sistema = LocalDate.now();      // Obtiene la fecha actual del sistema para hacer la comparacion
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
-                    LocalDate fecha_tabla = LocalDate.parse(valor,formatter);       // Aplica el formato que se declaro anteriormente
-                    cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);        // Compara las dos fechas para obtener la cantidad de dias entre estas dos
+                    LocalDate fecha_sistema = LocalDate.now();
+                    LocalDate fecha_tabla = parsearFecha(valor);
+                    if (fecha_tabla != null) {
+                        cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);
+                    }
 
                     // Esto es para que los ToolTip funcionen correctamente
                     ToolTipManager.sharedInstance().setInitialDelay(0);
@@ -774,10 +777,11 @@ public class Modelo_tabla {
                     //Incializa las variables necesarias para el calculo
                     long cantidad_dias = 0;
                     String valor = table.getValueAt(row, column).toString();
-                    LocalDate fecha_sistema = LocalDate.now();      // Obtiene la fecha actual del sistema para hacer la comparacion
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
-                    LocalDate fecha_tabla = LocalDate.parse(valor,formatter);       // Aplica el formato que se declaro anteriormente
-                    cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);        // Compara las dos fechas para obtener la cantidad de dias entre estas dos
+                    LocalDate fecha_sistema = LocalDate.now();
+                    LocalDate fecha_tabla = parsearFecha(valor);
+                    if (fecha_tabla != null) {
+                        cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);
+                    }
 
                     // Esto es para que los ToolTip funcionen correctamente
                     ToolTipManager.sharedInstance().setInitialDelay(0);
@@ -870,10 +874,11 @@ public class Modelo_tabla {
                     //Incializa las variables necesarias para el calculo
                     long cantidad_dias = 0;
                     String valor = table.getValueAt(row, column).toString();
-                    LocalDate fecha_sistema = LocalDate.now();      // Obtiene la fecha actual del sistema para hacer la comparacion
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
-                    LocalDate fecha_tabla = LocalDate.parse(valor,formatter);       // Aplica el formato que se declaro anteriormente
-                    cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);        // Compara las dos fechas para obtener la cantidad de dias entre estas dos
+                    LocalDate fecha_sistema = LocalDate.now();
+                    LocalDate fecha_tabla = parsearFecha(valor);
+                    if (fecha_tabla != null) {
+                        cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);
+                    }
 
                     // Esto es para que los ToolTip funcionen correctamente
                     ToolTipManager.sharedInstance().setInitialDelay(0);
@@ -960,9 +965,10 @@ public class Modelo_tabla {
                     if(table.getValueAt(row, column).toString() != "NULL"){
                         valor = table.getValueAt(row, column).toString();
                         LocalDate fecha_sistema = LocalDate.now();      // Obtiene la fecha actual del sistema para hacer la comparacion
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
-                        LocalDate fecha_tabla = LocalDate.parse(valor,formatter);       // Aplica el formato que se declaro anteriormente
-                        cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);        // Compara las dos fechas para obtener la cantidad de dias entre estas dos
+                        LocalDate fecha_tabla = parsearFecha(valor);       // Parsea con soporte para dd/MM/yyyy y yyyy-M-d
+                        if (fecha_tabla != null) {
+                            cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);        // Compara las dos fechas para obtener la cantidad de dias entre estas dos
+                        }
                     }
                     // Esto es para que los ToolTip funcionen correctamente
                     ToolTipManager.sharedInstance().setInitialDelay(0);
@@ -1035,6 +1041,21 @@ public class Modelo_tabla {
         return tab;
     }
 
-    
+    /**
+     * Parsea una fecha desde la DB soportando formato nuevo
+     * dd/MM/yyyy y formato antiguo yyyy-M-d / yyyy-MM-dd.
+     *Metodo publico reutilizable por toda la aplicacion.
+     */
+    public static LocalDate parsearFecha(String fechaStr) {
+        if (fechaStr == null || fechaStr.equals("NULL") || fechaStr.trim().isEmpty()) return null;
+        String[] formatos = {"dd/MM/yyyy", "yyyy-MM-dd", "yyyy-M-d"};
+        for (String fmt : formatos) {
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(fmt);
+                return LocalDate.parse(fechaStr.trim(), formatter);
+            } catch (Exception ignored) {}
+        }
+        return null;
+    }
 
 }

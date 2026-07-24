@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -197,8 +196,8 @@ public class Extracto {
 
     public void set_fecha_inicial(String fecha){
         LocalDate date;
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-M-d");
-        date = LocalDate.parse(fecha, formato);
+        date = Modelo_tabla.parsearFecha(fecha);
+        if (date == null) return;
 
         set_fecha_incial(date.getDayOfMonth(), MES[date.getMonthValue()], date.getYear());
 
@@ -206,8 +205,8 @@ public class Extracto {
 
     public void set_fecha_final(String fecha){
         LocalDate date;
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-M-d");
-        date = LocalDate.parse(fecha, formato);
+        date = Modelo_tabla.parsearFecha(fecha);
+        if (date == null) return;
 
         set_fecha_final(date.getDayOfMonth(), MES[date.getMonthValue()], date.getYear());
         

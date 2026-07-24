@@ -38,7 +38,8 @@ public abstract class Panel extends JPanel{
     protected int color;
 
     protected JButton newButton;
-    private JLayeredPane floating_layer;
+    protected JButton secondFloatingButton;
+    protected JLayeredPane floating_layer;
     private static final int FLOATING_MARGIN = 16;
     
     /**
@@ -76,6 +77,12 @@ public abstract class Panel extends JPanel{
                 int x = Math.max(FLOATING_MARGIN, size.width - buttonSize.width - FLOATING_MARGIN);
                 int y = Math.max(FLOATING_MARGIN, size.height - buttonSize.height - FLOATING_MARGIN);
                 newButton.setBounds(x, y, buttonSize.width, buttonSize.height);
+
+                if (secondFloatingButton != null && secondFloatingButton.isVisible()) {
+                    Dimension sSize = secondFloatingButton.getPreferredSize();
+                    int x2 = x - sSize.width - 8;
+                    secondFloatingButton.setBounds(x2, y, sSize.width, sSize.height);
+                }
             }
         };
         floating_layer.add(scroll, Integer.valueOf(JLayeredPane.DEFAULT_LAYER));    // Agrega el scroll como base

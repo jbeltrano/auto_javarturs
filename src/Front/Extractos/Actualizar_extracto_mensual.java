@@ -2,11 +2,13 @@ package Front.Extractos;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.time.ZoneId;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import Base.Extractos;
+import Utilidades.Modelo_tabla;
 
 public class Actualizar_extracto_mensual extends Insertar_extracto_mensual{
     
@@ -39,22 +41,20 @@ public class Actualizar_extracto_mensual extends Insertar_extracto_mensual{
             base = new Extractos();
             
             // inicializando los valores
-            SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
             datos = ((Extractos)base).consultar_uno_extracto_mensual(placa, consecutivo);
             text_placa.setText(placa);
             text_consecutivo.setText(datos[1]);
             text_contratante.setText(datos[2]);
             text_origen.setText(datos[5]);
             text_destino.setText(datos[6]);
-            fecha_incial.setDate(formato.parse(datos[3]));
-            fecha_final.setDate(formato.parse(datos[4]));
+            java.time.LocalDate fInc = Modelo_tabla.parsearFecha(datos[3]);
+            java.time.LocalDate fFin = Modelo_tabla.parsearFecha(datos[4]);
+            if (fInc != null) fecha_incial.setDate(Date.from(fInc.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            if (fFin != null) fecha_final.setDate(Date.from(fFin.atStartOfDay(ZoneId.systemDefault()).toInstant()));
 
             
         }catch(SQLException | IOException ex){
             JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            setVisible(false);
-        }catch(ParseException ex){
-            JOptionPane.showMessageDialog(this, "Problemas al realizar conversiones", "Error", JOptionPane.ERROR_MESSAGE);
             setVisible(false);
         }finally{
             if(base != null) base.close();
@@ -72,7 +72,7 @@ public class Actualizar_extracto_mensual extends Insertar_extracto_mensual{
             String ffecha_final;
             int origen;
             int destino;
-            SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
+            SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
     
             
             try{

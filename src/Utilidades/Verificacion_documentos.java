@@ -3,7 +3,6 @@ package Utilidades;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
@@ -148,10 +147,10 @@ public class Verificacion_documentos {
 
         long cantidad_dias;
 
-        LocalDate fecha_sistema = LocalDate.now();      // Obtiene la fecha actual del sistema para hacer la comparacion
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
-        LocalDate fecha_tabla = LocalDate.parse(fecha,formatter);       // Aplica el formato que se declaro anteriormente
-        cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);        // Compara las dos fechas para obtener la cantidad de dias entre estas dos
+        LocalDate fecha_sistema = LocalDate.now();
+        LocalDate fecha_tabla = Modelo_tabla.parsearFecha(fecha);
+        if (fecha_tabla == null) return 0;
+        cantidad_dias = ChronoUnit.DAYS.between(fecha_sistema, fecha_tabla);
 
         return cantidad_dias;
 

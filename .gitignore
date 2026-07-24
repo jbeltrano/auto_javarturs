@@ -9,9 +9,10 @@
 .idea/
 .vscode/
 
-# Variables de entorno
+# Variables de entorno y otros archivos de configuración
 .env
 .env.local
+AGENTS.md
 
 # Binarios
 bin/

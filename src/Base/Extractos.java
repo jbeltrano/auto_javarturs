@@ -5,8 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import Utilidades.Modelo_tabla;
 
 
 public class Extractos extends ConectionDataBase{
@@ -167,7 +167,6 @@ public class Extractos extends ConectionDataBase{
         PreparedStatement pstate2;
         PreparedStatement pstate3;
         ResultSet resultado2;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
         String fecha_resultado;
         LocalDate date1;
         LocalDate date2;
@@ -192,8 +191,12 @@ public class Extractos extends ConectionDataBase{
 
                 try {
                     // Convertir las cadenas a LocalDate
-                    date1 = LocalDate.parse(fecha_resultado, formatter);
-                    date2 = LocalDate.parse(fecha_final, formatter);
+                    date1 = Modelo_tabla.parsearFecha(fecha_resultado);
+                    date2 = Modelo_tabla.parsearFecha(fecha_final);
+                    if (date1 == null || date2 == null) {
+                        System.out.println("Fecha nula: resultado=" + fecha_resultado + ", fecha_final=" + fecha_final);
+                        continue;
+                    }
         
                     // Comparar las fechas
                     if (date1.isAfter(date2)) {

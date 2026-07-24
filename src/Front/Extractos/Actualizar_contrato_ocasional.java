@@ -5,11 +5,11 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import Base.BContrato_ocasional;
+import Utilidades.Modelo_tabla;
 
 public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
     
@@ -33,7 +33,6 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
         try{
             base = new BContrato_ocasional();
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
             LocalDate fInicial;
             LocalDate fFinal;
             datos = ((BContrato_ocasional)base).consultar_uno_contrato_ocasional(id);
@@ -48,11 +47,11 @@ public class Actualizar_contrato_ocasional extends Insertar_contrato_ocasional{
             text_valor_contrato.setText(datos[6]);
             combo_tipo_contrato.setSelectedIndex(Integer.parseInt(datos[datos.length -1]) -1);
 
-            fInicial = LocalDate.parse(datos[2],formatter);
-            fFinal = LocalDate.parse(datos[3],formatter); 
+            fInicial = Modelo_tabla.parsearFecha(datos[2]);
+            fFinal = Modelo_tabla.parsearFecha(datos[3]);
 
-            fecha_incial.setDate(Date.from(fInicial.atStartOfDay(ZoneId.systemDefault()).toInstant()));
-            fecha_final.setDate(Date.from(fFinal.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            if (fInicial != null) fecha_incial.setDate(Date.from(fInicial.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            if (fFinal != null) fecha_final.setDate(Date.from(fFinal.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         }catch(SQLException | IOException ex){
             JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             Actualizar_contrato_ocasional.this.dispose();

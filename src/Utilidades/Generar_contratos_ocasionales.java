@@ -3,7 +3,6 @@ package Utilidades;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import Base.Ciudad;
 import Base.Contratante;
@@ -41,7 +40,6 @@ public class Generar_contratos_ocasionales {
         String destino[];
         LocalDate fecha_inicial;
         LocalDate fecha_final;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
         int cantidad_pasajeros = 0;
         
 
@@ -55,8 +53,8 @@ public class Generar_contratos_ocasionales {
             contratante = base_contratante.consultar_uno_contratante(contrato_ocasional[1]);
             origen = base_ciudad.consultar_uno_ciudades(contrato_ocasional[4]);
             destino = base_ciudad.consultar_uno_ciudades(contrato_ocasional[5]);
-            fecha_inicial = LocalDate.parse(contrato_ocasional[2], formatter);
-            fecha_final = LocalDate.parse(contrato_ocasional[3], formatter);
+            fecha_inicial = Modelo_tabla.parsearFecha(contrato_ocasional[2]);
+            fecha_final = Modelo_tabla.parsearFecha(contrato_ocasional[3]);
             doc_contrato = new Contrato_ocasional(); // Inicializa el documento
 
 

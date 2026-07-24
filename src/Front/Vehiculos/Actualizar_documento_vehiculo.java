@@ -2,13 +2,15 @@ package Front.Vehiculos;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import Base.Documentos;
 
 public class Actualizar_documento_vehiculo extends Insertar_documento_vehiculo{
-    
+
     public Actualizar_documento_vehiculo(JFrame frame, String valor){
         super(frame, valor);
         actualizar_documentos();
@@ -16,13 +18,13 @@ public class Actualizar_documento_vehiculo extends Insertar_documento_vehiculo{
 
     private void actualizar_documentos(){
         String []dato = null;
-        
-        
+
+
         try{
             base = new Documentos();
             dato = ((Documentos)base).consultar_uno_documentos(valor);
-            
-            
+
+
         }catch(SQLException | IOException ex){
             JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             Actualizar_documento_vehiculo.this.dispose();
@@ -33,20 +35,37 @@ public class Actualizar_documento_vehiculo extends Insertar_documento_vehiculo{
         is_particular(valor);
         // Carga los documentos que siempre estaran para cualquier vehiculo
         text_placa.setText(valor);
-        fecha_soat.setDate(java.sql.Date.valueOf(dato[2]));
-        fecha_rtm.setDate(java.sql.Date.valueOf(dato[3]));
+        fecha_soat.setDate(parsearFecha(dato[2]));
+        fecha_rtm.setDate(parsearFecha(dato[3]));
 
         if(!flag_is_particular){ // Si el vehiculo es de servicio publico carga estos documentos
             text_numero_interno.setText(dato[1]);
-            fecha_polizas.setDate(java.sql.Date.valueOf(dato[4]));
+            fecha_polizas.setDate(parsearFecha(dato[4]));
             text_top.setText(dato[6]);
-            fecha_top.setDate(java.sql.Date.valueOf(dato[7]));
+            fecha_top.setDate(parsearFecha(dato[7]));
         }
 
         // Estableciendo los valores que no se van a habilitar
         text_placa.setEnabled(false);
         tabla_vehiculo.setEnabled(false);
         tabla_vehiculo.setDragEnabled(false);
+    }
+
+    /**
+     * Parsea una fecha desde la DB. Soporta formato nuevo
+     * dd/MM/yyyy y formato antiguo yyyy-M-d / yyyy-MM-dd.
+     */
+    private Date parsearFecha(String fechaStr) {
+        if (fechaStr == null || fechaStr.equals("NULL") || fechaStr.trim().isEmpty()) {
+            return new Date();
+        }
+        String[] formatos = {"dd/MM/yyyy", "yyyy-MM-dd", "yyyy-M-d"};
+        for (String fmt : formatos) {
+            try {
+                return new SimpleDateFormat(fmt).parse(fechaStr.trim());
+            } catch (ParseException ignored) {}
+        }
+        return new Date();
     }
 
     @Override
@@ -58,7 +77,7 @@ public class Actualizar_documento_vehiculo extends Insertar_documento_vehiculo{
         String ffecha_polizas = "";
         int top = 0;
         int interno = 0;
-        SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         
         if(flag_is_particular){
             ffecha_soat = formato.format(fecha_soat.getDate());
