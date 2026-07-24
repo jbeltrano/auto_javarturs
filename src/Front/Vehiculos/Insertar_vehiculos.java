@@ -4,6 +4,7 @@ package Front.Vehiculos;
 import java.awt.event.MouseAdapter;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
@@ -11,6 +12,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.JButton;
@@ -25,11 +27,13 @@ import Base.Vehiculo;
 import Front.Personas.Insertar_persona;
 import Utilidades.Key_adapter;
 import Utilidades.Modelo_tabla;
+import Utilidades.ParserRunt;
 
 public class Insertar_vehiculos extends Modales_vehiculos{
     
     protected Vector<String> vector;           
     protected JButton boton_guardar;
+    protected JButton boton_cargar_runt;
     protected JRadioButton boton_parque;
     protected JComboBox<String> combo_tipo_vehiculo;
     protected JLabel jLabel1;
@@ -104,6 +108,7 @@ public class Insertar_vehiculos extends Modales_vehiculos{
         scroll_tabla = new JScrollPane();
         tab = new JTable();
         boton_guardar = new JButton();
+        boton_cargar_runt = new JButton();
         label_modelo = new JLabel("Modelo");
         label_servicio = new JLabel("Servicio");
         combo_servicio = new JComboBox<>();
@@ -322,6 +327,15 @@ public class Insertar_vehiculos extends Modales_vehiculos{
 
         });
 
+        boton_cargar_runt.setText("Cargar RUNT");
+        boton_cargar_runt.setToolTipText("Cargar datos del vehiculo desde el RUNT");
+        jPanel1.add(boton_cargar_runt);
+        boton_cargar_runt.setBounds(450, boton_guardar.getY(), 100, 22);
+
+        boton_cargar_runt.addActionListener(_ -> {
+            abrirDialogoRunt();
+        });
+
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -411,6 +425,89 @@ public class Insertar_vehiculos extends Modales_vehiculos{
             }
             JOptionPane.showMessageDialog(this, "Vehiculo guardado correctamente","",JOptionPane.QUESTION_MESSAGE);
             Insertar_vehiculos.this.dispose();
+        }
+    }
+
+    private void abrirDialogoRunt() {
+        JDialog dialogoRunt = new JDialog(this, "Cargar datos desde RUNT", true);
+        dialogoRunt.setSize(550, 380);
+        dialogoRunt.setLocationRelativeTo(this);
+        dialogoRunt.setResizable(true);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(null);
+
+        JLabel label_instruccion = new JLabel("Pegue aqui el texto copiado de la pagina del RUNT:");
+        label_instruccion.setBounds(10, 10, 400, 20);
+        panel.add(label_instruccion);
+
+        JTextArea textArea = new JTextArea();
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+
+        JScrollPane scroll = new JScrollPane(textArea);
+        scroll.setBounds(10, 35, 520, 250);
+        panel.add(scroll);
+
+        JButton boton_cargar = new JButton("Cargar");
+        boton_cargar.setBounds(340, 295, 90, 25);
+        panel.add(boton_cargar);
+
+        JButton boton_cancelar = new JButton("Cancelar");
+        boton_cancelar.setBounds(440, 295, 90, 25);
+        panel.add(boton_cancelar);
+
+        boton_cargar.addActionListener(_ -> {
+            String texto = textArea.getText();
+            if (texto == null || texto.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(dialogoRunt, "No hay texto para procesar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            HashMap<String, String> datos = ParserRunt.parsear(texto);
+
+            setTextSiPresente(text_placa, datos.get("placa"));
+            setTextSiPresente(text_marca, datos.get("marca"));
+            setTextSiPresente(text_linea, datos.get("linea"));
+            setTextSiPresente(text_modelo, datos.get("modelo"));
+            setTextSiPresente(text_color, datos.get("color"));
+            setTextSiPresente(text_motor, datos.get("numero_motor"));
+            setTextSiPresente(text_chasis, datos.get("numero_chasis"));
+            setTextSiPresente(text_cilindrada, datos.get("cilindrada"));
+            setTextSiPresente(text_carroceria, datos.get("carroceria"));
+            setTextSiPresente(text_combustible, datos.get("combustible"));
+            setTextSiPresente(text_pasajeros, datos.get("pasajeros"));
+
+            seleccionarComboSiExiste(combo_tipo_vehiculo, datos.get("clase_vehiculo"));
+            seleccionarComboSiExiste(combo_servicio, datos.get("servicio"));
+
+            dialogoRunt.dispose();
+        });
+
+        boton_cancelar.addActionListener(_ -> {
+            dialogoRunt.dispose();
+        });
+
+        dialogoRunt.add(panel);
+        dialogoRunt.setVisible(true);
+    }
+
+    private void setTextSiPresente(JTextField field, String value) {
+        if (value != null && !value.trim().isEmpty()) {
+            field.setText(value.trim());
+        }
+    }
+
+    private void seleccionarComboSiExiste(JComboBox<String> combo, String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return;
+        }
+        String normalizado = value.trim().toUpperCase();
+        for (int i = 0; i < combo.getItemCount(); i++) {
+            if (combo.getItemAt(i) != null && combo.getItemAt(i).toUpperCase().equals(normalizado)) {
+                combo.setSelectedIndex(i);
+                return;
+            }
         }
     }
 }
