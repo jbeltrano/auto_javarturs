@@ -180,7 +180,7 @@ public class Insertar_conductor extends Modales_personas{
         jPanel1.add(jScrollPane1);
         jScrollPane1.setBounds(6, 62, 388, 100);
 
-        buscar_fecha.setDateFormatString("yyyy-MM-dd");
+        buscar_fecha.setDateFormatString("dd/MM/yyyy");
         buscar_fecha.setBounds(250, 28, 100, 22);
         
         // Agregar el Jbuscar_fecha al JFrame
@@ -218,7 +218,7 @@ public class Insertar_conductor extends Modales_personas{
         }else{  // Si todos los campos estan llenos entonces procede a guardar
             
             try{
-                SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");    // Formato para la fecha
+                SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");    // Formato para la fecha
                 String fecha = formato.format(buscar_fecha.getDate());      // Establece el Date en un String con el formato
                 Double.parseDouble(text_documento.getText());       // Verifica si el numero de documento es un numero                     
 

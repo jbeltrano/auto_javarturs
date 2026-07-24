@@ -78,7 +78,7 @@ public class Generar_extractos {
                 NullPointerException ex = new NullPointerException("El vehiculo " + placa + ".\nNo posee documentos");
                 throw ex;
             }
-            año = datos_extracto[4].split("-")[0];
+            año = datos_extracto[4].contains("/") ? datos_extracto[4].split("/")[2] : datos_extracto[4].split("-")[0];
 
             // Modificando como tal el documento
             extracto.set_numero_principal(año, datos_extracto[2], datos_extracto[1]);
@@ -204,7 +204,7 @@ public class Generar_extractos {
                 NullPointerException ex = new NullPointerException("El vehiculo " + placa + ".\nNo posee documentos");
                 throw ex;
             }
-            año = datos_contratante[3].split("-")[0];
+            año = datos_contratante[3].contains("/") ? datos_contratante[3].split("/")[2] : datos_contratante[3].split("-")[0];
 
             // Modificando como tal el documento
             extracto.set_numero_principal(año, ""+contrato, ""+consecutivo);    // hace el set al numero principal
@@ -349,7 +349,7 @@ public class Generar_extractos {
             datos_per_contratante = base_contratante.consultar_uno_contratante(datos_contratante[1]);
             datos_tipo_contrato = base_co.consultar_tipo_contrato_ocasional(Integer.parseInt(datos_contratante[0]));
             
-            año = datos_contratante[3].split("-")[0];
+            año = datos_contratante[3].contains("/") ? datos_contratante[3].split("/")[2] : datos_contratante[3].split("-")[0];
 
             extracto.set_contrato(""+contrato);     // realiza el set al contrato
             extracto.set_contratante(datos_per_contratante[2],  // Nombre del contratante

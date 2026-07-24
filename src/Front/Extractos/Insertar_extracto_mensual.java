@@ -395,7 +395,7 @@ public class Insertar_extracto_mensual extends Modal_documento {
         String ffecha_final;
         int origen;
         int destino;
-        SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 
         
         try{

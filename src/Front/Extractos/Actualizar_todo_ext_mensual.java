@@ -78,7 +78,7 @@ public class Actualizar_todo_ext_mensual extends Modal_extracto{
     }
     
     private void actualizar(){
-        SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         String ffecha_inicial;
         String ffecha_final;
 

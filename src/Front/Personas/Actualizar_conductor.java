@@ -6,19 +6,18 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import Base.Licencia;
+import Utilidades.Modelo_tabla;
 
 public class Actualizar_conductor extends Insertar_conductor{
     
     private String id_busqueda;
     private String[] dato;
-    private DateTimeFormatter formatter;
     private LocalDate fecha_licencia;
     
     public Actualizar_conductor(JDialog padre, String id_busqueda){
@@ -44,7 +43,6 @@ public class Actualizar_conductor extends Insertar_conductor{
         dato = null;
         
 
-        formatter = DateTimeFormatter.ofPattern("yyyy-M-d");      // Establece el formato de la fecha
         fecha_licencia = null;
         try{
             base = new Licencia();
@@ -53,8 +51,9 @@ public class Actualizar_conductor extends Insertar_conductor{
 
             text_documento.setText(dato[0]);
             combo_conductor.setSelectedIndex(Integer.parseInt(dato[1])-1);
-            fecha_licencia = LocalDate.parse(dato[2], formatter);
-            buscar_fecha.setDate(Date.from(fecha_licencia.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            fecha_licencia = Modelo_tabla.parsearFecha(dato[2]);
+            if (fecha_licencia != null)
+                buscar_fecha.setDate(Date.from(fecha_licencia.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         }catch(SQLException | IOException ex){
             JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             Actualizar_conductor.this.dispose();
@@ -80,7 +79,7 @@ public class Actualizar_conductor extends Insertar_conductor{
                 try{
                     Double.parseDouble(text_documento.getText());
                     Date data = buscar_fecha.getDate();
-                    SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
+                    SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
                     
                     try{
                         base = new Licencia();

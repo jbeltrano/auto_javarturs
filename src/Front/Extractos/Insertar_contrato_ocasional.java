@@ -387,7 +387,7 @@ public class Insertar_contrato_ocasional extends Modal_extracto{
         String ffecha_final;
         int origen;
         int destino;
-        SimpleDateFormat formato = new SimpleDateFormat("yyyy-M-d");
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         double valor_contrato;
         text_valor_contrato.setText(text_valor_contrato.getText().replaceAll(",", "."));
         
