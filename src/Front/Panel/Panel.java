@@ -39,6 +39,7 @@ public abstract class Panel extends JPanel{
 
     protected JButton newButton;
     protected JButton secondFloatingButton;
+    protected JButton thirdFloatingButton;
     protected JLayeredPane floating_layer;
     private static final int FLOATING_MARGIN = 16;
     
@@ -78,10 +79,17 @@ public abstract class Panel extends JPanel{
                 int y = Math.max(FLOATING_MARGIN, size.height - buttonSize.height - FLOATING_MARGIN);
                 newButton.setBounds(x, y, buttonSize.width, buttonSize.height);
 
+                int x2 = x;
                 if (secondFloatingButton != null && secondFloatingButton.isVisible()) {
                     Dimension sSize = secondFloatingButton.getPreferredSize();
-                    int x2 = x - sSize.width - 8;
+                    x2 = x - sSize.width - 8;
                     secondFloatingButton.setBounds(x2, y, sSize.width, sSize.height);
+                }
+
+                if (thirdFloatingButton != null && thirdFloatingButton.isVisible()) {
+                    Dimension tSize = thirdFloatingButton.getPreferredSize();
+                    int x3 = x2 - tSize.width - 8;
+                    thirdFloatingButton.setBounds(x3, y, tSize.width, tSize.height);
                 }
             }
         };
