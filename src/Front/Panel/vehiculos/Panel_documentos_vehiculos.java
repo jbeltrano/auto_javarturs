@@ -5,12 +5,16 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -20,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import com.toedter.calendar.JDateChooser;
 import Base.Documentos;
 import Base.Vehiculo;
 import Front.Panel.Panel;
@@ -35,6 +40,129 @@ public class Panel_documentos_vehiculos extends Panel{
     public Panel_documentos_vehiculos(){
         super();
         configRuntButton();
+        configPolizasButton();
+    }
+
+    private void configPolizasButton() {
+        ImageIcon icono_documento = new ImageIcon(
+            getClass().getResource("/Front/Recursos/Vehiculos/Imagen_documentos.png")
+        );
+        Image imagen_escalada = icono_documento.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        ImageIcon icono_escalado = new ImageIcon(imagen_escalada);
+
+        thirdFloatingButton = new JButton("") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                int w = getWidth();
+                int h = getHeight();
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                g2.setColor(new Color(0, 0, 0, 80));
+                g2.fill(new java.awt.geom.Ellipse2D.Double(2, 4, w - 4, h - 6));
+
+                g2.setColor(Color.WHITE);
+                g2.fill(new java.awt.geom.Ellipse2D.Double(0, 0, w - 6, h - 6));
+
+                int ix = (w - 6 - icono_escalado.getIconWidth()) / 2;
+                int iy = (h - 6 - icono_escalado.getIconHeight()) / 2;
+                g2.drawImage(icono_escalado.getImage(), ix, iy, null);
+
+                g2.dispose();
+            }
+
+            @Override
+            public boolean contains(int x, int y) {
+                int w = getWidth();
+                int h = getHeight();
+                double cx = w / 2.0 - 3;
+                double cy = h / 2.0 - 3;
+                double dx = x - cx;
+                double dy = y - cy;
+                double r = Math.min(w, h) / 2.0;
+                return dx * dx + dy * dy <= r * r;
+            }
+        };
+        thirdFloatingButton.setPreferredSize(new Dimension(56, 56));
+        thirdFloatingButton.setFocusPainted(false);
+        thirdFloatingButton.setBorderPainted(false);
+        thirdFloatingButton.setOpaque(false);
+        thirdFloatingButton.setContentAreaFilled(false);
+        thirdFloatingButton.setToolTipText("Actualizar RCC y RCE de todo el parque automotor");
+        thirdFloatingButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        thirdFloatingButton.addActionListener(_ -> abrirDialogoPolizas());
+
+        floating_layer.add(thirdFloatingButton, Integer.valueOf(javax.swing.JLayeredPane.PALETTE_LAYER));
+    }
+
+    private void abrirDialogoPolizas() {
+        Window win = SwingUtilities.getWindowAncestor(this);
+        JFrame frame = (win instanceof JFrame) ? (JFrame) win : null;
+        JDialog dialogoPolizas = new JDialog(frame, "Actualizar RCC y RCE", true);
+        dialogoPolizas.setSize(430, 190);
+        dialogoPolizas.setLocationRelativeTo(this);
+        dialogoPolizas.setResizable(false);
+
+        JPanel panel = new JPanel(null);
+
+        JLabel label_instruccion = new JLabel("Fecha de vencimiento de las polizas RCC y RCE:");
+        label_instruccion.setBounds(20, 20, 380, 20);
+        panel.add(label_instruccion);
+
+        JDateChooser fecha_polizas = new JDateChooser(new Date());
+        fecha_polizas.setDateFormatString("dd/MM/yyyy");
+        fecha_polizas.setBounds(20, 50, 150, 25);
+        panel.add(fecha_polizas);
+
+        JButton boton_actualizar = new JButton("Actualizar");
+        boton_actualizar.setBounds(210, 120, 100, 25);
+        panel.add(boton_actualizar);
+
+        JButton boton_cancelar = new JButton("Cancelar");
+        boton_cancelar.setBounds(320, 120, 90, 25);
+        panel.add(boton_cancelar);
+
+        boton_actualizar.addActionListener(_ -> {
+            Date fecha = fecha_polizas.getDate();
+            if (fecha == null) {
+                JOptionPane.showMessageDialog(dialogoPolizas, "Debe seleccionar una fecha.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            int confirmacion = JOptionPane.showConfirmDialog(dialogoPolizas,
+                "Se actualizaran las fechas RCC y RCE de todos los vehiculos\n"
+                + "pertenecientes al parque automotor.\n¿Desea continuar?",
+                "Confirmar actualizacion", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (confirmacion != JOptionPane.OK_OPTION) {
+                return;
+            }
+
+            String fecha_texto = new SimpleDateFormat("dd/MM/yyyy").format(fecha);
+
+            try {
+                base_documento = new Documentos();
+                base_documento.actualizar_polisas_parque(fecha_texto);
+
+                JOptionPane.showMessageDialog(dialogoPolizas,
+                    "Las fechas RCC y RCE del parque automotor fueron actualizadas\n"
+                    + "con fecha " + fecha_texto + ".",
+                    "", JOptionPane.INFORMATION_MESSAGE);
+                dialogoPolizas.dispose();
+                accion_text_busqueda();
+
+            } catch (SQLException | IOException ex) {
+                JOptionPane.showMessageDialog(dialogoPolizas, ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } finally {
+                if (base_documento != null) {
+                    base_documento.close();
+                }
+            }
+        });
+
+        boton_cancelar.addActionListener(_ -> dialogoPolizas.dispose());
+
+        dialogoPolizas.add(panel);
+        dialogoPolizas.setVisible(true);
     }
 
     private void configRuntButton() {
